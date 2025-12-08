@@ -14,6 +14,9 @@ import {
 } from './types';
 import { World } from './World';
 
+// 相机模式
+export type CameraMode = 'first-person' | 'isometric' | 'top-down';
+
 // 方块材质定义
 interface BlockMaterials {
   solid: THREE.MeshStandardMaterial;
@@ -32,9 +35,18 @@ interface BlockMaterials {
  */
 export class Renderer {
   private scene: THREE.Scene;
-  private camera: THREE.PerspectiveCamera;
+  private perspectiveCamera: THREE.PerspectiveCamera;
+  private orthographicCamera: THREE.OrthographicCamera;
+  private activeCamera: THREE.Camera;
   private renderer: THREE.WebGLRenderer;
   private world: World;
+
+  // 相机模式
+  private cameraMode: CameraMode = 'first-person';
+  private cameraTarget: THREE.Vector3 = new THREE.Vector3(0, 1, 0);
+  private orbitAngle: number = Math.PI / 4;  // 等轴测视角旋转角度
+  private orbitDistance: number = 20;
+  private zoomLevel: number = 1;
 
   // 方块网格
   private blockMeshes: Map<string, THREE.Mesh> = new Map();
@@ -44,6 +56,8 @@ export class Renderer {
   private selectionBox: THREE.LineSegments | null = null;
   // 预览方块
   private previewMesh: THREE.Mesh | null = null;
+  // 网格线
+  private gridHelper: THREE.Group | null = null;
 
   // 材质
   private materials!: BlockMaterials;
@@ -54,6 +68,9 @@ export class Renderer {
   // 方块几何体（复用）
   private blockGeometry: THREE.BoxGeometry;
 
+  // 相机模式变化回调
+  private onCameraModeChangeCallback?: (mode: CameraMode) => void;
+
   constructor(canvas: HTMLCanvasElement, world: World) {
     this.world = world;
     this.blockGeometry = new THREE.BoxGeometry(1, 1, 1);
@@ -61,17 +78,34 @@ export class Renderer {
     // 创建场景
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x0a0a15);
-    this.scene.fog = new THREE.Fog(0x0a0a15, 20, 60);
+    this.scene.fog = new THREE.Fog(0x0a0a15, 30, 80);
 
-    // 创建相机
-    this.camera = new THREE.PerspectiveCamera(
+    // 创建透视相机（第一人称）
+    this.perspectiveCamera = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
     );
-    this.camera.position.set(5, 8, 10);
-    this.camera.lookAt(0, 1, 0);
+    this.perspectiveCamera.position.set(5, 8, 10);
+    this.perspectiveCamera.lookAt(0, 1, 0);
+
+    // 创建正交相机（等轴测/俯视）
+    const aspect = window.innerWidth / window.innerHeight;
+    const frustumSize = 15;
+    this.orthographicCamera = new THREE.OrthographicCamera(
+      -frustumSize * aspect,
+      frustumSize * aspect,
+      frustumSize,
+      -frustumSize,
+      0.1,
+      1000
+    );
+    this.orthographicCamera.position.set(20, 20, 20);
+    this.orthographicCamera.lookAt(0, 1, 0);
+
+    // 默认使用透视相机
+    this.activeCamera = this.perspectiveCamera;
 
     // 创建渲染器
     this.renderer = new THREE.WebGLRenderer({
@@ -88,6 +122,9 @@ export class Renderer {
 
     // 添加灯光
     this.setupLighting();
+
+    // 添加网格
+    this.createGrid();
 
     // 添加光线组到场景
     this.scene.add(this.lightBeams);
@@ -194,6 +231,195 @@ export class Renderer {
   }
 
   /**
+   * 创建网格
+   */
+  private createGrid(): void {
+    this.gridHelper = new THREE.Group();
+
+    // 主网格 - 工作区域
+    const gridSize = 20;
+
+    // 地面网格线
+    const gridMaterial = new THREE.LineBasicMaterial({
+      color: 0x303050,
+      transparent: true,
+      opacity: 0.5
+    });
+
+    // 水平线
+    for (let i = -gridSize / 2; i <= gridSize / 2; i++) {
+      const points = [
+        new THREE.Vector3(i, 0.01, -gridSize / 2),
+        new THREE.Vector3(i, 0.01, gridSize / 2)
+      ];
+      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      const line = new THREE.Line(geometry, gridMaterial);
+      this.gridHelper.add(line);
+    }
+
+    // 垂直线
+    for (let i = -gridSize / 2; i <= gridSize / 2; i++) {
+      const points = [
+        new THREE.Vector3(-gridSize / 2, 0.01, i),
+        new THREE.Vector3(gridSize / 2, 0.01, i)
+      ];
+      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      const line = new THREE.Line(geometry, gridMaterial);
+      this.gridHelper.add(line);
+    }
+
+    // 中心轴线（更亮）
+    const axisMaterial = new THREE.LineBasicMaterial({
+      color: 0x4080aa,
+      transparent: true,
+      opacity: 0.8
+    });
+
+    // X轴
+    const xAxisPoints = [
+      new THREE.Vector3(-gridSize / 2, 0.02, 0),
+      new THREE.Vector3(gridSize / 2, 0.02, 0)
+    ];
+    const xAxisGeometry = new THREE.BufferGeometry().setFromPoints(xAxisPoints);
+    this.gridHelper.add(new THREE.Line(xAxisGeometry, axisMaterial));
+
+    // Z轴
+    const zAxisPoints = [
+      new THREE.Vector3(0, 0.02, -gridSize / 2),
+      new THREE.Vector3(0, 0.02, gridSize / 2)
+    ];
+    const zAxisGeometry = new THREE.BufferGeometry().setFromPoints(zAxisPoints);
+    this.gridHelper.add(new THREE.Line(zAxisGeometry, axisMaterial));
+
+    this.scene.add(this.gridHelper);
+  }
+
+  /**
+   * 切换网格显示
+   */
+  toggleGrid(): boolean {
+    if (this.gridHelper) {
+      this.gridHelper.visible = !this.gridHelper.visible;
+      return this.gridHelper.visible;
+    }
+    return false;
+  }
+
+  /**
+   * 获取当前相机模式
+   */
+  getCameraMode(): CameraMode {
+    return this.cameraMode;
+  }
+
+  /**
+   * 切换相机模式
+   */
+  setCameraMode(mode: CameraMode): void {
+    this.cameraMode = mode;
+
+    switch (mode) {
+      case 'first-person':
+        this.activeCamera = this.perspectiveCamera;
+        this.scene.fog = new THREE.Fog(0x0a0a15, 30, 80);
+        break;
+
+      case 'isometric':
+        this.activeCamera = this.orthographicCamera;
+        this.updateIsometricCamera();
+        this.scene.fog = null;  // 等轴测视角关闭雾效
+        break;
+
+      case 'top-down':
+        this.activeCamera = this.orthographicCamera;
+        this.updateTopDownCamera();
+        this.scene.fog = null;  // 俯视视角关闭雾效
+        break;
+    }
+
+    this.onCameraModeChangeCallback?.(mode);
+  }
+
+  /**
+   * 更新等轴测相机
+   */
+  private updateIsometricCamera(): void {
+    const distance = this.orbitDistance * this.zoomLevel;
+    const x = this.cameraTarget.x + Math.cos(this.orbitAngle) * distance;
+    const z = this.cameraTarget.z + Math.sin(this.orbitAngle) * distance;
+    const y = this.cameraTarget.y + distance * 0.8;
+
+    this.orthographicCamera.position.set(x, y, z);
+    this.orthographicCamera.lookAt(this.cameraTarget);
+    this.orthographicCamera.updateProjectionMatrix();
+  }
+
+  /**
+   * 更新俯视相机
+   */
+  private updateTopDownCamera(): void {
+    const distance = this.orbitDistance * this.zoomLevel;
+    this.orthographicCamera.position.set(
+      this.cameraTarget.x,
+      this.cameraTarget.y + distance,
+      this.cameraTarget.z + 0.001  // 微小偏移避免完全垂直
+    );
+    this.orthographicCamera.lookAt(this.cameraTarget);
+    this.orthographicCamera.updateProjectionMatrix();
+  }
+
+  /**
+   * 设置相机目标（用于等轴测和俯视模式）
+   */
+  setCameraTarget(x: number, y: number, z: number): void {
+    this.cameraTarget.set(x, y, z);
+    if (this.cameraMode === 'isometric') {
+      this.updateIsometricCamera();
+    } else if (this.cameraMode === 'top-down') {
+      this.updateTopDownCamera();
+    }
+  }
+
+  /**
+   * 旋转等轴测视角
+   */
+  rotateOrbit(delta: number): void {
+    this.orbitAngle += delta;
+    if (this.cameraMode === 'isometric') {
+      this.updateIsometricCamera();
+    }
+  }
+
+  /**
+   * 缩放视角
+   */
+  zoom(delta: number): void {
+    this.zoomLevel = Math.max(0.5, Math.min(3, this.zoomLevel + delta));
+
+    if (this.cameraMode === 'isometric') {
+      this.updateIsometricCamera();
+    } else if (this.cameraMode === 'top-down') {
+      this.updateTopDownCamera();
+    }
+
+    // 更新正交相机视锥
+    const aspect = window.innerWidth / window.innerHeight;
+    const frustumSize = 15 / this.zoomLevel;
+    this.orthographicCamera.left = -frustumSize * aspect;
+    this.orthographicCamera.right = frustumSize * aspect;
+    this.orthographicCamera.top = frustumSize;
+    this.orthographicCamera.bottom = -frustumSize;
+    this.orthographicCamera.updateProjectionMatrix();
+  }
+
+  /**
+   * 设置相机模式变化回调
+   */
+  setOnCameraModeChange(callback: (mode: CameraMode) => void): void {
+    this.onCameraModeChangeCallback = callback;
+  }
+
+  /**
    * 世界变化回调
    */
   private onWorldChange(type: string, _data: unknown): void {
@@ -280,6 +506,18 @@ export class Renderer {
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     mesh.userData = { position, state };
+
+    // 为非地面方块添加边缘线，使边界更清晰
+    if (position.y > 0 && state.type !== 'splitter') {
+      const edgeGeometry = new THREE.EdgesGeometry(geometry);
+      const edgeMaterial = new THREE.LineBasicMaterial({
+        color: 0x000000,
+        transparent: true,
+        opacity: 0.3
+      });
+      const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+      mesh.add(edges);
+    }
 
     this.scene.add(mesh);
     this.blockMeshes.set(key, mesh);
@@ -485,13 +723,13 @@ export class Renderer {
   /**
    * 显示选择框
    */
-  showSelectionBox(position: BlockPosition): void {
+  showSelectionBox(position: BlockPosition, isValid: boolean = true): void {
     this.hideSelectionBox();
 
     const geometry = new THREE.BoxGeometry(1.02, 1.02, 1.02);
     const edges = new THREE.EdgesGeometry(geometry);
     const material = new THREE.LineBasicMaterial({
-      color: 0x64c8ff,
+      color: isValid ? 0x64c8ff : 0xff4444,
       linewidth: 2
     });
 
@@ -513,20 +751,30 @@ export class Renderer {
   /**
    * 显示预览方块
    */
-  showPreviewBlock(position: BlockPosition, _blockType: string): void {
+  showPreviewBlock(position: BlockPosition, _blockType: string, isValid: boolean = true): void {
     this.hidePreviewBlock();
 
     const geometry = new THREE.BoxGeometry(0.98, 0.98, 0.98);
     const material = new THREE.MeshBasicMaterial({
-      color: 0x64c8ff,
+      color: isValid ? 0x64c8ff : 0xff4444,
       transparent: true,
-      opacity: 0.3,
+      opacity: isValid ? 0.3 : 0.2,
       wireframe: false
     });
 
     this.previewMesh = new THREE.Mesh(geometry, material);
     this.previewMesh.position.set(position.x, position.y, position.z);
     this.scene.add(this.previewMesh);
+
+    // 添加边框线以更清晰地显示放置位置
+    const edgeGeometry = new THREE.EdgesGeometry(geometry);
+    const edgeMaterial = new THREE.LineBasicMaterial({
+      color: isValid ? 0x64c8ff : 0xff4444,
+      transparent: true,
+      opacity: 0.8
+    });
+    const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+    this.previewMesh.add(edges);
   }
 
   /**
@@ -540,10 +788,17 @@ export class Renderer {
   }
 
   /**
-   * 获取相机
+   * 获取透视相机（用于第一人称控制）
    */
   getCamera(): THREE.PerspectiveCamera {
-    return this.camera;
+    return this.perspectiveCamera;
+  }
+
+  /**
+   * 获取当前活动相机
+   */
+  getActiveCamera(): THREE.Camera {
+    return this.activeCamera;
   }
 
   /**
@@ -557,8 +812,20 @@ export class Renderer {
    * 窗口大小变化处理
    */
   private onResize(): void {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
+    const aspect = window.innerWidth / window.innerHeight;
+
+    // 更新透视相机
+    this.perspectiveCamera.aspect = aspect;
+    this.perspectiveCamera.updateProjectionMatrix();
+
+    // 更新正交相机
+    const frustumSize = 15 / this.zoomLevel;
+    this.orthographicCamera.left = -frustumSize * aspect;
+    this.orthographicCamera.right = frustumSize * aspect;
+    this.orthographicCamera.top = frustumSize;
+    this.orthographicCamera.bottom = -frustumSize;
+    this.orthographicCamera.updateProjectionMatrix();
+
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
@@ -566,7 +833,7 @@ export class Renderer {
    * 渲染帧
    */
   render(): void {
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene, this.activeCamera);
   }
 
   /**
@@ -579,7 +846,7 @@ export class Renderer {
       -(screenY / window.innerHeight) * 2 + 1
     );
 
-    raycaster.setFromCamera(mouse, this.camera);
+    raycaster.setFromCamera(mouse, this.activeCamera);
 
     const meshes = Array.from(this.blockMeshes.values());
     const intersects = raycaster.intersectObjects(meshes);
@@ -608,7 +875,7 @@ export class Renderer {
       -(screenY / window.innerHeight) * 2 + 1
     );
 
-    raycaster.setFromCamera(mouse, this.camera);
+    raycaster.setFromCamera(mouse, this.activeCamera);
 
     const meshes = Array.from(this.blockMeshes.values());
     const intersects = raycaster.intersectObjects(meshes);

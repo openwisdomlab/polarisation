@@ -6,7 +6,7 @@
 import * as THREE from 'three';
 import { BlockPosition, BlockType, createDefaultBlockState, Direction } from './types';
 import { World } from './World';
-import { Renderer } from './Renderer';
+import { Renderer, CameraMode } from './Renderer';
 
 /**
  * 玩家控制类
@@ -37,6 +37,7 @@ export class PlayerControls {
   // 回调函数
   private onBlockTypeChange?: (type: BlockType) => void;
   private onVisionModeChange?: (polarized: boolean) => void;
+  private onCameraModeChange?: (mode: CameraMode) => void;
 
   constructor(camera: THREE.PerspectiveCamera, world: World, renderer: Renderer) {
     this.camera = camera;
@@ -57,6 +58,7 @@ export class PlayerControls {
     // 鼠标事件
     document.addEventListener('mousemove', this.onMouseMove.bind(this));
     document.addEventListener('mousedown', this.onMouseDown.bind(this));
+    document.addEventListener('wheel', this.onMouseWheel.bind(this), { passive: false });
 
     // 指针锁定
     document.addEventListener('pointerlockchange', this.onPointerLockChange.bind(this));
@@ -65,10 +67,23 @@ export class PlayerControls {
     const canvas = document.getElementById('canvas');
     if (canvas) {
       canvas.addEventListener('click', () => {
-        if (!this.isPointerLocked) {
+        const cameraMode = this.renderer.getCameraMode();
+        if (cameraMode === 'first-person' && !this.isPointerLocked) {
           canvas.requestPointerLock();
         }
       });
+    }
+  }
+
+  /**
+   * 鼠标滚轮
+   */
+  private onMouseWheel(event: WheelEvent): void {
+    const cameraMode = this.renderer.getCameraMode();
+    if (cameraMode !== 'first-person') {
+      event.preventDefault();
+      const delta = event.deltaY > 0 ? 0.1 : -0.1;
+      this.renderer.zoom(delta);
     }
   }
 
@@ -104,9 +119,63 @@ export class PlayerControls {
       this.toggleHelp();
     }
 
+    // C键切换相机模式
+    if (event.code === 'KeyC') {
+      this.cycleCameraMode();
+    }
+
+    // G键切换网格显示
+    if (event.code === 'KeyG') {
+      this.renderer.toggleGrid();
+    }
+
+    // Q/E键在等轴测模式下旋转视角
+    const cameraMode = this.renderer.getCameraMode();
+    if (cameraMode === 'isometric') {
+      if (event.code === 'KeyQ') {
+        this.renderer.rotateOrbit(-Math.PI / 4);
+      } else if (event.code === 'KeyE') {
+        this.renderer.rotateOrbit(Math.PI / 4);
+      }
+    }
+
     // ESC键退出指针锁定
     if (event.code === 'Escape') {
       // 浏览器会自动处理
+    }
+  }
+
+  /**
+   * 切换相机模式
+   */
+  private cycleCameraMode(): void {
+    const modes: CameraMode[] = ['first-person', 'isometric', 'top-down'];
+    const currentMode = this.renderer.getCameraMode();
+    const currentIndex = modes.indexOf(currentMode);
+    const nextMode = modes[(currentIndex + 1) % modes.length];
+
+    this.renderer.setCameraMode(nextMode);
+    this.updateCameraModeUI(nextMode);
+    this.onCameraModeChange?.(nextMode);
+
+    // 切换到非第一人称模式时退出指针锁定
+    if (nextMode !== 'first-person') {
+      document.exitPointerLock();
+    }
+  }
+
+  /**
+   * 更新相机模式UI
+   */
+  private updateCameraModeUI(mode: CameraMode): void {
+    const indicator = document.getElementById('camera-mode');
+    if (indicator) {
+      const modeNames: Record<CameraMode, string> = {
+        'first-person': '🎮 第一人称',
+        'isometric': '🔷 等轴测',
+        'top-down': '📐 俯视图'
+      };
+      indicator.textContent = modeNames[mode];
     }
   }
 
@@ -140,16 +209,25 @@ export class PlayerControls {
    * 鼠标点击
    */
   private onMouseDown(event: MouseEvent): void {
-    if (!this.isPointerLocked) return;
+    const cameraMode = this.renderer.getCameraMode();
 
-    const screenCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    // 第一人称模式需要指针锁定
+    if (cameraMode === 'first-person') {
+      if (!this.isPointerLocked) return;
+      const screenCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
-    if (event.button === 0) {
-      // 左键：放置方块
-      this.placeBlock(screenCenter.x, screenCenter.y);
-    } else if (event.button === 2) {
-      // 右键：删除方块
-      this.removeBlock(screenCenter.x, screenCenter.y);
+      if (event.button === 0) {
+        this.placeBlock(screenCenter.x, screenCenter.y);
+      } else if (event.button === 2) {
+        this.removeBlock(screenCenter.x, screenCenter.y);
+      }
+    } else {
+      // 等轴测和俯视模式：使用鼠标位置
+      if (event.button === 0) {
+        this.placeBlock(event.clientX, event.clientY);
+      } else if (event.button === 2) {
+        this.removeBlock(event.clientX, event.clientY);
+      }
     }
   }
 
@@ -321,60 +399,83 @@ export class PlayerControls {
    * 更新玩家位置
    */
   update(deltaTime: number): void {
-    if (!this.isPointerLocked) return;
+    const cameraMode = this.renderer.getCameraMode();
 
-    // 移动方向
-    const forward = new THREE.Vector3();
-    const right = new THREE.Vector3();
+    // 第一人称模式需要指针锁定
+    if (cameraMode === 'first-person') {
+      if (!this.isPointerLocked) return;
 
-    // 计算前进方向（忽略垂直分量）
-    forward.set(
-      -Math.sin(this.rotation.y),
-      0,
-      -Math.cos(this.rotation.y)
-    ).normalize();
+      // 移动方向
+      const forward = new THREE.Vector3();
+      const right = new THREE.Vector3();
 
-    // 计算右方向
-    right.crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
+      // 计算前进方向（忽略垂直分量）
+      forward.set(
+        -Math.sin(this.rotation.y),
+        0,
+        -Math.cos(this.rotation.y)
+      ).normalize();
 
-    // 处理输入
-    const moveDirection = new THREE.Vector3();
+      // 计算右方向
+      right.crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
 
-    if (this.keys.has('KeyW')) moveDirection.add(forward);
-    if (this.keys.has('KeyS')) moveDirection.sub(forward);
-    if (this.keys.has('KeyD')) moveDirection.add(right);
-    if (this.keys.has('KeyA')) moveDirection.sub(right);
+      // 处理输入
+      const moveDirection = new THREE.Vector3();
 
-    if (moveDirection.length() > 0) {
-      moveDirection.normalize();
+      if (this.keys.has('KeyW')) moveDirection.add(forward);
+      if (this.keys.has('KeyS')) moveDirection.sub(forward);
+      if (this.keys.has('KeyD')) moveDirection.add(right);
+      if (this.keys.has('KeyA')) moveDirection.sub(right);
+
+      if (moveDirection.length() > 0) {
+        moveDirection.normalize();
+      }
+
+      // 应用移动
+      this.velocity.x = moveDirection.x * this.moveSpeed;
+      this.velocity.z = moveDirection.z * this.moveSpeed;
+
+      // 跳跃
+      if (this.keys.has('Space') && this.isOnGround()) {
+        this.velocity.y = this.jumpSpeed;
+      }
+
+      // 重力
+      this.velocity.y -= this.gravity * deltaTime;
+
+      // 更新位置
+      this.position.x += this.velocity.x * deltaTime;
+      this.position.y += this.velocity.y * deltaTime;
+      this.position.z += this.velocity.z * deltaTime;
+
+      // 简单碰撞检测（地面）
+      const groundY = this.getGroundHeight(this.position.x, this.position.z);
+      if (this.position.y < groundY + 1.7) {
+        this.position.y = groundY + 1.7;
+        this.velocity.y = 0;
+      }
+
+      // 更新相机位置
+      this.camera.position.copy(this.position);
+    } else {
+      // 等轴测和俯视模式：使用WASD移动相机目标
+      const moveSpeed = 10 * deltaTime;
+      let dx = 0, dz = 0;
+
+      if (this.keys.has('KeyW')) dz -= moveSpeed;
+      if (this.keys.has('KeyS')) dz += moveSpeed;
+      if (this.keys.has('KeyA')) dx -= moveSpeed;
+      if (this.keys.has('KeyD')) dx += moveSpeed;
+
+      if (dx !== 0 || dz !== 0) {
+        const currentTarget = this.renderer['cameraTarget'];
+        this.renderer.setCameraTarget(
+          currentTarget.x + dx,
+          currentTarget.y,
+          currentTarget.z + dz
+        );
+      }
     }
-
-    // 应用移动
-    this.velocity.x = moveDirection.x * this.moveSpeed;
-    this.velocity.z = moveDirection.z * this.moveSpeed;
-
-    // 跳跃
-    if (this.keys.has('Space') && this.isOnGround()) {
-      this.velocity.y = this.jumpSpeed;
-    }
-
-    // 重力
-    this.velocity.y -= this.gravity * deltaTime;
-
-    // 更新位置
-    this.position.x += this.velocity.x * deltaTime;
-    this.position.y += this.velocity.y * deltaTime;
-    this.position.z += this.velocity.z * deltaTime;
-
-    // 简单碰撞检测（地面）
-    const groundY = this.getGroundHeight(this.position.x, this.position.z);
-    if (this.position.y < groundY + 1.7) {
-      this.position.y = groundY + 1.7;
-      this.velocity.y = 0;
-    }
-
-    // 更新相机位置
-    this.camera.position.copy(this.position);
 
     // 更新选择框
     this.updateSelectionBox();
@@ -437,6 +538,10 @@ export class PlayerControls {
 
   setOnVisionModeChange(callback: (polarized: boolean) => void): void {
     this.onVisionModeChange = callback;
+  }
+
+  setOnCameraModeChange(callback: (mode: CameraMode) => void): void {
+    this.onCameraModeChange = callback;
   }
 
   /**

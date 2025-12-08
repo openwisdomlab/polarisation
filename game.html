@@ -84,6 +84,155 @@
       background: rgba(50, 0, 0, 0.7);
     }
 
+    /* Camera Mode Indicator */
+    #camera-mode {
+      position: absolute;
+      top: 70px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 12px 18px;
+      border-radius: 8px;
+      border: 1px solid rgba(100, 200, 255, 0.3);
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    /* Level Goal Indicator */
+    #level-goal {
+      position: absolute;
+      top: 120px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 15px 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(100, 255, 100, 0.3);
+      font-size: 13px;
+      min-width: 180px;
+    }
+
+    #level-goal h4 {
+      color: #64ff64;
+      margin-bottom: 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #level-goal .goal-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      color: #aaa;
+      font-size: 12px;
+    }
+
+    #level-goal .goal-item.completed {
+      color: #64ff64;
+    }
+
+    #level-goal .goal-item .status-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid currentColor;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    #level-goal .goal-item.completed .status-icon {
+      background: #64ff64;
+      border-color: #64ff64;
+    }
+
+    /* Tutorial Hint */
+    #tutorial-hint {
+      position: absolute;
+      bottom: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.9);
+      padding: 15px 25px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 180, 100, 0.5);
+      font-size: 14px;
+      text-align: center;
+      max-width: 500px;
+      display: none;
+    }
+
+    #tutorial-hint.visible {
+      display: block;
+      animation: fadeInUp 0.3s ease;
+    }
+
+    #tutorial-hint .hint-icon {
+      color: #ffb464;
+      margin-right: 8px;
+    }
+
+    #tutorial-hint .hint-text {
+      color: #ddd;
+    }
+
+    #tutorial-hint .hint-key {
+      background: rgba(100, 200, 255, 0.2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: #64c8ff;
+      font-family: monospace;
+      margin: 0 3px;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    /* Control Mode Banner */
+    #control-banner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.9);
+      padding: 30px 50px;
+      border-radius: 15px;
+      border: 2px solid rgba(100, 200, 255, 0.5);
+      text-align: center;
+      display: none;
+    }
+
+    #control-banner.visible {
+      display: block;
+    }
+
+    #control-banner h3 {
+      color: #64c8ff;
+      margin-bottom: 15px;
+      font-size: 20px;
+    }
+
+    #control-banner p {
+      color: #aaa;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    #control-banner .key-hint {
+      color: #ffb464;
+      font-size: 12px;
+      margin-top: 15px;
+    }
+
     /* Block Selector */
     #block-selector {
       position: absolute;
@@ -333,6 +482,28 @@
         👁 普通视角
       </div>
 
+      <div id="camera-mode">
+        🎮 第一人称
+      </div>
+
+      <div id="level-goal">
+        <h4>🎯 关卡目标</h4>
+        <div id="goal-list">
+          <!-- Goals will be populated by JS -->
+        </div>
+      </div>
+
+      <div id="tutorial-hint">
+        <span class="hint-icon">💡</span>
+        <span class="hint-text">按 <span class="hint-key">C</span> 切换视角模式</span>
+      </div>
+
+      <div id="control-banner">
+        <h3>⟡ PolarCraft</h3>
+        <p>点击屏幕开始游戏</p>
+        <p class="key-hint">按 C 切换视角 | 按 H 查看帮助</p>
+      </div>
+
       <div id="block-selector">
         <div class="block-slot selected" data-block="emitter">
           <span class="key">1</span>
@@ -380,14 +551,22 @@
 
       <h3>🎮 基本操作</h3>
       <ul>
-        <li><strong>WASD</strong> - 移动</li>
-        <li><strong>空格</strong> - 跳跃</li>
-        <li><strong>鼠标</strong> - 视角控制</li>
+        <li><strong>WASD</strong> - 移动（第一人称）/ 平移视角（其他模式）</li>
+        <li><strong>空格</strong> - 跳跃（第一人称模式）</li>
+        <li><strong>鼠标</strong> - 视角控制（第一人称）/ 选择方块（其他模式）</li>
         <li><strong>左键</strong> - 放置方块</li>
         <li><strong>右键</strong> - 删除方块</li>
         <li><strong>R</strong> - 旋转方块（改变朝向/角度）</li>
         <li><strong>V</strong> - 切换偏振视角模式</li>
         <li><strong>1-7</strong> - 选择方块类型</li>
+      </ul>
+
+      <h3>📷 视角控制</h3>
+      <ul>
+        <li><strong>C</strong> - 切换相机模式（第一人称/等轴测/俯视）</li>
+        <li><strong>G</strong> - 显示/隐藏网格</li>
+        <li><strong>Q/E</strong> - 旋转视角（等轴测模式）</li>
+        <li><strong>滚轮</strong> - 缩放（等轴测/俯视模式）</li>
       </ul>
 
       <h3>⚡ 偏振光四大公理</h3>
