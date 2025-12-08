@@ -23,15 +23,23 @@
   "game": {
     "level": "Level",
     "sandbox": "Sandbox",
+    "sandboxMode": "Free sandbox mode",
     "goal": "Goal",
+    "levelGoal": "Level Goal",
     "sensors": "Sensors",
+    "sensor": "Sensor",
     "activated": "Activated",
+    "progress": "Progress",
     "levelComplete": "Level Complete!",
+    "nextLevel": "Next Level",
     "controls": "Controls",
     "help": "Help",
+    "gameGuide": "Game Guide",
     "visionMode": "Vision Mode",
     "normal": "Normal",
+    "normalVision": "Normal Vision",
     "polarized": "Polarized",
+    "polarizedVision": "Polarized Vision",
     "cameraMode": "Camera Mode",
     "firstPerson": "First Person",
     "isometric": "Isometric",
@@ -51,6 +59,75 @@
       "delete": "Right click to delete block",
       "vision": "Press V to toggle polarized vision",
       "camera": "Press C to change camera mode"
+    },
+    "defaultControls": "WASD Move | Space Jump | Left Click Place | Right Click Delete",
+    "shortControls": "R Rotate | V Vision Mode | H Help",
+    "showRealWorld": "Show real-world application",
+    "hideRealWorld": "Hide real-world application",
+    "realWorldApp": "Real-world Application",
+    "helpPanel": {
+      "basicControls": "Basic Controls",
+      "wasd": "Move (first-person) / Pan view (other modes)",
+      "space": "Jump (first-person mode)",
+      "mouse": "Look (first-person) / Select block (other modes)",
+      "leftClick": "Place block",
+      "rightClick": "Delete block",
+      "rKey": "Rotate block (change direction/angle)",
+      "vKey": "Toggle polarized vision mode",
+      "numberKeys": "Select block type",
+      "cameraControls": "Camera Controls",
+      "cKey": "Switch camera mode (First-person/Isometric/Top-down)",
+      "gKey": "Toggle grid",
+      "qeKeys": "Rotate view (isometric mode)",
+      "scroll": "Zoom (isometric/top-down mode)",
+      "fourAxioms": "Four Axioms of Polarized Light",
+      "orthogonal": "Orthogonal independence: 0° and 90° light can coexist without interference",
+      "malus": "Malus's Law: Intensity = Original × cos²(angle difference)",
+      "birefringence": "Birefringence: Calcite splits light into two perpendicular beams",
+      "interference": "Interference: In-phase adds up, out-of-phase cancels",
+      "blockGuide": "Block Guide",
+      "emitterDesc": "Emits polarized light (intensity 15, adjustable angle)",
+      "polarizerDesc": "Only allows light at specific angle to pass",
+      "rotatorDesc": "Rotates light polarization angle",
+      "splitterDesc": "Splits light into two perpendicular beams",
+      "sensorDesc": "Detects light, can set angle threshold",
+      "mirrorDesc": "Reflects light direction",
+      "polarizationColors": "Polarization Colors in Vision Mode",
+      "horizontal": "Horizontal",
+      "diagonal": "Diagonal",
+      "vertical": "Vertical"
+    },
+    "realWorld": {
+      "0": {
+        "title": "Polarized Sunglasses",
+        "description": "Reduces glare from water and road surfaces",
+        "caption": "Polarizer blocks horizontal polarized glare"
+      },
+      "1": {
+        "title": "LCD Display",
+        "description": "Liquid crystal screens use polarizers to control brightness",
+        "backlight": "Backlight",
+        "liquidCrystal": "LC",
+        "screen": "Screen"
+      },
+      "2": {
+        "title": "Photography Polarizing Filter",
+        "description": "Eliminates reflections, enhances contrast",
+        "blueSky": "Bluer sky",
+        "noReflection": "No reflection"
+      },
+      "3": {
+        "title": "3D Movie Glasses",
+        "description": "Circular polarization for stereoscopic vision",
+        "screen3d": "3D Screen",
+        "caption": "Left and right eyes receive different polarizations"
+      },
+      "4": {
+        "title": "Stress Detector",
+        "description": "Detects internal stress in transparent materials",
+        "stressZone": "Stress zone",
+        "caption": "Stress birefringence creates colorful patterns"
+      }
     },
     "tutorials": {
       "0": {

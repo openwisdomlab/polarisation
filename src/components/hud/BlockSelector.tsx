@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useGameStore } from '@/stores/gameStore'
 import { BlockType } from '@/core/types'
 import { cn } from '@/lib/utils'
@@ -6,23 +7,24 @@ const BLOCK_TYPES: Array<{
   type: BlockType
   key: string
   icon: string
-  label: string
+  labelKey: string
 }> = [
-  { type: 'emitter', key: '1', icon: '💡', label: '光源' },
-  { type: 'polarizer', key: '2', icon: '▤', label: '偏振片' },
-  { type: 'rotator', key: '3', icon: '↻', label: '波片' },
-  { type: 'splitter', key: '4', icon: '◇', label: '方解石' },
-  { type: 'sensor', key: '5', icon: '◎', label: '感应器' },
-  { type: 'mirror', key: '6', icon: '▯', label: '反射镜' },
-  { type: 'solid', key: '7', icon: '■', label: '实体块' },
+  { type: 'emitter', key: '1', icon: '💡', labelKey: 'game.blocks.emitter' },
+  { type: 'polarizer', key: '2', icon: '▤', labelKey: 'game.blocks.polarizer' },
+  { type: 'rotator', key: '3', icon: '↻', labelKey: 'game.blocks.rotator' },
+  { type: 'splitter', key: '4', icon: '◇', labelKey: 'game.blocks.splitter' },
+  { type: 'sensor', key: '5', icon: '◎', labelKey: 'game.blocks.sensor' },
+  { type: 'mirror', key: '6', icon: '▯', labelKey: 'game.blocks.mirror' },
+  { type: 'solid', key: '7', icon: '■', labelKey: 'game.blocks.solid' },
 ]
 
 export function BlockSelector() {
+  const { t } = useTranslation()
   const { selectedBlockType, setSelectedBlockType } = useGameStore()
 
   return (
     <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 bg-black/80 p-3 rounded-xl border border-cyan-400/30">
-      {BLOCK_TYPES.map(({ type, key, icon, label }) => (
+      {BLOCK_TYPES.map(({ type, key, icon, labelKey }) => (
         <button
           key={type}
           onClick={() => setSelectedBlockType(type)}
@@ -38,7 +40,7 @@ export function BlockSelector() {
             {key}
           </span>
           <span className="text-2xl mb-0.5">{icon}</span>
-          <span className="text-[9px] text-gray-400">{label}</span>
+          <span className="text-[9px] text-gray-400">{t(labelKey)}</span>
         </button>
       ))}
     </div>

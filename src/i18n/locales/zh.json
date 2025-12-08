@@ -22,28 +22,36 @@
   },
   "game": {
     "level": "关卡",
-    "sandbox": "沙盒模式",
+    "sandbox": "沙盒",
+    "sandboxMode": "自由沙盒模式",
     "goal": "目标",
+    "levelGoal": "关卡目标",
     "sensors": "传感器",
+    "sensor": "感应器",
     "activated": "已激活",
+    "progress": "进度",
     "levelComplete": "关卡完成！",
+    "nextLevel": "下一关",
     "controls": "控制说明",
     "help": "帮助",
+    "gameGuide": "游戏指南",
     "visionMode": "视觉模式",
     "normal": "普通",
+    "normalVision": "普通视角",
     "polarized": "偏振",
+    "polarizedVision": "偏振视角",
     "cameraMode": "相机模式",
     "firstPerson": "第一人称",
-    "isometric": "等距视角",
-    "topDown": "俯视视角",
+    "isometric": "等轴测",
+    "topDown": "俯视图",
     "blocks": {
-      "emitter": "发射器",
+      "emitter": "光源",
       "polarizer": "偏振片",
-      "rotator": "旋转器",
-      "splitter": "分束器",
-      "sensor": "传感器",
-      "mirror": "镜子",
-      "solid": "实体"
+      "rotator": "波片",
+      "splitter": "方解石",
+      "sensor": "感应器",
+      "mirror": "反射镜",
+      "solid": "实体块"
     },
     "hints": {
       "rotate": "按 R 旋转方块",
@@ -51,6 +59,75 @@
       "delete": "右键删除方块",
       "vision": "按 V 切换偏振视觉",
       "camera": "按 C 切换相机模式"
+    },
+    "defaultControls": "WASD 移动 | 空格 跳跃 | 左键 放置 | 右键 删除",
+    "shortControls": "R 旋转方块 | V 切换视角模式 | H 帮助",
+    "showRealWorld": "显示现实应用",
+    "hideRealWorld": "隐藏现实应用",
+    "realWorldApp": "现实应用",
+    "helpPanel": {
+      "basicControls": "基本操作",
+      "wasd": "移动（第一人称）/ 平移视角（其他模式）",
+      "space": "跳跃（第一人称模式）",
+      "mouse": "视角控制（第一人称）/ 选择方块（其他模式）",
+      "leftClick": "放置方块",
+      "rightClick": "删除方块",
+      "rKey": "旋转方块（改变朝向/角度）",
+      "vKey": "切换偏振视角模式",
+      "numberKeys": "选择方块类型",
+      "cameraControls": "视角控制",
+      "cKey": "切换相机模式（第一人称/等轴测/俯视）",
+      "gKey": "显示/隐藏网格",
+      "qeKeys": "旋转视角（等轴测模式）",
+      "scroll": "缩放（等轴测/俯视模式）",
+      "fourAxioms": "偏振光四大公理",
+      "orthogonal": "正交不干涉：0°和90°的光可以共存互不影响",
+      "malus": "马吕斯定律：光通过偏振片时，强度 = 原强度 × cos²(角度差)",
+      "birefringence": "双折射：方解石将光分裂成两束垂直的光",
+      "interference": "干涉叠加：同相叠加变亮，反相抵消变暗",
+      "blockGuide": "方块说明",
+      "emitterDesc": "发射偏振光束（强度15，可调角度）",
+      "polarizerDesc": "只允许特定角度的光通过",
+      "rotatorDesc": "旋转通过的光的偏振角度",
+      "splitterDesc": "将光分裂为两束垂直光",
+      "sensorDesc": "检测光线，可设置所需角度阈值",
+      "mirrorDesc": "反射光线方向",
+      "polarizationColors": "偏振视角模式下的颜色",
+      "horizontal": "水平",
+      "diagonal": "斜向",
+      "vertical": "垂直"
+    },
+    "realWorld": {
+      "0": {
+        "title": "偏振太阳镜",
+        "description": "减少水面、路面反射的眩光",
+        "caption": "偏振镜阻挡水平偏振眩光"
+      },
+      "1": {
+        "title": "LCD显示器",
+        "description": "液晶屏利用偏振片控制亮度",
+        "backlight": "背光",
+        "liquidCrystal": "液晶",
+        "screen": "屏幕"
+      },
+      "2": {
+        "title": "摄影偏振滤镜",
+        "description": "消除反光、增强对比度",
+        "blueSky": "蓝天更蓝",
+        "noReflection": "无反光"
+      },
+      "3": {
+        "title": "3D电影眼镜",
+        "description": "圆偏振光实现立体视觉",
+        "screen3d": "3D屏幕",
+        "caption": "左右眼接收不同偏振"
+      },
+      "4": {
+        "title": "应力检测仪",
+        "description": "检测透明材料内部应力",
+        "stressZone": "应力区",
+        "caption": "应力双折射彩色图案"
+      }
     },
     "tutorials": {
       "0": {

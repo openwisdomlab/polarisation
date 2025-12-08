@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useGameStore } from '@/stores/gameStore'
 import { cn } from '@/lib/utils'
 
@@ -8,6 +9,7 @@ interface SensorStatus {
 }
 
 export function LevelGoal() {
+  const { t } = useTranslation()
   const { world, currentLevel, isLevelComplete, nextLevel } = useGameStore()
   const [sensors, setSensors] = useState<SensorStatus[]>([])
 
@@ -41,9 +43,9 @@ export function LevelGoal() {
   const totalCount = sensors.length
 
   return (
-    <div className="absolute top-[120px] right-5 bg-black/80 p-4 rounded-lg border border-green-500/30 min-w-[180px]">
+    <div className="bg-black/80 p-4 rounded-lg border border-green-500/30 min-w-[180px]">
       <h4 className="text-green-400 mb-2.5 text-xs uppercase tracking-wider font-semibold">
-        🎯 关卡目标
+        🎯 {t('game.levelGoal')}
       </h4>
 
       <div className="space-y-1.5">
@@ -65,7 +67,7 @@ export function LevelGoal() {
             >
               {sensor.activated && '✓'}
             </div>
-            <span>感应器 {index + 1}</span>
+            <span>{t('game.sensor')} {index + 1}</span>
           </div>
         ))}
       </div>
@@ -73,7 +75,7 @@ export function LevelGoal() {
       {/* Progress bar */}
       <div className="mt-3 pt-3 border-t border-gray-700">
         <div className="flex justify-between text-xs text-gray-400 mb-1">
-          <span>进度</span>
+          <span>{t('game.progress')}</span>
           <span>{activatedCount}/{totalCount}</span>
         </div>
         <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
@@ -88,7 +90,7 @@ export function LevelGoal() {
       {isLevelComplete && (
         <div className="mt-3 pt-3 border-t border-green-500/30">
           <div className="text-green-400 text-sm font-medium mb-2">
-            🎉 关卡完成！
+            🎉 {t('game.levelComplete')}
           </div>
           <button
             onClick={nextLevel}
@@ -96,7 +98,7 @@ export function LevelGoal() {
                        rounded-lg text-green-400 text-xs
                        hover:bg-green-500/30 transition-colors"
           >
-            下一关 →
+            {t('game.nextLevel')} →
           </button>
         </div>
       )}
