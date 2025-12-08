@@ -1,12 +1,20 @@
+import { useTranslation } from 'react-i18next'
 import { useGameStore, CameraMode } from '@/stores/gameStore'
 
-const MODE_NAMES: Record<CameraMode, string> = {
-  'first-person': '🎮 第一人称',
-  'isometric': '🔷 等轴测',
-  'top-down': '📐 俯视图',
+const MODE_ICONS: Record<CameraMode, string> = {
+  'first-person': '🎮',
+  'isometric': '🔷',
+  'top-down': '📐',
+}
+
+const MODE_KEYS: Record<CameraMode, string> = {
+  'first-person': 'game.firstPerson',
+  'isometric': 'game.isometric',
+  'top-down': 'game.topDown',
 }
 
 export function CameraModeIndicator() {
+  const { t } = useTranslation()
   const { cameraMode, setCameraMode } = useGameStore()
 
   const cycleMode = () => {
@@ -19,12 +27,12 @@ export function CameraModeIndicator() {
   return (
     <button
       onClick={cycleMode}
-      className="absolute top-[70px] right-5 px-4 py-3 rounded-lg text-sm
+      className="px-4 py-3 rounded-lg text-sm
                  bg-black/70 border border-cyan-400/30 text-gray-300
                  transition-all duration-300 cursor-pointer
                  hover:bg-black/80 hover:border-cyan-400/50"
     >
-      {MODE_NAMES[cameraMode]}
+      {MODE_ICONS[cameraMode]} {t(MODE_KEYS[cameraMode])}
     </button>
   )
 }
