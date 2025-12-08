@@ -215,3 +215,52 @@ Use 45° polarized light into a splitter - should produce two beams with equal i
 Production builds go to `dist/` with:
 - Sourcemaps enabled
 - Base path `./` for relative asset loading
+
+## Camera Modes
+
+The game supports three camera modes (press `C` to cycle):
+- **First-person**: Traditional FPS controls with pointer lock
+- **Isometric**: Fixed-angle 3D view with Q/E rotation and scroll zoom
+- **Top-down**: Orthographic overhead view for puzzle planning
+
+## React Three Fiber Evaluation
+
+### Current Architecture
+The project uses vanilla Three.js with TypeScript, organized in a class-based architecture:
+- `Renderer.ts`: Manages Three.js scene, cameras, materials, and rendering
+- `PlayerControls.ts`: Handles input and player state
+- `World.ts`: Manages game state and light physics
+
+### React Three Fiber (R3F) Considerations
+
+**Pros of migrating to R3F:**
+- Declarative syntax for 3D scenes
+- Better integration with React ecosystem
+- Easier state management with React hooks
+- Built-in suspense for asset loading
+- Active community with many ready-made components
+
+**Cons / Challenges:**
+- Significant refactoring effort (entire codebase restructure)
+- Current imperative approach works well for this game's needs
+- The game's core value is in physics simulation, not complex 3D scenes
+- Performance overhead from React reconciliation (minor for this project)
+- Learning curve for team members unfamiliar with R3F
+
+### Recommendation
+**Not recommended for this project** because:
+1. The current Three.js implementation is clean and performant
+2. The game's complexity doesn't warrant React's component model
+3. Migration cost outweighs benefits for a puzzle game
+4. Core game logic (light physics) would remain unchanged
+
+R3F would be more beneficial for projects with:
+- Complex UI integrated with 3D scenes
+- Dynamic scene composition that changes frequently
+- Need for React ecosystem integrations (state management, routing)
+- Larger team already familiar with React patterns
+
+For future enhancements, consider R3F only if adding:
+- Level editor with complex UI
+- User-generated content system
+- Multiplayer features requiring real-time state sync
