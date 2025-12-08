@@ -7,6 +7,7 @@ PolarCraft is an educational voxel puzzle game based on polarized light physics.
 **Tech Stack:**
 - **Frontend**: React 19 + TypeScript (strict mode)
 - **3D Rendering**: React Three Fiber + Three.js + drei
+- **2D Animations**: Framer Motion (for course demo visualizations)
 - **State Management**: Zustand with subscribeWithSelector middleware
 - **Routing**: React Router v7
 - **Styling**: Tailwind CSS v4
@@ -16,7 +17,7 @@ PolarCraft is an educational voxel puzzle game based on polarized light physics.
 
 **Key Features:**
 - Interactive 3D puzzle game with 5 tutorial levels
-- Educational course platform with interactive physics demos (6 units)
+- Educational course platform with 15 interactive physics demos across 6 units
 - Multi-language support (English/Chinese)
 - Dark/Light theme switching
 - Three camera modes (first-person, isometric, top-down)
@@ -78,18 +79,23 @@ polarisation/
 │   │   │   ├── TutorialHint.tsx  # Hint display
 │   │   │   ├── HelpPanel.tsx     # Controls guide (Dialog)
 │   │   │   ├── Crosshair.tsx     # FPS crosshair
-│   │   │   └── *ModeIndicator.tsx # Vision/Camera mode display
+│   │   │   ├── VisionModeIndicator.tsx
+│   │   │   └── CameraModeIndicator.tsx
 │   │   │
 │   │   ├── demos/                # Interactive physics demos
-│   │   │   ├── basics/           # Unit 0: Optical basics
-│   │   │   ├── unit1/            # Unit 1: Polarization fundamentals
-│   │   │   ├── unit2/            # Unit 2: Interface reflection
-│   │   │   ├── unit3/            # Unit 3: Transparent media
-│   │   │   ├── unit4/            # Unit 4: Scattering
-│   │   │   ├── unit5/            # Unit 5: Full polarimetry
-│   │   │   ├── DemoCanvas.tsx    # 3D demo wrapper
-│   │   │   ├── Demo2DCanvas.tsx  # 2D demo wrapper
-│   │   │   └── DemoControls.tsx  # Shared demo UI controls
+│   │   │   ├── basics/           # Unit 0: Optical basics (3 demos)
+│   │   │   │   ├── LightWaveDemo.tsx
+│   │   │   │   ├── PolarizationIntroDemo.tsx
+│   │   │   │   └── PolarizationTypesDemo.tsx
+│   │   │   ├── unit1/            # Unit 1: Polarization fundamentals (4 demos)
+│   │   │   ├── unit2/            # Unit 2: Interface reflection (2 demos)
+│   │   │   ├── unit3/            # Unit 3: Transparent media (2 demos)
+│   │   │   ├── unit4/            # Unit 4: Scattering (2 demos)
+│   │   │   ├── unit5/            # Unit 5: Full polarimetry (2 demos)
+│   │   │   ├── DemoCanvas.tsx    # 3D demo wrapper (R3F)
+│   │   │   ├── Demo2DCanvas.tsx  # 2D demo wrapper (Canvas)
+│   │   │   ├── DemoControls.tsx  # Shared demo UI controls
+│   │   │   └── index.ts          # Barrel export
 │   │   │
 │   │   └── ui/                   # Reusable UI primitives
 │   │       ├── button.tsx        # Button component
@@ -277,14 +283,52 @@ function MyComponent() {
 
 ## Course Structure (Interactive Demos)
 
-| Unit | Topic | Demos |
-|------|-------|-------|
-| 0 (Basics) | Optical Fundamentals | Light Wave, Polarization Intro, Polarization Types |
-| 1 | Light Polarization | Polarization State, Malus's Law, Birefringence, Waveplate |
-| 2 | Interface Reflection | Fresnel Equations, Brewster's Angle |
-| 3 | Transparent Media | Chromatic Polarization, Optical Rotation |
-| 4 | Turbid Media | Mie Scattering, Rayleigh Scattering |
-| 5 | Full Polarimetry | Stokes Vectors, Mueller Matrices |
+The demos use two visualization approaches:
+- **2D**: SVG + Framer Motion animations (clearer for wave/diagram visualizations)
+- **3D**: React Three Fiber (for spatial relationships and 3D components)
+
+| Unit | Topic | Demos | Visual Type |
+|------|-------|-------|-------------|
+| 0 (Basics) | Optical Fundamentals | Light Wave, Polarization Intro, Polarization Types | 2D |
+| 1 | Light Polarization | Polarization State (3D), Malus's Law (2D), Birefringence (3D), Waveplate (3D) | Mixed |
+| 2 | Interface Reflection | Fresnel Equations, Brewster's Angle | 2D |
+| 3 | Transparent Media | Chromatic Polarization, Optical Rotation | 2D |
+| 4 | Turbid Media | Mie Scattering, Rayleigh Scattering | 2D |
+| 5 | Full Polarimetry | Stokes Vectors (3D), Mueller Matrices (2D) | Mixed |
+
+### Demo Controls Components
+
+The `DemoControls.tsx` file provides shared UI components for all demos:
+
+```tsx
+// Slider with label and value display
+<SliderControl
+  label="Wavelength (λ)"
+  value={wavelength}
+  min={380}
+  max={700}
+  step={5}
+  unit=" nm"
+  onChange={setWavelength}
+  color="cyan"
+/>
+
+// Toggle switch
+<Toggle label="Show B Field" checked={showBField} onChange={setShowBField} />
+
+// Control panel container
+<ControlPanel title="Wave Parameters">
+  {/* controls */}
+</ControlPanel>
+
+// Info card for explanations
+<InfoCard title="Physics Principle" color="cyan">
+  <p>Explanation text...</p>
+</InfoCard>
+
+// Value display
+<ValueDisplay label="Frequency" value="5.45 × 10¹⁴ Hz" />
+```
 
 ## Development Guidelines
 
@@ -299,7 +343,7 @@ function MyComponent() {
 
 ### Code Style
 
-- Use Chinese comments for physics/game logic
+- Use Chinese comments for physics/game logic explanations
 - Use English for technical documentation
 - Prefer functional components with hooks
 - Use Zustand for global state, local state only for UI-specific concerns
@@ -309,9 +353,21 @@ function MyComponent() {
 ### Adding a New Demo
 
 1. Create component in appropriate `src/components/demos/unit*/` folder
-2. Add demo info to `getDemoInfo()` in `DemosPage.tsx`
-3. Add demo entry to `DEMOS` array in `DemosPage.tsx`
-4. Add translations to `src/i18n/locales/*.json`
+2. Import component in `DemosPage.tsx`
+3. Add demo info to `getDemoInfo()` function in `DemosPage.tsx`
+4. Add demo entry to `DEMOS` array in `DemosPage.tsx`:
+   ```typescript
+   {
+     id: 'my-demo',
+     titleKey: 'demos.myDemo.title',
+     unit: 1,
+     component: MyDemoComponent,
+     descriptionKey: 'demos.myDemo.description',
+     visualType: '2D', // or '3D'
+   }
+   ```
+5. Add translations to `src/i18n/locales/en.json` and `zh.json`
+6. Export from `src/components/demos/index.ts`
 
 ### Adding a New Block Type
 
@@ -376,7 +432,12 @@ function MyComponent() {
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
+    sourcemap: true,
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+      }
+    }
   }
 }
 ```
@@ -384,17 +445,19 @@ function MyComponent() {
 ### Dependencies
 
 **Frontend Production:**
-- `react`, `react-dom` - UI framework
-- `react-router-dom` - Client-side routing
+- `react`, `react-dom` (v19) - UI framework
+- `react-router-dom` (v7) - Client-side routing
 - `three`, `@react-three/fiber`, `@react-three/drei` - 3D rendering
+- `framer-motion` - 2D animations for course demos
 - `zustand` - State management
-- `i18next`, `react-i18next` - Internationalization
+- `i18next`, `react-i18next`, `i18next-browser-languagedetector` - Internationalization
 
 **Frontend Development:**
 - `typescript` - Type safety
 - `vite`, `@vitejs/plugin-react` - Build tool
 - `tailwindcss`, `@tailwindcss/vite` - Styling
 - `lucide-react` - Icons
+- `class-variance-authority`, `clsx`, `tailwind-merge` - Utility classes
 
 **Backend:**
 - `@nestjs/*` - Server framework
@@ -446,8 +509,9 @@ The following files in `src/` root are from the previous vanilla TypeScript impl
 - `src/LightPhysics.ts` - Duplicated in `src/core/LightPhysics.ts`
 - `src/Renderer.ts` - Replaced by React Three Fiber components
 - `src/PlayerControls.ts` - Replaced by R3F controls + Zustand
+- `src/types.ts` - Duplicated in `src/core/types.ts`
 
-These can be safely removed in a future cleanup.
+These files remain in the repository but can be safely removed in a future cleanup.
 
 ## Common Tasks
 
@@ -470,3 +534,78 @@ npm run preview  # Test production build locally
 1. Create `src/i18n/locales/{lang}.json`
 2. Import and add to `resources` in `src/i18n/index.ts`
 3. Add language option to `LanguageThemeSwitcher.tsx`
+
+### Create a New Demo with Framer Motion
+
+For 2D SVG-based demos with smooth animations:
+
+```tsx
+import { useState, useMemo } from 'react'
+import { motion } from 'framer-motion'
+import { SliderControl, ControlPanel, InfoCard } from '../DemoControls'
+
+export function MyDemo() {
+  const [value, setValue] = useState(50)
+  const [isPlaying, setIsPlaying] = useState(true)
+
+  return (
+    <div className="flex gap-6">
+      {/* Visualization */}
+      <div className="flex-1">
+        <svg viewBox="0 0 700 300" className="w-full">
+          <motion.path
+            d="M 0,150 Q 100,50 200,150 T 400,150"
+            fill="none"
+            stroke="#22d3ee"
+            strokeWidth="3"
+            animate={isPlaying ? { d: [...paths] } : {}}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          />
+        </svg>
+      </div>
+
+      {/* Controls */}
+      <ControlPanel title="Parameters">
+        <SliderControl
+          label="Value"
+          value={value}
+          min={0}
+          max={100}
+          onChange={setValue}
+        />
+      </ControlPanel>
+    </div>
+  )
+}
+```
+
+## Physics Reference
+
+### Polarization Colors (Vision Mode)
+
+| Angle | Color | Hex |
+|-------|-------|-----|
+| 0° (Horizontal) | Red | `#ff4444` |
+| 45° | Orange/Yellow | `#ffaa00` |
+| 90° (Vertical) | Green | `#44ff44` |
+| 135° | Blue | `#4444ff` |
+
+### Direction Vectors
+
+```typescript
+const DIRECTION_VECTORS = {
+  north: { x: 0, y: 0, z: -1 },
+  south: { x: 0, y: 0, z: 1 },
+  east:  { x: 1, y: 0, z: 0 },
+  west:  { x: -1, y: 0, z: 0 },
+  up:    { x: 0, y: 1, z: 0 },
+  down:  { x: 0, y: -1, z: 0 }
+}
+```
+
+### Intensity Calculation (Malus's Law)
+
+```typescript
+// When light passes through a polarizer
+const outputIntensity = inputIntensity * Math.cos(angleDiff * Math.PI / 180) ** 2
+```
