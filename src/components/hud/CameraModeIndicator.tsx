@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import { useGameStore, CameraMode } from '@/stores/gameStore'
+import { Camera, Gamepad2, Grid3X3 } from 'lucide-react'
 
-const MODE_ICONS: Record<CameraMode, string> = {
-  'first-person': '🎮',
-  'isometric': '🔷',
-  'top-down': '📐',
+const MODE_ICONS: Record<CameraMode, React.ReactNode> = {
+  'first-person': <Gamepad2 className="w-4 h-4" />,
+  'isometric': <Camera className="w-4 h-4" />,
+  'top-down': <Grid3X3 className="w-4 h-4" />,
 }
 
 const MODE_KEYS: Record<CameraMode, string> = {
@@ -27,12 +28,20 @@ export function CameraModeIndicator() {
   return (
     <button
       onClick={cycleMode}
-      className="px-4 py-3 rounded-lg text-sm
+      title="Press C to cycle camera modes"
+      className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm
                  bg-black/70 border border-cyan-400/30 text-gray-300
                  transition-all duration-300 cursor-pointer
-                 hover:bg-black/80 hover:border-cyan-400/50"
+                 hover:bg-black/80 hover:border-cyan-400/50 hover:text-cyan-400
+                 group"
     >
-      {MODE_ICONS[cameraMode]} {t(MODE_KEYS[cameraMode])}
+      <span className="text-cyan-400 group-hover:scale-110 transition-transform">
+        {MODE_ICONS[cameraMode]}
+      </span>
+      <span>{t(MODE_KEYS[cameraMode])}</span>
+      <span className="text-[10px] text-gray-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        [C]
+      </span>
     </button>
   )
 }

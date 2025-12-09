@@ -1,242 +1,189 @@
-# PolarCraft - 偏振光体素解谜游戏
+# PolarCraft - Polarized Light Voxel Puzzle Game
 
-一个基于偏振光物理特性的体素沙盒解谜游戏，将真实的光学原理融入类似《我的世界》的游戏体验中。同时包含一个6单元的偏振光物理教学课程平台。
+> 偏振光体素解谜游戏 | An Optical Puzzle Experience
 
-## 技术栈
+A beautifully crafted 3D puzzle game that transforms the invisible geometry of polarized light into elegant, tangible challenges. Manipulate light beams, rotate polarizers, and unlock sensors through clever optical arrangements.
 
-- **前端框架**: React 19 + TypeScript (严格模式)
-- **3D渲染**: React Three Fiber + Three.js + drei
-- **状态管理**: Zustand with subscribeWithSelector
-- **路由**: React Router v7
-- **样式**: Tailwind CSS v4
-- **国际化**: i18next 支持中英文切换
-- **构建工具**: Vite
-- **后端** (规划中): NestJS + Colyseus 实时多人游戏
+**Inspired by:** Monument Valley, Shadowmatic, The Witness
 
-## 主要特性
+## Features
 
-- 交互式3D解谜游戏，包含5个教程关卡
-- 教育课程平台，包含6个单元的交互式物理演示
-- 多语言支持（中文/英文）
-- 明暗主题切换
-- 三种相机模式（第一人称、等距、俯视）
+- **Elegant 3D Puzzles** - Solve optical challenges using real physics principles
+- **Intuitive Light Physics** - Malus's Law, birefringence, and wave interference made playable
+- **Multiple Camera Views** - First-person, isometric, and top-down perspectives
+- **Polarization Visualization** - Toggle vision modes to see the hidden polarization states
+- **Educational Course** - 15 interactive demos across 6 physics units
+- **Bilingual Support** - English and Chinese interface
 
-## 快速开始
+## Tech Stack
+
+- **Frontend**: React 19 + TypeScript (strict mode)
+- **3D Rendering**: React Three Fiber + Three.js + drei
+- **State Management**: Zustand with subscribeWithSelector
+- **Routing**: React Router v7
+- **Styling**: Tailwind CSS v4
+- **i18n**: i18next with language detection
+- **Build**: Vite
+
+## Quick Start
 
 ```bash
-npm install      # 安装依赖
-npm run dev      # 启动开发服务器（热重载）
-npm run build    # 生产构建
-npm run preview  # 预览生产构建
+npm install      # Install dependencies
+npm run dev      # Start development server
+npm run build    # Production build
+npm run preview  # Preview production build
 ```
 
-## 项目结构
+## Game Routes
+
+| Route | Description |
+|-------|-------------|
+| `/` | Landing page with navigation |
+| `/game` | Full 3D puzzle experience |
+| `/game2d` | 2D puzzle mode with complex levels |
+| `/demos` | Interactive physics demonstrations |
+
+## Core Physics
+
+### The Four Axioms
+
+1. **Orthogonality** - Light polarized at 90° difference coexists without interference
+2. **Malus's Law** - Intensity through polarizer: I = I₀ × cos²(θ)
+3. **Birefringence** - Calcite crystals split light into o-ray and e-ray
+4. **Interference** - Same-phase light adds, opposite-phase cancels
+
+### Light Properties
+
+| Property | Values |
+|----------|--------|
+| Direction | 6 discrete directions (±X, ±Y, ±Z) |
+| Intensity | 0-15 levels |
+| Polarization | 0°, 45°, 90°, 135° |
+| Phase | Positive (+) or Negative (-) |
+
+## Optical Components
+
+| Block | Function |
+|-------|----------|
+| **Emitter** | Projects polarized light beam |
+| **Polarizer** | Filters light by polarization angle |
+| **Rotator** | Rotates polarization without intensity loss |
+| **Splitter** | Birefringent crystal splits beam |
+| **Sensor** | Detects specific polarization and intensity |
+| **Mirror** | Reflects light beam |
+
+## Controls
+
+### Movement
+
+| Key | First-Person | Isometric/Top-Down |
+|-----|--------------|-------------------|
+| WASD | Walk | Pan camera |
+| Space | Jump | - |
+| Mouse | Look around | Orbit camera |
+| Scroll | - | Zoom |
+| ESC | Exit pointer lock | - |
+
+### Building
+
+| Key | Action |
+|-----|--------|
+| Left Click | Place block |
+| Right Click | Remove block |
+| R | Rotate block / Change polarization |
+| 1-7 | Select block type |
+
+### View
+
+| Key | Action |
+|-----|--------|
+| V | Toggle polarization vision |
+| C | Cycle camera mode |
+| G | Toggle grid overlay |
+| H | Show/hide help panel |
+
+### Polarization Colors
+
+When polarization vision is enabled:
+
+- **Red** - 0° (Horizontal)
+- **Orange** - 45° (Diagonal)
+- **Green** - 90° (Vertical)
+- **Blue** - 135° (Anti-diagonal)
+
+## Tutorial Levels
+
+| Level | Concept |
+|-------|---------|
+| 0 - Light & Gate | Basic emitter-sensor alignment |
+| 1 - Polarizer | Filtering light with polarization |
+| 2 - Malus's Law | Intensity reduction through filters |
+| 3 - Wave Plate | Lossless polarization rotation |
+| 4 - Birefringence | Beam splitting and routing |
+
+## Course Curriculum
+
+The educational platform covers 6 units of polarization optics:
+
+| Unit | Topic |
+|------|-------|
+| 0 | Optical Fundamentals |
+| 1 | Light Polarization |
+| 2 | Interface Reflection |
+| 3 | Transparent Media |
+| 4 | Turbid Media Scattering |
+| 5 | Full Polarimetry |
+
+Visit `/demos` to explore interactive visualizations.
+
+## Project Structure
 
 ```
 polarisation/
-├── src/                          # React 应用源码
-│   ├── App.tsx                   # 根组件 (React Router)
-│   ├── main.tsx                  # React 入口
-│   ├── index.css                 # 全局样式 (Tailwind)
-│   │
-│   ├── core/                     # 核心游戏逻辑（框架无关）
-│   │   ├── types.ts              # TypeScript 类型、常量、接口
-│   │   ├── World.ts              # 体素世界、光传播、关卡
-│   │   └── LightPhysics.ts       # 偏振光物理（四大公理）
-│   │
-│   ├── stores/                   # Zustand 状态管理
-│   │   └── gameStore.ts          # 游戏状态、动作、教程提示
-│   │
-│   ├── pages/                    # 页面组件
-│   │   ├── HomePage.tsx          # 首页导航
-│   │   ├── GamePage.tsx          # 完整游戏界面
-│   │   └── DemosPage.tsx         # 交互式物理演示
-│   │
+├── src/
+│   ├── core/           # Physics engine & world logic
+│   ├── stores/         # Zustand state management
+│   ├── pages/          # Route components
 │   ├── components/
-│   │   ├── game/                 # 3D 游戏组件 (R3F)
-│   │   ├── hud/                  # 游戏 HUD 组件
-│   │   ├── demos/                # 交互式物理演示
-│   │   │   ├── basics/           # 光学基础
-│   │   │   ├── unit1-5/          # 各单元演示
-│   │   │   └── DemoControls.tsx  # 共享控制组件
-│   │   └── ui/                   # 可复用 UI 组件
-│   │
-│   ├── contexts/                 # React 上下文
-│   │   └── ThemeContext.tsx      # 明暗主题
-│   │
-│   └── i18n/                     # 国际化
-│       └── locales/              # 语言文件 (en.json, zh.json)
-│
-├── server/                       # 后端 (NestJS + Colyseus)
-│
-├── index.html                    # SPA 入口
-├── CLAUDE.md                     # 开发指南
-├── COURSE.md                     # 课程大纲
-└── README.md                     # 本文件
+│   │   ├── game/       # 3D scene components
+│   │   ├── hud/        # UI overlay components
+│   │   ├── demos/      # Physics demonstrations
+│   │   └── ui/         # Shared UI primitives
+│   ├── contexts/       # Theme provider
+│   └── i18n/           # Translations
+├── server/             # Backend (multiplayer planned)
+└── CLAUDE.md           # Development guide
 ```
 
-## 应用路由
+## Design Philosophy
 
-| 路由 | 组件 | 功能 |
-|------|------|------|
-| `/` | `HomePage` | 首页，导航到游戏和课程 |
-| `/game` | `GamePage` | 完整3D解谜游戏 |
-| `/demos` | `DemosPage` | 交互式物理演示和课程 |
+> "Making the invisible geometry of light visible and playable"
 
-## 核心概念
+This game transforms abstract optical physics into spatial puzzles. Each block represents a real optical component, and solutions emerge from understanding how polarized light behaves. The aesthetic draws from low-poly architectural puzzle games, emphasizing clean geometry and soft lighting over photorealism.
 
-### 四大物理公理
-
-1. **正交不干涉 (Orthogonality)** - 偏振角相差90°的光可以共存而互不影响
-2. **马吕斯定律 (Malus Law)** - 光通过偏振片时，强度 = 原强度 × cos²(角度差)
-3. **双折射分叉 (Birefringence)** - 方解石将光分裂成两束垂直偏振的光
-4. **干涉叠加 (Interference)** - 同相光叠加增强，反相光叠加抵消
-
-### 光的属性
-
-- **方向**: 6个离散方向（上下东西南北）
-- **强度**: 0-15
-- **偏振角**: 0°, 45°, 90°, 135°
-- **相位**: 正相(+) / 反相(-)
-
-## 方块类型
-
-| 方块 | 功能 | 关键属性 |
-|------|------|----------|
-| 光源 (Emitter) | 发射指定偏振角的光束 | 偏振角，朝向 |
-| 偏振片 (Polarizer) | 只允许特定角度的光通过 | 偏振角 |
-| 波片 (Rotator) | 旋转光的偏振角度而不损失强度 | 旋转量（45°或90°） |
-| 方解石 (Splitter) | 将光分裂为两束垂直偏振的光 | 朝向 |
-| 感应器 (Sensor) | 检测特定偏振角度和强度的光 | 偏振角，所需强度 |
-| 反射镜 (Mirror) | 反射光线方向 | 朝向 |
-| 实体块 (Solid) | 阻挡光线 | - |
-
-## 操作说明
-
-### 移动控制
-
-| 按键 | 第一人称模式 | 等距/俯视模式 |
-|------|--------------|---------------|
-| WASD | 移动玩家 | 平移相机 |
-| 空格 | 跳跃 | - |
-| 鼠标 | 环顾 | 相机控制 |
-| Q/E | - | 旋转视角（等距） |
-| 滚轮 | - | 缩放 |
-
-### 建造控制
-
-| 按键 | 功能 |
-|------|------|
-| 左键 | 放置方块 |
-| 右键 | 删除方块 |
-| R | 旋转方块/改变偏振角度 |
-| 1-7 | 选择方块类型 |
-
-### 视角控制
-
-| 按键 | 功能 |
-|------|------|
-| V | 切换偏振视角模式 |
-| C | 切换相机模式 |
-| G | 切换网格显示 |
-| H | 显示/隐藏帮助面板 |
-
-### 偏振视角模式颜色
-
-- 红色 - 0° 水平偏振
-- 橙色 - 45° 斜向偏振
-- 绿色 - 90° 垂直偏振
-- 蓝色 - 135° 斜向偏振
-
-## 教程关卡
-
-| 关卡 | 名称 | 学习内容 |
-|------|------|----------|
-| 0 | 光与门 | 光源和感应器的基本使用 |
-| 1 | 偏振片 | 偏振片如何过滤光线 |
-| 2 | 马吕斯定律 | 串联偏振片的强度衰减 |
-| 3 | 波片旋转 | 无损旋转偏振方向 |
-| 4 | 方解石分光 | 光的分裂与路由 |
-
-## 课程内容
-
-项目包含完整的6单元偏振光物理教学课程：
-
-| 单元 | 主题 | 核心概念 |
-|------|------|----------|
-| 0 | 光学基础 | 光波、偏振简介、偏振类型 |
-| 1 | 光的偏振 | 偏振态、马吕斯定律、双折射、波片 |
-| 2 | 界面反射 | 菲涅耳方程、布儒斯特角 |
-| 3 | 透明介质 | 色偏振、旋光性 |
-| 4 | 浑浊介质 | 米氏散射、瑞利散射 |
-| 5 | 全偏振测量 | 斯托克斯矢量、穆勒矩阵 |
-
-访问 `/demos` 路由体验交互式演示。
-
-## 物理原理
-
-### 马吕斯定律
-
-当线偏振光通过偏振片时：
-
-```
-I = I₀ × cos²(θ)
-```
-
-其中 θ 是光的偏振方向与偏振片透光轴之间的夹角。
-
-### 双折射
-
-某些晶体（如方解石）具有两个折射率，入射光会分裂成：
-- **寻常光 (o光)** - 0° 偏振，继续原方向
-- **非寻常光 (e光)** - 90° 偏振，发生折射
-
-### 干涉
-
-两束相同偏振角的光相遇时：
-- **同相 (+,+)** - 强度叠加
-- **反相 (+,-)** - 强度抵消
-
-## 设计理念
-
-> "把看不见的几何学变成看得见、摸得着的方块"
-
-游戏的核心在于用简单的规则创造复杂的涌现行为。就像《我的世界》中的红石电路，玩家可以利用偏振光的物理特性构建：
-- 光学逻辑门
-- 信号复用系统
-- 全息投影装置
-- 隐形陷阱
-
-## 调试
-
-### 访问游戏状态
+## Debugging
 
 ```javascript
-// 在浏览器控制台中
+// Access game state in browser console
 import { useGameStore } from '@/stores/gameStore'
 const store = useGameStore.getState()
-store.world.getAllLightStates()  // 获取所有光状态
-store.world.getAllBlocks()       // 获取所有方块
+store.world.getAllLightStates()  // View all light beams
+store.world.getAllBlocks()       // View all placed blocks
 ```
 
-### 视觉调试
+Visual debugging:
+- Press `V` to see polarization colors
+- Press `G` to show grid overlay
+- Use isometric view for puzzle overview
 
-- 按 `V` 切换偏振视角（显示偏振颜色）
-- 按 `G` 显示网格叠加层
-- 使用等距/俯视视角获得更好的谜题概览
-
-## 后端服务器（多人游戏规划中）
+## Backend Server (Planned)
 
 ```bash
 cd server
 npm install
-npm run start:dev  # 在 3001 端口启动
+npm run start:dev  # Starts on port 3001
 ```
 
-- API 前缀: `/api`
-- WebSocket: `ws://localhost:3001`
-- CORS 已为 `localhost:5173` 和 `localhost:3000` 启用
-
-## 许可证
+## License
 
 MIT License
