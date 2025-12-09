@@ -15,7 +15,7 @@ import {
   PolarizationIndicator,
   PolarizationGridLines,
   SpiralDecoration
-} from './blocks'
+} from './block-helpers'
 
 interface BlocksProps {
   world: World
