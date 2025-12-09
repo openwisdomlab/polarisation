@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from 'react'
+import { useEffect, useCallback, useState, useRef } from 'react'
 import { useThree } from '@react-three/fiber'
 import { OrbitControls, PointerLockControls, Grid } from '@react-three/drei'
 import * as THREE from 'three'
@@ -19,9 +19,10 @@ export function Scene() {
     rotateBlockAt,
   } = useGameStore()
 
-  const { gl } = useThree()
+  const { gl, camera } = useThree()
   const [targetPosition, setTargetPosition] = useState<BlockPosition | null>(null)
   const [hoveredBlock, setHoveredBlock] = useState<BlockPosition | null>(null)
+  const pointerLockRef = useRef<any>(null)
 
   // Set up scene background
   useEffect(() => {
@@ -31,16 +32,37 @@ export function Scene() {
     }
   }, [visionMode, gl])
 
-  // Handle keyboard input for camera mode toggle
+  // Set initial camera position for different modes
+  useEffect(() => {
+    if (cameraMode === 'isometric') {
+      camera.position.set(15, 15, 15)
+      camera.lookAt(0, 1, 0)
+    } else if (cameraMode === 'top-down') {
+      camera.position.set(0, 25, 0.1)
+      camera.lookAt(0, 0, 0)
+    } else if (cameraMode === 'first-person') {
+      camera.position.set(0, 2, 5)
+    }
+  }, [cameraMode, camera])
+
+  // Handle keyboard input for camera mode toggle and ESC to exit pointer lock
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const { setCameraMode, toggleVisionMode, toggleGrid, toggleHelp, rotateSelectedBlock } = useGameStore.getState()
+      const currentCameraMode = useGameStore.getState().cameraMode
 
       switch (e.code) {
+        case 'Escape':
+          // Exit pointer lock mode when ESC is pressed
+          if (currentCameraMode === 'first-person' && document.pointerLockElement) {
+            document.exitPointerLock()
+            // Optionally switch to isometric view for easier navigation
+            // setCameraMode('isometric')
+          }
+          break
         case 'KeyC':
           const modes: ('first-person' | 'isometric' | 'top-down')[] = ['first-person', 'isometric', 'top-down']
-          const currentMode = useGameStore.getState().cameraMode
-          const nextIndex = (modes.indexOf(currentMode) + 1) % modes.length
+          const nextIndex = (modes.indexOf(currentCameraMode) + 1) % modes.length
           setCameraMode(modes[nextIndex])
           break
         case 'KeyV':
@@ -92,24 +114,44 @@ export function Scene() {
 
   return (
     <>
-      {/* Lighting */}
-      <ambientLight intensity={0.4} color={0x404060} />
+      {/* Enhanced Lighting - Monument Valley inspired soft aesthetic */}
+      <ambientLight intensity={0.5} color={0x404860} />
+
+      {/* Main key light - warm sun-like */}
       <directionalLight
-        position={[10, 20, 10]}
-        intensity={0.8}
+        position={[12, 25, 12]}
+        intensity={1.0}
+        color={0xfff8f0}
         castShadow
         shadow-mapSize={[2048, 2048]}
         shadow-camera-near={0.5}
-        shadow-camera-far={50}
-        shadow-camera-left={-20}
-        shadow-camera-right={20}
-        shadow-camera-top={20}
-        shadow-camera-bottom={-20}
+        shadow-camera-far={60}
+        shadow-camera-left={-25}
+        shadow-camera-right={25}
+        shadow-camera-top={25}
+        shadow-camera-bottom={-25}
+        shadow-bias={-0.0001}
       />
-      <directionalLight position={[-10, 10, -10]} intensity={0.3} color={0x6688cc} />
 
-      {/* Fog - only in first-person mode */}
-      {cameraMode === 'first-person' && <fog attach="fog" args={[0x0a0a15, 30, 80]} />}
+      {/* Fill light - cool blue for contrast */}
+      <directionalLight position={[-15, 12, -10]} intensity={0.35} color={0x7090cc} />
+
+      {/* Rim light - subtle highlight */}
+      <directionalLight position={[0, 8, -15]} intensity={0.2} color={0xaabbff} />
+
+      {/* Hemisphere light for soft ambient */}
+      <hemisphereLight
+        args={[0x88aacc, 0x443322, 0.4]}
+        position={[0, 50, 0]}
+      />
+
+      {/* Atmospheric fog - gives depth */}
+      {cameraMode === 'first-person' && (
+        <fog attach="fog" args={[visionMode === 'polarized' ? 0x150810 : 0x0a0a18, 25, 70]} />
+      )}
+      {cameraMode !== 'first-person' && (
+        <fog attach="fog" args={[visionMode === 'polarized' ? 0x150810 : 0x0a0a18, 50, 120]} />
+      )}
 
       {/* Grid */}
       {showGrid && (
@@ -146,7 +188,7 @@ export function Scene() {
 
       {/* Camera controls based on mode */}
       {cameraMode === 'first-person' ? (
-        <PointerLockControls />
+        <PointerLockControls ref={pointerLockRef} />
       ) : (
         <OrbitControls
           enableDamping

@@ -13,6 +13,7 @@ import {
   HelpPanel,
   LevelSelector,
   Crosshair,
+  ControlHints,
 } from '@/components/hud'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
 import { ArrowLeft, Home } from 'lucide-react'
@@ -86,6 +87,7 @@ export function GamePage() {
 
           {/* Bottom center - Block selector and hints */}
           <TutorialHint />
+          <ControlHints />
           <BlockSelector />
         </div>
       </div>
