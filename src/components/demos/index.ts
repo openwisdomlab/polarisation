@@ -7,6 +7,12 @@ export * from './DemoCanvas'
 export * from './Demo2DCanvas'
 export * from './DemoControls'
 
+// Basics: 光学基础
+export * from './basics/LightWaveDemo'
+export * from './basics/PolarizationIntroDemo'
+export * from './basics/PolarizationTypesDemo'
+export * from './basics/InteractiveOpticalBenchDemo'
+
 // Unit 1: 偏振态调制与测量
 export * from './unit1/MalusLawDemo'
 export * from './unit1/BirefringenceDemo'

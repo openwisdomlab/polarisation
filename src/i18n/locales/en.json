@@ -751,6 +751,18 @@
             "Elliptical: E-field traces an ellipse (most general case)"
           ]
         }
+      },
+      "opticalBench": {
+        "title": "Interactive Optical Bench",
+        "description": "Hands-on exploration of light propagation through optical components",
+        "physics": {
+          "principle": "Explore how light interacts with polarizers following Malus's Law",
+          "details": [
+            "Adjust emitter polarization angle",
+            "Rotate polarizer to observe intensity changes",
+            "Real-time visualization of transmitted light"
+          ]
+        }
       }
     }
   },
