@@ -29,6 +29,7 @@ import { MuellerMatrixDemo } from '@/components/demos/unit5/MuellerMatrixDemo'
 import { LightWaveDemo } from '@/components/demos/basics/LightWaveDemo'
 import { PolarizationIntroDemo } from '@/components/demos/basics/PolarizationIntroDemo'
 import { PolarizationTypesDemo } from '@/components/demos/basics/PolarizationTypesDemo'
+import { InteractiveOpticalBenchDemo } from '@/components/demos/basics/InteractiveOpticalBenchDemo'
 
 // Icon components
 function PhysicsIcon() {
@@ -701,6 +702,14 @@ const DEMOS: DemoItem[] = [
     unit: 0,
     component: PolarizationTypesDemo,
     descriptionKey: 'basics.demos.polarizationTypes.description',
+    visualType: '2D',
+  },
+  {
+    id: 'optical-bench',
+    titleKey: 'basics.demos.opticalBench.title',
+    unit: 0,
+    component: InteractiveOpticalBenchDemo,
+    descriptionKey: 'basics.demos.opticalBench.description',
     visualType: '2D',
   },
   // Unit 1

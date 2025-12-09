@@ -2,32 +2,46 @@
  * Game2D Page - CSS-based 2D polarization puzzle game
  * Complex open-ended puzzles with mirrors, splitters, rotators and multiple light paths
  * Inspired by Monument Valley and Shadowmatic aesthetics
+ *
+ * 重构版本: 使用共享的光学组件库和物理计算库
  */
-import { useState, useCallback, useEffect, useMemo } from 'react'
+
+import { useState, useCallback, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Home, BookOpen, ChevronLeft, ChevronRight, RotateCcw, Lightbulb, Trophy, Info, Play, Pause, Eye, Zap, Settings2 } from 'lucide-react'
+import {
+  Home,
+  BookOpen,
+  ChevronLeft,
+  ChevronRight,
+  RotateCcw,
+  Lightbulb,
+  Trophy,
+  Info,
+  Play,
+  Pause,
+  Eye,
+  Zap,
+  Settings2,
+} from 'lucide-react'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 
-// Direction type for 2D game
-type Direction2D = 'up' | 'down' | 'left' | 'right'
-
-// Extended component types for 2D puzzles
-interface OpticalComponent {
-  id: string
-  type: 'polarizer' | 'mirror' | 'splitter' | 'rotator' | 'emitter' | 'sensor'
-  x: number // percentage position
-  y: number // percentage position
-  angle: number // orientation angle
-  polarizationAngle?: number // for polarizers and emitters
-  rotationAmount?: number // for rotators (45 or 90)
-  locked: boolean
-  direction?: Direction2D // for emitters
-  requiredIntensity?: number // for sensors
-  requiredPolarization?: number // for sensors
-}
+// 导入共享模块
+import { getPolarizationColor, POLARIZATION_DISPLAY_CONFIG } from '@/lib/polarization'
+import {
+  EmitterSVG,
+  PolarizerSVG,
+  MirrorSVG,
+  SplitterSVG,
+  RotatorSVG,
+  SensorSVG,
+  LightBeamSVG,
+  LightBeamDefs,
+} from '@/components/shared/optical'
+import type { OpticalComponent } from '@/components/shared/optical/types'
+import { useLightTracer } from '@/hooks/useLightTracer'
 
 // Level definition with multiple components
 interface Level2D {
@@ -39,37 +53,9 @@ interface Level2D {
   hint?: string
   hintZh?: string
   components: OpticalComponent[]
-  gridSize: { width: number; height: number } // for positioning
-  openEnded?: boolean // multiple solutions possible
+  gridSize: { width: number; height: number }
+  openEnded?: boolean
   difficulty: 'easy' | 'medium' | 'hard' | 'expert'
-}
-
-// Calculate direction vector
-const directionVectors: Record<Direction2D, { dx: number; dy: number }> = {
-  up: { dx: 0, dy: -1 },
-  down: { dx: 0, dy: 1 },
-  left: { dx: -1, dy: 0 },
-  right: { dx: 1, dy: 0 },
-}
-
-// Mirror reflection based on mirror angle
-function getMirrorReflection(incomingDir: Direction2D, mirrorAngle: number): Direction2D | null {
-  // Mirror at 45° reflects: right<->up, left<->down
-  // Mirror at 135° reflects: right<->down, left<->up
-  const normalizedAngle = ((mirrorAngle % 180) + 180) % 180
-
-  if (normalizedAngle >= 40 && normalizedAngle <= 50) { // ~45°
-    const reflections: Record<Direction2D, Direction2D> = {
-      right: 'up', up: 'right', left: 'down', down: 'left'
-    }
-    return reflections[incomingDir]
-  } else if (normalizedAngle >= 130 && normalizedAngle <= 140) { // ~135°
-    const reflections: Record<Direction2D, Direction2D> = {
-      right: 'down', down: 'right', left: 'up', up: 'left'
-    }
-    return reflections[incomingDir]
-  }
-  return null
 }
 
 // Enhanced levels with open-ended puzzles
@@ -273,25 +259,6 @@ const LEVELS: Level2D[] = [
   },
 ]
 
-// Light beam segment for rendering
-interface LightBeamSegment {
-  startX: number
-  startY: number
-  endX: number
-  endY: number
-  intensity: number
-  polarization: number
-  direction: Direction2D
-}
-
-// Sensor activation state
-interface SensorState {
-  id: string
-  activated: boolean
-  receivedIntensity: number
-  receivedPolarization: number | null
-}
-
 export function Game2DPage() {
   const { t, i18n } = useTranslation()
   void t
@@ -307,6 +274,7 @@ export function Game2DPage() {
   const [showPolarization, setShowPolarization] = useState(true)
 
   const currentLevel = LEVELS[currentLevelIndex]
+  const isDark = theme === 'dark'
 
   // Initialize component states when level changes
   useEffect(() => {
@@ -322,223 +290,46 @@ export function Game2DPage() {
     setIsComplete(false)
     setSelectedComponent(null)
     setShowHint(false)
-  }, [currentLevelIndex])
+  }, [currentLevelIndex, currentLevel.components])
 
-  // Get current state of a component
-  const getComponentState = useCallback((component: OpticalComponent) => {
-    const state = componentStates[component.id] || {}
-    return {
-      ...component,
-      angle: state.angle ?? component.angle,
-      polarizationAngle: state.polarizationAngle ?? component.polarizationAngle,
-      rotationAmount: state.rotationAmount ?? component.rotationAmount,
-    }
-  }, [componentStates])
-
-  // Calculate light paths and sensor states
-  const { lightBeams, sensorStates } = useMemo(() => {
-    const beams: LightBeamSegment[] = []
-    const sensors: SensorState[] = []
-
-    // Initialize sensor states
-    currentLevel.components.filter(c => c.type === 'sensor').forEach(s => {
-      sensors.push({
-        id: s.id,
-        activated: false,
-        receivedIntensity: 0,
-        receivedPolarization: null,
-      })
-    })
-
-    // Process each emitter
-    const emitters = currentLevel.components.filter(c => c.type === 'emitter')
-
-    for (const emitter of emitters) {
-      const state = getComponentState(emitter)
-      if (!state.direction) continue
-
-      // Trace light path from this emitter
-      traceLightPath(
-        state.x,
-        state.y,
-        state.direction,
-        100, // initial intensity
-        state.polarizationAngle ?? 0,
-        beams,
-        sensors,
-        currentLevel.components,
-        getComponentState,
-        0
-      )
-    }
-
-    return { lightBeams: beams, sensorStates: sensors }
-  }, [currentLevel, componentStates, getComponentState])
-
-  // Trace light path recursively
-  function traceLightPath(
-    startX: number,
-    startY: number,
-    direction: Direction2D,
-    intensity: number,
-    polarization: number,
-    beams: LightBeamSegment[],
-    sensors: SensorState[],
-    components: OpticalComponent[],
-    getState: (c: OpticalComponent) => OpticalComponent,
-    depth: number
-  ) {
-    if (depth > 20 || intensity < 1) return
-
-    const { dx, dy } = directionVectors[direction]
-
-    // Find the next component in this direction
-    let nextComponent: OpticalComponent | null = null
-    let minDist = Infinity
-
-    for (const comp of components) {
-      if (comp.type === 'emitter') continue
-
-      const state = getState(comp)
-
-      // Check if component is in the path
-      const toCompX = state.x - startX
-      const toCompY = state.y - startY
-
-      // Component must be in the direction we're traveling
-      if (dx !== 0 && Math.sign(toCompX) !== Math.sign(dx)) continue
-      if (dy !== 0 && Math.sign(toCompY) !== Math.sign(dy)) continue
-
-      // For horizontal movement, check Y alignment
-      if (dx !== 0 && Math.abs(toCompY) > 8) continue
-      // For vertical movement, check X alignment
-      if (dy !== 0 && Math.abs(toCompX) > 8) continue
-
-      const dist = Math.abs(toCompX) + Math.abs(toCompY)
-      if (dist < minDist && dist > 2) {
-        minDist = dist
-        nextComponent = comp
-      }
-    }
-
-    // Calculate end position
-    let endX: number, endY: number
-
-    if (nextComponent) {
-      const state = getState(nextComponent)
-      endX = state.x
-      endY = state.y
-    } else {
-      // Light goes to edge
-      if (dx > 0) endX = 100
-      else if (dx < 0) endX = 0
-      else endX = startX
-
-      if (dy > 0) endY = 100
-      else if (dy < 0) endY = 0
-      else endY = startY
-    }
-
-    // Add beam segment
-    beams.push({
-      startX,
-      startY,
-      endX,
-      endY,
-      intensity,
-      polarization,
-      direction,
-    })
-
-    if (!nextComponent) return
-
-    const compState = getState(nextComponent)
-
-    // Process the component
-    switch (nextComponent.type) {
-      case 'polarizer': {
-        const polAngle = compState.polarizationAngle ?? 0
-        const angleDiff = Math.abs(polarization - polAngle) % 180
-        const transmission = Math.cos((angleDiff * Math.PI) / 180) ** 2
-        const newIntensity = intensity * transmission
-
-        if (newIntensity >= 1) {
-          traceLightPath(endX, endY, direction, newIntensity, polAngle, beams, sensors, components, getState, depth + 1)
-        }
-        break
-      }
-
-      case 'mirror': {
-        const mirrorAngle = compState.angle ?? 45
-        const reflectedDir = getMirrorReflection(direction, mirrorAngle)
-
-        if (reflectedDir) {
-          traceLightPath(endX, endY, reflectedDir, intensity * 0.95, polarization, beams, sensors, components, getState, depth + 1)
-        }
-        break
-      }
-
-      case 'splitter': {
-        // Splitter creates two beams with orthogonal polarizations
-        // O-ray continues straight with 0° polarization
-        // E-ray deflects up with 90° polarization
-        const oRayIntensity = intensity * Math.cos(((polarization - 0) * Math.PI) / 180) ** 2
-        const eRayIntensity = intensity * Math.cos(((polarization - 90) * Math.PI) / 180) ** 2
-
-        // O-ray continues in same direction
-        if (oRayIntensity >= 1) {
-          traceLightPath(endX, endY, direction, oRayIntensity * 0.95, 0, beams, sensors, components, getState, depth + 1)
-        }
-
-        // E-ray deflects perpendicular (up if going right, right if going down, etc.)
-        const eRayDir: Direction2D = direction === 'right' ? 'up' : direction === 'left' ? 'down' : direction === 'down' ? 'right' : 'left'
-        if (eRayIntensity >= 1) {
-          traceLightPath(endX, endY, eRayDir, eRayIntensity * 0.95, 90, beams, sensors, components, getState, depth + 1)
-        }
-        break
-      }
-
-      case 'rotator': {
-        const rotAmount = compState.rotationAmount ?? 45
-        const newPolarization = (polarization + rotAmount) % 180
-        traceLightPath(endX, endY, direction, intensity * 0.98, newPolarization, beams, sensors, components, getState, depth + 1)
-        break
-      }
-
-      case 'sensor': {
-        // Update sensor state
-        const sensorIdx = sensors.findIndex(s => s.id === nextComponent!.id)
-        if (sensorIdx !== -1) {
-          sensors[sensorIdx].receivedIntensity += intensity
-          sensors[sensorIdx].receivedPolarization = polarization
-
-          const reqIntensity = nextComponent.requiredIntensity ?? 50
-          const reqPol = nextComponent.requiredPolarization
-
-          const intensityOk = sensors[sensorIdx].receivedIntensity >= reqIntensity
-          const polOk = reqPol === undefined || Math.abs(polarization - reqPol) <= 5 || Math.abs(polarization - reqPol - 180) <= 5
-
-          sensors[sensorIdx].activated = intensityOk && polOk
-        }
-        break
-      }
-    }
-  }
+  // 使用共享的光路追踪Hook
+  const { beams: lightBeams, sensorStates } = useLightTracer(
+    currentLevel.components,
+    componentStates
+  )
 
   // Check win condition
   useEffect(() => {
-    const allSensorsActivated = sensorStates.length > 0 && sensorStates.every(s => s.activated)
+    const allSensorsActivated = sensorStates.length > 0 && sensorStates.every((s) => s.activated)
     if (allSensorsActivated && !isComplete) {
       setIsComplete(true)
     }
   }, [sensorStates, isComplete])
 
+  // Get current state of a component
+  const getComponentState = useCallback(
+    (component: OpticalComponent) => {
+      const state = componentStates[component.id] || {}
+      return {
+        ...component,
+        angle: state.angle ?? component.angle,
+        polarizationAngle: state.polarizationAngle ?? component.polarizationAngle,
+        rotationAmount: state.rotationAmount ?? component.rotationAmount,
+      }
+    },
+    [componentStates]
+  )
+
   // Handle component rotation
-  const handleRotate = (id: string, delta: number, property: 'angle' | 'polarizationAngle' | 'rotationAmount') => {
-    const component = currentLevel.components.find(c => c.id === id)
+  const handleRotate = (
+    id: string,
+    delta: number,
+    property: 'angle' | 'polarizationAngle' | 'rotationAmount'
+  ) => {
+    const component = currentLevel.components.find((c) => c.id === id)
     if (!component || component.locked) return
 
-    setComponentStates(prev => {
+    setComponentStates((prev) => {
       const current = prev[id] || {}
       let newValue: number
 
@@ -546,8 +337,8 @@ export function Game2DPage() {
         // Toggle between 45 and 90
         newValue = (current.rotationAmount ?? component.rotationAmount ?? 45) === 45 ? 90 : 45
       } else {
-        const currentVal = current[property] ?? (component as any)[property] ?? 0
-        newValue = ((currentVal + delta + 360) % 360)
+        const currentVal = current[property] ?? (component[property as keyof OpticalComponent] as number) ?? 0
+        newValue = (currentVal + delta + 360) % 360
         if (property === 'polarizationAngle') {
           newValue = newValue % 180
         }
@@ -558,7 +349,7 @@ export function Game2DPage() {
         [id]: {
           ...current,
           [property]: newValue,
-        }
+        },
       }
     })
     setIsComplete(false)
@@ -589,23 +380,12 @@ export function Game2DPage() {
     }
   }
 
-  const isDark = theme === 'dark'
-
   // Difficulty colors
   const difficultyColors: Record<string, string> = {
     easy: 'text-green-400 bg-green-500/20 border-green-500/30',
     medium: 'text-yellow-400 bg-yellow-500/20 border-yellow-500/30',
     hard: 'text-orange-400 bg-orange-500/20 border-orange-500/30',
     expert: 'text-red-400 bg-red-500/20 border-red-500/30',
-  }
-
-  // Polarization color mapping
-  const getPolarizationColor = (angle: number): string => {
-    const normalizedAngle = ((angle % 180) + 180) % 180
-    if (normalizedAngle < 22.5 || normalizedAngle >= 157.5) return '#ff4444' // 0° red
-    if (normalizedAngle < 67.5) return '#ffaa00' // 45° orange
-    if (normalizedAngle < 112.5) return '#44ff44' // 90° green
-    return '#4444ff' // 135° blue
   }
 
   return (
@@ -684,8 +464,17 @@ export function Game2DPage() {
                   <h2 className={cn('text-xl font-bold', isDark ? 'text-white' : 'text-slate-800')}>
                     {isZh ? currentLevel.nameZh : currentLevel.name}
                   </h2>
-                  <span className={cn('text-xs px-2 py-0.5 rounded-full border', difficultyColors[currentLevel.difficulty])}>
-                    {isZh ? { easy: '简单', medium: '中等', hard: '困难', expert: '专家' }[currentLevel.difficulty] : currentLevel.difficulty}
+                  <span
+                    className={cn(
+                      'text-xs px-2 py-0.5 rounded-full border',
+                      difficultyColors[currentLevel.difficulty]
+                    )}
+                  >
+                    {isZh
+                      ? { easy: '简单', medium: '中等', hard: '困难', expert: '专家' }[
+                          currentLevel.difficulty
+                        ]
+                      : currentLevel.difficulty}
                   </span>
                 </div>
                 <span className={cn('text-xs', isDark ? 'text-slate-500' : 'text-slate-400')}>
@@ -714,94 +503,49 @@ export function Game2DPage() {
           <div
             className={cn(
               'relative w-full max-w-2xl aspect-square rounded-2xl overflow-hidden shadow-2xl',
-              isDark ? 'bg-slate-900/90 border border-cyan-500/20' : 'bg-white border border-slate-200'
+              isDark
+                ? 'bg-slate-900/90 border border-cyan-500/20'
+                : 'bg-white border border-slate-200'
             )}
           >
-            <svg viewBox="0 0 100 100" className="w-full h-full" style={{ background: isDark ? '#0a0a1a' : '#f8fafc' }}>
-              {/* Grid background */}
+            <svg
+              viewBox="0 0 100 100"
+              className="w-full h-full"
+              style={{ background: isDark ? '#0a0a1a' : '#f8fafc' }}
+            >
+              {/* Grid background and filters */}
               <defs>
                 <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                  <path d="M 10 0 L 0 0 0 10" fill="none" stroke={isDark ? '#1e293b' : '#e2e8f0'} strokeWidth="0.2" />
+                  <path
+                    d="M 10 0 L 0 0 0 10"
+                    fill="none"
+                    stroke={isDark ? '#1e293b' : '#e2e8f0'}
+                    strokeWidth="0.2"
+                  />
                 </pattern>
-                {/* Glow filter for beams */}
-                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="0.8" result="coloredBlur" />
-                  <feMerge>
-                    <feMergeNode in="coloredBlur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-                {/* Animation for beam flow */}
-                <linearGradient id="beamFlow" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="rgba(255,255,150,0.3)">
-                    <animate attributeName="offset" values="-1;1" dur="2s" repeatCount="indefinite" />
-                  </stop>
-                  <stop offset="50%" stopColor="rgba(255,255,255,0.8)">
-                    <animate attributeName="offset" values="-0.5;1.5" dur="2s" repeatCount="indefinite" />
-                  </stop>
-                  <stop offset="100%" stopColor="rgba(255,255,150,0.3)">
-                    <animate attributeName="offset" values="0;2" dur="2s" repeatCount="indefinite" />
-                  </stop>
-                </linearGradient>
+                {/* 使用共享的滤镜和渐变定义 */}
+                <LightBeamDefs />
               </defs>
               <rect width="100" height="100" fill="url(#grid)" />
 
-              {/* Light beams */}
-              {lightBeams.map((beam, i) => {
-                const opacity = Math.max(0.2, beam.intensity / 100)
-                const strokeWidth = Math.max(0.5, (beam.intensity / 100) * 2)
-                const color = showPolarization ? getPolarizationColor(beam.polarization) : '#ffffaa'
+              {/* Light beams - 使用共享组件 */}
+              {lightBeams.map((beam, i) => (
+                <LightBeamSVG
+                  key={i}
+                  beam={beam}
+                  showPolarization={showPolarization}
+                  isAnimating={isAnimating}
+                  getPolarizationColor={getPolarizationColor}
+                />
+              ))}
 
-                return (
-                  <g key={i}>
-                    {/* Main beam */}
-                    <line
-                      x1={beam.startX}
-                      y1={beam.startY}
-                      x2={beam.endX}
-                      y2={beam.endY}
-                      stroke={color}
-                      strokeWidth={strokeWidth}
-                      strokeOpacity={opacity}
-                      filter="url(#glow)"
-                      strokeLinecap="round"
-                    />
-                    {/* Glow effect */}
-                    <line
-                      x1={beam.startX}
-                      y1={beam.startY}
-                      x2={beam.endX}
-                      y2={beam.endY}
-                      stroke={color}
-                      strokeWidth={strokeWidth * 3}
-                      strokeOpacity={opacity * 0.3}
-                      strokeLinecap="round"
-                    />
-                    {/* Animated flow */}
-                    {isAnimating && beam.intensity > 10 && (
-                      <line
-                        x1={beam.startX}
-                        y1={beam.startY}
-                        x2={beam.endX}
-                        y2={beam.endY}
-                        stroke="url(#beamFlow)"
-                        strokeWidth={strokeWidth * 0.5}
-                        strokeOpacity={0.5}
-                        strokeLinecap="round"
-                      />
-                    )}
-                  </g>
-                )
-              })}
-
-              {/* Render components */}
+              {/* Render components - 使用共享组件 */}
               {currentLevel.components.map((component) => {
                 const state = getComponentState(component)
                 const isSelected = selectedComponent === component.id
 
                 return (
                   <g key={component.id}>
-                    {/* Component based on type */}
                     {component.type === 'emitter' && (
                       <EmitterSVG
                         x={state.x}
@@ -842,11 +586,7 @@ export function Game2DPage() {
                     )}
 
                     {component.type === 'splitter' && (
-                      <SplitterSVG
-                        x={state.x}
-                        y={state.y}
-                        isDark={isDark}
-                      />
+                      <SplitterSVG x={state.x} y={state.y} isDark={isDark} />
                     )}
 
                     {component.type === 'rotator' && (
@@ -866,7 +606,7 @@ export function Game2DPage() {
                       <SensorSVG
                         x={state.x}
                         y={state.y}
-                        sensorState={sensorStates.find(s => s.id === component.id)}
+                        sensorState={sensorStates.find((s) => s.id === component.id)}
                         requiredIntensity={component.requiredIntensity ?? 50}
                         requiredPolarization={component.requiredPolarization}
                         isDark={isDark}
@@ -880,9 +620,7 @@ export function Game2DPage() {
             </svg>
 
             {/* Overlay info */}
-            <div className={cn(
-              'absolute top-3 left-3 flex flex-col gap-2 text-xs',
-            )}>
+            <div className={cn('absolute top-3 left-3 flex flex-col gap-2 text-xs')}>
               {/* Polarization toggle */}
               <button
                 onClick={() => setShowPolarization(!showPolarization)}
@@ -890,7 +628,9 @@ export function Game2DPage() {
                   'flex items-center gap-1.5 px-2 py-1 rounded-lg transition-all',
                   showPolarization
                     ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                    : isDark ? 'bg-slate-800/80 text-slate-400' : 'bg-slate-200 text-slate-600'
+                    : isDark
+                      ? 'bg-slate-800/80 text-slate-400'
+                      : 'bg-slate-200 text-slate-600'
                 )}
               >
                 <Eye className="w-3 h-3" />
@@ -899,14 +639,20 @@ export function Game2DPage() {
             </div>
 
             {/* Sensors status */}
-            <div className={cn(
-              'absolute top-3 right-3 px-3 py-2 rounded-lg text-xs font-mono',
-              isDark ? 'bg-slate-800/90 text-slate-300' : 'bg-white/90 text-slate-700'
-            )}>
+            <div
+              className={cn(
+                'absolute top-3 right-3 px-3 py-2 rounded-lg text-xs font-mono',
+                isDark ? 'bg-slate-800/90 text-slate-300' : 'bg-white/90 text-slate-700'
+              )}
+            >
               {sensorStates.map((s, i) => (
                 <div key={s.id} className="flex items-center gap-2">
-                  <span className={cn('w-2 h-2 rounded-full', s.activated ? 'bg-green-400' : 'bg-slate-500')} />
-                  <span>S{i + 1}: {Math.round(s.receivedIntensity)}%</span>
+                  <span
+                    className={cn('w-2 h-2 rounded-full', s.activated ? 'bg-green-400' : 'bg-slate-500')}
+                  />
+                  <span>
+                    S{i + 1}: {Math.round(s.receivedIntensity)}%
+                  </span>
                 </div>
               ))}
             </div>
@@ -921,7 +667,9 @@ export function Game2DPage() {
                   </h3>
                   {currentLevel.openEnded && (
                     <p className="text-green-100 text-sm mb-3">
-                      {isZh ? '这是开放性关卡，可能有多种解法' : 'Open-ended puzzle - multiple solutions exist'}
+                      {isZh
+                        ? '这是开放性关卡，可能有多种解法'
+                        : 'Open-ended puzzle - multiple solutions exist'}
                     </p>
                   )}
                   {currentLevelIndex < LEVELS.length - 1 && (
@@ -943,7 +691,9 @@ export function Game2DPage() {
               onClick={handleReset}
               className={cn(
                 'flex items-center gap-2 px-4 py-2 rounded-lg transition-colors',
-                isDark ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
+                isDark
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                  : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
               )}
             >
               <RotateCcw className="w-4 h-4" />
@@ -953,7 +703,9 @@ export function Game2DPage() {
               onClick={() => setIsAnimating(!isAnimating)}
               className={cn(
                 'flex items-center gap-2 px-4 py-2 rounded-lg transition-colors',
-                isDark ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
+                isDark
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                  : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
               )}
             >
               {isAnimating ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
@@ -966,7 +718,9 @@ export function Game2DPage() {
                   'flex items-center gap-2 px-4 py-2 rounded-lg transition-colors',
                   showHint
                     ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
-                    : isDark ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
+                    : isDark
+                      ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                      : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
                 )}
               >
                 <Lightbulb className="w-4 h-4" />
@@ -977,11 +731,13 @@ export function Game2DPage() {
 
           {/* Hint display */}
           {showHint && currentLevel.hint && (
-            <div className={cn(
-              'mt-3 px-4 py-2 rounded-lg text-sm max-w-md text-center',
-              'bg-yellow-500/10 border border-yellow-500/20 text-yellow-300'
-            )}>
-              💡 {isZh ? currentLevel.hintZh : currentLevel.hint}
+            <div
+              className={cn(
+                'mt-3 px-4 py-2 rounded-lg text-sm max-w-md text-center',
+                'bg-yellow-500/10 border border-yellow-500/20 text-yellow-300'
+              )}
+            >
+              {isZh ? currentLevel.hintZh : currentLevel.hint}
             </div>
           )}
         </div>
@@ -990,38 +746,57 @@ export function Game2DPage() {
         <div
           className={cn(
             'w-full lg:w-80 rounded-2xl p-4 lg:p-6 lg:max-h-[calc(100vh-120px)] overflow-y-auto',
-            isDark ? 'bg-slate-900/60 border border-slate-700/50' : 'bg-white/80 border border-slate-200'
+            isDark
+              ? 'bg-slate-900/60 border border-slate-700/50'
+              : 'bg-white/80 border border-slate-200'
           )}
         >
           {/* Component Guide */}
           <div className="mb-6">
-            <h3 className={cn('font-bold mb-3 flex items-center gap-2', isDark ? 'text-white' : 'text-slate-800')}>
+            <h3
+              className={cn(
+                'font-bold mb-3 flex items-center gap-2',
+                isDark ? 'text-white' : 'text-slate-800'
+              )}
+            >
               <Settings2 className="w-4 h-4" />
               {isZh ? '元件说明' : 'Components'}
             </h3>
             <div className={cn('space-y-2 text-sm', isDark ? 'text-slate-400' : 'text-slate-600')}>
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-xs">💡</span>
+                <span className="w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-xs">
+                  S
+                </span>
                 <span>{isZh ? '光源 - 发射偏振光' : 'Emitter - emits polarized light'}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded bg-blue-500/30 border border-blue-500 flex items-center justify-center text-xs">▤</span>
+                <span className="w-6 h-6 rounded bg-blue-500/30 border border-blue-500 flex items-center justify-center text-xs">
+                  P
+                </span>
                 <span>{isZh ? '偏振片 - 过滤偏振方向' : 'Polarizer - filters polarization'}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded bg-slate-400/30 border border-slate-400 flex items-center justify-center text-xs">◢</span>
+                <span className="w-6 h-6 rounded bg-slate-400/30 border border-slate-400 flex items-center justify-center text-xs">
+                  M
+                </span>
                 <span>{isZh ? '镜子 - 反射光线' : 'Mirror - reflects light'}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded bg-cyan-500/30 border border-cyan-500 flex items-center justify-center text-xs">◇</span>
+                <span className="w-6 h-6 rounded bg-cyan-500/30 border border-cyan-500 flex items-center justify-center text-xs">
+                  B
+                </span>
                 <span>{isZh ? '分光器 - 分离偏振' : 'Splitter - separates polarizations'}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded bg-purple-500/30 border border-purple-500 flex items-center justify-center text-xs">↻</span>
+                <span className="w-6 h-6 rounded bg-purple-500/30 border border-purple-500 flex items-center justify-center text-xs">
+                  R
+                </span>
                 <span>{isZh ? '波片 - 旋转偏振方向' : 'Rotator - rotates polarization'}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded bg-green-500/30 border border-green-500 flex items-center justify-center text-xs">◎</span>
+                <span className="w-6 h-6 rounded bg-green-500/30 border border-green-500 flex items-center justify-center text-xs">
+                  D
+                </span>
                 <span>{isZh ? '传感器 - 检测光线' : 'Sensor - detects light'}</span>
               </div>
             </div>
@@ -1029,7 +804,12 @@ export function Game2DPage() {
 
           {/* Physics Info */}
           <div className="mb-6">
-            <h3 className={cn('font-bold mb-3 flex items-center gap-2', isDark ? 'text-cyan-400' : 'text-cyan-600')}>
+            <h3
+              className={cn(
+                'font-bold mb-3 flex items-center gap-2',
+                isDark ? 'text-cyan-400' : 'text-cyan-600'
+              )}
+            >
               <Info className="w-4 h-4" />
               {isZh ? '物理原理' : 'Physics'}
             </h3>
@@ -1047,24 +827,16 @@ export function Game2DPage() {
             </div>
           </div>
 
-          {/* Polarization colors */}
+          {/* Polarization colors - 使用共享配置 */}
           {showPolarization && (
             <div className="mb-6">
               <h3 className={cn('font-bold mb-3', isDark ? 'text-white' : 'text-slate-800')}>
                 {isZh ? '偏振颜色' : 'Polarization Colors'}
               </h3>
               <div className="flex flex-wrap gap-2">
-                {[
-                  { angle: 0, label: '0°' },
-                  { angle: 45, label: '45°' },
-                  { angle: 90, label: '90°' },
-                  { angle: 135, label: '135°' },
-                ].map(({ angle, label }) => (
+                {POLARIZATION_DISPLAY_CONFIG.map(({ angle, label, color }) => (
                   <div key={angle} className="flex items-center gap-1.5">
-                    <span
-                      className="w-4 h-4 rounded"
-                      style={{ backgroundColor: getPolarizationColor(angle) }}
-                    />
+                    <span className="w-4 h-4 rounded" style={{ backgroundColor: color }} />
                     <span className={cn('text-xs', isDark ? 'text-slate-400' : 'text-slate-600')}>
                       {label}
                     </span>
@@ -1105,358 +877,5 @@ export function Game2DPage() {
         </div>
       </main>
     </div>
-  )
-}
-
-// SVG Components for 2D Game
-
-// Emitter SVG Component
-interface EmitterSVGProps {
-  x: number
-  y: number
-  polarization: number
-  direction: Direction2D
-  isAnimating: boolean
-  showPolarization: boolean
-  getPolarizationColor: (angle: number) => string
-}
-
-function EmitterSVG({ x, y, polarization, direction, isAnimating, showPolarization, getPolarizationColor }: EmitterSVGProps) {
-  const color = showPolarization ? getPolarizationColor(polarization) : '#ffdd00'
-  const directionRotation = { up: 0, right: 90, down: 180, left: 270 }[direction]
-
-  return (
-    <g transform={`translate(${x}, ${y})`}>
-      {/* Outer glow */}
-      <circle r="5" fill={color} opacity={isAnimating ? 0.3 : 0.2}>
-        {isAnimating && (
-          <animate attributeName="r" values="4;6;4" dur="1.5s" repeatCount="indefinite" />
-        )}
-      </circle>
-      {/* Main body */}
-      <circle r="3.5" fill="#1a1a2e" stroke={color} strokeWidth="0.6" />
-      {/* Inner core */}
-      <circle r="2" fill={color}>
-        {isAnimating && (
-          <animate attributeName="opacity" values="0.8;1;0.8" dur="1s" repeatCount="indefinite" />
-        )}
-      </circle>
-      {/* Direction indicator */}
-      <g transform={`rotate(${directionRotation})`}>
-        <path d="M 0 2.5 L 0 5 M -1 4 L 0 5 L 1 4" stroke={color} strokeWidth="0.5" fill="none" />
-      </g>
-      {/* Polarization label */}
-      <text y="-6" textAnchor="middle" fill={color} fontSize="2.5" fontWeight="bold">
-        {polarization}°
-      </text>
-    </g>
-  )
-}
-
-// Polarizer SVG Component
-interface PolarizerSVGProps {
-  x: number
-  y: number
-  polarizationAngle: number
-  locked: boolean
-  selected: boolean
-  onClick: () => void
-  onRotate: (delta: number) => void
-  getPolarizationColor: (angle: number) => string
-  isDark: boolean
-}
-
-function PolarizerSVG({ x, y, polarizationAngle, locked, selected, onClick, onRotate, getPolarizationColor, isDark }: PolarizerSVGProps) {
-  const color = getPolarizationColor(polarizationAngle)
-  const bgColor = isDark ? '#1e293b' : '#e2e8f0'
-
-  // Handle keyboard when selected
-  useEffect(() => {
-    if (!selected || locked) return
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') { e.preventDefault(); onRotate(-15) }
-      if (e.key === 'ArrowRight') { e.preventDefault(); onRotate(15) }
-    }
-    window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
-  }, [selected, locked, onRotate])
-
-  return (
-    <g transform={`translate(${x}, ${y})`} style={{ cursor: locked ? 'not-allowed' : 'pointer' }} onClick={onClick}>
-      {/* Selection ring */}
-      {selected && !locked && (
-        <rect x="-5.5" y="-5.5" width="11" height="11" rx="2" fill="none" stroke="#22d3ee" strokeWidth="0.5" strokeDasharray="2,1">
-          <animate attributeName="stroke-dashoffset" values="0;6" dur="1s" repeatCount="indefinite" />
-        </rect>
-      )}
-      {/* Background */}
-      <rect x="-4" y="-4" width="8" height="8" rx="1" fill={bgColor} stroke={locked ? '#64748b' : color} strokeWidth="0.4" />
-      {/* Grid lines */}
-      <g transform={`rotate(${polarizationAngle})`}>
-        {[-2.5, -1.25, 0, 1.25, 2.5].map((offset, i) => (
-          <line key={i} x1={offset} y1="-3" x2={offset} y2="3" stroke={color} strokeWidth="0.3" opacity="0.7" />
-        ))}
-      </g>
-      {/* Lock indicator */}
-      {locked && (
-        <text x="3" y="-3" fontSize="2.5">🔒</text>
-      )}
-      {/* Angle label */}
-      <text y="7" textAnchor="middle" fill={color} fontSize="2" fontWeight="bold">
-        {polarizationAngle}°
-      </text>
-      {/* Rotation buttons when selected */}
-      {selected && !locked && (
-        <>
-          <g transform="translate(-8, 0)" onClick={(e) => { e.stopPropagation(); onRotate(-15) }} style={{ cursor: 'pointer' }}>
-            <circle r="2.5" fill="#22d3ee" opacity="0.8" />
-            <text textAnchor="middle" y="0.8" fill="white" fontSize="3" fontWeight="bold">-</text>
-          </g>
-          <g transform="translate(8, 0)" onClick={(e) => { e.stopPropagation(); onRotate(15) }} style={{ cursor: 'pointer' }}>
-            <circle r="2.5" fill="#22d3ee" opacity="0.8" />
-            <text textAnchor="middle" y="0.8" fill="white" fontSize="3" fontWeight="bold">+</text>
-          </g>
-        </>
-      )}
-    </g>
-  )
-}
-
-// Mirror SVG Component
-interface MirrorSVGProps {
-  x: number
-  y: number
-  angle: number
-  locked: boolean
-  selected: boolean
-  onClick: () => void
-  onRotate: (delta: number) => void
-  isDark: boolean
-}
-
-function MirrorSVG({ x, y, angle, locked, selected, onClick, onRotate, isDark }: MirrorSVGProps) {
-  useEffect(() => {
-    if (!selected || locked) return
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') { e.preventDefault(); onRotate(-45) }
-      if (e.key === 'ArrowRight') { e.preventDefault(); onRotate(45) }
-    }
-    window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
-  }, [selected, locked, onRotate])
-
-  return (
-    <g transform={`translate(${x}, ${y})`} style={{ cursor: locked ? 'not-allowed' : 'pointer' }} onClick={onClick}>
-      {/* Selection ring */}
-      {selected && !locked && (
-        <circle r="5" fill="none" stroke="#22d3ee" strokeWidth="0.4" strokeDasharray="2,1">
-          <animate attributeName="stroke-dashoffset" values="0;6" dur="1s" repeatCount="indefinite" />
-        </circle>
-      )}
-      {/* Mirror surface */}
-      <g transform={`rotate(${angle})`}>
-        <rect x="-4" y="-0.5" width="8" height="1" fill={isDark ? '#e2e8f0' : '#94a3b8'} rx="0.2" />
-        {/* Reflection highlight */}
-        <rect x="-3.5" y="-0.3" width="7" height="0.3" fill="white" opacity="0.6" />
-        {/* Back of mirror */}
-        <rect x="-4" y="0.5" width="8" height="0.4" fill={isDark ? '#64748b' : '#475569'} rx="0.1" />
-      </g>
-      {/* Lock indicator */}
-      {locked && <text x="3" y="-3" fontSize="2.5">🔒</text>}
-      {/* Angle label */}
-      <text y="6" textAnchor="middle" fill={isDark ? '#94a3b8' : '#64748b'} fontSize="2">
-        {angle}°
-      </text>
-      {/* Rotation buttons */}
-      {selected && !locked && (
-        <>
-          <g transform="translate(-7, 0)" onClick={(e) => { e.stopPropagation(); onRotate(-45) }} style={{ cursor: 'pointer' }}>
-            <circle r="2" fill="#22d3ee" opacity="0.8" />
-            <text textAnchor="middle" y="0.8" fill="white" fontSize="2.5">↺</text>
-          </g>
-          <g transform="translate(7, 0)" onClick={(e) => { e.stopPropagation(); onRotate(45) }} style={{ cursor: 'pointer' }}>
-            <circle r="2" fill="#22d3ee" opacity="0.8" />
-            <text textAnchor="middle" y="0.8" fill="white" fontSize="2.5">↻</text>
-          </g>
-        </>
-      )}
-    </g>
-  )
-}
-
-// Splitter SVG Component
-interface SplitterSVGProps {
-  x: number
-  y: number
-  isDark: boolean
-}
-
-function SplitterSVG({ x, y, isDark }: SplitterSVGProps) {
-  return (
-    <g transform={`translate(${x}, ${y})`}>
-      {/* Diamond shape */}
-      <polygon
-        points="0,-4 4,0 0,4 -4,0"
-        fill={isDark ? '#0e7490' : '#06b6d4'}
-        opacity="0.7"
-        stroke="#22d3ee"
-        strokeWidth="0.4"
-      />
-      {/* Split direction indicators */}
-      <line x1="1" y1="0" x2="5" y2="0" stroke="#ff4444" strokeWidth="0.4" opacity="0.8" />
-      <line x1="0" y1="-1" x2="0" y2="-5" stroke="#44ff44" strokeWidth="0.4" opacity="0.8" />
-      {/* Label */}
-      <text y="7" textAnchor="middle" fill="#22d3ee" fontSize="2">
-        Splitter
-      </text>
-    </g>
-  )
-}
-
-// Rotator SVG Component
-interface RotatorSVGProps {
-  x: number
-  y: number
-  rotationAmount: number
-  locked: boolean
-  selected: boolean
-  onClick: () => void
-  onToggle: () => void
-  isDark: boolean
-}
-
-function RotatorSVG({ x, y, rotationAmount, locked, selected, onClick, onToggle, isDark }: RotatorSVGProps) {
-  const color = rotationAmount === 90 ? '#a855f7' : '#ec4899'
-
-  useEffect(() => {
-    if (!selected || locked) return
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-        e.preventDefault()
-        onToggle()
-      }
-    }
-    window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
-  }, [selected, locked, onToggle])
-
-  return (
-    <g transform={`translate(${x}, ${y})`} style={{ cursor: locked ? 'not-allowed' : 'pointer' }} onClick={onClick}>
-      {/* Selection ring */}
-      {selected && !locked && (
-        <circle r="5.5" fill="none" stroke="#22d3ee" strokeWidth="0.4" strokeDasharray="2,1">
-          <animate attributeName="stroke-dashoffset" values="0;6" dur="1s" repeatCount="indefinite" />
-        </circle>
-      )}
-      {/* Hexagon body */}
-      <polygon
-        points="0,-4 3.5,-2 3.5,2 0,4 -3.5,2 -3.5,-2"
-        fill={isDark ? '#2d1b4e' : '#f3e8ff'}
-        stroke={color}
-        strokeWidth="0.5"
-      />
-      {/* Spiral indicator */}
-      <path
-        d={rotationAmount === 90
-          ? "M -2 0 Q -2 -2 0 -2 Q 2 -2 2 0 Q 2 2 0 2"
-          : "M -1.5 0 Q -1.5 -1.5 0 -1.5 Q 1.5 -1.5 1.5 0"}
-        fill="none"
-        stroke={color}
-        strokeWidth="0.5"
-      />
-      {/* Arrow head */}
-      <g transform={`rotate(${rotationAmount === 90 ? 180 : 90})`}>
-        <path d="M 0 2 L -0.8 1 M 0 2 L 0.8 1" stroke={color} strokeWidth="0.4" fill="none" />
-      </g>
-      {/* Lock indicator */}
-      {locked && <text x="3" y="-3" fontSize="2.5">🔒</text>}
-      {/* Rotation amount label */}
-      <text y="7" textAnchor="middle" fill={color} fontSize="2" fontWeight="bold">
-        {rotationAmount}°
-      </text>
-      {/* Toggle button when selected */}
-      {selected && !locked && (
-        <g transform="translate(7, 0)" onClick={(e) => { e.stopPropagation(); onToggle() }} style={{ cursor: 'pointer' }}>
-          <circle r="2.5" fill={color} opacity="0.8" />
-          <text textAnchor="middle" y="0.8" fill="white" fontSize="2">⟳</text>
-        </g>
-      )}
-    </g>
-  )
-}
-
-// Sensor SVG Component
-interface SensorSVGProps {
-  x: number
-  y: number
-  sensorState: SensorState | undefined
-  requiredIntensity: number
-  requiredPolarization: number | undefined
-  isDark: boolean
-  isAnimating: boolean
-  getPolarizationColor: (angle: number) => string
-}
-
-function SensorSVG({ x, y, sensorState, requiredIntensity, requiredPolarization, isDark, isAnimating, getPolarizationColor }: SensorSVGProps) {
-  const activated = sensorState?.activated ?? false
-  const intensity = sensorState?.receivedIntensity ?? 0
-
-  return (
-    <g transform={`translate(${x}, ${y})`}>
-      {/* Activation glow */}
-      {activated && (
-        <circle r="6" fill="#22c55e" opacity="0.3">
-          {isAnimating && (
-            <animate attributeName="r" values="5;7;5" dur="1s" repeatCount="indefinite" />
-          )}
-        </circle>
-      )}
-      {/* Main body */}
-      <rect
-        x="-4"
-        y="-4"
-        width="8"
-        height="8"
-        rx="1.5"
-        fill={activated ? '#166534' : isDark ? '#1e293b' : '#e2e8f0'}
-        stroke={activated ? '#22c55e' : '#64748b'}
-        strokeWidth="0.5"
-      />
-      {/* Lens */}
-      <circle
-        r="2.5"
-        fill={activated ? '#4ade80' : isDark ? '#334155' : '#cbd5e1'}
-        stroke={activated ? '#86efac' : '#94a3b8'}
-        strokeWidth="0.3"
-      >
-        {activated && isAnimating && (
-          <animate attributeName="opacity" values="0.8;1;0.8" dur="0.5s" repeatCount="indefinite" />
-        )}
-      </circle>
-      {/* Status LED */}
-      <circle cx="3" cy="-3" r="0.8" fill={activated ? '#22c55e' : '#ef4444'}>
-        {isAnimating && (
-          <animate attributeName="opacity" values="0.7;1;0.7" dur="1s" repeatCount="indefinite" />
-        )}
-      </circle>
-      {/* Required intensity label */}
-      <text y="7" textAnchor="middle" fill={activated ? '#22c55e' : '#94a3b8'} fontSize="1.8">
-        ≥{requiredIntensity}%
-      </text>
-      {/* Received intensity */}
-      <text y="-6" textAnchor="middle" fill={activated ? '#22c55e' : '#f97316'} fontSize="2" fontWeight="bold">
-        {Math.round(intensity)}%
-      </text>
-      {/* Required polarization indicator */}
-      {requiredPolarization !== undefined && (
-        <circle
-          cx="-3"
-          cy="-3"
-          r="1"
-          fill={getPolarizationColor(requiredPolarization)}
-          opacity="0.8"
-        />
-      )}
-    </g>
   )
 }
