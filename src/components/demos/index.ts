@@ -6,6 +6,7 @@
 export * from './DemoCanvas'
 export * from './Demo2DCanvas'
 export * from './DemoControls'
+export * from './LifeSceneIllustrations'
 
 // Basics: 光学基础
 export * from './basics/LightWaveDemo'
@@ -26,6 +27,7 @@ export * from './unit2/BrewsterDemo'
 // Unit 3: 透明介质偏振特征
 export * from './unit3/ChromaticDemo'
 export * from './unit3/OpticalRotationDemo'
+export * from './unit3/AnisotropyDemo'
 
 // Unit 4: 浑浊介质偏振特征
 export * from './unit4/MieScatteringDemo'

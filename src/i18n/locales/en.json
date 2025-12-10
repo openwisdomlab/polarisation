@@ -192,6 +192,11 @@
   },
   "course": {
     "title": "Polarization Physics Course",
+    "search": {
+      "placeholder": "Search demos...",
+      "results": "{{count}} result(s) found",
+      "noResults": "No matching demos found"
+    },
     "interactionGuide": "Interaction Guide",
     "dragToRotate": "Drag to rotate 3D view",
     "scrollToZoom": "Scroll to zoom",
@@ -228,6 +233,12 @@
       "experiment": "Experimental Application",
       "frontier": "Frontier Application",
       "diy": "Try It Yourself"
+    },
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "formulaHidden": "Switch to intermediate or advanced level to see formulas"
     },
     "questions": {
       "title": "Think Before You Explore",
@@ -776,6 +787,74 @@
           "Light now passes through! The sugar rotated the polarization."
         ],
         "observation": "Sugar molecules are chiral (like your hands - mirror images that aren't identical). They rotate light's polarization plane, letting it pass through the second polarizer."
+      }
+    },
+    "anisotropy": {
+      "title": "Optical Anisotropy",
+      "description": "How optical properties vary with direction in crystals and stressed materials",
+      "questions": {
+        "leading": "Why do crystals show double images and why do engineers use plastic models under stress to 'see' invisible forces?",
+        "guided": [
+          "What determines whether a material is optically isotropic or anisotropic?",
+          "How does the angle between light and the optic axis affect the effective refractive index?"
+        ],
+        "openEnded": [
+          "How can LCD screens control polarization using liquid crystal anisotropy?",
+          "Why are crystal optic axes important for laser applications?"
+        ]
+      },
+      "lifeScene": {
+        "title": "The Secret Engineering Tool: Photoelasticity",
+        "imageAlt": "Transparent plastic model of a bridge under stress showing rainbow-colored stress patterns between crossed polarizers",
+        "hook": "How do engineers 'see' invisible forces inside structures? They make plastic models and use polarized light to reveal stress!",
+        "facts": [
+          "Stress makes normally isotropic plastic become birefringent - it creates different refractive indices in different directions",
+          "The rainbow patterns you see show where stress is concentrated in the material",
+          "This technique helped design everything from aircraft wings to prosthetic limbs"
+        ]
+      },
+      "physics": {
+        "principle": "Anisotropic materials have refractive indices that depend on the direction of light propagation and polarization",
+        "formula": "n(θ) = no·ne / √(no²sin²θ + ne²cos²θ)",
+        "details": [
+          "Isotropic materials: same properties in all directions (glass, water)",
+          "Uniaxial crystals: one optic axis, two principal indices (calcite, quartz)",
+          "Biaxial crystals: two optic axes, three principal indices (mica)"
+        ]
+      },
+      "experiment": {
+        "title": "Observing Birefringence in Crystals",
+        "example": "Looking through calcite at text produces double images",
+        "details": [
+          "Ordinary ray (o-ray): polarization perpendicular to optic axis plane",
+          "Extraordinary ray (e-ray): polarization in the optic axis plane",
+          "Rotating the crystal causes one image to orbit around the other"
+        ]
+      },
+      "frontier": {
+        "title": "Liquid Crystal Displays (LCD)",
+        "example": "Smartphone screens use liquid crystal anisotropy",
+        "details": [
+          "Liquid crystals can be aligned by electric fields",
+          "Field changes molecular orientation, changing birefringence",
+          "Combined with polarizers to create controllable light valves"
+        ]
+      },
+      "diy": {
+        "title": "Stress Patterns in Clear Plastic",
+        "materials": [
+          "Clear plastic ruler or protractor",
+          "Two polarizing filters (from 3D glasses)",
+          "Bright light source",
+          "Something to apply gentle pressure"
+        ],
+        "steps": [
+          "Set up crossed polarizers with the light behind them",
+          "Place the plastic between the polarizers",
+          "Gently bend or press the plastic",
+          "Watch rainbow-colored stress patterns appear!"
+        ],
+        "observation": "When plastic is stressed, it becomes anisotropic - light polarized in different directions travels at different speeds. This creates interference colors that reveal the stress distribution."
       }
     },
     "mieScattering": {
