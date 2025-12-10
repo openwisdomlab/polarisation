@@ -226,12 +226,27 @@
       "physics": "Physical Principle",
       "experiment": "Experimental Application",
       "frontier": "Frontier Application"
+    },
+    "questions": {
+      "title": "Think Before You Explore",
+      "guided": "Guided Questions",
+      "openEnded": "Open-ended Questions"
     }
   },
   "demos": {
     "polarizationState": {
       "title": "Polarization State & Wave Synthesis",
       "description": "Wave synthesis produces different polarization states: linear, circular, elliptical",
+      "questions": {
+        "guided": [
+          "What two parameters determine the polarization state of light?",
+          "When does the superposition of two waves produce circular polarization?"
+        ],
+        "openEnded": [
+          "Why might quantum communication prefer polarization encoding over other methods?",
+          "How could controlling polarization state benefit optical data transmission?"
+        ]
+      },
       "physics": {
         "principle": "Polarization state is determined by the amplitude ratio and phase difference of two orthogonal electric field components",
         "formula": "E = Ex·cos(ωt) x̂ + Ey·cos(ωt+δ) ŷ",
@@ -263,6 +278,16 @@
     "malus": {
       "title": "Malus's Law",
       "description": "Intensity change when polarized light passes through a polarizer: I = I₀ × cos²(θ)",
+      "questions": {
+        "guided": [
+          "What happens to light intensity when polarizer angle is 45° from the polarization direction?",
+          "Why does intensity follow a cos² relationship instead of linear?"
+        ],
+        "openEnded": [
+          "How do LCD screens use Malus's Law to control pixel brightness?",
+          "Could you design a variable light dimmer using polarizers? How?"
+        ]
+      },
       "physics": {
         "principle": "Malus's Law describes the intensity change when polarized light passes through a polarizer",
         "formula": "I = I₀ × cos²(θ)",
@@ -294,6 +319,16 @@
     "birefringence": {
       "title": "Birefringence Effect",
       "description": "Crystals like calcite split one beam into ordinary (o) and extraordinary (e) rays",
+      "questions": {
+        "guided": [
+          "Why does calcite produce two images when viewing text through it?",
+          "What is the polarization relationship between the o-ray and e-ray?"
+        ],
+        "openEnded": [
+          "How might birefringence be used to measure stress in transparent materials?",
+          "Why do some minerals show beautiful colors under polarized light microscopes?"
+        ]
+      },
       "physics": {
         "principle": "Birefringent crystals split incident light into ordinary ray (o-ray) and extraordinary ray (e-ray)",
         "formula": "Io = I₀·cos²(θ), Ie = I₀·sin²(θ)",
@@ -325,6 +360,16 @@
     "waveplate": {
       "title": "Wave Plate Principle",
       "description": "Quarter-wave and half-wave plates' effect on polarization states",
+      "questions": {
+        "guided": [
+          "What is the difference between quarter-wave and half-wave plates?",
+          "What input polarization is needed to produce circular polarization with a quarter-wave plate?"
+        ],
+        "openEnded": [
+          "Why do 3D movie glasses use circular polarization instead of linear?",
+          "How could wave plates be combined to create any desired polarization state?"
+        ]
+      },
       "physics": {
         "principle": "Wave plates introduce controlled phase delay using birefringence",
         "formula": "δ = 2π(ne-no)d/λ",
@@ -356,6 +401,16 @@
     "fresnel": {
       "title": "Fresnel Equations",
       "description": "Reflection/transmission coefficients for s and p polarizations vs incident angle",
+      "questions": {
+        "guided": [
+          "Why do s and p polarizations reflect differently at interfaces?",
+          "What happens to light at angles greater than the critical angle?"
+        ],
+        "openEnded": [
+          "How does understanding Fresnel equations help in designing anti-reflective coatings?",
+          "Why does water reflect more at grazing angles than at normal incidence?"
+        ]
+      },
       "physics": {
         "principle": "Fresnel equations describe reflection and transmission coefficients at interfaces",
         "formula": "rs = (n₁cosθᵢ-n₂cosθₜ)/(n₁cosθᵢ+n₂cosθₜ)",
@@ -387,6 +442,16 @@
     "brewster": {
       "title": "Brewster's Angle",
       "description": "The special incident angle where p-polarization reflectance is zero: tan(θB) = n₂/n₁",
+      "questions": {
+        "guided": [
+          "Why is the reflected light completely s-polarized at Brewster's angle?",
+          "How can you calculate Brewster's angle for any material?"
+        ],
+        "openEnded": [
+          "Why do photographers use polarizing filters when shooting through windows?",
+          "How do laser systems use Brewster windows to reduce reflection losses?"
+        ]
+      },
       "physics": {
         "principle": "Brewster's angle is the incident angle where p-polarization reflectance is zero",
         "formula": "tan(θB) = n₂/n₁",
@@ -418,6 +483,16 @@
     "chromatic": {
       "title": "Chromatic Polarization",
       "description": "Colored interference effect of white light in birefringent materials",
+      "questions": {
+        "guided": [
+          "Why do different wavelengths experience different phase delays?",
+          "How does material thickness affect the observed colors?"
+        ],
+        "openEnded": [
+          "Why does transparent tape show colors between crossed polarizers?",
+          "How is chromatic polarization used to analyze stress in engineering structures?"
+        ]
+      },
       "physics": {
         "principle": "Different wavelengths have different phase delays in birefringent materials",
         "formula": "δ(λ) = 2π(ne-no)d/λ",
@@ -449,6 +524,16 @@
     "opticalRotation": {
       "title": "Optical Rotation",
       "description": "Chiral substances like sugar solutions rotate the polarization plane",
+      "questions": {
+        "guided": [
+          "What makes a molecule 'chiral' and able to rotate polarization?",
+          "How does concentration affect the rotation angle?"
+        ],
+        "openEnded": [
+          "Why is it important to distinguish between left-handed and right-handed drug molecules?",
+          "How do polarimeters help in food industry quality control?"
+        ]
+      },
       "physics": {
         "principle": "Chiral molecules rotate the polarization plane of linearly polarized light",
         "formula": "α = [α]·l·c",
@@ -480,6 +565,16 @@
     "mieScattering": {
       "title": "Mie Scattering",
       "description": "Scattering characteristics when particle size is comparable to wavelength (white cloud effect)",
+      "questions": {
+        "guided": [
+          "Why do clouds appear white while the sky is blue?",
+          "How does particle size affect scattering color and direction?"
+        ],
+        "openEnded": [
+          "How could Mie scattering be used to detect air pollution levels?",
+          "Why do fog and mist make visibility poor in all colors equally?"
+        ]
+      },
       "physics": {
         "principle": "When particle size is comparable to wavelength, scattering intensity has complex wavelength dependence",
         "formula": "Scattering efficiency Qsca ≈ 2 (large particle limit)",
@@ -511,6 +606,16 @@
     "rayleigh": {
       "title": "Rayleigh Scattering",
       "description": "Scattering characteristics when particle size is much smaller than wavelength (blue sky effect)",
+      "questions": {
+        "guided": [
+          "Why does blue light scatter more than red light in the atmosphere?",
+          "What causes the sky to appear red/orange during sunset?"
+        ],
+        "openEnded": [
+          "If Earth had a different atmosphere composition, what color might our sky be?",
+          "How does Rayleigh scattering affect satellite imaging and remote sensing?"
+        ]
+      },
       "physics": {
         "principle": "When particle size is much smaller than wavelength, scattering intensity is proportional to λ⁻⁴",
         "formula": "I ∝ 1/λ⁴",
@@ -544,6 +649,16 @@
       "description": "Four parameters to completely describe light's polarization state",
       "demoTitle": "Stokes Vector Demo",
       "demoSubtitle": "Stokes Vector - Complete Mathematical Description of Polarization State",
+      "questions": {
+        "guided": [
+          "What does each of the four Stokes parameters represent?",
+          "How can you measure the Stokes parameters experimentally?"
+        ],
+        "openEnded": [
+          "Why is a mathematical description like Stokes vectors important for polarization analysis?",
+          "How might Stokes parameters be used in astronomical observations?"
+        ]
+      },
       "physics": {
         "principle": "Stokes vector uses four parameters to completely describe polarization state",
         "formula": "S = [S₀, S₁, S₂, S₃]ᵀ",
@@ -633,6 +748,16 @@
       "description": "4×4 matrix describing optical element's transformation of polarization state",
       "demoTitle": "Mueller Matrix Demo",
       "demoSubtitle": "Mueller Matrix - Polarization Transformation of Optical Elements",
+      "questions": {
+        "guided": [
+          "How does the Mueller matrix relate input and output polarization states?",
+          "What is the advantage of using matrices to describe optical systems?"
+        ],
+        "openEnded": [
+          "How is Mueller matrix imaging used in medical diagnostics?",
+          "Could you predict the output of a complex optical system by multiplying Mueller matrices?"
+        ]
+      },
       "physics": {
         "principle": "Mueller matrix describes an optical element's transformation of polarization state",
         "formula": "S' = M · S",
@@ -726,6 +851,16 @@
             "Light travels at c = 3×10⁸ m/s in vacuum",
             "Wavelength determines color (400-700nm for visible light)"
           ]
+        },
+        "questions": {
+          "guided": [
+            "What relationship exists between the electric and magnetic fields in light?",
+            "How does changing wavelength affect what we see?"
+          ],
+          "openEnded": [
+            "Why do you think light can travel through vacuum while sound cannot?",
+            "How might the wave nature of light explain phenomena like rainbows?"
+          ]
         }
       },
       "polarizationIntro": {
@@ -737,6 +872,16 @@
             "Unpolarized light has random electric field orientations",
             "Polarized light has a definite oscillation pattern",
             "Types: linear, circular, and elliptical polarization"
+          ]
+        },
+        "questions": {
+          "guided": [
+            "What is the difference between polarized and unpolarized light?",
+            "Which direction does the electric field vibrate in polarized light?"
+          ],
+          "openEnded": [
+            "Why do polarized sunglasses reduce glare better than regular sunglasses?",
+            "Where might you encounter polarized light in daily life?"
           ]
         }
       },
@@ -750,6 +895,16 @@
             "Circular: E-field rotates with constant magnitude",
             "Elliptical: E-field traces an ellipse (most general case)"
           ]
+        },
+        "questions": {
+          "guided": [
+            "What determines whether light is linearly, circularly, or elliptically polarized?",
+            "How do the two orthogonal field components combine to create different polarization states?"
+          ],
+          "openEnded": [
+            "Why might circular polarization be useful for 3D movies?",
+            "Can you think of a real-world application that benefits from elliptical polarization?"
+          ]
         }
       },
       "opticalBench": {
@@ -761,6 +916,16 @@
             "Adjust emitter polarization angle",
             "Rotate polarizer to observe intensity changes",
             "Real-time visualization of transmitted light"
+          ]
+        },
+        "questions": {
+          "guided": [
+            "What happens to light intensity when polarization angle differs from the polarizer axis?",
+            "At what angle difference does light get completely blocked?"
+          ],
+          "openEnded": [
+            "How could you use multiple polarizers to control light intensity precisely?",
+            "What practical devices use this principle of polarization filtering?"
           ]
         }
       }
