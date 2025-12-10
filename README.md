@@ -22,7 +22,10 @@ A beautifully crafted puzzle game that transforms the invisible geometry of pola
 - **Intuitive Light Physics** - Malus's Law, birefringence, and wave interference made playable
 - **Multiple Camera Views** - First-person, isometric, and top-down perspectives
 - **Polarization Visualization** - Toggle vision modes to see hidden polarization states
-- **Educational Course** - 15 interactive demos across 6 physics units
+- **Educational Course** - 16 interactive demos across 6 physics units with difficulty levels
+- **Course Search** - Global search across all demos, physics content, and applications
+- **Difficulty Levels** - Beginner, Intermediate, and Advanced content modes
+- **Real-World Connections** - SVG illustrations showing everyday applications of polarization
 - **Bilingual Support** - English and Chinese interface
 - **Dark/Light Theme** - Comfortable viewing in any environment
 
@@ -178,12 +181,22 @@ The educational platform covers 6 units of polarization optics:
 
 | Unit | Topic | Demos |
 |------|-------|-------|
-| 0 | Optical Fundamentals | Light Wave, Polarization Intro, Polarization Types |
+| 0 | Optical Fundamentals | Light Wave, Polarization Intro, Polarization Types, Interactive Optical Bench |
 | 1 | Light Polarization | Polarization State, Malus's Law, Birefringence, Waveplate |
 | 2 | Interface Reflection | Fresnel Equations, Brewster's Angle |
-| 3 | Transparent Media | Chromatic Polarization, Optical Rotation |
+| 3 | Transparent Media | Chromatic Polarization, Optical Rotation, Optical Anisotropy |
 | 4 | Turbid Media Scattering | Mie Scattering, Rayleigh Scattering |
 | 5 | Full Polarimetry | Stokes Vectors, Mueller Matrices |
+
+#### Difficulty Levels
+
+The course offers three difficulty levels to accommodate different learners:
+
+| Level | Description | Content |
+|-------|-------------|---------|
+| Beginner (🌱) | Accessible for middle school students | Vivid analogies, no formulas, limited details |
+| Intermediate (📚) | Standard learning mode | Full formulas, moderate detail depth |
+| Advanced (🎓) | Rigorous academic content | All formulas, complete details, advanced concepts |
 
 Visit `/demos` to explore interactive visualizations.
 
@@ -232,7 +245,10 @@ MIT License
 - **直观的光学物理** - 马吕斯定律、双折射和波干涉变得可玩
 - **多视角相机** - 第一人称、等距视角和俯视视角
 - **偏振可视化** - 切换视觉模式查看隐藏的偏振状态
-- **教育课程** - 6个单元共15个交互式演示
+- **教育课程** - 6个单元共16个交互式演示，支持难度分级
+- **课程搜索** - 全局搜索演示、物理内容和应用
+- **难度级别** - 初级、中级、高级三种内容模式
+- **生活实例** - SVG插图展示偏振光的日常应用
 - **双语支持** - 中英文界面
 - **深色/浅色主题** - 在任何环境下都能舒适观看
 
@@ -388,12 +404,22 @@ npm run preview  # 预览生产构建
 
 | 单元 | 主题 | 演示 |
 |------|------|------|
-| 0 | 光学基础 | 光波、偏振简介、偏振类型 |
+| 0 | 光学基础 | 光波、偏振简介、偏振类型、交互式光学平台 |
 | 1 | 光的偏振 | 偏振态、马吕斯定律、双折射、波片 |
 | 2 | 界面反射 | 菲涅尔方程、布儒斯特角 |
-| 3 | 透明介质 | 色偏振、旋光性 |
+| 3 | 透明介质 | 色偏振、旋光性、光学各向异性 |
 | 4 | 浑浊介质散射 | 米氏散射、瑞利散射 |
 | 5 | 全偏振测量 | 斯托克斯矢量、穆勒矩阵 |
+
+#### 难度级别
+
+课程提供三个难度级别，适应不同学习者：
+
+| 级别 | 描述 | 内容 |
+|------|------|------|
+| 初级 (🌱) | 适合初中学生 | 生动类比，无公式，有限细节 |
+| 中级 (📚) | 标准学习模式 | 完整公式，适度深度 |
+| 高级 (🎓) | 严谨学术内容 | 全部公式，完整细节，进阶概念 |
 
 访问 `/demos` 探索交互式可视化演示。
 

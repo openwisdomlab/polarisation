@@ -9,7 +9,7 @@ import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 import { ListItem } from '@/components/demos/DemoControls'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
-import { Home, Gamepad2, BookOpen, Box, BarChart2, Menu, X, ChevronDown, ChevronRight, Lightbulb, HelpCircle } from 'lucide-react'
+import { Home, Gamepad2, BookOpen, Box, BarChart2, Menu, X, ChevronDown, ChevronRight, Lightbulb, HelpCircle, Search, GraduationCap } from 'lucide-react'
 import { useIsMobile } from '@/hooks/useIsMobile'
 
 // Demo components
@@ -21,6 +21,7 @@ import { FresnelDemo } from '@/components/demos/unit2/FresnelDemo'
 import { BrewsterDemo } from '@/components/demos/unit2/BrewsterDemo'
 import { ChromaticDemo } from '@/components/demos/unit3/ChromaticDemo'
 import { OpticalRotationDemo } from '@/components/demos/unit3/OpticalRotationDemo'
+import { AnisotropyDemo } from '@/components/demos/unit3/AnisotropyDemo'
 import { MieScatteringDemo } from '@/components/demos/unit4/MieScatteringDemo'
 import { RayleighScatteringDemo } from '@/components/demos/unit4/RayleighScatteringDemo'
 import { StokesVectorDemo } from '@/components/demos/unit5/StokesVectorDemo'
@@ -28,6 +29,7 @@ import { MuellerMatrixDemo } from '@/components/demos/unit5/MuellerMatrixDemo'
 
 // Optical Basics demos
 import { LightWaveDemo } from '@/components/demos/basics/LightWaveDemo'
+import { LIFE_SCENE_ILLUSTRATIONS } from '@/components/demos/LifeSceneIllustrations'
 import { PolarizationIntroDemo } from '@/components/demos/basics/PolarizationIntroDemo'
 import { PolarizationTypesDemo } from '@/components/demos/basics/PolarizationTypesDemo'
 import { InteractiveOpticalBenchDemo } from '@/components/demos/basics/InteractiveOpticalBenchDemo'
@@ -723,6 +725,39 @@ const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
     diy: getDiy(t, 'demos.opticalRotation'),
     visualType: '2D',
   },
+  anisotropy: {
+    questions: getQuestions(t, 'demos.anisotropy'),
+    lifeScene: getLifeScene(t, 'demos.anisotropy'),
+    physics: {
+      principle: t('demos.anisotropy.physics.principle'),
+      formula: t('demos.anisotropy.physics.formula'),
+      details: [
+        t('demos.anisotropy.physics.details.0'),
+        t('demos.anisotropy.physics.details.1'),
+        t('demos.anisotropy.physics.details.2'),
+      ],
+    },
+    experiment: {
+      title: t('demos.anisotropy.experiment.title'),
+      example: t('demos.anisotropy.experiment.example'),
+      details: [
+        t('demos.anisotropy.experiment.details.0'),
+        t('demos.anisotropy.experiment.details.1'),
+        t('demos.anisotropy.experiment.details.2'),
+      ],
+    },
+    frontier: {
+      title: t('demos.anisotropy.frontier.title'),
+      example: t('demos.anisotropy.frontier.example'),
+      details: [
+        t('demos.anisotropy.frontier.details.0'),
+        t('demos.anisotropy.frontier.details.1'),
+        t('demos.anisotropy.frontier.details.2'),
+      ],
+    },
+    diy: getDiy(t, 'demos.anisotropy'),
+    visualType: '2D',
+  },
   'mie-scattering': {
     questions: getQuestions(t, 'demos.mieScattering'),
     lifeScene: getLifeScene(t, 'demos.mieScattering'),
@@ -871,6 +906,96 @@ interface DemoItem {
   visualType: '2D' | '3D'
 }
 
+// 难度级别类型
+type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced'
+
+// 难度级别配置
+const DIFFICULTY_CONFIG = {
+  beginner: {
+    color: 'green',
+    icon: '🌱',
+    showFormula: false,
+    showAdvancedDetails: false,
+    maxPhysicsDetails: 2,
+    maxFrontierDetails: 1,
+  },
+  intermediate: {
+    color: 'cyan',
+    icon: '📚',
+    showFormula: true,
+    showAdvancedDetails: false,
+    maxPhysicsDetails: 3,
+    maxFrontierDetails: 2,
+  },
+  advanced: {
+    color: 'purple',
+    icon: '🎓',
+    showFormula: true,
+    showAdvancedDetails: true,
+    maxPhysicsDetails: 4,
+    maxFrontierDetails: 3,
+  },
+}
+
+// 难度选择器组件
+function DifficultySelector({
+  value,
+  onChange,
+  theme,
+  t,
+}: {
+  value: DifficultyLevel
+  onChange: (level: DifficultyLevel) => void
+  theme: string
+  t: (key: string) => string
+}) {
+  const levels: DifficultyLevel[] = ['beginner', 'intermediate', 'advanced']
+
+  return (
+    <div className={cn(
+      'flex items-center gap-1 p-1 rounded-lg',
+      theme === 'dark' ? 'bg-slate-800/50' : 'bg-gray-100'
+    )}>
+      {levels.map((level) => {
+        const config = DIFFICULTY_CONFIG[level]
+        const isActive = value === level
+
+        return (
+          <button
+            key={level}
+            onClick={() => onChange(level)}
+            className={cn(
+              'px-2 py-1 rounded-md text-xs font-medium transition-all duration-200 flex items-center gap-1',
+              isActive
+                ? theme === 'dark'
+                  ? `bg-${config.color}-400/20 text-${config.color}-400 border border-${config.color}-400/30`
+                  : `bg-${config.color}-100 text-${config.color}-700 border border-${config.color}-300`
+                : theme === 'dark'
+                  ? 'text-gray-500 hover:text-gray-300 hover:bg-slate-700/50'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200'
+            )}
+            style={isActive ? {
+              backgroundColor: theme === 'dark'
+                ? config.color === 'green' ? 'rgba(74, 222, 128, 0.2)' : config.color === 'cyan' ? 'rgba(34, 211, 238, 0.2)' : 'rgba(167, 139, 250, 0.2)'
+                : config.color === 'green' ? 'rgba(220, 252, 231, 1)' : config.color === 'cyan' ? 'rgba(207, 250, 254, 1)' : 'rgba(243, 232, 255, 1)',
+              color: theme === 'dark'
+                ? config.color === 'green' ? '#4ade80' : config.color === 'cyan' ? '#22d3ee' : '#a78bfa'
+                : config.color === 'green' ? '#15803d' : config.color === 'cyan' ? '#0e7490' : '#7c3aed',
+              borderColor: theme === 'dark'
+                ? config.color === 'green' ? 'rgba(74, 222, 128, 0.3)' : config.color === 'cyan' ? 'rgba(34, 211, 238, 0.3)' : 'rgba(167, 139, 250, 0.3)'
+                : config.color === 'green' ? '#86efac' : config.color === 'cyan' ? '#67e8f9' : '#c4b5fd',
+              borderWidth: '1px',
+            } : {}}
+          >
+            <span>{config.icon}</span>
+            <span className="hidden sm:inline">{t(`course.difficulty.${level}`)}</span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
 const DEMOS: DemoItem[] = [
   // Unit 0 - Optical Basics
   {
@@ -956,6 +1081,14 @@ const DEMOS: DemoItem[] = [
     visualType: '2D',
   },
   // Unit 3
+  {
+    id: 'anisotropy',
+    titleKey: 'demos.anisotropy.title',
+    unit: 3,
+    component: AnisotropyDemo,
+    descriptionKey: 'demos.anisotropy.description',
+    visualType: '2D',
+  },
   {
     id: 'chromatic',
     titleKey: 'demos.chromatic.title',
@@ -1166,6 +1299,64 @@ export function DemosPage() {
     frontier: false,
     diy: false,
   })
+  const [searchQuery, setSearchQuery] = useState('')
+  const [difficultyLevel, setDifficultyLevel] = useState<DifficultyLevel>('intermediate')
+
+  // Get difficulty config
+  const difficultyConfig = DIFFICULTY_CONFIG[difficultyLevel]
+
+  // Search function to filter demos based on query
+  const getFilteredDemos = () => {
+    if (!searchQuery.trim()) return DEMOS
+
+    const query = searchQuery.toLowerCase().trim()
+    const demoInfoMap = getDemoInfo(t)
+
+    return DEMOS.filter(demo => {
+      // Search in title
+      const title = t(demo.titleKey).toLowerCase()
+      if (title.includes(query)) return true
+
+      // Search in description
+      const description = t(demo.descriptionKey).toLowerCase()
+      if (description.includes(query)) return true
+
+      // Search in demo info content
+      const info = demoInfoMap[demo.id]
+      if (info) {
+        // Physics principle and formula
+        if (info.physics.principle.toLowerCase().includes(query)) return true
+        if (info.physics.formula?.toLowerCase().includes(query)) return true
+        if (info.physics.details.some(d => d.toLowerCase().includes(query))) return true
+
+        // Life scene
+        if (info.lifeScene?.title.toLowerCase().includes(query)) return true
+        if (info.lifeScene?.hook.toLowerCase().includes(query)) return true
+        if (info.lifeScene?.facts.some(f => f.toLowerCase().includes(query))) return true
+
+        // Experiment
+        if (info.experiment.title.toLowerCase().includes(query)) return true
+        if (info.experiment.example.toLowerCase().includes(query)) return true
+
+        // Frontier
+        if (info.frontier.title.toLowerCase().includes(query)) return true
+        if (info.frontier.example.toLowerCase().includes(query)) return true
+
+        // DIY
+        if (info.diy?.title.toLowerCase().includes(query)) return true
+        if (info.diy?.materials.some(m => m.toLowerCase().includes(query))) return true
+
+        // Questions
+        if (info.questions?.leading?.toLowerCase().includes(query)) return true
+        if (info.questions?.guided.some(q => q.toLowerCase().includes(query))) return true
+        if (info.questions?.openEnded.some(q => q.toLowerCase().includes(query))) return true
+      }
+
+      return false
+    })
+  }
+
+  const filteredDemos = getFilteredDemos()
 
   // Reset card states when switching demos - cards should be collapsed on first visit to each demo
   const [visitedDemos, setVisitedDemos] = useState<Set<string>>(new Set())
@@ -1300,10 +1491,62 @@ export function DemosPage() {
               : 'bg-white/95 border-cyan-200'
           )}
         >
+          {/* Search Input */}
+          <div className={cn(
+            'p-3 border-b',
+            theme === 'dark' ? 'border-slate-800' : 'border-gray-200'
+          )}>
+            <div className="relative">
+              <Search className={cn(
+                'absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4',
+                theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+              )} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t('course.search.placeholder')}
+                className={cn(
+                  'w-full pl-9 pr-8 py-2 text-sm rounded-lg border transition-all duration-200',
+                  'focus:outline-none focus:ring-2',
+                  theme === 'dark'
+                    ? 'bg-slate-800/50 border-slate-700 text-white placeholder-gray-500 focus:border-cyan-400/50 focus:ring-cyan-400/20'
+                    : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400 focus:border-cyan-400 focus:ring-cyan-400/20'
+                )}
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className={cn(
+                    'absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors',
+                    theme === 'dark'
+                      ? 'text-gray-500 hover:text-gray-300 hover:bg-slate-700'
+                      : 'text-gray-400 hover:text-gray-600 hover:bg-gray-200'
+                  )}
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+            {searchQuery && (
+              <p className={cn(
+                'text-xs mt-2',
+                theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
+              )}>
+                {t('course.search.results', { count: filteredDemos.length })}
+              </p>
+            )}
+          </div>
+
           <div className="p-4">
             {UNITS.map((unit) => {
-              const unitDemos = DEMOS.filter((d) => d.unit === unit.num)
+              const unitDemos = searchQuery
+                ? filteredDemos.filter((d) => d.unit === unit.num)
+                : DEMOS.filter((d) => d.unit === unit.num)
               const isExpanded = !isCompact || expandedUnit === unit.num
+
+              // Hide units with no matching demos when searching
+              if (searchQuery && unitDemos.length === 0) return null
 
               return (
                 <div key={unit.num} className="mb-3">
@@ -1466,9 +1709,26 @@ export function DemosPage() {
                   {t(currentDemo?.titleKey || '')}
                 </h1>
               </div>
-              <p className={theme === 'dark' ? 'text-gray-400 text-sm' : 'text-gray-700 text-sm'}>
-                {t(currentDemo?.descriptionKey || '')}
-              </p>
+              <div className="flex items-center justify-between gap-4">
+                <p className={cn(
+                  'flex-1',
+                  theme === 'dark' ? 'text-gray-400 text-sm' : 'text-gray-700 text-sm'
+                )}>
+                  {t(currentDemo?.descriptionKey || '')}
+                </p>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <GraduationCap className={cn(
+                    'w-4 h-4',
+                    theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                  )} />
+                  <DifficultySelector
+                    value={difficultyLevel}
+                    onChange={setDifficultyLevel}
+                    theme={theme}
+                    t={t}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Thinking Questions Section - Before Demo */}
@@ -1621,30 +1881,46 @@ export function DemosPage() {
                     onToggle={() => toggleCard('lifeScene')}
                   >
                     <div className="space-y-4">
-                      {/* Image placeholder */}
-                      <div
-                        className={cn(
-                          'rounded-lg p-4 border-2 border-dashed flex items-center justify-center min-h-[120px]',
-                          theme === 'dark'
-                            ? 'bg-orange-400/5 border-orange-400/30'
-                            : 'bg-orange-50 border-orange-300'
-                        )}
-                      >
-                        <div className="text-center">
-                          <div className={cn(
-                            'text-4xl mb-2',
-                            theme === 'dark' ? 'text-orange-400/50' : 'text-orange-400'
-                          )}>
-                            🖼️
-                          </div>
-                          <p className={cn(
-                            'text-xs italic',
-                            theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-                          )}>
-                            {demoInfo.lifeScene.imageAlt}
-                          </p>
+                      {/* Illustration or placeholder */}
+                      {LIFE_SCENE_ILLUSTRATIONS[activeDemo] ? (
+                        <div
+                          className={cn(
+                            'rounded-lg p-3 border overflow-hidden',
+                            theme === 'dark'
+                              ? 'bg-slate-900/50 border-orange-400/30'
+                              : 'bg-orange-50/50 border-orange-200'
+                          )}
+                        >
+                          {(() => {
+                            const IllustrationComponent = LIFE_SCENE_ILLUSTRATIONS[activeDemo]
+                            return <IllustrationComponent />
+                          })()}
                         </div>
-                      </div>
+                      ) : (
+                        <div
+                          className={cn(
+                            'rounded-lg p-4 border-2 border-dashed flex items-center justify-center min-h-[120px]',
+                            theme === 'dark'
+                              ? 'bg-orange-400/5 border-orange-400/30'
+                              : 'bg-orange-50 border-orange-300'
+                          )}
+                        >
+                          <div className="text-center">
+                            <div className={cn(
+                              'text-4xl mb-2',
+                              theme === 'dark' ? 'text-orange-400/50' : 'text-orange-400'
+                            )}>
+                              🖼️
+                            </div>
+                            <p className={cn(
+                              'text-xs italic',
+                              theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
+                            )}>
+                              {demoInfo.lifeScene.imageAlt}
+                            </p>
+                          </div>
+                        </div>
+                      )}
 
                       {/* Hook question/statement */}
                       <p className={cn(
@@ -1707,7 +1983,8 @@ export function DemosPage() {
                     >
                       {demoInfo.physics.principle}
                     </p>
-                    {demoInfo.physics.formula && (
+                    {/* Formula - shown based on difficulty */}
+                    {demoInfo.physics.formula && difficultyConfig.showFormula && (
                       <div
                         className={cn(
                           'font-mono px-3 py-2 rounded-lg text-center text-sm border',
@@ -1719,13 +1996,23 @@ export function DemosPage() {
                         {demoInfo.physics.formula}
                       </div>
                     )}
+                    {/* Details - limited based on difficulty */}
                     <div className="space-y-2">
-                      {demoInfo.physics.details.map((detail, i) => (
+                      {demoInfo.physics.details.slice(0, difficultyConfig.maxPhysicsDetails).map((detail, i) => (
                         <ListItem key={i} icon="•">
                           {detail}
                         </ListItem>
                       ))}
                     </div>
+                    {/* Beginner mode hint */}
+                    {difficultyLevel === 'beginner' && demoInfo.physics.formula && (
+                      <p className={cn(
+                        'text-xs italic mt-2',
+                        theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                      )}>
+                        {t('course.difficulty.formulaHidden')}
+                      </p>
+                    )}
                   </div>
                 </CollapsibleCard>
 
@@ -1815,7 +2102,7 @@ export function DemosPage() {
                       </p>
                     </div>
                     <div className="space-y-2">
-                      {demoInfo.frontier.details.map((detail, i) => (
+                      {demoInfo.frontier.details.slice(0, difficultyConfig.maxFrontierDetails).map((detail, i) => (
                         <ListItem
                           key={i}
                           icon={
