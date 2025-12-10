@@ -7,9 +7,9 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
-import { InfoCard, ListItem } from '@/components/demos/DemoControls'
+import { ListItem } from '@/components/demos/DemoControls'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
-import { Home, Gamepad2, BookOpen, Box, BarChart2, Menu, X, ChevronDown } from 'lucide-react'
+import { Home, Gamepad2, BookOpen, Box, BarChart2, Menu, X, ChevronDown, ChevronRight, Lightbulb, HelpCircle } from 'lucide-react'
 import { useIsMobile } from '@/hooks/useIsMobile'
 
 // Demo components
@@ -209,7 +209,13 @@ function LightWaveDiagram() {
 }
 
 // Demo info interface
+interface DemoQuestions {
+  guided: string[]
+  openEnded: string[]
+}
+
 interface DemoInfo {
+  questions?: DemoQuestions
   physics: {
     principle: string
     formula?: string
@@ -229,9 +235,30 @@ interface DemoInfo {
   visualType: '2D' | '3D' // Indicates whether demo uses 2D or 3D visualization
 }
 
+// Helper to get questions array from translations
+const getQuestions = (t: (key: string) => string, basePath: string): DemoQuestions | undefined => {
+  try {
+    const guided = [
+      t(`${basePath}.questions.guided.0`),
+      t(`${basePath}.questions.guided.1`),
+    ].filter(q => q && !q.includes('.questions.'))
+    const openEnded = [
+      t(`${basePath}.questions.openEnded.0`),
+      t(`${basePath}.questions.openEnded.1`),
+    ].filter(q => q && !q.includes('.questions.'))
+    if (guided.length > 0 || openEnded.length > 0) {
+      return { guided, openEnded }
+    }
+  } catch {
+    return undefined
+  }
+  return undefined
+}
+
 // Demo info data - using i18n keys
 const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
   'light-wave': {
+    questions: getQuestions(t, 'basics.demos.lightWave'),
     physics: {
       principle: t('basics.demos.lightWave.physics.principle'),
       formula: t('basics.demos.lightWave.physics.formula'),
@@ -255,6 +282,7 @@ const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
     visualType: '2D',
   },
   'polarization-intro': {
+    questions: getQuestions(t, 'basics.demos.polarizationIntro'),
     physics: {
       principle: t('basics.demos.polarizationIntro.physics.principle'),
       details: [
@@ -276,6 +304,7 @@ const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
     visualType: '2D',
   },
   'polarization-types': {
+    questions: getQuestions(t, 'basics.demos.polarizationTypes'),
     physics: {
       principle: t('basics.demos.polarizationTypes.physics.principle'),
       details: [
@@ -298,6 +327,7 @@ const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
     visualType: '2D',
   },
   'polarization-state': {
+    questions: getQuestions(t, 'demos.polarizationState'),
     physics: {
       principle: t('demos.polarizationState.physics.principle'),
       formula: t('demos.polarizationState.physics.formula'),
@@ -329,6 +359,7 @@ const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
     visualType: '3D',
   },
   malus: {
+    questions: getQuestions(t, 'demos.malus'),
     physics: {
       principle: t('demos.malus.physics.principle'),
       formula: t('demos.malus.physics.formula'),
@@ -360,6 +391,7 @@ const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
     visualType: '2D',
   },
   birefringence: {
+    questions: getQuestions(t, 'demos.birefringence'),
     physics: {
       principle: t('demos.birefringence.physics.principle'),
       formula: t('demos.birefringence.physics.formula'),
@@ -391,6 +423,7 @@ const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
     visualType: '3D',
   },
   waveplate: {
+    questions: getQuestions(t, 'demos.waveplate'),
     physics: {
       principle: t('demos.waveplate.physics.principle'),
       formula: t('demos.waveplate.physics.formula'),
@@ -422,6 +455,7 @@ const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
     visualType: '3D',
   },
   fresnel: {
+    questions: getQuestions(t, 'demos.fresnel'),
     physics: {
       principle: t('demos.fresnel.physics.principle'),
       formula: t('demos.fresnel.physics.formula'),
@@ -453,6 +487,7 @@ const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
     visualType: '2D',
   },
   brewster: {
+    questions: getQuestions(t, 'demos.brewster'),
     physics: {
       principle: t('demos.brewster.physics.principle'),
       formula: t('demos.brewster.physics.formula'),
@@ -484,6 +519,7 @@ const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
     visualType: '2D',
   },
   chromatic: {
+    questions: getQuestions(t, 'demos.chromatic'),
     physics: {
       principle: t('demos.chromatic.physics.principle'),
       formula: t('demos.chromatic.physics.formula'),
@@ -514,6 +550,7 @@ const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
     visualType: '2D',
   },
   'optical-rotation': {
+    questions: getQuestions(t, 'demos.opticalRotation'),
     physics: {
       principle: t('demos.opticalRotation.physics.principle'),
       formula: t('demos.opticalRotation.physics.formula'),
@@ -544,6 +581,7 @@ const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
     visualType: '2D',
   },
   'mie-scattering': {
+    questions: getQuestions(t, 'demos.mieScattering'),
     physics: {
       principle: t('demos.mieScattering.physics.principle'),
       formula: t('demos.mieScattering.physics.formula'),
@@ -575,6 +613,7 @@ const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
     visualType: '2D',
   },
   rayleigh: {
+    questions: getQuestions(t, 'demos.rayleigh'),
     physics: {
       principle: t('demos.rayleigh.physics.principle'),
       formula: t('demos.rayleigh.physics.formula'),
@@ -606,6 +645,7 @@ const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
     visualType: '2D',
   },
   stokes: {
+    questions: getQuestions(t, 'demos.stokes'),
     physics: {
       principle: t('demos.stokes.physics.principle'),
       formula: t('demos.stokes.physics.formula'),
@@ -638,6 +678,7 @@ const getDemoInfo = (t: (key: string) => string): Record<string, DemoInfo> => ({
     visualType: '3D',
   },
   mueller: {
+    questions: getQuestions(t, 'demos.mueller'),
     physics: {
       principle: t('demos.mueller.physics.principle'),
       formula: t('demos.mueller.physics.formula'),
@@ -860,6 +901,80 @@ function VisualTypeBadge({ type }: { type: '2D' | '3D' }) {
   )
 }
 
+// Collapsible card component
+function CollapsibleCard({
+  title,
+  icon,
+  color,
+  isExpanded,
+  onToggle,
+  children,
+}: {
+  title: string
+  icon: ReactNode
+  color: string
+  isExpanded: boolean
+  onToggle: () => void
+  children: ReactNode
+}) {
+  const { theme } = useTheme()
+
+  const colorClasses = {
+    cyan: {
+      header: theme === 'dark' ? 'bg-cyan-400/10 border-cyan-400/30 hover:bg-cyan-400/15' : 'bg-cyan-50 border-cyan-200 hover:bg-cyan-100',
+      icon: theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600',
+    },
+    green: {
+      header: theme === 'dark' ? 'bg-green-400/10 border-green-400/30 hover:bg-green-400/15' : 'bg-green-50 border-green-200 hover:bg-green-100',
+      icon: theme === 'dark' ? 'text-green-400' : 'text-green-600',
+    },
+    purple: {
+      header: theme === 'dark' ? 'bg-purple-400/10 border-purple-400/30 hover:bg-purple-400/15' : 'bg-purple-50 border-purple-200 hover:bg-purple-100',
+      icon: theme === 'dark' ? 'text-purple-400' : 'text-purple-600',
+    },
+  }
+
+  const colors = colorClasses[color as keyof typeof colorClasses] || colorClasses.cyan
+
+  return (
+    <div className={cn(
+      'rounded-xl border overflow-hidden transition-all duration-300',
+      theme === 'dark' ? 'bg-slate-900/50 border-slate-700/50' : 'bg-white border-gray-200'
+    )}>
+      <button
+        onClick={onToggle}
+        className={cn(
+          'w-full flex items-center justify-between px-4 py-3 border-b transition-colors cursor-pointer',
+          colors.header
+        )}
+      >
+        <div className="flex items-center gap-2">
+          <span className={colors.icon}>{icon}</span>
+          <span className={cn(
+            'font-semibold text-sm',
+            theme === 'dark' ? 'text-white' : 'text-gray-800'
+          )}>
+            {title}
+          </span>
+        </div>
+        <ChevronRight className={cn(
+          'w-4 h-4 transition-transform duration-300',
+          isExpanded && 'rotate-90',
+          theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+        )} />
+      </button>
+      <div className={cn(
+        'transition-all duration-300 overflow-hidden',
+        isExpanded ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'
+      )}>
+        <div className="p-4">
+          {children}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function DemosPage() {
   const { t } = useTranslation()
   const { theme } = useTheme()
@@ -867,6 +982,15 @@ export function DemosPage() {
   const [activeDemo, setActiveDemo] = useState<string>('light-wave')
   const [showMobileSidebar, setShowMobileSidebar] = useState(false)
   const [expandedUnit, setExpandedUnit] = useState<number | null>(0)
+  const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({
+    physics: false,
+    experiment: false,
+    frontier: false,
+  })
+
+  const toggleCard = (card: string) => {
+    setExpandedCards(prev => ({ ...prev, [card]: !prev[card] }))
+  }
 
   const isCompact = isMobile || isTablet
   const currentDemo = DEMOS.find((d) => d.id === activeDemo)
@@ -1148,6 +1272,100 @@ export function DemosPage() {
               </p>
             </div>
 
+            {/* Thinking Questions Section - Before Demo */}
+            {demoInfo?.questions && (demoInfo.questions.guided.length > 0 || demoInfo.questions.openEnded.length > 0) && (
+              <div
+                className={cn(
+                  'mb-5 rounded-xl border p-4',
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-amber-400/5 to-orange-400/5 border-amber-400/20'
+                    : 'bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200'
+                )}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <Lightbulb className={cn(
+                    'w-5 h-5',
+                    theme === 'dark' ? 'text-amber-400' : 'text-amber-600'
+                  )} />
+                  <h3 className={cn(
+                    'text-lg font-bold',
+                    theme === 'dark' ? 'text-amber-400' : 'text-amber-700'
+                  )}>
+                    {t('course.questions.title')}
+                  </h3>
+                </div>
+                <div className={cn(
+                  'grid gap-4',
+                  isCompact ? 'grid-cols-1' : 'grid-cols-2'
+                )}>
+                  {/* Guided Questions */}
+                  {demoInfo.questions.guided.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <HelpCircle className={cn(
+                          'w-4 h-4',
+                          theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'
+                        )} />
+                        <span className={cn(
+                          'text-sm font-semibold',
+                          theme === 'dark' ? 'text-cyan-400' : 'text-cyan-700'
+                        )}>
+                          {t('course.questions.guided')}
+                        </span>
+                      </div>
+                      <ul className="space-y-2">
+                        {demoInfo.questions.guided.map((q, i) => (
+                          <li
+                            key={i}
+                            className={cn(
+                              'text-sm pl-3 border-l-2',
+                              theme === 'dark'
+                                ? 'text-gray-300 border-cyan-400/40'
+                                : 'text-gray-700 border-cyan-400'
+                            )}
+                          >
+                            {q}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {/* Open-ended Questions */}
+                  {demoInfo.questions.openEnded.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Lightbulb className={cn(
+                          'w-4 h-4',
+                          theme === 'dark' ? 'text-purple-400' : 'text-purple-600'
+                        )} />
+                        <span className={cn(
+                          'text-sm font-semibold',
+                          theme === 'dark' ? 'text-purple-400' : 'text-purple-700'
+                        )}>
+                          {t('course.questions.openEnded')}
+                        </span>
+                      </div>
+                      <ul className="space-y-2">
+                        {demoInfo.questions.openEnded.map((q, i) => (
+                          <li
+                            key={i}
+                            className={cn(
+                              'text-sm pl-3 border-l-2',
+                              theme === 'dark'
+                                ? 'text-gray-300 border-purple-400/40'
+                                : 'text-gray-700 border-purple-400'
+                            )}
+                          >
+                            {q}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Demo area */}
             <div
               className={cn(
@@ -1164,14 +1382,20 @@ export function DemosPage() {
               </div>
             </div>
 
-            {/* Info cards - responsive grid layout */}
+            {/* Collapsible Info cards - responsive grid layout */}
             {demoInfo && (
               <div className={cn(
-                "grid gap-4",
-                isCompact ? "mt-4 grid-cols-1" : "mt-6 grid-cols-1 lg:grid-cols-3 gap-5"
+                "grid gap-3",
+                isCompact ? "mt-4 grid-cols-1" : "mt-5 grid-cols-1 lg:grid-cols-3 gap-4"
               )}>
                 {/* Physics principle */}
-                <InfoCard title={t('course.cards.physics')} icon={<PhysicsIcon />} color="cyan">
+                <CollapsibleCard
+                  title={t('course.cards.physics')}
+                  icon={<PhysicsIcon />}
+                  color="cyan"
+                  isExpanded={expandedCards.physics}
+                  onToggle={() => toggleCard('physics')}
+                >
                   <div className="space-y-4">
                     {demoInfo.diagram && (
                       <div
@@ -1213,10 +1437,16 @@ export function DemosPage() {
                       ))}
                     </div>
                   </div>
-                </InfoCard>
+                </CollapsibleCard>
 
                 {/* Experimental application */}
-                <InfoCard title={t('course.cards.experiment')} icon={<ExperimentIcon />} color="green">
+                <CollapsibleCard
+                  title={t('course.cards.experiment')}
+                  icon={<ExperimentIcon />}
+                  color="green"
+                  isExpanded={expandedCards.experiment}
+                  onToggle={() => toggleCard('experiment')}
+                >
                   <div className="space-y-4">
                     <div
                       className={cn(
@@ -1258,10 +1488,16 @@ export function DemosPage() {
                       ))}
                     </div>
                   </div>
-                </InfoCard>
+                </CollapsibleCard>
 
                 {/* Frontier application */}
-                <InfoCard title={t('course.cards.frontier')} icon={<FrontierIcon />} color="purple">
+                <CollapsibleCard
+                  title={t('course.cards.frontier')}
+                  icon={<FrontierIcon />}
+                  color="purple"
+                  isExpanded={expandedCards.frontier}
+                  onToggle={() => toggleCard('frontier')}
+                >
                   <div className="space-y-4">
                     <div
                       className={cn(
@@ -1303,7 +1539,7 @@ export function DemosPage() {
                       ))}
                     </div>
                   </div>
-                </InfoCard>
+                </CollapsibleCard>
               </div>
             )}
           </div>
