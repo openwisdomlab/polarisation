@@ -548,11 +548,23 @@ const getDemoInfo = (t: (key: string) => string, difficultyLevel?: DifficultyLev
     lifeScene: getLifeScene(t, 'demos.polarizationState', difficultyLevel),
     physics: {
       principle: t('demos.polarizationState.physics.principle'),
+      principle_beginner: t('demos.polarizationState.physics.principle_beginner'),
+      principle_advanced: t('demos.polarizationState.physics.principle_advanced'),
       formula: t('demos.polarizationState.physics.formula'),
       details: [
         t('demos.polarizationState.physics.details.0'),
         t('demos.polarizationState.physics.details.1'),
         t('demos.polarizationState.physics.details.2'),
+      ],
+      details_beginner: [
+        t('demos.polarizationState.physics.details_beginner.0'),
+        t('demos.polarizationState.physics.details_beginner.1'),
+        t('demos.polarizationState.physics.details_beginner.2'),
+      ],
+      details_advanced: [
+        t('demos.polarizationState.physics.details_advanced.0'),
+        t('demos.polarizationState.physics.details_advanced.1'),
+        t('demos.polarizationState.physics.details_advanced.2'),
       ],
     },
     experiment: {
@@ -582,11 +594,23 @@ const getDemoInfo = (t: (key: string) => string, difficultyLevel?: DifficultyLev
     lifeScene: getLifeScene(t, 'demos.malus', difficultyLevel),
     physics: {
       principle: t('demos.malus.physics.principle'),
+      principle_beginner: t('demos.malus.physics.principle_beginner'),
+      principle_advanced: t('demos.malus.physics.principle_advanced'),
       formula: t('demos.malus.physics.formula'),
       details: [
         t('demos.malus.physics.details.0'),
         t('demos.malus.physics.details.1'),
         t('demos.malus.physics.details.2'),
+      ],
+      details_beginner: [
+        t('demos.malus.physics.details_beginner.0'),
+        t('demos.malus.physics.details_beginner.1'),
+        t('demos.malus.physics.details_beginner.2'),
+      ],
+      details_advanced: [
+        t('demos.malus.physics.details_advanced.0'),
+        t('demos.malus.physics.details_advanced.1'),
+        t('demos.malus.physics.details_advanced.2'),
       ],
     },
     experiment: {
@@ -616,11 +640,23 @@ const getDemoInfo = (t: (key: string) => string, difficultyLevel?: DifficultyLev
     lifeScene: getLifeScene(t, 'demos.birefringence', difficultyLevel),
     physics: {
       principle: t('demos.birefringence.physics.principle'),
+      principle_beginner: t('demos.birefringence.physics.principle_beginner'),
+      principle_advanced: t('demos.birefringence.physics.principle_advanced'),
       formula: t('demos.birefringence.physics.formula'),
       details: [
         t('demos.birefringence.physics.details.0'),
         t('demos.birefringence.physics.details.1'),
         t('demos.birefringence.physics.details.2'),
+      ],
+      details_beginner: [
+        t('demos.birefringence.physics.details_beginner.0'),
+        t('demos.birefringence.physics.details_beginner.1'),
+        t('demos.birefringence.physics.details_beginner.2'),
+      ],
+      details_advanced: [
+        t('demos.birefringence.physics.details_advanced.0'),
+        t('demos.birefringence.physics.details_advanced.1'),
+        t('demos.birefringence.physics.details_advanced.2'),
       ],
     },
     experiment: {
@@ -650,11 +686,23 @@ const getDemoInfo = (t: (key: string) => string, difficultyLevel?: DifficultyLev
     lifeScene: getLifeScene(t, 'demos.waveplate', difficultyLevel),
     physics: {
       principle: t('demos.waveplate.physics.principle'),
+      principle_beginner: t('demos.waveplate.physics.principle_beginner'),
+      principle_advanced: t('demos.waveplate.physics.principle_advanced'),
       formula: t('demos.waveplate.physics.formula'),
       details: [
         t('demos.waveplate.physics.details.0'),
         t('demos.waveplate.physics.details.1'),
         t('demos.waveplate.physics.details.2'),
+      ],
+      details_beginner: [
+        t('demos.waveplate.physics.details_beginner.0'),
+        t('demos.waveplate.physics.details_beginner.1'),
+        t('demos.waveplate.physics.details_beginner.2'),
+      ],
+      details_advanced: [
+        t('demos.waveplate.physics.details_advanced.0'),
+        t('demos.waveplate.physics.details_advanced.1'),
+        t('demos.waveplate.physics.details_advanced.2'),
       ],
     },
     experiment: {
@@ -684,11 +732,23 @@ const getDemoInfo = (t: (key: string) => string, difficultyLevel?: DifficultyLev
     lifeScene: getLifeScene(t, 'demos.fresnel', difficultyLevel),
     physics: {
       principle: t('demos.fresnel.physics.principle'),
+      principle_beginner: t('demos.fresnel.physics.principle_beginner'),
+      principle_advanced: t('demos.fresnel.physics.principle_advanced'),
       formula: t('demos.fresnel.physics.formula'),
       details: [
         t('demos.fresnel.physics.details.0'),
         t('demos.fresnel.physics.details.1'),
         t('demos.fresnel.physics.details.2'),
+      ],
+      details_beginner: [
+        t('demos.fresnel.physics.details_beginner.0'),
+        t('demos.fresnel.physics.details_beginner.1'),
+        t('demos.fresnel.physics.details_beginner.2'),
+      ],
+      details_advanced: [
+        t('demos.fresnel.physics.details_advanced.0'),
+        t('demos.fresnel.physics.details_advanced.1'),
+        t('demos.fresnel.physics.details_advanced.2'),
       ],
     },
     experiment: {
@@ -718,11 +778,23 @@ const getDemoInfo = (t: (key: string) => string, difficultyLevel?: DifficultyLev
     lifeScene: getLifeScene(t, 'demos.brewster', difficultyLevel),
     physics: {
       principle: t('demos.brewster.physics.principle'),
+      principle_beginner: t('demos.brewster.physics.principle_beginner'),
+      principle_advanced: t('demos.brewster.physics.principle_advanced'),
       formula: t('demos.brewster.physics.formula'),
       details: [
         t('demos.brewster.physics.details.0'),
         t('demos.brewster.physics.details.1'),
         t('demos.brewster.physics.details.2'),
+      ],
+      details_beginner: [
+        t('demos.brewster.physics.details_beginner.0'),
+        t('demos.brewster.physics.details_beginner.1'),
+        t('demos.brewster.physics.details_beginner.2'),
+      ],
+      details_advanced: [
+        t('demos.brewster.physics.details_advanced.0'),
+        t('demos.brewster.physics.details_advanced.1'),
+        t('demos.brewster.physics.details_advanced.2'),
       ],
     },
     experiment: {
@@ -752,11 +824,23 @@ const getDemoInfo = (t: (key: string) => string, difficultyLevel?: DifficultyLev
     lifeScene: getLifeScene(t, 'demos.chromatic', difficultyLevel),
     physics: {
       principle: t('demos.chromatic.physics.principle'),
+      principle_beginner: t('demos.chromatic.physics.principle_beginner'),
+      principle_advanced: t('demos.chromatic.physics.principle_advanced'),
       formula: t('demos.chromatic.physics.formula'),
       details: [
         t('demos.chromatic.physics.details.0'),
         t('demos.chromatic.physics.details.1'),
         t('demos.chromatic.physics.details.2'),
+      ],
+      details_beginner: [
+        t('demos.chromatic.physics.details_beginner.0'),
+        t('demos.chromatic.physics.details_beginner.1'),
+        t('demos.chromatic.physics.details_beginner.2'),
+      ],
+      details_advanced: [
+        t('demos.chromatic.physics.details_advanced.0'),
+        t('demos.chromatic.physics.details_advanced.1'),
+        t('demos.chromatic.physics.details_advanced.2'),
       ],
     },
     experiment: {
@@ -785,11 +869,23 @@ const getDemoInfo = (t: (key: string) => string, difficultyLevel?: DifficultyLev
     lifeScene: getLifeScene(t, 'demos.opticalRotation', difficultyLevel),
     physics: {
       principle: t('demos.opticalRotation.physics.principle'),
+      principle_beginner: t('demos.opticalRotation.physics.principle_beginner'),
+      principle_advanced: t('demos.opticalRotation.physics.principle_advanced'),
       formula: t('demos.opticalRotation.physics.formula'),
       details: [
         t('demos.opticalRotation.physics.details.0'),
         t('demos.opticalRotation.physics.details.1'),
         t('demos.opticalRotation.physics.details.2'),
+      ],
+      details_beginner: [
+        t('demos.opticalRotation.physics.details_beginner.0'),
+        t('demos.opticalRotation.physics.details_beginner.1'),
+        t('demos.opticalRotation.physics.details_beginner.2'),
+      ],
+      details_advanced: [
+        t('demos.opticalRotation.physics.details_advanced.0'),
+        t('demos.opticalRotation.physics.details_advanced.1'),
+        t('demos.opticalRotation.physics.details_advanced.2'),
       ],
     },
     experiment: {
@@ -818,11 +914,23 @@ const getDemoInfo = (t: (key: string) => string, difficultyLevel?: DifficultyLev
     lifeScene: getLifeScene(t, 'demos.anisotropy', difficultyLevel),
     physics: {
       principle: t('demos.anisotropy.physics.principle'),
+      principle_beginner: t('demos.anisotropy.physics.principle_beginner'),
+      principle_advanced: t('demos.anisotropy.physics.principle_advanced'),
       formula: t('demos.anisotropy.physics.formula'),
       details: [
         t('demos.anisotropy.physics.details.0'),
         t('demos.anisotropy.physics.details.1'),
         t('demos.anisotropy.physics.details.2'),
+      ],
+      details_beginner: [
+        t('demos.anisotropy.physics.details_beginner.0'),
+        t('demos.anisotropy.physics.details_beginner.1'),
+        t('demos.anisotropy.physics.details_beginner.2'),
+      ],
+      details_advanced: [
+        t('demos.anisotropy.physics.details_advanced.0'),
+        t('demos.anisotropy.physics.details_advanced.1'),
+        t('demos.anisotropy.physics.details_advanced.2'),
       ],
     },
     experiment: {
@@ -851,11 +959,23 @@ const getDemoInfo = (t: (key: string) => string, difficultyLevel?: DifficultyLev
     lifeScene: getLifeScene(t, 'demos.mieScattering', difficultyLevel),
     physics: {
       principle: t('demos.mieScattering.physics.principle'),
+      principle_beginner: t('demos.mieScattering.physics.principle_beginner'),
+      principle_advanced: t('demos.mieScattering.physics.principle_advanced'),
       formula: t('demos.mieScattering.physics.formula'),
       details: [
         t('demos.mieScattering.physics.details.0'),
         t('demos.mieScattering.physics.details.1'),
         t('demos.mieScattering.physics.details.2'),
+      ],
+      details_beginner: [
+        t('demos.mieScattering.physics.details_beginner.0'),
+        t('demos.mieScattering.physics.details_beginner.1'),
+        t('demos.mieScattering.physics.details_beginner.2'),
+      ],
+      details_advanced: [
+        t('demos.mieScattering.physics.details_advanced.0'),
+        t('demos.mieScattering.physics.details_advanced.1'),
+        t('demos.mieScattering.physics.details_advanced.2'),
       ],
     },
     experiment: {
@@ -885,11 +1005,23 @@ const getDemoInfo = (t: (key: string) => string, difficultyLevel?: DifficultyLev
     lifeScene: getLifeScene(t, 'demos.rayleigh', difficultyLevel),
     physics: {
       principle: t('demos.rayleigh.physics.principle'),
+      principle_beginner: t('demos.rayleigh.physics.principle_beginner'),
+      principle_advanced: t('demos.rayleigh.physics.principle_advanced'),
       formula: t('demos.rayleigh.physics.formula'),
       details: [
         t('demos.rayleigh.physics.details.0'),
         t('demos.rayleigh.physics.details.1'),
         t('demos.rayleigh.physics.details.2'),
+      ],
+      details_beginner: [
+        t('demos.rayleigh.physics.details_beginner.0'),
+        t('demos.rayleigh.physics.details_beginner.1'),
+        t('demos.rayleigh.physics.details_beginner.2'),
+      ],
+      details_advanced: [
+        t('demos.rayleigh.physics.details_advanced.0'),
+        t('demos.rayleigh.physics.details_advanced.1'),
+        t('demos.rayleigh.physics.details_advanced.2'),
       ],
     },
     experiment: {
@@ -919,12 +1051,24 @@ const getDemoInfo = (t: (key: string) => string, difficultyLevel?: DifficultyLev
     lifeScene: getLifeScene(t, 'demos.stokes', difficultyLevel),
     physics: {
       principle: t('demos.stokes.physics.principle'),
+      principle_beginner: t('demos.stokes.physics.principle_beginner'),
+      principle_advanced: t('demos.stokes.physics.principle_advanced'),
       formula: t('demos.stokes.physics.formula'),
       details: [
         t('demos.stokes.physics.details.0'),
         t('demos.stokes.physics.details.1'),
         t('demos.stokes.physics.details.2'),
         t('demos.stokes.physics.details.3'),
+      ],
+      details_beginner: [
+        t('demos.stokes.physics.details_beginner.0'),
+        t('demos.stokes.physics.details_beginner.1'),
+        t('demos.stokes.physics.details_beginner.2'),
+      ],
+      details_advanced: [
+        t('demos.stokes.physics.details_advanced.0'),
+        t('demos.stokes.physics.details_advanced.1'),
+        t('demos.stokes.physics.details_advanced.2'),
       ],
     },
     experiment: {
@@ -954,11 +1098,23 @@ const getDemoInfo = (t: (key: string) => string, difficultyLevel?: DifficultyLev
     lifeScene: getLifeScene(t, 'demos.mueller', difficultyLevel),
     physics: {
       principle: t('demos.mueller.physics.principle'),
+      principle_beginner: t('demos.mueller.physics.principle_beginner'),
+      principle_advanced: t('demos.mueller.physics.principle_advanced'),
       formula: t('demos.mueller.physics.formula'),
       details: [
         t('demos.mueller.physics.details.0'),
         t('demos.mueller.physics.details.1'),
         t('demos.mueller.physics.details.2'),
+      ],
+      details_beginner: [
+        t('demos.mueller.physics.details_beginner.0'),
+        t('demos.mueller.physics.details_beginner.1'),
+        t('demos.mueller.physics.details_beginner.2'),
+      ],
+      details_advanced: [
+        t('demos.mueller.physics.details_advanced.0'),
+        t('demos.mueller.physics.details_advanced.1'),
+        t('demos.mueller.physics.details_advanced.2'),
       ],
     },
     experiment: {

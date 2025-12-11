@@ -1504,12 +1504,25 @@
       },
       "physics": {
         "principle": "Stokes vector uses four parameters to completely describe polarization state",
+        "principle_beginner": "Imagine describing a light beam's 'wiggle pattern' completely. You just need four numbers: how bright is it? Is it wiggling horizontally or vertically? At 45° or -45°? Spinning clockwise or counterclockwise? That's the Stokes vector!",
+        "principle_advanced": "The Stokes vector S = [S₀, S₁, S₂, S₃]ᵀ is defined by time-averaged second-order statistics of the electric field: S₀ = <|Ex|²> + <|Ey|²>, S₁ = <|Ex|²> - <|Ey|²>, S₂ = 2Re<ExEy*>, S₃ = 2Im<ExEy*>. The degree of polarization DOP = √(S₁² + S₂² + S₃²)/S₀ ≤ 1, with DOP = 1 for fully polarized states. The normalized coordinates (S₁, S₂, S₃) on the Poincaré sphere uniquely correspond to a polarization state.",
         "formula": "S = [S₀, S₁, S₂, S₃]ᵀ",
         "details": [
           "S₀: Total intensity",
           "S₁: Horizontal vs vertical polarization",
           "S₂: +45° vs -45° polarization",
           "S₃: Right vs left circular polarization"
+        ],
+        "details_beginner": [
+          "S₀ tells you how bright the light is",
+          "S₁ tells you if it wiggles '↔' or '↕'",
+          "S₂ tells you if it wiggles '↗' or '↖'",
+          "S₃ tells you if the light is 'spinning clockwise' or 'counterclockwise'"
+        ],
+        "details_advanced": [
+          "Partially polarized light can be decomposed into fully polarized and unpolarized components",
+          "Mueller matrices act on Stokes vectors: S_out = M·S_in",
+          "Polarization state evolution on the Poincaré sphere corresponds to SO(3) rotation group operations"
         ]
       },
       "experiment": {
@@ -1629,11 +1642,23 @@
       },
       "physics": {
         "principle": "Mueller matrix describes an optical element's transformation of polarization state",
+        "principle_beginner": "Every optical element is like a 'transformer' - light goes in, and its polarization state changes on the way out. The Mueller matrix is that transformer's 'instruction manual', a 4×4 table that tells you what input produces what output.",
+        "principle_advanced": "The Mueller matrix M is a 4×4 real matrix acting on Stokes space: S_out = M·S_in. Physical realizability requires M to map all physical Stokes vectors to physical Stokes vectors (non-negative intensity, DOP ≤ 1). The Lu-Chipman decomposition factorizes M into three matrices: M = MΔ·MR·MD, representing depolarization, retardance, and diattenuation respectively, serving as the standard tool for polarization state analysis.",
         "formula": "S' = M · S",
         "details": [
           "4×4 matrix describes linear transformation",
           "Can cascade multiple optical elements",
           "Contains 16 independent parameters"
+        ],
+        "details_beginner": [
+          "Matrix multiplication is like cascading transformers - light passes through one, then the next",
+          "Polarizers, wave plates, mirrors... each has its own unique Mueller matrix",
+          "Doctors use this principle to distinguish healthy tissue from diseased tissue"
+        ],
+        "details_advanced": [
+          "Ideal polarizers have Mueller matrices of rank 2; ideal retarders are orthogonal matrices with determinant ±1",
+          "The depolarization index DI = (Tr(M^T·M) - m₀₀²)/(3m₀₀²) quantifies depolarization strength",
+          "The Cloude-Pottier decomposition provides parameters related to scattering medium microstructure"
         ]
       },
       "experiment": {
