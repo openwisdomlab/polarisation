@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
 import { useTheme } from '@/contexts/ThemeContext'
 
-// Module configuration for the 6 creative hubs
+// Module configuration for the 9 creative hubs
 interface ModuleConfig {
   key: string
   icon: string
@@ -147,7 +147,7 @@ const MODULES: ModuleConfig[] = [
   {
     // 虚拟课题组：光研社 (Virtual Lab Group: Light Research Guild)
     key: 'labGroup',
-    icon: '🔬',
+    icon: '🧑‍🔬',
     colorTheme: {
       border: 'emerald-soft', // Soft Emerald #3AAE8C
       borderHover: 'emerald-soft',
@@ -162,6 +162,46 @@ const MODULES: ModuleConfig[] = [
       { labelKey: 'link1', route: '/lab' },
       { labelKey: 'link2', route: '/lab' },
       { labelKey: 'link3', route: '/lab' },
+    ],
+  },
+  {
+    // 偏振应用图鉴：现实场景 × 原理解析 (Polarization Applications Gallery)
+    key: 'applications',
+    icon: '🌍',
+    colorTheme: {
+      border: 'orange-soft', // Soft Orange #E8884A
+      borderHover: 'orange-soft',
+      shadow: 'rgba(232,136,74,0.25)',
+      text: 'orange-soft',
+      gradientFrom: 'orange-soft',
+      gradientTo: 'orange-600',
+      buttonText: 'white',
+    },
+    mainRoute: '/applications',
+    quickLinks: [
+      { labelKey: 'link1', route: '/applications?category=photography' },
+      { labelKey: 'link2', route: '/applications?category=nature' },
+      { labelKey: 'link3', route: '/applications?category=industry' },
+    ],
+  },
+  {
+    // 偏振实验手册：DIY × 家庭实验 (DIY Experiments Handbook)
+    key: 'experiments',
+    icon: '🧪',
+    colorTheme: {
+      border: 'teal-soft', // Soft Teal #2AA198
+      borderHover: 'teal-soft',
+      shadow: 'rgba(42,161,152,0.25)',
+      text: 'teal-soft',
+      gradientFrom: 'teal-soft',
+      gradientTo: 'teal-600',
+      buttonText: 'white',
+    },
+    mainRoute: '/experiments',
+    quickLinks: [
+      { labelKey: 'link1', route: '/experiments?difficulty=easy' },
+      { labelKey: 'link2', route: '/experiments?difficulty=medium' },
+      { labelKey: 'link3', route: '/experiments' },
     ],
   },
 ]
@@ -212,6 +252,18 @@ const getColorClasses = (module: ModuleConfig, theme: 'dark' | 'light') => {
       light: 'border-[#3AAE8C]/40 hover:border-[#3AAE8C]/70',
       shadow: 'hover:shadow-[0_15px_40px_rgba(58,174,140,0.25)]',
     },
+    // Soft Orange #E8884A - Applications Gallery
+    'orange-soft': {
+      dark: 'border-[#E8884A]/30 hover:border-[#E8884A]/60',
+      light: 'border-[#E8884A]/40 hover:border-[#E8884A]/70',
+      shadow: 'hover:shadow-[0_15px_40px_rgba(232,136,74,0.25)]',
+    },
+    // Soft Teal #2AA198 - DIY Experiments
+    'teal-soft': {
+      dark: 'border-[#2AA198]/30 hover:border-[#2AA198]/60',
+      light: 'border-[#2AA198]/40 hover:border-[#2AA198]/70',
+      shadow: 'hover:shadow-[0_15px_40px_rgba(42,161,152,0.25)]',
+    },
   }
 
   const color = colorMap[module.colorTheme.border]
@@ -231,6 +283,8 @@ const getTextColorClass = (color: string, theme: 'dark' | 'light') => {
     'amber-soft': { dark: 'text-[#D9A441]', light: 'text-[#B88A35]' },
     'rose-soft': { dark: 'text-[#D97A8A]', light: 'text-[#C06575]' },
     'emerald-soft': { dark: 'text-[#3AAE8C]', light: 'text-[#2E9375]' },
+    'orange-soft': { dark: 'text-[#E8884A]', light: 'text-[#D0703A]' },
+    'teal-soft': { dark: 'text-[#2AA198]', light: 'text-[#238B83]' },
   }
   return theme === 'dark' ? textMap[color].dark : textMap[color].light
 }
@@ -245,6 +299,8 @@ const getGradientClass = (from: string, to: string) => {
     'amber-soft-amber-600': 'from-[#D9A441] to-[#D97706]',
     'rose-soft-rose-600': 'from-[#D97A8A] to-[#E11D48]',
     'emerald-soft-emerald-600': 'from-[#3AAE8C] to-[#059669]',
+    'orange-soft-orange-600': 'from-[#E8884A] to-[#EA580C]',
+    'teal-soft-teal-600': 'from-[#2AA198] to-[#0D9488]',
   }
   return gradientMap[`${from}-${to}`] || 'from-gray-400 to-gray-500'
 }
@@ -259,6 +315,8 @@ const getHoverGradientClass = (from: string) => {
     'amber-soft': 'from-[#D9A441]/10',
     'rose-soft': 'from-[#D97A8A]/10',
     'emerald-soft': 'from-[#3AAE8C]/10',
+    'orange-soft': 'from-[#E8884A]/10',
+    'teal-soft': 'from-[#2AA198]/10',
   }
   return hoverMap[from] || 'from-gray-400/10'
 }
@@ -273,6 +331,8 @@ const getGlowClass = (from: string) => {
     'amber-soft': 'drop-shadow-[0_0_20px_rgba(217,164,65,0.4)]',
     'rose-soft': 'drop-shadow-[0_0_20px_rgba(217,122,138,0.4)]',
     'emerald-soft': 'drop-shadow-[0_0_20px_rgba(58,174,140,0.4)]',
+    'orange-soft': 'drop-shadow-[0_0_20px_rgba(232,136,74,0.4)]',
+    'teal-soft': 'drop-shadow-[0_0_20px_rgba(42,161,152,0.4)]',
   }
   return glowMap[from] || ''
 }

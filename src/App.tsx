@@ -10,7 +10,11 @@ import {
   GameHubPage,
   EscapeRoomPage,
   ChroniclesPage,
-  LabPage
+  LabPage,
+  DevicesPage,
+  BenchPage,
+  ApplicationsPage,
+  ExperimentsPage
 } from '@/pages'
 
 export function App() {
@@ -38,6 +42,12 @@ export function App() {
         <Route path="/merchandise" element={<MerchandisePage />} />
         <Route path="/chronicles" element={<ChroniclesPage />} />
         <Route path="/lab" element={<LabPage />} />
+
+        {/* New modules */}
+        <Route path="/devices" element={<DevicesPage />} />
+        <Route path="/bench" element={<BenchPage />} />
+        <Route path="/applications" element={<ApplicationsPage />} />
+        <Route path="/experiments" element={<ExperimentsPage />} />
       </Routes>
     </BrowserRouter>
   )
