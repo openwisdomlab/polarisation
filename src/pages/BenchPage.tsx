@@ -7,9 +7,14 @@
  * - Build classic experiments or free designs
  * - See real-time light path simulation
  * - Link to UC2 hardware for real-world builds
+ *
+ * Enhanced features:
+ * - Centered optical path that adapts to viewport
+ * - Collapsible sidebar that doesn't interfere with visualization
+ * - Rich hover interactions with physics explanations
  */
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -18,9 +23,9 @@ import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
 import { Tabs, Badge } from '@/components/shared'
 import {
   Home, Play, Pause, RotateCcw,
-  ChevronRight, Trash2, Eye, EyeOff,
+  ChevronRight, ChevronLeft, Trash2, Eye, EyeOff,
   Lightbulb, Layers, HelpCircle,
-  Box, ExternalLink
+  Box, ExternalLink, Move, ZoomIn, ZoomOut, Maximize2
 } from 'lucide-react'
 import {
   OpticalComponentMap,
@@ -337,6 +342,69 @@ const UC2_COMPONENT_MAP: Record<BenchComponentType, { uc2Id: string; nameEn: str
   lens: { uc2Id: 'UC2-LENS', nameEn: 'UC2 Lens Holder', nameZh: 'UC2 透镜支架' },
 }
 
+// Component physics descriptions for hover tooltips
+const COMPONENT_PHYSICS: Record<BenchComponentType, {
+  principleEn: string
+  principleZh: string
+  formulaEn?: string
+  formulaZh?: string
+  tipsEn: string[]
+  tipsZh: string[]
+}> = {
+  emitter: {
+    principleEn: 'Emits polarized or unpolarized light with controllable wavelength and intensity.',
+    principleZh: '发射偏振或非偏振光，可控制波长和强度。',
+    tipsEn: ['Click to select', 'Drag to reposition', 'Set polarization in properties'],
+    tipsZh: ['点击选择', '拖拽移动', '在属性面板设置偏振'],
+  },
+  polarizer: {
+    principleEn: 'Filters light based on polarization direction using Malus\'s Law.',
+    principleZh: '根据马吕斯定律按偏振方向过滤光线。',
+    formulaEn: 'I = I₀ × cos²θ',
+    formulaZh: 'I = I₀ × cos²θ',
+    tipsEn: ['Rotate to change filter angle', '90° blocks crossed polarization', 'Two crossed polarizers block all light'],
+    tipsZh: ['旋转改变过滤角度', '90°阻挡交叉偏振', '两个正交偏振片阻挡所有光'],
+  },
+  waveplate: {
+    principleEn: 'Introduces phase retardation between orthogonal polarization components.',
+    principleZh: '在正交偏振分量之间引入相位延迟。',
+    formulaEn: 'δ = 2π(nₑ - nₒ)d / λ',
+    formulaZh: 'δ = 2π(nₑ - nₒ)d / λ',
+    tipsEn: ['λ/4 plate: linear → circular', 'λ/2 plate: rotates polarization by 2θ', 'Fast axis orientation matters'],
+    tipsZh: ['λ/4波片：线偏振→圆偏振', 'λ/2波片：偏振旋转2θ', '快轴方向很重要'],
+  },
+  mirror: {
+    principleEn: 'Reflects light at the incident angle. Can introduce phase shift.',
+    principleZh: '以入射角反射光线。可能引入相移。',
+    formulaEn: 'θ_reflection = θ_incident',
+    formulaZh: 'θ_反射 = θ_入射',
+    tipsEn: ['Rotate to set reflection angle', 'Metal mirrors maintain polarization', 'Dielectric mirrors at Brewster\'s angle polarize light'],
+    tipsZh: ['旋转设置反射角', '金属镜保持偏振', '介质镜在布儒斯特角偏振光'],
+  },
+  splitter: {
+    principleEn: 'Birefringent crystal that separates o-ray and e-ray based on polarization.',
+    principleZh: '双折射晶体，根据偏振分离o光和e光。',
+    formulaEn: 'Δn = nₑ - nₒ (calcite: 0.172)',
+    formulaZh: 'Δn = nₑ - nₒ (方解石: 0.172)',
+    tipsEn: ['Calcite creates two beams', 'Beams have orthogonal polarizations', 'Separation depends on crystal thickness'],
+    tipsZh: ['方解石产生两束光', '两束光偏振正交', '分离取决于晶体厚度'],
+  },
+  sensor: {
+    principleEn: 'Detects light intensity and can analyze polarization state.',
+    principleZh: '检测光强，可分析偏振态。',
+    tipsEn: ['Measures transmitted intensity', 'Can filter by polarization', 'Shows activation status'],
+    tipsZh: ['测量透射强度', '可按偏振过滤', '显示激活状态'],
+  },
+  lens: {
+    principleEn: 'Focuses or diverges light. Used for imaging and beam shaping.',
+    principleZh: '聚焦或发散光线。用于成像和光束整形。',
+    formulaEn: '1/f = 1/u + 1/v',
+    formulaZh: '1/f = 1/u + 1/v',
+    tipsEn: ['Convex lens: f > 0', 'Concave lens: f < 0', 'Focal length determines magnification'],
+    tipsZh: ['凸透镜: f > 0', '凹透镜: f < 0', '焦距决定放大倍数'],
+  },
+}
+
 const DIFFICULTY_CONFIG = {
   easy: { labelEn: 'Easy', labelZh: '简单', color: 'green' as const },
   medium: { labelEn: 'Medium', labelZh: '中等', color: 'yellow' as const },
@@ -512,6 +580,91 @@ function UC2Panel({
   )
 }
 
+// Hover tooltip component for component physics info
+function ComponentTooltip({
+  component,
+  x,
+  y,
+  isZh,
+  theme,
+}: {
+  component: BenchComponent
+  x: number
+  y: number
+  isZh: boolean
+  theme: string
+}) {
+  const physics = COMPONENT_PHYSICS[component.type]
+  const paletteInfo = PALETTE_COMPONENTS.find(p => p.type === component.type)
+
+  return (
+    <div
+      className={cn(
+        'absolute z-50 w-64 rounded-xl border shadow-xl pointer-events-none transition-all duration-200',
+        theme === 'dark' ? 'bg-slate-900/95 border-slate-700' : 'bg-white/95 border-gray-200'
+      )}
+      style={{
+        left: x + 60,
+        top: y - 80,
+        transform: 'translateY(-50%)',
+      }}
+    >
+      {/* Header */}
+      <div className={cn(
+        'flex items-center gap-2 p-3 border-b',
+        theme === 'dark' ? 'border-slate-700' : 'border-gray-200'
+      )}>
+        <span className="text-2xl">{paletteInfo?.icon}</span>
+        <div>
+          <h4 className={cn('font-semibold text-sm', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
+            {isZh ? paletteInfo?.nameZh : paletteInfo?.nameEn}
+          </h4>
+          <p className={cn('text-xs', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
+            {isZh ? `角度: ${component.rotation}°` : `Angle: ${component.rotation}°`}
+          </p>
+        </div>
+      </div>
+
+      {/* Physics principle */}
+      <div className="p-3 space-y-2">
+        <p className={cn('text-xs', theme === 'dark' ? 'text-gray-300' : 'text-gray-600')}>
+          {isZh ? physics.principleZh : physics.principleEn}
+        </p>
+
+        {/* Formula */}
+        {physics.formulaEn && (
+          <div className={cn(
+            'flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs font-mono',
+            theme === 'dark' ? 'bg-violet-500/20 text-violet-300' : 'bg-violet-100 text-violet-700'
+          )}>
+            <span className="font-bold">f(x)</span>
+            <span>{isZh ? physics.formulaZh : physics.formulaEn}</span>
+          </div>
+        )}
+
+        {/* Tips */}
+        <div className="space-y-1 pt-1">
+          {(isZh ? physics.tipsZh : physics.tipsEn).slice(0, 2).map((tip, i) => (
+            <div key={i} className="flex items-start gap-1.5">
+              <span className={cn('text-xs mt-0.5', theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600')}>•</span>
+              <span className={cn('text-xs', theme === 'dark' ? 'text-gray-400' : 'text-gray-500')}>{tip}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer with action hint */}
+      <div className={cn(
+        'px-3 py-2 border-t text-xs flex items-center gap-2',
+        theme === 'dark' ? 'border-slate-700 text-gray-500' : 'border-gray-200 text-gray-400'
+      )}>
+        <Move className="w-3 h-3" />
+        {isZh ? '点击选择 • 拖拽移动' : 'Click to select • Drag to move'}
+      </div>
+    </div>
+  )
+}
+
 // Main page tabs
 const PAGE_TABS = [
   { id: 'classic', labelEn: 'Classic Setups', labelZh: '经典光路', icon: <Lightbulb className="w-4 h-4" /> },
@@ -523,33 +676,97 @@ export function BenchPage() {
   const { theme } = useTheme()
   const isZh = i18n.language === 'zh'
 
+  // Canvas ref for measuring dimensions
+  const canvasRef = useRef<HTMLDivElement>(null)
+  const [canvasSize, setCanvasSize] = useState({ width: 800, height: 500 })
+
   const [activeTab, setActiveTab] = useState<'classic' | 'free'>('classic')
   const [components, setComponents] = useState<BenchComponent[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [isSimulating, setIsSimulating] = useState(false)
   const [showUC2Panel, setShowUC2Panel] = useState(false)
   const [showPolarization, setShowPolarization] = useState(true)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
-  // Load classic experiment
+  // Zoom and pan state for canvas
+  const [zoom, setZoom] = useState(1)
+  const [pan, setPan] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+  const [dragComponentId, setDragComponentId] = useState<string | null>(null)
+
+  // Measure canvas size on mount and resize
+  useEffect(() => {
+    const updateSize = () => {
+      if (canvasRef.current) {
+        const rect = canvasRef.current.getBoundingClientRect()
+        setCanvasSize({ width: rect.width, height: rect.height })
+      }
+    }
+    updateSize()
+    window.addEventListener('resize', updateSize)
+    return () => window.removeEventListener('resize', updateSize)
+  }, [sidebarCollapsed])
+
+  // Calculate center position for optical rail
+  const opticalPathCenter = useMemo(() => ({
+    x: canvasSize.width / 2,
+    y: canvasSize.height / 2,
+  }), [canvasSize])
+
+  // Calculate optical rail bounds (centered)
+  const railBounds = useMemo(() => {
+    const railWidth = Math.min(canvasSize.width - 100, 800)
+    const railHeight = 8
+    return {
+      x: (canvasSize.width - railWidth) / 2,
+      y: canvasSize.height / 2 - railHeight / 2,
+      width: railWidth,
+      height: railHeight,
+    }
+  }, [canvasSize])
+
+  // Load classic experiment - center components on the optical rail
   const loadExperiment = useCallback((experiment: ClassicExperiment) => {
-    setComponents([...experiment.components])
+    // Calculate bounding box of experiment components
+    const minX = Math.min(...experiment.components.map(c => c.x))
+    const maxX = Math.max(...experiment.components.map(c => c.x))
+    const expWidth = maxX - minX
+
+    // Calculate offset to center experiment on rail
+    const targetCenterX = canvasSize.width / 2
+    const expCenterX = minX + expWidth / 2
+    const offsetX = targetCenterX - expCenterX
+    const offsetY = canvasSize.height / 2 - 200 // Original Y was around 200
+
+    // Apply offset to all components
+    const centeredComponents = experiment.components.map(c => ({
+      ...c,
+      x: c.x + offsetX,
+      y: c.y + offsetY,
+    }))
+
+    setComponents(centeredComponents)
     setSelectedId(null)
     setIsSimulating(false)
-  }, [])
+    setZoom(1)
+    setPan({ x: 0, y: 0 })
+  }, [canvasSize])
 
-  // Add component to bench
+  // Add component to bench - place near center
   const addComponent = useCallback((type: BenchComponentType) => {
     const newComponent: BenchComponent = {
       id: `${type}-${Date.now()}`,
       type,
-      x: 300 + Math.random() * 100,
-      y: 200 + Math.random() * 50,
+      x: canvasSize.width / 2 + (Math.random() - 0.5) * 100,
+      y: canvasSize.height / 2 + (Math.random() - 0.5) * 40,
       rotation: 0,
       properties: {},
     }
     setComponents(prev => [...prev, newComponent])
     setSelectedId(newComponent.id)
-  }, [])
+  }, [canvasSize])
 
   // Delete selected component
   const deleteSelected = useCallback(() => {
@@ -574,6 +791,52 @@ export function BenchPage() {
       ))
     }
   }, [selectedId])
+
+  // Zoom controls
+  const handleZoomIn = useCallback(() => {
+    setZoom(prev => Math.min(prev * 1.2, 3))
+  }, [])
+
+  const handleZoomOut = useCallback(() => {
+    setZoom(prev => Math.max(prev / 1.2, 0.5))
+  }, [])
+
+  const handleResetView = useCallback(() => {
+    setZoom(1)
+    setPan({ x: 0, y: 0 })
+  }, [])
+
+  // Component drag handling
+  const handleComponentMouseDown = useCallback((e: React.MouseEvent, componentId: string) => {
+    e.stopPropagation()
+    setSelectedId(componentId)
+    setDragComponentId(componentId)
+    setDragStart({ x: e.clientX, y: e.clientY })
+    setIsDragging(true)
+  }, [])
+
+  const handleCanvasMouseMove = useCallback((e: React.MouseEvent) => {
+    if (isDragging && dragComponentId) {
+      const dx = (e.clientX - dragStart.x) / zoom
+      const dy = (e.clientY - dragStart.y) / zoom
+      setComponents(prev => prev.map(c =>
+        c.id === dragComponentId
+          ? { ...c, x: c.x + dx, y: c.y + dy }
+          : c
+      ))
+      setDragStart({ x: e.clientX, y: e.clientY })
+    }
+  }, [isDragging, dragComponentId, dragStart, zoom])
+
+  const handleCanvasMouseUp = useCallback(() => {
+    setIsDragging(false)
+    setDragComponentId(null)
+  }, [])
+
+  // Get hovered component for tooltip
+  const hoveredComponent = useMemo(() => {
+    return components.find(c => c.id === hoveredId)
+  }, [components, hoveredId])
 
   const selectedComponent = components.find(c => c.id === selectedId)
 
@@ -639,12 +902,42 @@ export function BenchPage() {
         </div>
       </header>
 
-      <div className="flex-1 flex">
-        {/* Left Sidebar - Tabs & Components */}
+      <div className="flex-1 flex relative">
+        {/* Sidebar Toggle Button - visible when collapsed */}
+        {sidebarCollapsed && (
+          <button
+            onClick={() => setSidebarCollapsed(false)}
+            className={cn(
+              'absolute left-0 top-1/2 -translate-y-1/2 z-30 p-2 rounded-r-lg border-y border-r transition-all',
+              theme === 'dark'
+                ? 'bg-slate-900/95 border-slate-700 text-gray-400 hover:text-white'
+                : 'bg-white/95 border-gray-200 text-gray-500 hover:text-gray-900'
+            )}
+            title={isZh ? '展开侧边栏' : 'Expand sidebar'}
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        )}
+
+        {/* Left Sidebar - Tabs & Components (Collapsible) */}
         <aside className={cn(
-          'w-72 border-r flex flex-col',
+          'border-r flex flex-col transition-all duration-300 relative',
+          sidebarCollapsed ? 'w-0 opacity-0 overflow-hidden' : 'w-72',
           theme === 'dark' ? 'bg-slate-900/50 border-slate-800' : 'bg-white/50 border-gray-200'
         )}>
+          {/* Collapse button */}
+          <button
+            onClick={() => setSidebarCollapsed(true)}
+            className={cn(
+              'absolute right-2 top-2 z-20 p-1.5 rounded-lg transition-colors',
+              theme === 'dark'
+                ? 'text-gray-500 hover:text-gray-300 hover:bg-slate-800'
+                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+            )}
+            title={isZh ? '收起侧边栏' : 'Collapse sidebar'}
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
           {/* Tab Selector */}
           <Tabs
             tabs={PAGE_TABS.map(tab => ({
@@ -799,6 +1092,50 @@ export function BenchPage() {
             </button>
           </div>
 
+          {/* Zoom Controls */}
+          <div className={cn(
+            'absolute top-4 right-4 flex items-center gap-1 p-1.5 rounded-xl border z-10',
+            theme === 'dark' ? 'bg-slate-900/90 border-slate-700' : 'bg-white/90 border-gray-200'
+          )}>
+            <button
+              onClick={handleZoomIn}
+              className={cn(
+                'p-1.5 rounded-lg transition-colors',
+                theme === 'dark' ? 'hover:bg-slate-800 text-gray-400' : 'hover:bg-gray-100 text-gray-500'
+              )}
+              title={isZh ? '放大' : 'Zoom In'}
+            >
+              <ZoomIn className="w-4 h-4" />
+            </button>
+            <span className={cn(
+              'px-2 text-xs font-mono min-w-[3rem] text-center',
+              theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+            )}>
+              {Math.round(zoom * 100)}%
+            </span>
+            <button
+              onClick={handleZoomOut}
+              className={cn(
+                'p-1.5 rounded-lg transition-colors',
+                theme === 'dark' ? 'hover:bg-slate-800 text-gray-400' : 'hover:bg-gray-100 text-gray-500'
+              )}
+              title={isZh ? '缩小' : 'Zoom Out'}
+            >
+              <ZoomOut className="w-4 h-4" />
+            </button>
+            <div className={cn('w-px h-5 mx-1', theme === 'dark' ? 'bg-slate-700' : 'bg-gray-200')} />
+            <button
+              onClick={handleResetView}
+              className={cn(
+                'p-1.5 rounded-lg transition-colors',
+                theme === 'dark' ? 'hover:bg-slate-800 text-gray-400' : 'hover:bg-gray-100 text-gray-500'
+              )}
+              title={isZh ? '重置视图' : 'Reset View'}
+            >
+              <Maximize2 className="w-4 h-4" />
+            </button>
+          </div>
+
           {/* UC2 Panel */}
           {showUC2Panel && components.length > 0 && (
             <UC2Panel
@@ -809,14 +1146,36 @@ export function BenchPage() {
 
           {/* Canvas */}
           <div
+            ref={canvasRef}
             className={cn(
-              'absolute inset-0 overflow-hidden',
+              'absolute inset-0 overflow-hidden cursor-crosshair',
+              isDragging && 'cursor-grabbing',
               theme === 'dark' ? 'bg-slate-950/50' : 'bg-gray-50/50'
             )}
             onClick={() => setSelectedId(null)}
+            onMouseMove={handleCanvasMouseMove}
+            onMouseUp={handleCanvasMouseUp}
+            onMouseLeave={handleCanvasMouseUp}
           >
+            {/* Hover Tooltip */}
+            {hoveredComponent && !isDragging && (
+              <ComponentTooltip
+                component={hoveredComponent}
+                x={hoveredComponent.x}
+                y={hoveredComponent.y}
+                isZh={isZh}
+                theme={theme}
+              />
+            )}
+
             {/* Full SVG Canvas for optical bench */}
-            <svg className="absolute inset-0 w-full h-full">
+            <svg
+              className="absolute inset-0 w-full h-full"
+              style={{
+                transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)`,
+                transformOrigin: 'center center',
+              }}
+            >
               {/* Background grid */}
               <defs>
                 <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -843,11 +1202,52 @@ export function BenchPage() {
               <rect width="100%" height="100%" fill="url(#grid)" />
               <rect width="100%" height="100%" fill="url(#grid-dots)" />
 
-              {/* Optical rail visualization */}
-              <rect x="60" y="196" width="680" height="8" rx="2"
-                fill={theme === 'dark' ? '#334155' : '#94a3b8'} opacity="0.5" />
-              <rect x="60" y="198" width="680" height="4" rx="1"
-                fill={theme === 'dark' ? '#1e293b' : '#cbd5e1'} opacity="0.8" />
+              {/* Centered Optical rail visualization */}
+              <rect
+                x={railBounds.x}
+                y={railBounds.y}
+                width={railBounds.width}
+                height={railBounds.height}
+                rx="2"
+                fill={theme === 'dark' ? '#334155' : '#94a3b8'}
+                opacity="0.5"
+              />
+              <rect
+                x={railBounds.x}
+                y={railBounds.y + 2}
+                width={railBounds.width}
+                height={railBounds.height - 4}
+                rx="1"
+                fill={theme === 'dark' ? '#1e293b' : '#cbd5e1'}
+                opacity="0.8"
+              />
+
+              {/* Center marker */}
+              <circle
+                cx={opticalPathCenter.x}
+                cy={opticalPathCenter.y}
+                r="4"
+                fill={theme === 'dark' ? '#475569' : '#94a3b8'}
+                opacity="0.3"
+              />
+              <line
+                x1={opticalPathCenter.x - 10}
+                y1={opticalPathCenter.y}
+                x2={opticalPathCenter.x + 10}
+                y2={opticalPathCenter.y}
+                stroke={theme === 'dark' ? '#475569' : '#94a3b8'}
+                strokeWidth="1"
+                opacity="0.3"
+              />
+              <line
+                x1={opticalPathCenter.x}
+                y1={opticalPathCenter.y - 10}
+                x2={opticalPathCenter.x}
+                y2={opticalPathCenter.y + 10}
+                stroke={theme === 'dark' ? '#475569' : '#94a3b8'}
+                strokeWidth="1"
+                opacity="0.3"
+              />
 
               {/* Light beams (rendered first, behind components) */}
               {isSimulating && components.length > 0 && (
@@ -926,19 +1326,42 @@ export function BenchPage() {
                 {components.map(component => {
                   const ComponentViz = OpticalComponentMap[component.type as OpticalComponentType]
                   if (ComponentViz) {
+                    const isHovered = component.id === hoveredId
+                    const isSelected = component.id === selectedId
                     return (
-                      <ComponentViz
+                      <g
                         key={component.id}
-                        x={component.x}
-                        y={component.y}
-                        rotation={component.rotation}
-                        selected={component.id === selectedId}
-                        polarizationAngle={(component.properties.angle as number) || (component.properties.polarization as number) || 0}
-                        onClick={(e) => {
-                          e?.stopPropagation()
-                          setSelectedId(component.id)
-                        }}
-                      />
+                        onMouseEnter={() => setHoveredId(component.id)}
+                        onMouseLeave={() => setHoveredId(null)}
+                        onMouseDown={(e) => handleComponentMouseDown(e as unknown as React.MouseEvent, component.id)}
+                        style={{ cursor: isDragging && dragComponentId === component.id ? 'grabbing' : 'grab' }}
+                      >
+                        {/* Hover highlight ring */}
+                        {(isHovered || isSelected) && (
+                          <circle
+                            cx={component.x}
+                            cy={component.y}
+                            r={35}
+                            fill="none"
+                            stroke={isSelected ? '#8b5cf6' : '#22d3ee'}
+                            strokeWidth={isSelected ? 3 : 2}
+                            strokeDasharray={isSelected ? 'none' : '4 2'}
+                            opacity={0.6}
+                            className="pointer-events-none"
+                          />
+                        )}
+                        <ComponentViz
+                          x={component.x}
+                          y={component.y}
+                          rotation={component.rotation}
+                          selected={isSelected}
+                          polarizationAngle={(component.properties.angle as number) || (component.properties.polarization as number) || 0}
+                          onClick={(e) => {
+                            e?.stopPropagation()
+                            setSelectedId(component.id)
+                          }}
+                        />
+                      </g>
                     )
                   }
                   return null

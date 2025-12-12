@@ -595,6 +595,286 @@ function DeviceCard({ device, onClick }: { device: Device; onClick: () => void }
   )
 }
 
+// Device diagram component - larger, more detailed illustration
+function DeviceDiagram({ device, theme, isZh }: { device: Device; theme: string; isZh: boolean }) {
+  const isDark = theme === 'dark'
+
+  // Render device-specific detailed diagram
+  const renderDiagram = () => {
+    switch (device.id) {
+      case 'linear-polarizer':
+        return (
+          <svg viewBox="0 0 400 200" className="w-full h-full">
+            {/* Background */}
+            <rect width="400" height="200" fill={isDark ? '#0f172a' : '#f8fafc'} />
+
+            {/* Input light (unpolarized) */}
+            <g>
+              <text x="20" y="105" fontSize="10" fill={isDark ? '#94a3b8' : '#64748b'}>{isZh ? '自然光' : 'Unpolarized'}</text>
+              {/* Multiple polarization arrows representing random polarization */}
+              {[0, 45, 90, 135].map((angle, i) => (
+                <g key={i} transform={`translate(70, ${80 + i * 15})`}>
+                  <line x1="0" y1="0" x2="30" y2="0" stroke="#fbbf24" strokeWidth="2" />
+                  <line
+                    x1="15" y1={-8 * Math.sin(angle * Math.PI / 180)}
+                    x2="15" y2={8 * Math.sin(angle * Math.PI / 180)}
+                    stroke="#fbbf24" strokeWidth="1.5"
+                  />
+                </g>
+              ))}
+            </g>
+
+            {/* Polarizer */}
+            <g transform="translate(140, 40)">
+              <rect x="0" y="0" width="20" height="120" fill={isDark ? '#312e81' : '#c7d2fe'} stroke="#6366f1" strokeWidth="2" />
+              {/* Transmission axis lines */}
+              {[20, 40, 60, 80, 100].map(y => (
+                <line key={y} x1="4" y1={y} x2="16" y2={y} stroke="#6366f1" strokeWidth="1.5" />
+              ))}
+              <text x="10" y="-5" fontSize="9" fill={isDark ? '#a5b4fc' : '#4f46e5'} textAnchor="middle">{isZh ? '偏振片' : 'Polarizer'}</text>
+              <text x="10" y="135" fontSize="9" fill={isDark ? '#a5b4fc' : '#4f46e5'} textAnchor="middle">{isZh ? '透光轴' : 'Axis'}</text>
+            </g>
+
+            {/* Output light (polarized) */}
+            <g transform="translate(180, 100)">
+              <line x1="0" y1="0" x2="100" y2="0" stroke="#22c55e" strokeWidth="3" />
+              {/* Oscillation indicator */}
+              <path d="M20,-12 L20,12 M40,-12 L40,12 M60,-12 L60,12 M80,-12 L80,12" stroke="#22c55e" strokeWidth="1.5" opacity="0.6" />
+              <polygon points="100,0 92,-5 92,5" fill="#22c55e" />
+            </g>
+
+            {/* Intensity annotation */}
+            <g transform="translate(300, 60)">
+              <text fontSize="11" fill={isDark ? '#e2e8f0' : '#1e293b'}>{isZh ? '马吕斯定律' : "Malus's Law"}</text>
+              <text y="20" fontSize="14" fill="#6366f1" fontWeight="bold">I = I₀ × cos²θ</text>
+              <text y="40" fontSize="10" fill={isDark ? '#94a3b8' : '#64748b'}>{isZh ? '当θ=90°时，I=0' : 'When θ=90°, I=0'}</text>
+            </g>
+
+            {/* Legend */}
+            <g transform="translate(300, 130)">
+              <circle cx="5" cy="5" r="4" fill="#fbbf24" />
+              <text x="15" y="9" fontSize="9" fill={isDark ? '#94a3b8' : '#64748b'}>{isZh ? '入射光' : 'Input'}</text>
+              <circle cx="5" cy="25" r="4" fill="#22c55e" />
+              <text x="15" y="29" fontSize="9" fill={isDark ? '#94a3b8' : '#64748b'}>{isZh ? '出射光' : 'Output'}</text>
+            </g>
+          </svg>
+        )
+
+      case 'quarter-wave-plate':
+        return (
+          <svg viewBox="0 0 400 200" className="w-full h-full">
+            <rect width="400" height="200" fill={isDark ? '#0f172a' : '#f8fafc'} />
+
+            {/* Input linear polarized light at 45° */}
+            <g transform="translate(30, 100)">
+              <text x="0" y="-30" fontSize="10" fill={isDark ? '#94a3b8' : '#64748b'}>{isZh ? '45°线偏振' : '45° Linear'}</text>
+              <line x1="0" y1="0" x2="60" y2="0" stroke="#fbbf24" strokeWidth="2" />
+              <line x1="30" y1="-15" x2="30" y2="15" stroke="#fbbf24" strokeWidth="2" transform="rotate(45, 30, 0)" />
+            </g>
+
+            {/* λ/4 Waveplate */}
+            <g transform="translate(110, 30)">
+              <rect x="0" y="0" width="25" height="140" fill={isDark ? '#1e1b4b' : '#ddd6fe'} stroke="#8b5cf6" strokeWidth="2" />
+              {/* Fast axis */}
+              <line x1="-10" y1="70" x2="35" y2="70" stroke="#f472b6" strokeWidth="2" strokeDasharray="4 2" />
+              <text x="40" y="73" fontSize="9" fill="#f472b6">{isZh ? '快轴' : 'Fast'}</text>
+              {/* Slow axis */}
+              <line x1="12" y1="10" x2="12" y2="130" stroke="#22d3ee" strokeWidth="2" strokeDasharray="4 2" />
+              <text x="18" y="15" fontSize="9" fill="#22d3ee">{isZh ? '慢轴' : 'Slow'}</text>
+              <text x="12" y="-5" fontSize="10" fill={isDark ? '#c4b5fd' : '#7c3aed'} textAnchor="middle" fontWeight="bold">λ/4</text>
+              <text x="12" y="155" fontSize="9" fill={isDark ? '#94a3b8' : '#64748b'} textAnchor="middle">{isZh ? '相位延迟90°' : 'δ = 90°'}</text>
+            </g>
+
+            {/* Output circular polarized light */}
+            <g transform="translate(160, 100)">
+              <line x1="0" y1="0" x2="80" y2="0" stroke="#22c55e" strokeWidth="2" />
+              {/* Spiral to show circular polarization */}
+              <path
+                d="M90,0 Q105,-20 120,0 Q135,20 150,0 Q165,-20 180,0"
+                fill="none"
+                stroke="#22c55e"
+                strokeWidth="2"
+              />
+              <ellipse cx="220" cy="0" rx="15" ry="10" fill="none" stroke="#22c55e" strokeWidth="2" />
+              <path d="M220,-10 L225,-5" stroke="#22c55e" strokeWidth="2" />
+            </g>
+
+            {/* Annotations */}
+            <g transform="translate(280, 40)">
+              <text fontSize="10" fill={isDark ? '#e2e8f0' : '#1e293b'}>{isZh ? '输出：圆偏振' : 'Output: Circular'}</text>
+              <text y="20" fontSize="12" fill="#8b5cf6">E = E₀(x̂ + iŷ)/√2</text>
+              <text y="45" fontSize="9" fill={isDark ? '#94a3b8' : '#64748b'}>
+                {isZh ? '用于3D眼镜、光隔离器' : 'Used in 3D glasses, isolators'}
+              </text>
+            </g>
+          </svg>
+        )
+
+      case 'pbs':
+        return (
+          <svg viewBox="0 0 400 200" className="w-full h-full">
+            <rect width="400" height="200" fill={isDark ? '#0f172a' : '#f8fafc'} />
+
+            {/* PBS Cube */}
+            <g transform="translate(140, 40)">
+              <rect x="0" y="0" width="120" height="120" fill={isDark ? 'rgba(99, 102, 241, 0.1)' : 'rgba(99, 102, 241, 0.05)'} stroke="#6366f1" strokeWidth="2" />
+              {/* Diagonal coating */}
+              <line x1="0" y1="120" x2="120" y2="0" stroke="#10b981" strokeWidth="4" opacity="0.6" />
+              <text x="60" y="65" fontSize="10" fill={isDark ? '#6ee7b7' : '#059669'} textAnchor="middle">{isZh ? '多层介质膜' : 'Multilayer'}</text>
+            </g>
+
+            {/* Input unpolarized beam */}
+            <g transform="translate(40, 100)">
+              <line x1="0" y1="0" x2="100" y2="0" stroke="#fbbf24" strokeWidth="3" />
+              <text x="30" y="-10" fontSize="9" fill={isDark ? '#94a3b8' : '#64748b'}>{isZh ? '混合偏振' : 'Mixed'}</text>
+              <polygon points="100,0 92,-5 92,5" fill="#fbbf24" />
+            </g>
+
+            {/* P-polarization transmitted */}
+            <g transform="translate(260, 100)">
+              <line x1="0" y1="0" x2="90" y2="0" stroke="#22c55e" strokeWidth="3" />
+              <line x1="45" y1="-8" x2="45" y2="8" stroke="#22c55e" strokeWidth="2" />
+              <polygon points="90,0 82,-5 82,5" fill="#22c55e" />
+              <text x="45" y="20" fontSize="10" fill="#22c55e" textAnchor="middle">{isZh ? 'P偏振(透射)' : 'P (transmitted)'}</text>
+            </g>
+
+            {/* S-polarization reflected */}
+            <g transform="translate(200, 40)">
+              <line x1="0" y1="0" x2="0" y2="-30" stroke="#ec4899" strokeWidth="3" />
+              <circle cx="0" cy="-15" r="3" fill="#ec4899" />
+              <polygon points="0,-30 -5,-22 5,-22" fill="#ec4899" />
+              <text x="15" y="-15" fontSize="10" fill="#ec4899">{isZh ? 'S偏振(反射)' : 'S (reflected)'}</text>
+            </g>
+
+            {/* Specifications */}
+            <g transform="translate(30, 160)">
+              <text fontSize="9" fill={isDark ? '#94a3b8' : '#64748b'}>{isZh ? '消光比: >1000:1 | 透射率(P): >95% | 反射率(S): >99%' : 'ER: >1000:1 | T(P): >95% | R(S): >99%'}</text>
+            </g>
+          </svg>
+        )
+
+      case 'calcite-splitter':
+        return (
+          <svg viewBox="0 0 400 200" className="w-full h-full">
+            <rect width="400" height="200" fill={isDark ? '#0f172a' : '#f8fafc'} />
+
+            {/* Calcite crystal - parallelogram */}
+            <g transform="translate(120, 30)">
+              <path d="M0,140 L30,0 L180,0 L150,140 Z" fill={isDark ? 'rgba(34, 211, 238, 0.1)' : 'rgba(34, 211, 238, 0.05)'} stroke="#22d3ee" strokeWidth="2" />
+              {/* Internal structure lines */}
+              <path d="M50,120 L80,20" stroke="#22d3ee" strokeWidth="1" opacity="0.3" />
+              <path d="M90,120 L120,20" stroke="#22d3ee" strokeWidth="1" opacity="0.3" />
+              <text x="90" y="75" fontSize="10" fill={isDark ? '#67e8f9' : '#0891b2'} textAnchor="middle">{isZh ? '方解石' : 'Calcite'}</text>
+              <text x="90" y="90" fontSize="9" fill={isDark ? '#94a3b8' : '#64748b'} textAnchor="middle">Δn = 0.172</text>
+            </g>
+
+            {/* Input beam */}
+            <g transform="translate(30, 100)">
+              <line x1="0" y1="0" x2="90" y2="0" stroke="#fbbf24" strokeWidth="3" />
+              <text x="30" y="-10" fontSize="9" fill={isDark ? '#94a3b8' : '#64748b'}>{isZh ? '入射光' : 'Input'}</text>
+            </g>
+
+            {/* O-ray (ordinary ray) - straight through */}
+            <g transform="translate(270, 100)">
+              <line x1="0" y1="0" x2="90" y2="0" stroke="#ef4444" strokeWidth="3" />
+              <line x1="45" y1="-8" x2="45" y2="8" stroke="#ef4444" strokeWidth="2" />
+              <text x="45" y="20" fontSize="10" fill="#ef4444" textAnchor="middle">{isZh ? 'O光 (0°)' : 'O-ray (0°)'}</text>
+            </g>
+
+            {/* E-ray (extraordinary ray) - displaced */}
+            <g transform="translate(270, 60)">
+              <line x1="0" y1="0" x2="90" y2="0" stroke="#22c55e" strokeWidth="3" />
+              <circle cx="45" cy="0" r="4" fill="#22c55e" />
+              <text x="45" y="-10" fontSize="10" fill="#22c55e" textAnchor="middle">{isZh ? 'E光 (90°)' : 'E-ray (90°)'}</text>
+            </g>
+
+            {/* Walk-off distance indicator */}
+            <g transform="translate(260, 60)">
+              <line x1="0" y1="0" x2="0" y2="40" stroke={isDark ? '#64748b' : '#94a3b8'} strokeWidth="1" strokeDasharray="3 2" />
+              <text x="5" y="25" fontSize="8" fill={isDark ? '#94a3b8' : '#64748b'}>{isZh ? '位移' : 'Walk-off'}</text>
+            </g>
+          </svg>
+        )
+
+      case 'glan-thompson':
+        return (
+          <svg viewBox="0 0 400 200" className="w-full h-full">
+            <rect width="400" height="200" fill={isDark ? '#0f172a' : '#f8fafc'} />
+
+            {/* Two prism halves */}
+            <g transform="translate(100, 30)">
+              {/* First prism */}
+              <rect x="0" y="0" width="80" height="140" fill={isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)'} stroke="#3b82f6" strokeWidth="2" />
+              {/* Second prism */}
+              <rect x="90" y="0" width="80" height="140" fill={isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)'} stroke="#3b82f6" strokeWidth="2" />
+              {/* Cement layer */}
+              <rect x="80" y="0" width="10" height="140" fill={isDark ? '#fbbf2440' : '#fbbf2420'} stroke="#fbbf24" strokeWidth="1" />
+              {/* Diagonal interface */}
+              <line x1="80" y1="140" x2="90" y2="0" stroke="#fbbf24" strokeWidth="2" />
+
+              <text x="40" y="-8" fontSize="9" fill={isDark ? '#93c5fd' : '#2563eb'} textAnchor="middle">{isZh ? '方解石1' : 'Calcite 1'}</text>
+              <text x="130" y="-8" fontSize="9" fill={isDark ? '#93c5fd' : '#2563eb'} textAnchor="middle">{isZh ? '方解石2' : 'Calcite 2'}</text>
+              <text x="85" y="155" fontSize="8" fill="#fbbf24" textAnchor="middle">{isZh ? '加拿大树胶' : 'Canada balsam'}</text>
+            </g>
+
+            {/* Input beam */}
+            <g transform="translate(20, 100)">
+              <line x1="0" y1="0" x2="80" y2="0" stroke="#fbbf24" strokeWidth="3" />
+              <text x="30" y="-10" fontSize="9" fill={isDark ? '#94a3b8' : '#64748b'}>{isZh ? '混合光' : 'Mixed'}</text>
+            </g>
+
+            {/* Transmitted e-ray */}
+            <g transform="translate(270, 100)">
+              <line x1="0" y1="0" x2="100" y2="0" stroke="#22c55e" strokeWidth="3" />
+              <text x="50" y="15" fontSize="10" fill="#22c55e" textAnchor="middle">{isZh ? 'E光透射' : 'E transmitted'}</text>
+            </g>
+
+            {/* Reflected o-ray (total internal reflection) */}
+            <g transform="translate(185, 50)">
+              <line x1="0" y1="50" x2="0" y2="0" stroke="#ef4444" strokeWidth="2" strokeDasharray="3 2" />
+              <line x1="0" y1="0" x2="-40" y2="-30" stroke="#ef4444" strokeWidth="2" strokeDasharray="3 2" />
+              <text x="-25" y="-35" fontSize="9" fill="#ef4444">{isZh ? 'O光全反射' : 'O-ray TIR'}</text>
+            </g>
+
+            {/* Specifications */}
+            <g transform="translate(30, 175)">
+              <text fontSize="9" fill={isDark ? '#94a3b8' : '#64748b'}>{isZh ? '消光比: >100,000:1 | 接收角: 15-20° | 透射率: >90%' : 'ER: >100,000:1 | Acceptance: 15-20° | T: >90%'}</text>
+            </g>
+          </svg>
+        )
+
+      default:
+        return (
+          <svg viewBox="0 0 400 200" className="w-full h-full">
+            <rect width="400" height="200" fill={isDark ? '#0f172a' : '#f8fafc'} />
+            <text x="200" y="100" fontSize="14" fill={isDark ? '#64748b' : '#94a3b8'} textAnchor="middle">
+              {isZh ? '详细图示开发中...' : 'Detailed diagram coming soon...'}
+            </text>
+          </svg>
+        )
+    }
+  }
+
+  return (
+    <div className={cn(
+      'rounded-xl border overflow-hidden mb-6',
+      isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-gray-50 border-gray-200'
+    )}>
+      <div className={cn(
+        'px-4 py-2 border-b text-sm font-medium',
+        isDark ? 'bg-slate-800 border-slate-700 text-gray-300' : 'bg-gray-100 border-gray-200 text-gray-600'
+      )}>
+        {isZh ? '工作原理图解' : 'Working Principle Diagram'}
+      </div>
+      <div className="p-4">
+        <div className="aspect-[2/1] max-h-[250px]">
+          {renderDiagram()}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // Device detail modal component
 function DeviceDetailModal({ device, onClose }: { device: Device; onClose: () => void }) {
   const { theme } = useTheme()
@@ -615,7 +895,7 @@ function DeviceDetailModal({ device, onClose }: { device: Device; onClose: () =>
 
       {/* Modal */}
       <div className={cn(
-        'relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl p-6',
+        'relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl p-6',
         theme === 'dark' ? 'bg-slate-900 border border-slate-700' : 'bg-white'
       )}>
         {/* Close button */}
@@ -632,10 +912,10 @@ function DeviceDetailModal({ device, onClose }: { device: Device; onClose: () =>
         {/* Header */}
         <div className="flex items-start gap-4 mb-6">
           <div className={cn(
-            'w-20 h-20 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden',
+            'w-24 h-24 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden',
             theme === 'dark' ? 'bg-indigo-500/10' : 'bg-indigo-50'
           )}>
-            <IconComponent size={72} theme={theme} />
+            <IconComponent size={88} theme={theme} />
           </div>
           <div>
             <h2 className={cn(
@@ -651,6 +931,9 @@ function DeviceDetailModal({ device, onClose }: { device: Device; onClose: () =>
             </div>
           </div>
         </div>
+
+        {/* Detailed Diagram */}
+        <DeviceDiagram device={device} theme={theme} isZh={isZh} />
 
         {/* Description */}
         <div className="mb-6">

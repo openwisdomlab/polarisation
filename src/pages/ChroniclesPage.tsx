@@ -2,12 +2,11 @@
  * Chronicles Page - History of Light and Polarization
  * 光的编年史 - 双线叙事：广义光学 + 偏振光
  *
- * Interactive dual-timeline showcasing key discoveries:
- * - Left track: General optics history (核心光学发现)
- * - Right track: Polarization-specific history (偏振光专属旅程)
+ * REDESIGNED: Center timeline with optics on left, polarization on right
+ * NEW: Interactive optical knowledge graph
  */
 
-import { useState } from 'react'
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -16,8 +15,8 @@ import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
 import { Tabs, Badge } from '@/components/shared'
 import {
   Home, Clock, User, Lightbulb, BookOpen, X, MapPin, Calendar,
-  FlaskConical, Star, ChevronDown, ChevronUp, ChevronLeft, ChevronRight,
-  Sun, Sparkles, ExternalLink
+  Star, ChevronLeft, ChevronRight,
+  Sun, Sparkles, Network, Filter, ZoomIn, ZoomOut, Maximize2
 } from 'lucide-react'
 
 // Timeline events data - 双轨历史数据
@@ -67,6 +66,8 @@ interface TimelineEvent {
     en: string
     zh: string
   }
+  // For knowledge graph connections
+  relatedConcepts?: string[]
 }
 
 const TIMELINE_EVENTS: TimelineEvent[] = [
@@ -83,28 +84,15 @@ const TIMELINE_EVENTS: TimelineEvent[] = [
     importance: 1,
     track: 'optics',
     details: {
-      en: [
-        'n₁ sin θ₁ = n₂ sin θ₂',
-        'Fundamental law relating incident and refracted angles',
-        'Foundation for understanding lenses and optical instruments'
-      ],
-      zh: [
-        'n₁ sin θ₁ = n₂ sin θ₂',
-        '建立入射角与折射角关系的基本定律',
-        '理解透镜和光学仪器的基础'
-      ]
+      en: ['n₁ sin θ₁ = n₂ sin θ₂', 'Fundamental law relating incident and refracted angles', 'Foundation for understanding lenses and optical instruments'],
+      zh: ['n₁ sin θ₁ = n₂ sin θ₂', '建立入射角与折射角关系的基本定律', '理解透镜和光学仪器的基础']
     },
     scientistBio: {
-      birthYear: 1580,
-      deathYear: 1626,
-      nationality: 'Dutch',
-      portraitEmoji: '📏',
-      bioEn: 'Willebrord Snellius was a Dutch astronomer and mathematician. He independently discovered the law of refraction in 1621, though it was not published during his lifetime.',
-      bioZh: '威理博·斯涅尔是荷兰天文学家和数学家。他于1621年独立发现了折射定律，但在他生前未曾发表。'
+      birthYear: 1580, deathYear: 1626, nationality: 'Dutch', portraitEmoji: '📏',
+      bioEn: 'Willebrord Snellius was a Dutch astronomer and mathematician.',
+      bioZh: '威理博·斯涅尔是荷兰天文学家和数学家。'
     },
-    references: [
-      { title: 'Dijksterhuis, F. J. (2004). Lenses and Waves', url: 'https://link.springer.com/book/10.1007/1-4020-2698-8' }
-    ]
+    relatedConcepts: ['refraction', 'geometric-optics', 'lenses']
   },
   {
     year: 1665,
@@ -118,217 +106,20 @@ const TIMELINE_EVENTS: TimelineEvent[] = [
     importance: 1,
     track: 'optics',
     details: {
-      en: [
-        'Performed in his room at Trinity College, Cambridge during plague lockdown',
-        'Showed white light splits into red, orange, yellow, green, blue, indigo, violet',
-        'Proved colors are inherent properties of light, not added by the prism'
-      ],
-      zh: [
-        '在瘟疫封锁期间于剑桥三一学院的房间里进行',
-        '展示白光分解为红、橙、黄、绿、蓝、靛、紫',
-        '证明颜色是光的固有属性，而非棱镜添加'
-      ]
+      en: ['Performed during plague lockdown at Cambridge', 'Showed white light splits into spectrum', 'Proved colors are inherent properties of light'],
+      zh: ['在瘟疫封锁期间于剑桥进行', '展示白光分解为光谱', '证明颜色是光的固有属性']
     },
     story: {
-      en: `In 1665, the Great Plague forced Cambridge University to close. A young Isaac Newton, just 23, retreated to his family's farm at Woolsthorpe Manor. There, in isolation, he would have his "annus mirabilis" — his miracle year.
-
-He purchased a glass prism at a country fair, more a toy than a scientific instrument. Back in his darkened room, he drilled a small hole in the window shutter, letting a single beam of sunlight enter.
-
-When the white beam passed through the prism, it spread into a rainbow — a spectrum of colors from red to violet stretched across the opposite wall. But Newton wasn't satisfied with just observing. He placed a second prism in the path of just one color. That color passed through unchanged.
-
-"Light itself is a heterogeneous mixture," he realized. White light wasn't simple; it was a combination of all colors. The prism didn't create colors — it revealed them.
-
-This insight, born in plague-time isolation, became the foundation of spectroscopy. Centuries later, astronomers would use the same principle to discover the composition of distant stars.`,
-      zh: `1665年，大瘟疫迫使剑桥大学关闭。年仅23岁的艾萨克·牛顿回到了家乡伍尔斯索普庄园。在那里，在隔离中，他将迎来他的"奇迹年"。
-
-他在一个乡村集市上买了一块玻璃棱镜，与其说是科学仪器，不如说是玩具。回到他昏暗的房间，他在窗板上钻了一个小孔，让一束阳光射入。
-
-当白光穿过棱镜时，它展开成一道彩虹——从红到紫的光谱在对面墙上伸展。但牛顿并不满足于观察。他在一种颜色的路径上放置了第二个棱镜。那种颜色原封不动地通过了。
-
-"光本身是一种异质混合物，"他意识到。白光不是单一的；它是所有颜色的组合。棱镜不是创造颜色——它揭示颜色。
-
-这一洞见诞生于瘟疫隔离期间，成为光谱学的基础。几个世纪后，天文学家将使用同样的原理来发现遥远恒星的成分。`
+      en: `In 1665, the Great Plague forced Cambridge University to close. A young Isaac Newton, just 23, retreated to his family's farm. There, he purchased a glass prism at a country fair. When the white beam passed through the prism, it spread into a rainbow — a spectrum of colors. This insight became the foundation of spectroscopy.`,
+      zh: `1665年，大瘟疫迫使剑桥大学关闭。年仅23岁的牛顿回到家乡。他在集市上买了一块玻璃棱镜。当白光穿过棱镜时，它展开成一道彩虹——从红到紫的光谱。这一洞见成为光谱学的基础。`
     },
     scientistBio: {
-      birthYear: 1643,
-      deathYear: 1727,
-      nationality: 'English',
-      portraitEmoji: '🍎',
-      bioEn: 'Sir Isaac Newton was an English mathematician, physicist, and astronomer. He made seminal contributions to optics, calculus, and mechanics. His work "Opticks" (1704) laid the foundation for the corpuscular theory of light.',
-      bioZh: '艾萨克·牛顿爵士是英国数学家、物理学家和天文学家。他对光学、微积分和力学做出了开创性贡献。他的著作《光学》（1704）奠定了光的微粒理论基础。'
+      birthYear: 1643, deathYear: 1727, nationality: 'English', portraitEmoji: '🍎',
+      bioEn: 'Sir Isaac Newton made seminal contributions to optics, calculus, and mechanics.',
+      bioZh: '艾萨克·牛顿爵士对光学、微积分和力学做出了开创性贡献。'
     },
-    scene: {
-      location: 'Woolsthorpe Manor, Lincolnshire, England',
-      season: 'Summer',
-      mood: 'discovery'
-    },
-    references: [
-      { title: 'Newton, I. (1704). Opticks' },
-      { title: 'Westfall, R. S. (1980). Never at Rest: A Biography of Isaac Newton' }
-    ]
+    relatedConcepts: ['dispersion', 'spectrum', 'color-theory']
   },
-  {
-    year: 1676,
-    titleEn: 'First Measurement of Light Speed',
-    titleZh: '首次测量光速',
-    descriptionEn: 'Ole Rømer calculates the speed of light by observing the moons of Jupiter, proving light travels at finite speed.',
-    descriptionZh: '奥勒·罗默通过观测木星卫星计算出光速，证明光以有限速度传播。',
-    scientistEn: 'Ole Rømer',
-    scientistZh: '奥勒·罗默',
-    category: 'discovery',
-    importance: 1,
-    track: 'optics',
-    details: {
-      en: [
-        'Observed delays in eclipses of Jupiter\'s moon Io',
-        'Calculated light speed as approximately 220,000 km/s (close to modern value)',
-        'First proof that light doesn\'t travel instantaneously'
-      ],
-      zh: [
-        '观测到木卫一被木星遮挡时间的延迟',
-        '计算出光速约为220,000公里/秒（接近现代数值）',
-        '首次证明光不是瞬时传播'
-      ]
-    },
-    scientistBio: {
-      birthYear: 1644,
-      deathYear: 1710,
-      nationality: 'Danish',
-      portraitEmoji: '🪐',
-      bioEn: 'Ole Rømer was a Danish astronomer who made the first quantitative measurements of the speed of light. He later became the mayor of Copenhagen and reformed Danish weights and measures.',
-      bioZh: '奥勒·罗默是丹麦天文学家，首次对光速进行了定量测量。后来他成为哥本哈根市长，并改革了丹麦的度量衡制度。'
-    },
-    references: [
-      { title: 'Cohen, I. B. (1940). Roemer and the First Determination of the Velocity of Light' }
-    ]
-  },
-  {
-    year: 1801,
-    titleEn: 'Young\'s Double-Slit Experiment',
-    titleZh: '杨氏双缝实验',
-    descriptionEn: 'Thomas Young demonstrates light interference, providing strong evidence for the wave theory of light.',
-    descriptionZh: '托马斯·杨演示了光的干涉现象，为光的波动理论提供了有力证据。',
-    scientistEn: 'Thomas Young',
-    scientistZh: '托马斯·杨',
-    category: 'experiment',
-    importance: 1,
-    track: 'optics',
-    details: {
-      en: [
-        'Light passing through two narrow slits creates an interference pattern',
-        'Bright and dark bands prove wave-like behavior of light',
-        'Challenged Newton\'s corpuscular theory',
-        'Foundation for quantum mechanics (later, with electrons)'
-      ],
-      zh: [
-        '光通过两条狭缝后产生干涉图案',
-        '明暗条纹证明了光的波动性',
-        '挑战了牛顿的微粒说',
-        '量子力学的基础（后来用于电子）'
-      ]
-    },
-    story: {
-      en: `In 1801, Thomas Young — physician, polymath, and decoder of Egyptian hieroglyphics — performed one of the most beautiful experiments in physics.
-
-He let sunlight pass through a tiny pinhole, then through two closely spaced slits. On the screen behind, instead of two bright lines, he saw something magical: a series of alternating bright and dark bands, like ripples on a pond meeting and interfering.
-
-"Light behaves as a wave," Young concluded. When the peaks of two waves align, they add up (bright). When a peak meets a trough, they cancel (dark). This simple experiment dealt a devastating blow to Newton's beloved particle theory.
-
-Young's contemporaries largely ignored him — Newton's authority was too great. But decades later, Fresnel would build on Young's work to create a complete mathematical theory of light waves. Young lived to see his vindication.
-
-Today, the double-slit experiment remains so profound that Richard Feynman called it "a phenomenon which contains the only mystery" of quantum mechanics.`,
-      zh: `1801年，托马斯·杨——医生、博学家、埃及象形文字解读者——进行了物理学史上最美丽的实验之一。
-
-他让阳光通过一个小孔，然后通过两条紧密相邻的狭缝。在后面的屏幕上，他看到的不是两条亮线，而是一系列神奇的明暗交替条纹，就像池塘中相遇并干涉的波纹。
-
-"光像波一样传播，"杨得出结论。当两个波的波峰对齐时，它们叠加（亮）。当波峰遇到波谷时，它们抵消（暗）。这个简单的实验对牛顿钟爱的微粒理论造成了毁灭性打击。
-
-杨的同时代人大多忽视他——牛顿的权威太大了。但几十年后，菲涅尔将在杨的工作基础上建立完整的光波数学理论。杨在有生之年看到了自己的平反。
-
-今天，双缝实验仍然如此深刻，以至于理查德·费曼称它为"包含量子力学唯一奥秘的现象"。`
-    },
-    scientistBio: {
-      birthYear: 1773,
-      deathYear: 1829,
-      nationality: 'English',
-      portraitEmoji: '🌊',
-      bioEn: 'Thomas Young was an English polymath who made important contributions to physics, physiology, and Egyptology. Besides the double-slit experiment, he helped decipher the Rosetta Stone and proposed the trichromatic theory of color vision.',
-      bioZh: '托马斯·杨是英国博学家，在物理学、生理学和埃及学方面做出了重要贡献。除了双缝实验，他还帮助解读了罗塞塔石碑，并提出了三色视觉理论。'
-    },
-    scene: {
-      location: 'London, England',
-      season: 'Spring',
-      mood: 'elegance'
-    },
-    references: [
-      { title: 'Young, T. (1802). On the Theory of Light and Colours' },
-      { title: 'Robinson, A. (2006). The Last Man Who Knew Everything: Thomas Young' }
-    ]
-  },
-  {
-    year: 1865,
-    titleEn: 'Maxwell\'s Electromagnetic Theory',
-    titleZh: '麦克斯韦电磁理论',
-    descriptionEn: 'James Clerk Maxwell unifies electricity, magnetism, and optics, showing light is an electromagnetic wave.',
-    descriptionZh: '詹姆斯·克拉克·麦克斯韦统一了电、磁和光学，证明光是电磁波。',
-    scientistEn: 'James Clerk Maxwell',
-    scientistZh: '詹姆斯·克拉克·麦克斯韦',
-    category: 'theory',
-    importance: 1,
-    track: 'optics',
-    details: {
-      en: [
-        'Four elegant equations describe all electromagnetic phenomena',
-        'Predicted the speed of electromagnetic waves matches light speed',
-        'Light is oscillating electric and magnetic fields',
-        'Foundation for radio, TV, wireless communication'
-      ],
-      zh: [
-        '四个优雅的方程描述所有电磁现象',
-        '预测电磁波速度与光速相同',
-        '光是振荡的电场和磁场',
-        '无线电、电视、无线通信的基础'
-      ]
-    },
-    story: {
-      en: `In 1865, James Clerk Maxwell wrote down four equations that would change humanity forever. Working at his estate in Glenlair, Scotland, he unified two seemingly unrelated forces — electricity and magnetism — into a single, beautiful theory.
-
-Then came the revelation: from his equations, he derived that electromagnetic disturbances travel as waves at a speed of about 310,000 km/s. This was suspiciously close to the known speed of light.
-
-"We can scarcely avoid the inference," Maxwell wrote with understated British reserve, "that light consists in the transverse undulations of the same medium which is the cause of electric and magnetic phenomena."
-
-Light itself was an electromagnetic wave! The colors we see, the warmth of the sun, the signals in our phones — all manifestations of the same fundamental phenomenon, described by four simple equations.
-
-Einstein later called Maxwell's work "the most profound and the most fruitful that physics has experienced since the time of Newton." Maxwell died young at 48, just before Hertz experimentally confirmed his predictions. He never knew how thoroughly he had revolutionized human civilization.`,
-      zh: `1865年，詹姆斯·克拉克·麦克斯韦写下了将永远改变人类的四个方程。在他位于苏格兰格伦莱尔的庄园工作时，他将两种看似无关的力——电和磁——统一成一个单一而美丽的理论。
-
-然后启示来了：从他的方程中，他推导出电磁扰动以约310,000公里/秒的速度以波的形式传播。这与已知的光速惊人地接近。
-
-"我们几乎不可能避免这样的推论，"麦克斯韦以含蓄的英国风格写道，"光由同一介质的横向波动组成，而这种介质正是电磁现象的原因。"
-
-光本身就是电磁波！我们看到的颜色、太阳的温暖、手机中的信号——都是同一基本现象的表现，由四个简单的方程描述。
-
-爱因斯坦后来称麦克斯韦的工作是"自牛顿以来物理学经历的最深刻、最富有成果的工作"。麦克斯韦年仅48岁便英年早逝，就在赫兹实验验证他的预测之前。他从未知道自己多么彻底地改变了人类文明。`
-    },
-    scientistBio: {
-      birthYear: 1831,
-      deathYear: 1879,
-      nationality: 'Scottish',
-      portraitEmoji: '⚡',
-      bioEn: 'James Clerk Maxwell was a Scottish physicist who formulated classical electromagnetic theory. His equations unified electricity, magnetism, and optics into a single coherent framework. He also made significant contributions to statistical mechanics and the theory of color.',
-      bioZh: '詹姆斯·克拉克·麦克斯韦是苏格兰物理学家，建立了经典电磁理论。他的方程将电、磁和光学统一成一个连贯的框架。他还对统计力学和色彩理论做出了重要贡献。'
-    },
-    scene: {
-      location: 'Glenlair, Scotland',
-      season: 'Autumn',
-      mood: 'unification'
-    },
-    references: [
-      { title: 'Maxwell, J. C. (1865). A Dynamical Theory of the Electromagnetic Field' },
-      { title: 'Mahon, B. (2003). The Man Who Changed Everything: The Life of James Clerk Maxwell' }
-    ]
-  },
-  // ===== 偏振光轨道 (Polarization Track) =====
   {
     year: 1669,
     titleEn: 'Discovery of Double Refraction',
@@ -341,53 +132,41 @@ Einstein later called Maxwell's work "the most profound and the most fruitful th
     importance: 1,
     track: 'polarization',
     details: {
-      en: [
-        'Bartholin observed that objects viewed through Iceland spar (calcite) appeared double',
-        'He called the phenomenon "strange refraction"',
-        'This discovery would later be explained by polarization theory'
-      ],
-      zh: [
-        '巴托林观察到通过冰洲石（方解石）观看物体会出现双像',
-        '他称这一现象为"奇异折射"',
-        '这一发现后来被偏振理论所解释'
-      ]
+      en: ['Objects viewed through Iceland spar appeared double', 'Called the phenomenon "strange refraction"', 'Later explained by polarization theory'],
+      zh: ['通过冰洲石观看物体会出现双像', '称这一现象为"奇异折射"', '后来被偏振理论所解释']
     },
-    references: [
-      { title: 'Bartholin, E. (1669). Experimenta crystalli Islandici disdiaclastici' }
-    ],
     story: {
-      en: `The year was 1669, in the ancient university city of Copenhagen. Professor Erasmus Bartholin sat in his study, surrounded by the curiosities that sailors brought back from distant Iceland — transparent crystals they called "Iceland spar."
-
-As the afternoon sun slanted through his window, Bartholin placed one of these rhombohedral crystals on a sheet of paper marked with a single dot. He blinked in disbelief. Where there should have been one dot, he now saw two, perfectly clear and distinct.
-
-He rotated the crystal. One image stayed still while the other danced around it in a circle. "What sorcery is this?" he muttered, rubbing his eyes. But the phenomenon persisted, day after day, crystal after crystal.
-
-Bartholin had stumbled upon something that would puzzle the greatest minds for the next century and a half — light could somehow split itself in two. He called it "strange refraction," never knowing he had opened the door to an entirely new understanding of light itself.
-
-Little did he know that this transparent stone from the frozen north would one day revolutionize everything from sunglasses to LCD screens.`,
-      zh: `1669年，丹麦哥本哈根这座古老的大学城里。伊拉斯谟·巴托林教授坐在他的书房中，四周摆满了水手们从遥远的冰岛带回的奇珍异物——一种被称为"冰洲石"的透明晶体。
-
-当午后的阳光斜射进窗户，巴托林将一块菱形晶体放在一张画有单点的纸上。他不敢相信自己的眼睛——本应只有一个点，他却清晰地看到了两个！
-
-他转动晶体。一个像保持不动，另一个却绕着它旋转。"这是什么魔法？"他喃喃自语，揉了揉眼睛。但这现象日复一日、晶体复晶体地持续着。
-
-巴托林偶然发现了一个将困扰此后一个半世纪最伟大头脑的谜题——光竟然能够一分为二。他称之为"奇异折射"，却从未想到自己已经推开了一扇通往全新光学世界的大门。
-
-他不会知道，这块来自冰封北方的透明石头，有朝一日将彻底改变从太阳镜到液晶屏幕的一切。`
+      en: `In 1669, in Copenhagen, Professor Erasmus Bartholin placed a crystal of Iceland spar on a paper marked with a single dot. He saw two dots! As he rotated the crystal, one image stayed still while the other danced around it. He had stumbled upon birefringence.`,
+      zh: `1669年，哥本哈根的巴托林教授将一块冰洲石放在画有单点的纸上。他看到了两个点！当他转动晶体时，一个像保持不动，另一个却绕着它旋转。他偶然发现了双折射现象。`
     },
     scientistBio: {
-      birthYear: 1625,
-      deathYear: 1698,
-      nationality: 'Danish',
-      portraitEmoji: '👨‍🔬',
-      bioEn: 'Erasmus Bartholin was a Danish physician, mathematician, and physicist. Besides his famous discovery of double refraction, he made significant contributions to medicine and was one of the first to describe the properties of quinine for treating malaria.',
-      bioZh: '伊拉斯谟·巴托林是丹麦医生、数学家和物理学家。除了著名的双折射发现外，他还对医学做出了重要贡献，是最早描述奎宁治疗疟疾特性的人之一。'
+      birthYear: 1625, deathYear: 1698, nationality: 'Danish', portraitEmoji: '👨‍🔬',
+      bioEn: 'Erasmus Bartholin was a Danish physician, mathematician, and physicist.',
+      bioZh: '伊拉斯谟·巴托林是丹麦医生、数学家和物理学家。'
     },
-    scene: {
-      location: 'Copenhagen, Denmark',
-      season: 'Autumn',
-      mood: 'curiosity'
-    }
+    relatedConcepts: ['birefringence', 'calcite', 'crystal-optics']
+  },
+  {
+    year: 1676,
+    titleEn: 'First Measurement of Light Speed',
+    titleZh: '首次测量光速',
+    descriptionEn: 'Ole Rømer calculates the speed of light by observing the moons of Jupiter.',
+    descriptionZh: '奥勒·罗默通过观测木星卫星计算出光速，证明光以有限速度传播。',
+    scientistEn: 'Ole Rømer',
+    scientistZh: '奥勒·罗默',
+    category: 'discovery',
+    importance: 1,
+    track: 'optics',
+    details: {
+      en: ['Observed delays in eclipses of Jupiter\'s moon Io', 'Calculated light speed as ~220,000 km/s', 'First proof that light doesn\'t travel instantaneously'],
+      zh: ['观测到木卫一被木星遮挡时间的延迟', '计算出光速约为220,000公里/秒', '首次证明光不是瞬时传播']
+    },
+    scientistBio: {
+      birthYear: 1644, deathYear: 1710, nationality: 'Danish', portraitEmoji: '🪐',
+      bioEn: 'Ole Rømer was a Danish astronomer who made the first quantitative measurements of the speed of light.',
+      bioZh: '奥勒·罗默是丹麦天文学家，首次对光速进行了定量测量。'
+    },
+    relatedConcepts: ['speed-of-light', 'astronomy', 'measurement']
   },
   {
     year: 1690,
@@ -401,64 +180,51 @@ Little did he know that this transparent stone from the frozen north would one d
     importance: 1,
     track: 'optics',
     details: {
-      en: [
-        'Published "Treatise on Light" (Traité de la Lumière)',
-        'Introduced the wavelet construction method (Huygens\' principle)',
-        'Explained ordinary and extraordinary rays in calcite using different wave velocities'
-      ],
-      zh: [
-        '出版《光论》（Traité de la Lumière）',
-        '提出波动构造法（惠更斯原理）',
-        '用不同的波速解释了方解石中的寻常光和非常光'
-      ]
+      en: ['Published "Treatise on Light"', 'Introduced Huygens\' principle (wavelet construction)', 'Explained ordinary and extraordinary rays using different wave velocities'],
+      zh: ['出版《光论》', '提出惠更斯原理（波动构造法）', '用不同的波速解释了寻常光和非常光']
     },
     story: {
-      en: `In the candlelit study of The Hague, 1690, Christiaan Huygens — clockmaker, astronomer, and one of Europe's greatest minds — turned over Bartholin's calcite crystal in his weathered hands. The mystery of the double image had haunted him for years.
-
-Newton's corpuscular theory said light was made of particles. But particles couldn't explain this. Huygens had another idea: what if light was a wave, rippling through an invisible "ether" that filled all space?
-
-He imagined each point on a wavefront as a tiny source of new wavelets, spreading outward like ripples from raindrops on a pond. This simple idea would become "Huygens' Principle" — still taught in physics classes today.
-
-But the Iceland spar demanded more. Huygens proposed something radical: inside the crystal, there existed not one but two types of waves, traveling at different speeds in different directions. One obeyed normal rules; the other was "extraordinary."
-
-His theory was elegant, almost magical in its beauty. Yet even Huygens could not fully explain why light split in two. That secret would require another century — and the concept of polarization — to unlock.
-
-In his dedication, he wrote: "One finds in this subject a kind of demonstration which brings with it a degree of certainty equal to that of Geometry." He was a prophet of the wave nature of light, vindicated only after his death.`,
-      zh: `1690年，海牙。烛光摇曳的书房里，克里斯蒂安·惠更斯——钟表匠、天文学家，欧洲最伟大的头脑之一——用他那饱经风霜的双手翻转着巴托林的方解石晶体。双像之谜已困扰他多年。
-
-牛顿的微粒说认为光是由粒子组成的。但粒子无法解释眼前的现象。惠更斯有另一个想法：如果光是一种波，在充满整个空间的无形"以太"中荡漾呢？
-
-他想象波前的每一个点都是一个微小的波源，向四周散开，就像池塘里雨滴激起的涟漪。这个简单的想法后来成为"惠更斯原理"——至今仍在物理课堂上讲授。
-
-但冰洲石需要更深入的解释。惠更斯提出了一个激进的设想：在晶体内部，存在的不是一种而是两种波，它们以不同的速度沿不同方向传播。一种遵循正常规则；另一种则是"非常"的。
-
-他的理论优雅至极，几乎有一种魔幻的美。然而即使是惠更斯，也无法完全解释光为何一分为二。这个秘密还需要再等一个世纪——等待"偏振"概念的诞生。
-
-他在献词中写道："在这门学科中，人们会发现一种论证方式，它所带来的确定性程度等同于几何学。"他是光波动性的先知，但直到身后才得到证明。`
+      en: `In 1690, Huygens imagined each point on a wavefront as a tiny source of new wavelets, spreading outward like ripples on a pond. This "Huygens' Principle" elegantly explained reflection and refraction. Inside crystals, he proposed two types of waves traveling at different speeds.`,
+      zh: `1690年，惠更斯想象波前的每一个点都是一个微小的波源，向四周散开，就像池塘里的涟漪。这个"惠更斯原理"优雅地解释了反射和折射。在晶体内部，他提出存在两种以不同速度传播的波。`
     },
     scientistBio: {
-      birthYear: 1629,
-      deathYear: 1695,
-      nationality: 'Dutch',
-      portraitEmoji: '🔭',
-      bioEn: 'Christiaan Huygens was a Dutch polymath who made groundbreaking contributions to optics, astronomy, and mechanics. He invented the pendulum clock, discovered Saturn\'s moon Titan, and correctly described Saturn\'s rings. His wave theory of light, though initially overshadowed by Newton\'s corpuscular theory, was eventually proven correct.',
-      bioZh: '克里斯蒂安·惠更斯是荷兰博学家，在光学、天文学和力学领域做出了开创性贡献。他发明了摆钟，发现了土星的卫星土卫六，并正确描述了土星环。他的光波动理论虽然最初被牛顿的微粒说所掩盖，但最终被证明是正确的。'
+      birthYear: 1629, deathYear: 1695, nationality: 'Dutch', portraitEmoji: '🔭',
+      bioEn: 'Christiaan Huygens was a Dutch polymath who made groundbreaking contributions to optics and astronomy.',
+      bioZh: '克里斯蒂安·惠更斯是荷兰博学家，在光学和天文学领域做出了开创性贡献。'
     },
-    scene: {
-      location: 'The Hague, Netherlands',
-      season: 'Winter',
-      mood: 'contemplation'
+    relatedConcepts: ['wave-theory', 'huygens-principle', 'diffraction']
+  },
+  {
+    year: 1801,
+    titleEn: 'Young\'s Double-Slit Experiment',
+    titleZh: '杨氏双缝实验',
+    descriptionEn: 'Thomas Young demonstrates light interference, providing strong evidence for the wave theory of light.',
+    descriptionZh: '托马斯·杨演示了光的干涉现象，为光的波动理论提供了有力证据。',
+    scientistEn: 'Thomas Young',
+    scientistZh: '托马斯·杨',
+    category: 'experiment',
+    importance: 1,
+    track: 'optics',
+    details: {
+      en: ['Light through two slits creates interference pattern', 'Bright and dark bands prove wave-like behavior', 'Foundation for quantum mechanics (later)'],
+      zh: ['光通过两条狭缝后产生干涉图案', '明暗条纹证明了光的波动性', '量子力学的基础（后来）']
     },
-    references: [
-      { title: 'Huygens, C. (1690). Traité de la Lumière' },
-      { title: 'Dijksterhuis, F. J. (2004). Lenses and Waves: Christiaan Huygens and the Mathematical Science of Optics' }
-    ]
+    story: {
+      en: `In 1801, Thomas Young let sunlight pass through two closely spaced slits. On the screen behind, instead of two bright lines, he saw alternating bright and dark bands — interference! "Light behaves as a wave," Young concluded.`,
+      zh: `1801年，托马斯·杨让阳光通过两条紧密相邻的狭缝。在后面的屏幕上，他看到的不是两条亮线，而是一系列明暗交替条纹——干涉！"光像波一样传播，"杨得出结论。`
+    },
+    scientistBio: {
+      birthYear: 1773, deathYear: 1829, nationality: 'English', portraitEmoji: '🌊',
+      bioEn: 'Thomas Young was an English polymath who helped decipher the Rosetta Stone and proposed trichromatic color vision.',
+      bioZh: '托马斯·杨是英国博学家，帮助解读了罗塞塔石碑，并提出了三色视觉理论。'
+    },
+    relatedConcepts: ['interference', 'wave-theory', 'double-slit']
   },
   {
     year: 1808,
     titleEn: 'Discovery of Polarization by Reflection',
     titleZh: '反射偏振的发现',
-    descriptionEn: 'Étienne-Louis Malus discovers that light reflected from glass becomes polarized while observing the Luxembourg Palace.',
+    descriptionEn: 'Étienne-Louis Malus discovers that light reflected from glass becomes polarized.',
     descriptionZh: '马吕斯在观察卢森堡宫时，发现玻璃反射的光会发生偏振。',
     scientistEn: 'Étienne-Louis Malus',
     scientistZh: '艾蒂安-路易·马吕斯',
@@ -466,60 +232,19 @@ In his dedication, he wrote: "One finds in this subject a kind of demonstration 
     importance: 1,
     track: 'polarization',
     details: {
-      en: [
-        'Malus was looking at the setting sun\'s reflection through a calcite crystal',
-        'He noticed the double image intensity changed as he rotated the crystal',
-        'Coined the term "polarization" for this phenomenon',
-        'This accidental discovery won him the French Academy prize'
-      ],
-      zh: [
-        '马吕斯当时正通过方解石晶体观看夕阳的反射',
-        '他注意到旋转晶体时双像的强度会发生变化',
-        '他创造了"偏振"一词来描述这一现象',
-        '这一偶然发现为他赢得了法国科学院奖'
-      ]
+      en: ['Looking at sunset through calcite crystal', 'Double image intensity changed as crystal rotated', 'Coined the term "polarization"'],
+      zh: ['通过方解石晶体观看夕阳的反射', '旋转晶体时双像的强度会变化', '创造了"偏振"一词']
     },
     story: {
-      en: `It was a golden autumn evening in Paris, 1808. The setting sun painted the windows of the Luxembourg Palace in brilliant orange as Étienne-Louis Malus gazed at the scene from his apartment on Rue d'Enfer — the "Street of Hell."
-
-The young military engineer, fresh from Napoleon's Egyptian campaign where desert sands had nearly claimed his eyesight, held a calcite crystal up to the light — a gift from a fellow soldier who knew of his fascination with optics.
-
-Looking through the crystal at the reflected sunlight from the palace windows, he expected to see the familiar double image. But something strange happened: as he rotated the crystal, one image faded while the other grew brighter, and then they reversed!
-
-Malus's heart raced. He ran into the street, trying window after window, glass after glass. The same effect, always at a certain angle. The reflected light was somehow... different. Changed. "Polarized," he would later call it, borrowing a term from magnetism.
-
-He had discovered — quite by accident, in the failing light of a Paris sunset — that ordinary glass could do what only rare crystals were thought capable of: create polarized light. The observation took mere seconds. The revolution it sparked would last forever.
-
-Years later, dying young from tuberculosis contracted in Egypt, Malus would be remembered not for his military service, but for that single magical moment when the setting sun revealed one of nature's deepest secrets.`,
-      zh: `1808年，巴黎的一个金色秋日傍晚。落日将卢森堡宫的窗户染成绚烂的橘色，艾蒂安-路易·马吕斯从他在"地狱街"的公寓里凝望着这幅美景。
-
-这位年轻的军事工程师刚从拿破仑的埃及远征归来，沙漠的风沙差点夺去他的视力。他手持一块方解石晶体对着光看——那是一位战友送的礼物，知道他对光学的痴迷。
-
-透过晶体观看宫殿窗户反射的阳光，他本以为会看到熟悉的双像。但奇怪的事情发生了：当他转动晶体时，一个像变淡，另一个却变亮，然后又互换了！
-
-马吕斯的心跳加速。他冲到街上，一扇窗接一扇窗、一块玻璃接一块玻璃地尝试。相同的效果，总是在特定角度出现。反射的光似乎……不同了。改变了。他后来称之为"偏振"，这个词借自磁学术语。
-
-他在巴黎落日的余晖中，完全出于偶然，发现了一个惊人的事实——普通玻璃也能做到只有稀有晶体才能做到的事：产生偏振光。这个观察只用了几秒钟，但它引发的革命将永远持续。
-
-多年后，马吕斯因在埃及感染的肺结核英年早逝。人们记住他，不是因为他的军旅生涯，而是因为那个神奇的瞬间——落日向他揭示了自然界最深奥的秘密之一。`
+      en: `It was a golden autumn evening in Paris, 1808. Malus held a calcite crystal up to the reflected sunlight from the Luxembourg Palace windows. As he rotated the crystal, one image faded while the other grew brighter! He had discovered polarization by reflection.`,
+      zh: `1808年，巴黎的一个金色秋日傍晚。马吕斯手持方解石晶体对着卢森堡宫窗户反射的阳光观看。当他转动晶体时，一个像变淡，另一个却变亮！他发现了反射偏振。`
     },
     scientistBio: {
-      birthYear: 1775,
-      deathYear: 1812,
-      nationality: 'French',
-      portraitEmoji: '🎖️',
-      bioEn: 'Étienne-Louis Malus was a French military engineer and physicist. He participated in Napoleon\'s Egyptian campaign (1798-1801) and nearly lost his eyesight to ophthalmia. Despite his short life, he made fundamental contributions to optics and won the Rumford Medal from the Royal Society. He died at just 37 from tuberculosis.',
-      bioZh: '艾蒂安-路易·马吕斯是法国军事工程师和物理学家。他参加了拿破仑的埃及远征（1798-1801），差点因眼炎失明。尽管他的生命短暂，但他对光学做出了根本性贡献，并获得了皇家学会的伦福德奖章。他年仅37岁便因肺结核去世。'
+      birthYear: 1775, deathYear: 1812, nationality: 'French', portraitEmoji: '🎖️',
+      bioEn: 'Étienne-Louis Malus was a French military engineer and physicist who participated in Napoleon\'s Egyptian campaign.',
+      bioZh: '艾蒂安-路易·马吕斯是法国军事工程师和物理学家，参加过拿破仑的埃及远征。'
     },
-    scene: {
-      location: 'Paris, France',
-      season: 'Autumn',
-      mood: 'serendipity'
-    },
-    references: [
-      { title: 'Malus, E. L. (1809). Sur une propriété de la lumière réfléchie' },
-      { title: 'Buchwald, J. Z. (1989). The Rise of the Wave Theory of Light: Optical Theory and Experiment in the Early Nineteenth Century' }
-    ]
+    relatedConcepts: ['polarization', 'reflection', 'malus-law']
   },
   {
     year: 1809,
@@ -533,57 +258,15 @@ Years later, dying young from tuberculosis contracted in Egypt, Malus would be r
     importance: 1,
     track: 'polarization',
     details: {
-      en: [
-        'The intensity of transmitted light follows a cosine-squared relationship',
-        'When θ = 90°, no light passes through (crossed polarizers)',
-        'This law is fundamental to all polarization applications'
-      ],
-      zh: [
-        '透射光强度遵循余弦平方关系',
-        '当 θ = 90° 时，没有光通过（正交偏振器）',
-        '这一定律是所有偏振应用的基础'
-      ]
-    },
-    story: {
-      en: `Following his sensational discovery, Malus became obsessed with understanding polarization. His laboratory in Paris became a realm of dancing light and spinning crystals.
-
-Night after night, by candlelight, he would stack two Iceland spar crystals and rotate one against the other, meticulously measuring the brightness of the transmitted beam. As the angle between them increased, the light dimmed according to a beautiful, simple pattern.
-
-When the crystals were aligned, light passed through unhindered. But as he rotated one crystal, the light gradually faded until — at exactly 90 degrees — darkness. Complete, utter darkness, as if the light had simply vanished from existence.
-
-"The intensity follows the square of the cosine," he wrote in his elegant French script. I = I₀ cos²θ. A simple formula that captured the essence of polarized light's behavior.
-
-This was no mere curiosity. Malus had discovered a fundamental law of nature — one that would later make possible everything from photography filters to liquid crystal displays. Every time you adjust a polarizing filter or watch a movie in 3D, you are witnessing Malus's Law in action.
-
-Tragically, Malus would not live to see his law's full impact. He died just three years later, at 37. But his elegant equation became immortal — carved into physics textbooks for eternity.`,
-      zh: `在那个轰动性发现之后，马吕斯开始痴迷于理解偏振现象。他在巴黎的实验室变成了一个充满跳跃光线和旋转晶体的世界。
-
-一夜又一夜，借着烛光，他将两块冰洲石晶体叠放，旋转其中一块，仔细测量透射光束的亮度。随着它们之间角度的增加，光线按照一种美丽而简单的规律逐渐变暗。
-
-当晶体对齐时，光线畅通无阻地通过。但当他旋转一块晶体时，光线逐渐减弱，直到——在恰好90度时——一片漆黑。完全的、彻底的黑暗，仿佛光线从存在中消失了一样。
-
-"强度遵循余弦的平方，"他用优雅的法语写道。I = I₀ cos²θ。一个简单的公式，却捕捉到了偏振光行为的精髓。
-
-这不仅仅是一个好奇心的发现。马吕斯发现了一条自然界的基本定律——这条定律后来使从摄影滤镜到液晶显示器的一切成为可能。每当你调整偏振滤镜或观看3D电影时，你都在目睹马吕斯定律的作用。
-
-悲剧的是，马吕斯没能活着看到他的定律产生的全部影响。他在三年后去世，年仅37岁。但他那优雅的方程式变得不朽——永远镌刻在物理教科书中。`
+      en: ['Intensity follows cosine-squared relationship', 'At θ = 90°, no light passes (crossed polarizers)', 'Fundamental to all polarization applications'],
+      zh: ['透射光强度遵循余弦平方关系', '当 θ = 90° 时，没有光通过', '所有偏振应用的基础']
     },
     scientistBio: {
-      birthYear: 1775,
-      deathYear: 1812,
-      nationality: 'French',
-      portraitEmoji: '🎖️',
-      bioEn: 'Étienne-Louis Malus was a French military engineer and physicist. He participated in Napoleon\'s Egyptian campaign (1798-1801) and nearly lost his eyesight to ophthalmia. Despite his short life, he made fundamental contributions to optics and won the Rumford Medal from the Royal Society. He died at just 37 from tuberculosis.',
-      bioZh: '艾蒂安-路易·马吕斯是法国军事工程师和物理学家。他参加了拿破仑的埃及远征（1798-1801），差点因眼炎失明。尽管他的生命短暂，但他对光学做出了根本性贡献，并获得了皇家学会的伦福德奖章。他年仅37岁便因肺结核去世。'
+      birthYear: 1775, deathYear: 1812, nationality: 'French', portraitEmoji: '🎖️',
+      bioEn: 'Malus died at just 37 from tuberculosis but his elegant equation became immortal.',
+      bioZh: '马吕斯年仅37岁便因肺结核去世，但他优雅的方程式变得不朽。'
     },
-    scene: {
-      location: 'Paris, France',
-      season: 'Winter',
-      mood: 'determination'
-    },
-    references: [
-      { title: 'Malus, E. L. (1810). Théorie de la double réfraction de la lumière' }
-    ]
+    relatedConcepts: ['malus-law', 'polarizer', 'intensity']
   },
   {
     year: 1811,
@@ -597,60 +280,15 @@ Tragically, Malus would not live to see his law's full impact. He died just thre
     importance: 2,
     track: 'polarization',
     details: {
-      en: [
-        'At Brewster\'s angle, reflected light is 100% polarized',
-        'The angle depends on the refractive indices of both media',
-        'tan(θB) = n₂/n₁',
-        'This principle is used in polarizing windows and laser optics'
-      ],
-      zh: [
-        '在布儒斯特角下，反射光100%偏振',
-        '该角度取决于两种介质的折射率',
-        'tan(θB) = n₂/n₁',
-        '这一原理被用于偏振窗和激光光学'
-      ]
-    },
-    story: {
-      en: `In the misty hills of Scotland, 1811, a young Presbyterian minister named David Brewster spent his evenings not in prayer, but in the pursuit of light. His nervous disposition made preaching unbearable, but in science, he found his true calling.
-
-Inspired by Malus's discovery across the Channel, Brewster set up a simple experiment: a beam of light striking a glass plate at various angles, viewed through his precious calcite crystal. Most angles gave partial polarization. But then — at one precise angle — the reflected beam became perfectly polarized.
-
-Night after night, he varied the angle by fractions of a degree, varied the materials — water, glass, diamond — and always found that magical angle. And he discovered something remarkable: this angle depended only on the ratio of refractive indices.
-
-tan(θB) = n₂/n₁
-
-Such elegant simplicity! The "Brewster angle" — as it would be known — was not arbitrary but dictated by the very nature of the materials involved.
-
-Brewster would go on to live a long, prolific life, inventing the kaleidoscope (which made him famous but earned him little money) and pioneering photography. But perhaps his most lasting gift was this: a precise angle where nature reveals its hidden structure, used today in every laser system and countless optical instruments.
-
-The minister who couldn't preach had found a different kind of sermon — written in angles and light.`,
-      zh: `1811年，苏格兰雾气缭绕的山丘间，一位名叫大卫·布儒斯特的年轻长老会牧师，将夜晚的时光不是花在祈祷上，而是花在追寻光的奥秘上。他紧张的性格让他无法忍受布道，但在科学中，他找到了自己真正的使命。
-
-受到海峡对岸马吕斯发现的启发，布儒斯特设计了一个简单的实验：让光束以不同角度照射玻璃板，然后通过他珍贵的方解石晶体观察。大多数角度只能产生部分偏振。但突然——在一个精确的角度——反射光束变得完美偏振！
-
-一夜又一夜，他以零点几度的精度改变角度，更换材料——水、玻璃、钻石——总能找到那个神奇的角度。他发现了一个惊人的规律：这个角度只取决于折射率之比。
-
-tan(θB) = n₂/n₁
-
-如此优雅的简洁！这个后来被称为"布儒斯特角"的角度，并非随意，而是由材料的本质特性所决定。
-
-布儒斯特后来过着漫长而多产的一生，发明了万花筒（使他声名鹊起但没赚到多少钱），并开创了摄影技术。但也许他最持久的贡献是这个：一个自然界揭示其隐藏结构的精确角度，如今被应用于每一个激光系统和无数光学仪器中。
-
-那位无法布道的牧师找到了另一种布道——用角度和光写成。`
+      en: ['At Brewster\'s angle, reflected light is 100% polarized', 'tan(θB) = n₂/n₁', 'Used in polarizing windows and laser optics'],
+      zh: ['在布儒斯特角下，反射光100%偏振', 'tan(θB) = n₂/n₁', '用于偏振窗和激光光学']
     },
     scientistBio: {
-      birthYear: 1781,
-      deathYear: 1868,
-      nationality: 'Scottish',
-      portraitEmoji: '🔬',
-      bioEn: 'Sir David Brewster was a Scottish physicist, mathematician, and inventor. Originally trained as a Presbyterian minister, he abandoned preaching due to stage fright. He invented the kaleidoscope, improved the stereoscope, and made fundamental discoveries in optics. He was knighted in 1831 and served as Principal of the University of Edinburgh.',
-      bioZh: '大卫·布儒斯特爵士是苏格兰物理学家、数学家和发明家。他最初受训成为长老会牧师，但因怯场而放弃布道。他发明了万花筒，改进了立体镜，并在光学领域做出了根本性发现。1831年被封为爵士，并担任爱丁堡大学校长。'
+      birthYear: 1781, deathYear: 1868, nationality: 'Scottish', portraitEmoji: '🔬',
+      bioEn: 'Sir David Brewster invented the kaleidoscope and pioneered photography.',
+      bioZh: '大卫·布儒斯特爵士发明了万花筒，并开创了摄影技术。'
     },
-    scene: {
-      location: 'Edinburgh, Scotland',
-      season: 'Spring',
-      mood: 'precision'
-    }
+    relatedConcepts: ['brewster-angle', 'reflection', 'polarization']
   },
   {
     year: 1815,
@@ -664,60 +302,19 @@ tan(θB) = n₂/n₁
     importance: 1,
     track: 'optics',
     details: {
-      en: [
-        'Proposed that light waves are transverse (perpendicular to propagation)',
-        'Developed Fresnel equations for reflection and transmission',
-        'Explained interference and diffraction mathematically',
-        'Invented the Fresnel lens for lighthouses'
-      ],
-      zh: [
-        '提出光波是横波（垂直于传播方向）',
-        '推导出菲涅尔反射和透射方程',
-        '用数学解释了干涉和衍射',
-        '发明了用于灯塔的菲涅尔透镜'
-      ]
+      en: ['Light waves are transverse (perpendicular to propagation)', 'Fresnel equations for reflection and transmission', 'Invented Fresnel lens for lighthouses'],
+      zh: ['光波是横波（垂直于传播方向）', '菲涅尔反射和透射方程', '发明了用于灯塔的菲涅尔透镜']
     },
     story: {
-      en: `In 1815, post-Napoleonic France was in chaos. Augustin-Jean Fresnel, a young civil engineer, had just lost his job for supporting the Bourbon restoration. Exiled to the countryside with nothing but time on his hands, he turned to an old obsession: the nature of light.
-
-Newton's particle theory had reigned supreme for a century. But Fresnel, lying sick in bed with tuberculosis, dared to challenge the great Newton himself. He believed light was a wave — but not the longitudinal wave Huygens had imagined.
-
-In a flash of insight that would change physics forever, Fresnel proposed that light waves were transverse — they vibrated perpendicular to their direction of travel, like waves on a rope, not like sound in air. This simple shift explained everything: polarization, double refraction, the patterns of light and shadow.
-
-He submitted his revolutionary paper to the French Academy's prize competition. The great physicist Siméon Poisson, trying to refute Fresnel's wave theory, pointed out an absurd prediction: if light were truly a wave, there should be a bright spot in the center of a circular shadow!
-
-"Ridiculous," Poisson declared. But when François Arago performed the experiment — there it was. A bright spot, exactly as predicted. The "Poisson spot" became the wave theory's greatest vindication.
-
-Fresnel died of tuberculosis at just 39, but not before inventing the lighthouse lens that would save countless lives at sea. His last words to Arago were reportedly: "I wish I had done more."
-
-The revolution he sparked continues to this day. Every polarizing sunglasses lens owes its existence to this sickly engineer who dared to defy Newton.`,
-      zh: `1815年，后拿破仑时代的法国一片混乱。年轻的土木工程师奥古斯丁-让·菲涅尔刚因支持波旁王朝复辟而失去工作。被流放到乡下，无所事事的他转向了一个老迷恋：光的本质。
-
-牛顿的微粒理论已统治了一个世纪。但身患肺结核、卧病在床的菲涅尔，竟敢挑战伟大的牛顿本人。他相信光是一种波——但不是惠更斯想象的那种纵波。
-
-在一道将永远改变物理学的灵感闪现中，菲涅尔提出光波是横波——它们的振动垂直于传播方向，就像绳子上的波，而不是空气中的声音。这个简单的转变解释了一切：偏振、双折射、光与影的图案。
-
-他将这篇革命性的论文提交给法国科学院的悬赏竞赛。伟大的物理学家西蒙·泊松试图反驳菲涅尔的波动理论，指出了一个荒谬的预测：如果光真的是波，那么圆形障碍物阴影的中心应该有一个亮点！
-
-"荒谬，"泊松宣称。但当弗朗索瓦·阿拉戈进行实验时——它真的出现了。一个亮点，与预测完全一致。"泊松亮斑"成为波动理论最伟大的证明。
-
-菲涅尔在年仅39岁时死于肺结核，但在此之前他发明了能在海上拯救无数生命的灯塔透镜。据说他对阿拉戈说的最后一句话是："我希望我能做更多。"
-
-他点燃的革命一直延续到今天。每一片偏振太阳镜镜片的存在，都要归功于这位敢于挑战牛顿的病弱工程师。`
+      en: `In 1815, Fresnel proposed that light waves were transverse — vibrating perpendicular to their direction of travel. When physicist Poisson mockingly predicted a bright spot in the center of a circular shadow, Arago performed the experiment — and found it. The "Poisson spot" vindicated wave theory.`,
+      zh: `1815年，菲涅尔提出光波是横波——振动垂直于传播方向。当物理学家泊松嘲讽地预测圆形阴影中心应有一个亮点时，阿拉戈做了实验——真的出现了。"泊松亮斑"证明了波动理论。`
     },
     scientistBio: {
-      birthYear: 1788,
-      deathYear: 1827,
-      nationality: 'French',
-      portraitEmoji: '🌊',
-      bioEn: 'Augustin-Jean Fresnel was a French civil engineer and physicist who fundamentally advanced the wave theory of light. Despite having little formal physics training and suffering from tuberculosis throughout his career, he developed the mathematics of light diffraction and invented the Fresnel lens used in lighthouses worldwide.',
-      bioZh: '奥古斯丁-让·菲涅尔是法国土木工程师和物理学家，从根本上推进了光的波动理论。尽管他几乎没有接受过正规的物理训练，且在整个职业生涯中饱受肺结核困扰，他仍发展出了光衍射的数学理论，并发明了全世界灯塔使用的菲涅尔透镜。'
+      birthYear: 1788, deathYear: 1827, nationality: 'French', portraitEmoji: '🌊',
+      bioEn: 'Augustin-Jean Fresnel was a French civil engineer who fundamentally advanced wave theory despite suffering from tuberculosis.',
+      bioZh: '奥古斯丁-让·菲涅尔是法国土木工程师，尽管饱受肺结核困扰，仍从根本上推进了波动理论。'
     },
-    scene: {
-      location: 'Paris, France',
-      season: 'Summer',
-      mood: 'revolution'
-    }
+    relatedConcepts: ['wave-theory', 'fresnel-equations', 'diffraction', 'transverse-wave']
   },
   {
     year: 1828,
@@ -731,60 +328,15 @@ The revolution he sparked continues to this day. Every polarizing sunglasses len
     importance: 2,
     track: 'polarization',
     details: {
-      en: [
-        'Made from two calcite prisms cemented with Canada balsam',
-        'Ordinary ray is totally internally reflected and absorbed',
-        'Extraordinary ray passes through as polarized light',
-        'Widely used in microscopy until modern polarizers'
-      ],
-      zh: [
-        '由两个用加拿大树脂胶合的方解石棱镜制成',
-        '寻常光全反射被吸收',
-        '非常光作为偏振光通过',
-        '在现代偏振片出现前广泛用于显微镜'
-      ]
-    },
-    story: {
-      en: `In a cramped workshop in Edinburgh, 1828, William Nicol — a Scottish geologist with skilled hands and an inventor's mind — wrestled with an ancient problem: how to create pure polarized light cheaply and reliably.
-
-Calcite crystals could split light into two beams, yes. But both beams remained, dancing together, confusing the observer. Nicol needed to eliminate one beam entirely.
-
-His solution was elegant in its simplicity. He took a single calcite rhomb and sawed it diagonally in half. Then, with the patience of a surgeon, he polished the cut surfaces flat and cemented them back together with Canada balsam — a clear resin from fir trees.
-
-The magic happened at that cemented interface. The ordinary ray, striking the balsam layer at just the right angle, was totally internally reflected away, absorbed by the blackened sides of the crystal. But the extraordinary ray passed through, emerging as perfectly polarized light.
-
-The "Nicol prism" was born — the first practical device to produce pure polarized light on demand.
-
-For the next century, Nicol prisms became essential tools in every optics laboratory. Geologists used them to study mineral crystals. Biologists examined cell structures. Chemists detected sugar concentrations.
-
-Nicol himself, modest to a fault, never patented his invention. He gave it freely to science. Today, plastic polarizers have largely replaced his elegant prisms, but in specialized applications where purity matters most, the Nicol prism endures — a testament to one craftsman's genius.`,
-      zh: `1828年，爱丁堡一间狭小的工作室里，威廉·尼科尔——一位手艺精湛、富有发明头脑的苏格兰地质学家——正与一个古老的难题搏斗：如何廉价而可靠地产生纯净的偏振光。
-
-方解石晶体确实能将光分成两束。但两束光同时存在，相互交织，让观察者困惑。尼科尔需要彻底消除其中一束。
-
-他的解决方案简洁而优雅。他取一块方解石菱面体，沿对角线锯成两半。然后，以外科医生般的耐心，他将切面打磨光滑，用加拿大香脂——一种来自冷杉树的透明树脂——将它们重新粘合在一起。
-
-魔法发生在那个胶合界面上。寻常光以恰当的角度撞击树脂层，发生全内反射，被晶体涂黑的侧面所吸收。而非常光则畅通无阻，作为完美的偏振光射出。
-
-"尼科尔棱镜"诞生了——第一个能按需产生纯净偏振光的实用装置。
-
-在接下来的一个世纪里，尼科尔棱镜成为每个光学实验室的必备工具。地质学家用它研究矿物晶体。生物学家检查细胞结构。化学家测定糖浓度。
-
-尼科尔本人过于谦虚，从未为他的发明申请专利。他将它无偿献给了科学。今天，塑料偏振片已基本取代了他优雅的棱镜，但在对纯度要求最高的专业应用中，尼科尔棱镜依然屹立——一位工匠天才的永恒见证。`
+      en: ['Two calcite prisms cemented with Canada balsam', 'Ordinary ray is totally internally reflected', 'Widely used in microscopy'],
+      zh: ['两个用加拿大树脂胶合的方解石棱镜', '寻常光全反射被吸收', '广泛用于显微镜']
     },
     scientistBio: {
-      birthYear: 1770,
-      deathYear: 1851,
-      nationality: 'Scottish',
-      portraitEmoji: '💎',
-      bioEn: 'William Nicol was a Scottish geologist and physicist, known for two major inventions: the Nicol prism for polarization and the technique of making thin sections of rocks and minerals for microscopic examination. He was modest about his achievements and never sought patents.',
-      bioZh: '威廉·尼科尔是苏格兰地质学家和物理学家，以两项重大发明闻名：用于偏振的尼科尔棱镜，以及制作岩石和矿物薄片以供显微镜检查的技术。他对自己的成就十分谦逊，从未申请专利。'
+      birthYear: 1770, deathYear: 1851, nationality: 'Scottish', portraitEmoji: '💎',
+      bioEn: 'William Nicol never patented his invention, giving it freely to science.',
+      bioZh: '威廉·尼科尔从未为他的发明申请专利，将它无偿献给了科学。'
     },
-    scene: {
-      location: 'Edinburgh, Scotland',
-      season: 'Autumn',
-      mood: 'craftsmanship'
-    }
+    relatedConcepts: ['nicol-prism', 'polarizer', 'calcite', 'total-internal-reflection']
   },
   {
     year: 1852,
@@ -798,60 +350,41 @@ Nicol himself, modest to a fault, never patented his invention. He gave it freel
     importance: 2,
     track: 'polarization',
     details: {
-      en: [
-        'Four parameters (S₀, S₁, S₂, S₃) completely describe any polarization state',
-        'Can represent partially polarized and unpolarized light',
-        'Enables mathematical treatment of polarization measurement',
-        'Foundation for modern polarimetry'
-      ],
-      zh: [
-        '四个参数（S₀, S₁, S₂, S₃）完整描述任何偏振态',
-        '可以表示部分偏振和非偏振光',
-        '使偏振测量的数学处理成为可能',
-        '现代偏振测量学的基础'
-      ]
-    },
-    story: {
-      en: `Cambridge, 1852. George Gabriel Stokes, the Lucasian Professor of Mathematics (Newton's former chair), faced a puzzle that had frustrated physicists for decades: how do you describe light that isn't perfectly polarized?
-
-Real light — from the sun, from candles, from lamps — was messy. Some of it was polarized, some wasn't, some was somewhere in between. And polarization could be linear, circular, or elliptical. How could mathematics capture this complexity?
-
-Stokes's genius was to step back from the physics and ask a simpler question: what can we actually measure? He realized that with just four measurements — using polarizers at different angles and a quarter-wave plate — you could completely characterize any beam of light.
-
-He called them S₀, S₁, S₂, and S₃. Four numbers. Four simple measurements. Together, they could describe perfect polarization, partial polarization, complete chaos, or anything in between.
-
-S₀ gave the total intensity. S₁ described horizontal versus vertical preference. S₂ captured diagonal tendencies. And S₃ revealed the handedness of circular polarization.
-
-The beauty of Stokes's approach was its practicality. You didn't need to know the electromagnetic theory. You didn't need to track phases and amplitudes. You simply made measurements and plugged in numbers.
-
-Today, "Stokes polarimetry" is used everywhere — from analyzing starlight to medical imaging, from studying insect vision to designing LCD screens. Stokes gave us a language to speak about polarization that works in the real world, where light is never perfectly behaved.`,
-      zh: `1852年，剑桥。乔治·加布里埃尔·斯托克斯，卢卡斯数学教授（牛顿曾坐过的讲席），面对一个困扰物理学家数十年的难题：如何描述不完全偏振的光？
-
-真实的光——来自太阳、蜡烛、灯火——总是杂乱无章的。有些是偏振的，有些不是，有些介于两者之间。而且偏振可以是线偏振、圆偏振或椭圆偏振。数学如何能捕捉这种复杂性？
-
-斯托克斯的天才之处在于他退后一步，问了一个更简单的问题：我们实际上能测量什么？他意识到，只需四次测量——使用不同角度的偏振器和一个四分之一波片——就能完全表征任何光束。
-
-他称它们为S₀、S₁、S₂和S₃。四个数字。四次简单的测量。它们可以描述完美偏振、部分偏振、完全混沌，或介于两者之间的任何状态。
-
-S₀给出总强度。S₁描述水平与垂直的倾向。S₂捕捉对角线方向的特征。S₃揭示圆偏振的旋向。
-
-斯托克斯方法的美妙之处在于它的实用性。你不需要了解电磁理论。你不需要追踪相位和振幅。你只需进行测量，代入数字即可。
-
-今天，"斯托克斯偏振测量法"无处不在——从分析星光到医学成像，从研究昆虫视觉到设计液晶屏幕。斯托克斯给了我们一种在现实世界中谈论偏振的语言——在那里，光永远不会完美地表现。`
+      en: ['Four parameters (S₀, S₁, S₂, S₃) describe any polarization state', 'Can represent partially polarized and unpolarized light', 'Foundation for modern polarimetry'],
+      zh: ['四个参数（S₀, S₁, S₂, S₃）完整描述任何偏振态', '可以表示部分偏振和非偏振光', '现代偏振测量学的基础']
     },
     scientistBio: {
-      birthYear: 1819,
-      deathYear: 1903,
-      nationality: 'Irish-British',
-      portraitEmoji: '📐',
-      bioEn: 'Sir George Gabriel Stokes was an Irish-British mathematician and physicist, Lucasian Professor at Cambridge for over 50 years. Besides his work on polarization, he made fundamental contributions to fluid dynamics (Navier-Stokes equations), fluorescence (Stokes shift), and vector analysis. He served as President of the Royal Society.',
-      bioZh: '乔治·加布里埃尔·斯托克斯爵士是爱尔兰裔英国数学家和物理学家，在剑桥担任卢卡斯教授超过50年。除了偏振方面的工作外，他还对流体动力学（纳维-斯托克斯方程）、荧光（斯托克斯位移）和矢量分析做出了根本性贡献。他曾担任皇家学会主席。'
+      birthYear: 1819, deathYear: 1903, nationality: 'Irish-British', portraitEmoji: '📐',
+      bioEn: 'Sir George Gabriel Stokes served as Lucasian Professor at Cambridge for over 50 years and as President of the Royal Society.',
+      bioZh: '乔治·加布里埃尔·斯托克斯爵士在剑桥担任卢卡斯教授超过50年，并曾担任皇家学会主席。'
     },
-    scene: {
-      location: 'Cambridge, England',
-      season: 'Spring',
-      mood: 'mathematical elegance'
-    }
+    relatedConcepts: ['stokes-parameters', 'polarimetry', 'mueller-matrix']
+  },
+  {
+    year: 1865,
+    titleEn: 'Maxwell\'s Electromagnetic Theory',
+    titleZh: '麦克斯韦电磁理论',
+    descriptionEn: 'James Clerk Maxwell unifies electricity, magnetism, and optics, showing light is an electromagnetic wave.',
+    descriptionZh: '麦克斯韦统一了电、磁和光学，证明光是电磁波。',
+    scientistEn: 'James Clerk Maxwell',
+    scientistZh: '詹姆斯·克拉克·麦克斯韦',
+    category: 'theory',
+    importance: 1,
+    track: 'optics',
+    details: {
+      en: ['Four equations describe all electromagnetic phenomena', 'Electromagnetic waves travel at the speed of light', 'Foundation for radio, TV, wireless communication'],
+      zh: ['四个方程描述所有电磁现象', '电磁波以光速传播', '无线电、电视、无线通信的基础']
+    },
+    story: {
+      en: `In 1865, Maxwell derived that electromagnetic disturbances travel as waves at about 310,000 km/s — suspiciously close to the speed of light. "Light consists in the transverse undulations of the same medium which is the cause of electric and magnetic phenomena." Light itself was an electromagnetic wave!`,
+      zh: `1865年，麦克斯韦推导出电磁扰动以约310,000公里/秒的速度以波的形式传播——与光速惊人地接近。"光由同一介质的横向波动组成，而这种介质正是电磁现象的原因。"光本身就是电磁波！`
+    },
+    scientistBio: {
+      birthYear: 1831, deathYear: 1879, nationality: 'Scottish', portraitEmoji: '⚡',
+      bioEn: 'James Clerk Maxwell formulated classical electromagnetic theory. Einstein called his work "the most profound since Newton."',
+      bioZh: '詹姆斯·克拉克·麦克斯韦建立了经典电磁理论。爱因斯坦称他的工作是"自牛顿以来最深刻的"。'
+    },
+    relatedConcepts: ['maxwell-equations', 'electromagnetic-wave', 'light-as-wave']
   },
   {
     year: 1929,
@@ -865,60 +398,19 @@ S₀给出总强度。S₁描述水平与垂直的倾向。S₂捕捉对角线�
     importance: 1,
     track: 'polarization',
     details: {
-      en: [
-        'Created by aligning microscopic crystals in a plastic sheet',
-        'Made polarizers cheap and widely available',
-        'Enabled polarized sunglasses, camera filters, 3D movies',
-        'Land later founded the Polaroid Corporation'
-      ],
-      zh: [
-        '通过在塑料片中排列微小晶体制成',
-        '使偏振器变得便宜且广泛可用',
-        '使偏振太阳镜、相机滤镜、3D电影成为可能',
-        '兰德后来创立了宝丽来公司'
-      ]
+      en: ['Aligned microscopic crystals in a plastic sheet', 'Made polarizers cheap and widely available', 'Enabled polarized sunglasses, 3D movies'],
+      zh: ['在塑料片中排列微小晶体', '使偏振器变得便宜且广泛可用', '使偏振太阳镜、3D电影成为可能']
     },
     story: {
-      en: `In 1926, a 17-year-old Harvard freshman named Edwin Land wandered through Times Square at night, squinting at the blinding glare of automobile headlights. "There must be a way," he muttered to himself, "to tame this light."
-
-Land dropped out of Harvard (he would return later, then drop out again) and disappeared into the New York Public Library. He devoured every paper on polarization he could find. The solution seemed obvious: polarized filters could block glare! But Nicol prisms were far too expensive for car headlights.
-
-In a cramped basement laboratory, Land began his obsession: how to make polarizers cheaply, in sheets, that anyone could afford. He had an audacious idea — what if he could align millions of microscopic crystals all pointing the same direction?
-
-He found his answer in iodoquinine sulfate crystals. Suspended in a liquid, these needle-like crystals could be drawn through narrow slots, forcing them to align like logs floating down a river. Embedded in plastic, they became a sheet polarizer — the first in history.
-
-"Polaroid" was born in 1929. Land was just 20 years old.
-
-But this was only the beginning. Land would go on to invent instant photography, advise presidents on Cold War reconnaissance, and build one of America's most innovative companies. He held 535 patents, second only to Edison.
-
-Yet it all started with a teenager bothered by headlight glare, and the audacity to think he could solve a problem that had stumped scientists for a century. Today, polarizing filters are everywhere — in every smartphone, laptop, and pair of sunglasses — because one young man refused to accept that light couldn't be tamed.`,
-      zh: `1926年，一位17岁的哈佛新生埃德温·兰德夜里漫步在时代广场，被汽车前灯刺眼的强光照得眯起眼睛。"一定有办法，"他自言自语道，"驯服这道光。"
-
-兰德从哈佛退学（他后来会回去，然后再次退学），消失在纽约公共图书馆里。他如饥似渴地阅读每一篇关于偏振的论文。解决方案似乎很明显：偏振滤光器可以阻挡眩光！但尼科尔棱镜对汽车前灯来说太贵了。
-
-在一间狭小的地下室实验室里，兰德开始了他的痴迷：如何廉价地、以薄片形式制造人人都买得起的偏振器。他有一个大胆的想法——如果能让数百万个微小晶体都指向同一方向呢？
-
-他在碘代奎宁硫酸盐晶体中找到了答案。这些针状晶体悬浮在液体中，可以被拉过狭窄的缝隙，迫使它们像河中漂流的原木一样排列整齐。嵌入塑料中，它们就变成了薄片偏振器——史上第一种。
-
-"宝丽来"在1929年诞生。兰德那时才20岁。
-
-但这仅仅是个开始。兰德后来发明了即时摄影，为总统提供冷战侦察建议，并建立了美国最具创新力的公司之一。他持有535项专利，仅次于爱迪生。
-
-然而，这一切始于一个被汽车前灯眩光困扰的少年，以及他那认为自己能解决困扰科学家一个世纪难题的胆识。今天，偏振滤光器无处不在——在每一部智能手机、笔记本电脑和太阳镜中——因为一个年轻人拒绝接受光无法被驯服。`
+      en: `In 1926, a 17-year-old Edwin Land was bothered by headlight glare in Times Square. He dropped out of Harvard to solve this problem. By suspending needle-like crystals in liquid and drawing them through narrow slots, he created the first sheet polarizer. "Polaroid" was born in 1929.`,
+      zh: `1926年，17岁的埃德温·兰德在时代广场被汽车前灯眩光所困扰。他从哈佛退学来解决这个问题。通过将针状晶体悬浮在液体中并拉过狭窄的缝隙，他创造了第一种薄片偏振器。1929年，"宝丽来"诞生。`
     },
     scientistBio: {
-      birthYear: 1909,
-      deathYear: 1991,
-      nationality: 'American',
-      portraitEmoji: '📸',
-      bioEn: 'Edwin Herbert Land was an American inventor and physicist, best known for co-founding Polaroid Corporation and inventing instant photography. He held 535 US patents, making him one of the most prolific inventors in American history. He was also a key figure in Cold War intelligence, developing U-2 spy plane cameras.',
-      bioZh: '埃德温·赫伯特·兰德是美国发明家和物理学家，以共同创立宝丽来公司和发明即时摄影而闻名。他持有535项美国专利，是美国历史上最多产的发明家之一。他也是冷战情报工作的关键人物，开发了U-2侦察机的相机。'
+      birthYear: 1909, deathYear: 1991, nationality: 'American', portraitEmoji: '📸',
+      bioEn: 'Edwin Land held 535 US patents, second only to Edison. He also invented instant photography.',
+      bioZh: '埃德温·兰德持有535项美国专利，仅次于爱迪生。他还发明了即时摄影。'
     },
-    scene: {
-      location: 'New York City, USA',
-      season: 'Summer',
-      mood: 'innovation'
-    }
+    relatedConcepts: ['sheet-polarizer', 'dichroic', 'applications']
   },
   {
     year: 1971,
@@ -930,63 +422,21 @@ Yet it all started with a teenager bothered by headlight glare, and the audacity
     importance: 2,
     track: 'polarization',
     details: {
-      en: [
-        'LCD panels use two crossed polarizers with liquid crystals between them',
-        'Electric field controls the rotation of light polarization',
-        'Revolutionized displays for watches, calculators, and screens',
-        'Now ubiquitous in monitors, TVs, and mobile devices'
-      ],
-      zh: [
-        'LCD面板使用两个正交偏振器，中间夹有液晶',
-        '电场控制光偏振的旋转',
-        '彻底改变了手表、计算器和屏幕的显示',
-        '现在广泛用于显示器、电视和移动设备'
-      ]
-    },
-    story: {
-      en: `The year was 1971. At RCA's research laboratories in Princeton, New Jersey, a team of scientists was about to revolutionize how humanity sees information.
-
-For years, the dream of flat-panel displays had tantalized engineers. Cathode ray tubes were bulky, power-hungry monsters. But liquid crystals — those strange substances that flow like liquids yet maintain some molecular order like crystals — offered a different path.
-
-The breakthrough came from understanding polarization. The key insight: liquid crystal molecules, naturally twisted in a helix, could rotate the polarization of light as it passed through. Place this twisted layer between two crossed polarizers, and light would pass through. Apply an electric field, and the molecules would straighten — blocking the light.
-
-On. Off. Light. Dark. Every pixel on every screen you've ever used works on this principle.
-
-James Fergason, George Heilmeier, and others made this dream a reality. The first LCD watches appeared shortly after, their black digits glowing against silver backgrounds. Then calculators. Then laptop screens. Then the smartphones that now live in nearly every pocket on Earth.
-
-Today, you are reading these words through polarization. The screen before you contains two precisely aligned polarizing films, sandwiching liquid crystals that dance to electrical commands. Three centuries of discovery — from Bartholin's crystal to Land's filters — all come together in the device in your hands.
-
-The story of polarized light has become the story of modern communication. Bartholin, Huygens, Malus, Fresnel — could any of them have imagined that their strange observations would one day connect all of humanity?`,
-      zh: `1971年。在新泽西州普林斯顿的RCA研究实验室，一群科学家即将彻底改变人类看到信息的方式。
-
-多年来，平板显示器的梦想一直诱惑着工程师们。阴极射线管是笨重、耗电的怪物。但液晶——那些像液体一样流动、却像晶体一样保持某种分子有序性的奇怪物质——提供了另一条道路。
-
-突破来自对偏振的理解。关键洞见是：液晶分子天然呈螺旋状扭曲，能在光通过时旋转其偏振方向。将这个扭曲层夹在两个正交偏振器之间，光就能通过。施加电场，分子就会变直——阻挡光线。
-
-开。关。亮。暗。你用过的每一块屏幕上的每一个像素，都是基于这个原理工作的。
-
-詹姆斯·弗格森、乔治·海尔迈尔等人将这个梦想变为现实。第一批LCD手表很快就出现了，黑色数字在银色背景上闪烁。然后是计算器。然后是笔记本电脑屏幕。然后是现在几乎住在地球上每个人口袋里的智能手机。
-
-今天，你正在通过偏振阅读这些文字。你面前的屏幕包含两层精确对齐的偏振膜，夹着随电信号起舞的液晶。三个世纪的发现——从巴托林的晶体到兰德的滤光器——全都汇聚在你手中的设备里。
-
-偏振光的故事已经成为现代通信的故事。巴托林、惠更斯、马吕斯、菲涅尔——他们中的任何人能想象到，他们那些奇怪的观察有朝一日会连接全人类吗？`
+      en: ['Two crossed polarizers with liquid crystals between', 'Electric field controls polarization rotation', 'Now ubiquitous in screens worldwide'],
+      zh: ['两个正交偏振器，中间夹有液晶', '电场控制偏振旋转', '现在广泛用于全世界的屏幕']
     },
     scientistBio: {
       portraitEmoji: '📺',
-      bioEn: 'LCD technology was developed by multiple researchers including George Heilmeier at RCA Labs, James Fergason who patented the twisted nematic field effect, and many others. Their collective work transformed polarization science into the most important display technology in human history.',
-      bioZh: 'LCD技术由多位研究人员共同开发，包括RCA实验室的乔治·海尔迈尔、为扭曲向列场效应申请专利的詹姆斯·弗格森等人。他们的集体工作将偏振科学转化为人类历史上最重要的显示技术。'
+      bioEn: 'LCD technology was developed by multiple researchers including George Heilmeier and James Fergason.',
+      bioZh: 'LCD技术由多位研究人员共同开发，包括乔治·海尔迈尔和詹姆斯·弗格森。'
     },
-    scene: {
-      location: 'Princeton, New Jersey, USA',
-      season: 'All seasons',
-      mood: 'technological revolution'
-    }
+    relatedConcepts: ['lcd', 'liquid-crystal', 'display-technology']
   },
   {
     year: 2012,
     titleEn: 'Mantis Shrimp Polarization Vision',
     titleZh: '螳螂虾偏振视觉',
-    descriptionEn: 'Researchers discover mantis shrimp can detect circular polarization — a unique ability not found in any other animal.',
+    descriptionEn: 'Researchers discover mantis shrimp can detect circular polarization — unique in the animal kingdom.',
     descriptionZh: '研究人员发现螳螂虾能够探测圆偏振光——这是其他任何动物都没有的独特能力。',
     scientistEn: 'Justin Marshall et al.',
     scientistZh: '贾斯汀·马歇尔等',
@@ -994,53 +444,15 @@ The story of polarized light has become the story of modern communication. Barth
     importance: 2,
     track: 'polarization',
     details: {
-      en: [
-        'Mantis shrimp have 16 types of photoreceptors (humans have 3)',
-        'They can see both linear and circular polarization',
-        'This enables unique underwater communication',
-        'Inspires development of compact polarization cameras'
-      ],
-      zh: [
-        '螳螂虾有16种光感受器（人类只有3种）',
-        '它们能看到线偏振和圆偏振光',
-        '这使得独特的水下通信成为可能',
-        '启发了紧凑型偏振相机的开发'
-      ]
-    },
-    story: {
-      en: `In the shallow tropical waters of Australia, 2012, marine biologist Justin Marshall and his team made an extraordinary discovery. The mantis shrimp — already famous for its powerful strike — was hiding an even more remarkable secret.
-
-These small crustaceans possessed the most complex visual system ever discovered in nature. Not only could they see colors we cannot imagine, but they could also detect something no other animal had been proven to see: circularly polarized light.
-
-"When we first measured it, we didn't believe the data," Marshall recalled. The experiments were repeated dozens of times. The results were always the same — mantis shrimp could distinguish between left-handed and right-handed circular polarization.
-
-Why would evolution bestow such an exotic ability? The answer lay in their secretive social lives. Mantis shrimp mark their territory with polarized signals invisible to predators but clear as day to other mantis shrimp. A private communication channel, hidden in plain light.
-
-The discovery sparked a revolution in bio-inspired optics. Engineers began designing cameras that could mimic the mantis shrimp's vision, detecting cancer cells and underwater mines with unprecedented clarity. Nature had solved the problem of polarization detection in ways human engineers had never imagined.
-
-In the rainbow-colored eyes of a small crustacean, three centuries of optical research found its most sophisticated natural expression.`,
-      zh: `2012年，在澳大利亚温暖的热带浅水中，海洋生物学家贾斯汀·马歇尔和他的团队有了一个非凡的发现。螳螂虾——已经因其强大的攻击力而闻名——隐藏着一个更加惊人的秘密。
-
-这些小型甲壳类动物拥有自然界中发现的最复杂的视觉系统。它们不仅能看到我们无法想象的颜色，还能探测到没有其他动物被证明能看到的东西：圆偏振光。
-
-"当我们第一次测量时，我们不相信数据，"马歇尔回忆道。实验重复了数十次。结果总是一样的——螳螂虾能够区分左旋和右旋圆偏振光。
-
-为什么进化会赋予如此奇异的能力？答案在于它们神秘的社交生活。螳螂虾用偏振信号标记领地，这些信号对捕食者是不可见的，但对其他螳螂虾来说却清晰可见。一个隐藏在普通光线中的私密通信渠道。
-
-这一发现引发了仿生光学的革命。工程师们开始设计能够模仿螳螂虾视觉的相机，以前所未有的清晰度检测癌细胞和水下地雷。大自然以人类工程师从未想象过的方式解决了偏振检测问题。
-
-在这只小甲壳类动物的彩虹色眼睛里，三个世纪的光学研究找到了其最精密的自然表达。`
+      en: ['Mantis shrimp have 16 types of photoreceptors', 'Can see both linear and circular polarization', 'Inspires development of compact polarization cameras'],
+      zh: ['螳螂虾有16种光感受器', '能看到线偏振和圆偏振光', '启发了紧凑型偏振相机的开发']
     },
     scientistBio: {
       portraitEmoji: '🦐',
-      bioEn: 'Justin Marshall is an Australian marine neuroscientist at the University of Queensland, specializing in visual ecology. His research on mantis shrimp vision has revealed unprecedented complexity in animal perception of light and color.',
-      bioZh: '贾斯汀·马歇尔是昆士兰大学的澳大利亚海洋神经科学家，专门研究视觉生态学。他对螳螂虾视觉的研究揭示了动物对光和颜色感知的前所未有的复杂性。'
+      bioEn: 'Justin Marshall is an Australian marine neuroscientist at the University of Queensland.',
+      bioZh: '贾斯汀·马歇尔是昆士兰大学的澳大利亚海洋神经科学家。'
     },
-    scene: {
-      location: 'Great Barrier Reef, Australia',
-      season: 'Summer',
-      mood: 'wonder'
-    }
+    relatedConcepts: ['bio-optics', 'circular-polarization', 'vision']
   },
   {
     year: 2018,
@@ -1052,53 +464,15 @@ In the rainbow-colored eyes of a small crustacean, three centuries of optical re
     importance: 2,
     track: 'polarization',
     details: {
-      en: [
-        'Cancerous tissue has different polarization properties than healthy tissue',
-        'Mueller matrix decomposition reveals structural changes in collagen',
-        'Non-invasive, label-free imaging technique',
-        'Showing promise for surgical guidance and early detection'
-      ],
-      zh: [
-        '癌变组织与健康组织有不同的偏振特性',
-        '穆勒矩阵分解揭示胶原蛋白的结构变化',
-        '无创、无标记成像技术',
-        '在手术引导和早期检测方面显示出前景'
-      ]
-    },
-    story: {
-      en: `In hospitals around the world, 2018, a quiet revolution was taking place. Doctors were learning to see what had been invisible — the subtle structural changes that herald cancer's arrival.
-
-The key was polarization. For decades, pathologists had known that cancerous tissue looked different under polarized light. But it was only with advances in Mueller matrix imaging that they could quantify these differences precisely.
-
-Healthy tissue has an orderly arrangement of collagen fibers, like well-organized threads in fabric. Cancer disrupts this order, creating characteristic changes in how tissue rotates and depolarizes light. Mueller matrix decomposition — the mathematical legacy of Hans Mueller from 1943 — could now detect these changes in living patients.
-
-"We're essentially doing a biopsy with light," explained one researcher. No cutting, no staining, no waiting for lab results. The camera sees what the eye cannot.
-
-Clinical trials showed remarkable results. Skin cancers detected before they were visible. Surgical margins verified in real-time. The boundary between healthy and diseased tissue, invisible in white light, glowed distinctly under polarized illumination.
-
-The same physics that Malus discovered in a Paris sunset, that Stokes formalized in Victorian Cambridge, was now saving lives in modern operating rooms. The story of polarized light had become, quite literally, a matter of life and death.`,
-      zh: `2018年，世界各地的医院里，一场安静的革命正在发生。医生们正在学习看到以前看不见的东西——预示癌症到来的细微结构变化。
-
-关键是偏振。几十年来，病理学家就知道在偏振光下癌变组织看起来不同。但只有随着穆勒矩阵成像技术的进步，他们才能精确量化这些差异。
-
-健康组织中胶原纤维排列有序，就像织物中排列整齐的线。癌症破坏了这种秩序，在组织如何旋转和退偏振光方面产生特征性变化。穆勒矩阵分解——1943年汉斯·穆勒的数学遗产——现在可以在活体患者中检测这些变化。
-
-"我们本质上是用光做活检，"一位研究人员解释道。无需切割，无需染色，无需等待实验室结果。相机能看到眼睛看不到的东西。
-
-临床试验显示了显著的结果。在皮肤癌可见之前就检测到它。实时验证手术切缘。健康组织和病变组织之间的边界，在白光下不可见，在偏振照明下却清晰发光。
-
-马吕斯在巴黎日落中发现的物理学，斯托克斯在维多利亚时代剑桥形式化的物理学，现在正在现代手术室中挽救生命。偏振光的故事，已经真正成为生死攸关的问题。`
+      en: ['Cancerous tissue has different polarization properties', 'Non-invasive, label-free imaging', 'Showing promise for surgical guidance'],
+      zh: ['癌变组织有不同的偏振特性', '无创、无标记成像', '在手术引导方面显示出前景']
     },
     scientistBio: {
       portraitEmoji: '🏥',
-      bioEn: 'Mueller matrix polarimetry for medical imaging has been advanced by research groups worldwide, including teams in France (LPICM), China, and the US. Their work bridges 19th-century optical physics with 21st-century medicine.',
-      bioZh: '医学成像的穆勒矩阵偏振测量技术由世界各地的研究团队推动发展，包括法国（LPICM）、中国和美国的团队。他们的工作将19世纪的光学物理与21世纪的医学联系起来。'
+      bioEn: 'Mueller matrix polarimetry for medical imaging has been advanced by research groups worldwide.',
+      bioZh: '医学成像的穆勒矩阵偏振测量技术由世界各地的研究团队推动发展。'
     },
-    scene: {
-      location: 'Global medical centers',
-      season: 'All seasons',
-      mood: 'hope'
-    }
+    relatedConcepts: ['mueller-matrix', 'medical-imaging', 'polarimetry']
   },
   {
     year: 2021,
@@ -1110,53 +484,15 @@ The same physics that Malus discovered in a Paris sunset, that Stokes formalized
     importance: 1,
     track: 'polarization',
     details: {
-      en: [
-        'Sub-wavelength nanostructures manipulate light like never before',
-        'Electric or optical switching enables dynamic polarization states',
-        'Opens path to holographic displays and LiDAR beam steering',
-        'Compact, flat optical components replace bulky traditional optics'
-      ],
-      zh: [
-        '亚波长纳米结构以前所未有的方式操控光',
-        '电或光开关实现动态偏振态',
-        '为全息显示和LiDAR光束转向开辟道路',
-        '紧凑的平面光学元件取代笨重的传统光学器件'
-      ]
-    },
-    story: {
-      en: `In nanofabrication labs from California to Shanghai, 2021, researchers were crafting structures smaller than the wavelength of light itself. These "metasurfaces" — precisely arranged forests of nano-pillars — were doing things that had seemed impossible.
-
-Unlike traditional optics that control light through bulk material properties, metasurfaces manipulate light with their geometry. Each nanoscale element acts as a tiny antenna, tuning phase, amplitude, and polarization with extraordinary precision.
-
-The breakthrough was making them dynamic. By integrating phase-change materials or liquid crystals, engineers created metasurfaces that could switch between polarization states in milliseconds. A flat piece of glass could now do what once required spinning mechanical parts.
-
-The applications seemed endless. Augmented reality glasses that adjusted to ambient light. LiDAR systems that steered laser beams without moving parts. Cameras that captured full polarization information in a single shot.
-
-"We're not just making smaller optics," one researcher explained. "We're inventing entirely new ways to control light."
-
-The metasurface revolution represented a fundamental shift in optical engineering — from shaping light with material bulk to programming it with geometry. The physics that Fresnel had established two centuries earlier was being rewritten at the nanoscale.`,
-      zh: `2021年，从加州到上海的纳米制造实验室里，研究人员正在制作比光波长还小的结构。这些"超表面"——精确排列的纳米柱森林——正在做看似不可能的事情。
-
-与通过体材料特性控制光的传统光学不同，超表面通过其几何结构操控光。每个纳米级元素都像一个微型天线，以非凡的精度调谐相位、振幅和偏振。
-
-突破在于使它们具有动态性。通过集成相变材料或液晶，工程师创造出可以在毫秒内切换偏振态的超表面。一片平坦的玻璃现在可以做到过去需要旋转机械部件才能做的事。
-
-应用似乎无穷无尽。可以适应环境光的增强现实眼镜。无需移动部件就能转向激光束的LiDAR系统。一次拍摄就能捕获完整偏振信息的相机。
-
-"我们不只是在制造更小的光学器件，"一位研究人员解释道。"我们正在发明控制光的全新方式。"
-
-超表面革命代表了光学工程的根本转变——从用材料体积塑造光到用几何编程光。菲涅尔两个世纪前建立的物理学正在纳米尺度上被重写。`
+      en: ['Sub-wavelength nanostructures manipulate light', 'Dynamic polarization state switching', 'Opens path to holographic displays and LiDAR'],
+      zh: ['亚波长纳米结构操控光', '动态偏振态切换', '为全息显示和LiDAR开辟道路']
     },
     scientistBio: {
       portraitEmoji: '🔬',
-      bioEn: 'Metasurface research is led by groups at Caltech, Harvard, and universities in China and Europe. These teams combine nanofabrication expertise with fundamental physics to create the next generation of optical devices.',
-      bioZh: '超表面研究由加州理工学院、哈佛大学以及中国和欧洲大学的团队领导。这些团队将纳米制造专业知识与基础物理相结合，创造下一代光学器件。'
+      bioEn: 'Metasurface research is led by groups at Caltech, Harvard, and universities worldwide.',
+      bioZh: '超表面研究由加州理工学院、哈佛大学以及世界各地大学的团队领导。'
     },
-    scene: {
-      location: 'Global research labs',
-      season: 'All seasons',
-      mood: 'innovation'
-    }
+    relatedConcepts: ['metasurface', 'nanophotonics', 'dynamic-control']
   },
   {
     year: 2023,
@@ -1168,54 +504,101 @@ The metasurface revolution represented a fundamental shift in optical engineerin
     importance: 1,
     track: 'polarization',
     details: {
-      en: [
-        'Entangled photons enable sub-shot-noise polarization measurements',
-        'Detecting optical activity changes at the molecular level',
-        'Applications in pharmaceutical quality control and biosensing',
-        'Bridges quantum optics with practical polarimetry'
-      ],
-      zh: [
-        '纠缠光子实现亚散粒噪声偏振测量',
-        '在分子水平检测光学活性变化',
-        '在药品质量控制和生物传感中的应用',
-        '将量子光学与实用偏振测量连接起来'
-      ]
-    },
-    story: {
-      en: `In quantum optics laboratories, 2023, researchers achieved what had long been thought impossible — measuring polarization changes smaller than the fundamental noise of classical light.
-
-The technique relied on a peculiar quantum property: entanglement. Pairs of photons, born together and forever correlated, carried information that transcended what individual particles could convey. By measuring the polarization of entangled pairs, scientists could detect changes too subtle for any classical instrument.
-
-The implications rippled through multiple fields. Pharmaceutical companies could verify the chirality of drug molecules with unprecedented precision — crucial since the wrong handedness can be toxic. Biosensors could detect protein folding changes indicative of disease. Astronomers could measure the magnetic fields of distant stars.
-
-"We're using quantum mechanics to see polarization in ways Stokes never dreamed of," noted one researcher. The four parameters Stokes had defined in 1852 were now being measured with quantum precision.
-
-The marriage of quantum physics and polarimetry represented a new chapter in the long story of light. From Huygens's waves to Maxwell's fields to quantum entanglement — each generation had discovered deeper truths about the nature of light.
-
-And yet the mystery remained. Why does light have polarization at all? What fundamental truth does this property reveal about our universe? These questions, first glimpsed in Bartholin's calcite crystals four centuries ago, still illuminate the frontier of physics.`,
-      zh: `2023年，在量子光学实验室里，研究人员实现了长期以来被认为不可能的事情——测量比经典光的基本噪声还要小的偏振变化。
-
-这项技术依赖于一种奇特的量子特性：纠缠。成对产生且永远相关的光子携带着超越单个粒子所能传递的信息。通过测量纠缠光子对的偏振，科学家可以检测到任何经典仪器都无法发现的细微变化。
-
-影响波及多个领域。制药公司可以以前所未有的精度验证药物分子的手性——这至关重要，因为错误的手性可能有毒。生物传感器可以检测指示疾病的蛋白质折叠变化。天文学家可以测量遥远恒星的磁场。
-
-"我们正在使用量子力学以斯托克斯从未梦想过的方式观察偏振，"一位研究人员指出。斯托克斯在1852年定义的四个参数现在正以量子精度测量。
-
-量子物理和偏振测量的结合代表了光的漫长故事中的新篇章。从惠更斯的波动到麦克斯韦的场再到量子纠缠——每一代人都发现了关于光本质的更深层次的真理。
-
-然而谜团依然存在。光为什么会有偏振？这一特性揭示了我们宇宙的什么基本真理？这些问题，四个世纪前在巴托林的方解石晶体中初见端倪，至今仍照亮着物理学的前沿。`
+      en: ['Entangled photons enable sub-shot-noise measurements', 'Applications in pharmaceutical and biosensing', 'Bridges quantum optics with practical polarimetry'],
+      zh: ['纠缠光子实现亚散粒噪声测量', '在药品和生物传感中的应用', '将量子光学与实用偏振测量连接']
     },
     scientistBio: {
       portraitEmoji: '⚛️',
-      bioEn: 'Quantum polarimetry research is conducted at leading quantum optics centers worldwide, including groups in Vienna, Brisbane, and Beijing. Their work pushes the fundamental limits of optical measurement.',
-      bioZh: '量子偏振测量研究在全球领先的量子光学中心进行，包括维也纳、布里斯班和北京的研究团队。他们的工作推动了光学测量的基本极限。'
+      bioEn: 'Quantum polarimetry research is conducted at leading quantum optics centers worldwide.',
+      bioZh: '量子偏振测量研究在全球领先的量子光学中心进行。'
     },
-    scene: {
-      location: 'Global quantum labs',
-      season: 'All seasons',
-      mood: 'frontier science'
-    }
+    relatedConcepts: ['quantum-optics', 'entanglement', 'precision-measurement']
   },
+]
+
+// Knowledge graph data - 光学知识图谱数据
+interface KnowledgeNode {
+  id: string
+  labelEn: string
+  labelZh: string
+  category: 'fundamental' | 'phenomenon' | 'device' | 'application' | 'theory'
+  descriptionEn: string
+  descriptionZh: string
+  x?: number
+  y?: number
+}
+
+interface KnowledgeLink {
+  source: string
+  target: string
+  relationEn: string
+  relationZh: string
+  strength: number // 1-3, affects line thickness
+}
+
+const KNOWLEDGE_NODES: KnowledgeNode[] = [
+  // Fundamental concepts
+  { id: 'light-wave', labelEn: 'Light Wave', labelZh: '光波', category: 'fundamental', descriptionEn: 'Electromagnetic radiation visible to human eye', descriptionZh: '人眼可见的电磁辐射' },
+  { id: 'polarization', labelEn: 'Polarization', labelZh: '偏振', category: 'fundamental', descriptionEn: 'Orientation of light wave oscillation', descriptionZh: '光波振动的方向性' },
+  { id: 'refraction', labelEn: 'Refraction', labelZh: '折射', category: 'phenomenon', descriptionEn: 'Bending of light at interface', descriptionZh: '光在界面处的弯曲' },
+  { id: 'reflection', labelEn: 'Reflection', labelZh: '反射', category: 'phenomenon', descriptionEn: 'Light bouncing off surface', descriptionZh: '光从表面反弹' },
+  { id: 'interference', labelEn: 'Interference', labelZh: '干涉', category: 'phenomenon', descriptionEn: 'Superposition of waves', descriptionZh: '波的叠加' },
+  { id: 'diffraction', labelEn: 'Diffraction', labelZh: '衍射', category: 'phenomenon', descriptionEn: 'Bending around obstacles', descriptionZh: '绕过障碍物弯曲' },
+  { id: 'birefringence', labelEn: 'Birefringence', labelZh: '双折射', category: 'phenomenon', descriptionEn: 'Double refraction in crystals', descriptionZh: '晶体中的双重折射' },
+  // Theories
+  { id: 'wave-theory', labelEn: 'Wave Theory', labelZh: '波动理论', category: 'theory', descriptionEn: 'Light as electromagnetic wave', descriptionZh: '光作为电磁波' },
+  { id: 'maxwell-equations', labelEn: 'Maxwell Equations', labelZh: '麦克斯韦方程', category: 'theory', descriptionEn: 'Four equations unifying EM', descriptionZh: '统一电磁现象的四个方程' },
+  { id: 'malus-law', labelEn: 'Malus\'s Law', labelZh: '马吕斯定律', category: 'theory', descriptionEn: 'I = I₀cos²θ', descriptionZh: 'I = I₀cos²θ' },
+  { id: 'brewster-law', labelEn: 'Brewster\'s Law', labelZh: '布儒斯特定律', category: 'theory', descriptionEn: 'tan(θB) = n₂/n₁', descriptionZh: 'tan(θB) = n₂/n₁' },
+  { id: 'stokes-params', labelEn: 'Stokes Parameters', labelZh: '斯托克斯参数', category: 'theory', descriptionEn: 'S₀, S₁, S₂, S₃', descriptionZh: 'S₀, S₁, S₂, S₃' },
+  { id: 'mueller-matrix', labelEn: 'Mueller Matrix', labelZh: '穆勒矩阵', category: 'theory', descriptionEn: '4×4 polarization transfer', descriptionZh: '4×4偏振传递矩阵' },
+  // Devices
+  { id: 'polarizer', labelEn: 'Polarizer', labelZh: '偏振片', category: 'device', descriptionEn: 'Filters light by polarization', descriptionZh: '按偏振方向过滤光' },
+  { id: 'waveplate', labelEn: 'Wave Plate', labelZh: '波片', category: 'device', descriptionEn: 'Retards polarization components', descriptionZh: '延迟偏振分量' },
+  { id: 'calcite', labelEn: 'Calcite Crystal', labelZh: '方解石', category: 'device', descriptionEn: 'Birefringent natural crystal', descriptionZh: '双折射天然晶体' },
+  { id: 'pbs', labelEn: 'Beam Splitter', labelZh: '分束器', category: 'device', descriptionEn: 'Splits beam by polarization', descriptionZh: '按偏振分离光束' },
+  { id: 'lcd-panel', labelEn: 'LCD Panel', labelZh: 'LCD面板', category: 'device', descriptionEn: 'Liquid crystal display', descriptionZh: '液晶显示器' },
+  { id: 'metasurface', labelEn: 'Metasurface', labelZh: '超表面', category: 'device', descriptionEn: 'Nanostructured optical surface', descriptionZh: '纳米结构光学表面' },
+  // Applications
+  { id: 'sunglasses', labelEn: 'Polarized Sunglasses', labelZh: '偏振太阳镜', category: 'application', descriptionEn: 'Glare reduction eyewear', descriptionZh: '减少眩光的眼镜' },
+  { id: '3d-cinema', labelEn: '3D Cinema', labelZh: '3D电影', category: 'application', descriptionEn: 'Stereoscopic display', descriptionZh: '立体显示' },
+  { id: 'medical-imaging', labelEn: 'Medical Imaging', labelZh: '医学成像', category: 'application', descriptionEn: 'Cancer detection, tissue analysis', descriptionZh: '癌症检测、组织分析' },
+  { id: 'remote-sensing', labelEn: 'Remote Sensing', labelZh: '遥感', category: 'application', descriptionEn: 'Earth observation, astronomy', descriptionZh: '地球观测、天文学' },
+  { id: 'optical-comm', labelEn: 'Optical Communication', labelZh: '光通信', category: 'application', descriptionEn: 'Fiber optics, free-space', descriptionZh: '光纤、自由空间' },
+]
+
+const KNOWLEDGE_LINKS: KnowledgeLink[] = [
+  // Light wave connections
+  { source: 'light-wave', target: 'polarization', relationEn: 'has property', relationZh: '具有属性', strength: 3 },
+  { source: 'light-wave', target: 'wave-theory', relationEn: 'described by', relationZh: '由...描述', strength: 3 },
+  { source: 'light-wave', target: 'refraction', relationEn: 'exhibits', relationZh: '表现出', strength: 2 },
+  { source: 'light-wave', target: 'reflection', relationEn: 'exhibits', relationZh: '表现出', strength: 2 },
+  { source: 'light-wave', target: 'interference', relationEn: 'exhibits', relationZh: '表现出', strength: 2 },
+  { source: 'light-wave', target: 'diffraction', relationEn: 'exhibits', relationZh: '表现出', strength: 2 },
+  // Polarization connections
+  { source: 'polarization', target: 'malus-law', relationEn: 'governed by', relationZh: '遵循', strength: 3 },
+  { source: 'polarization', target: 'stokes-params', relationEn: 'measured by', relationZh: '用...测量', strength: 3 },
+  { source: 'polarization', target: 'birefringence', relationEn: 'related to', relationZh: '相关于', strength: 2 },
+  { source: 'polarization', target: 'polarizer', relationEn: 'filtered by', relationZh: '由...过滤', strength: 3 },
+  // Device connections
+  { source: 'polarizer', target: 'malus-law', relationEn: 'follows', relationZh: '遵循', strength: 3 },
+  { source: 'polarizer', target: 'sunglasses', relationEn: 'used in', relationZh: '用于', strength: 2 },
+  { source: 'polarizer', target: 'lcd-panel', relationEn: 'component of', relationZh: '是...的组件', strength: 3 },
+  { source: 'waveplate', target: 'birefringence', relationEn: 'utilizes', relationZh: '利用', strength: 3 },
+  { source: 'calcite', target: 'birefringence', relationEn: 'exhibits', relationZh: '表现出', strength: 3 },
+  { source: 'pbs', target: 'polarization', relationEn: 'separates by', relationZh: '按...分离', strength: 3 },
+  // Theory connections
+  { source: 'wave-theory', target: 'maxwell-equations', relationEn: 'formalized by', relationZh: '由...形式化', strength: 3 },
+  { source: 'maxwell-equations', target: 'light-wave', relationEn: 'describes', relationZh: '描述', strength: 3 },
+  { source: 'stokes-params', target: 'mueller-matrix', relationEn: 'extended by', relationZh: '扩展为', strength: 3 },
+  { source: 'mueller-matrix', target: 'medical-imaging', relationEn: 'enables', relationZh: '使能', strength: 2 },
+  // Application connections
+  { source: 'lcd-panel', target: '3d-cinema', relationEn: 'enables', relationZh: '使能', strength: 2 },
+  { source: 'brewster-law', target: 'reflection', relationEn: 'explains', relationZh: '解释', strength: 3 },
+  { source: 'reflection', target: 'polarization', relationEn: 'induces', relationZh: '产生', strength: 2 },
+  { source: 'metasurface', target: 'polarization', relationEn: 'controls', relationZh: '控制', strength: 3 },
+  { source: 'stokes-params', target: 'remote-sensing', relationEn: 'used in', relationZh: '用于', strength: 2 },
+  { source: 'optical-comm', target: 'polarization', relationEn: 'utilizes', relationZh: '利用', strength: 2 },
 ]
 
 const CATEGORY_LABELS = {
@@ -1225,7 +608,15 @@ const CATEGORY_LABELS = {
   application: { en: 'Application', zh: '应用', color: 'orange' as const },
 }
 
-// Story Modal Component - 沉浸式故事阅读模式
+const NODE_CATEGORY_COLORS = {
+  fundamental: { bg: '#3b82f6', border: '#1d4ed8' },
+  phenomenon: { bg: '#8b5cf6', border: '#6d28d9' },
+  device: { bg: '#10b981', border: '#047857' },
+  application: { bg: '#f59e0b', border: '#d97706' },
+  theory: { bg: '#ef4444', border: '#dc2626' },
+}
+
+// Story Modal Component
 interface StoryModalProps {
   event: TimelineEvent
   onClose: () => void
@@ -1241,240 +632,100 @@ function StoryModal({ event, onClose, onNext, onPrev, hasNext, hasPrev }: StoryM
   const isZh = i18n.language === 'zh'
   const category = CATEGORY_LABELS[event.category]
 
-  // Handle keyboard navigation
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') onClose()
-    if (e.key === 'ArrowRight' && hasNext && onNext) onNext()
-    if (e.key === 'ArrowLeft' && hasPrev && onPrev) onPrev()
-  }
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'ArrowRight' && hasNext && onNext) onNext()
+      if (e.key === 'ArrowLeft' && hasPrev && onPrev) onPrev()
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onClose, onNext, onPrev, hasNext, hasPrev])
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      onKeyDown={handleKeyDown}
-      tabIndex={0}
-    >
-      {/* Backdrop */}
-      <div
-        className={cn(
-          'absolute inset-0',
-          theme === 'dark' ? 'bg-black/90' : 'bg-black/80'
-        )}
-        onClick={onClose}
-      />
-
-      {/* Modal Content */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className={cn('absolute inset-0', theme === 'dark' ? 'bg-black/90' : 'bg-black/80')} onClick={onClose} />
       <div className={cn(
         'relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl border shadow-2xl',
-        theme === 'dark'
-          ? 'bg-slate-900 border-slate-700'
-          : 'bg-white border-gray-200'
+        theme === 'dark' ? 'bg-slate-900 border-slate-700' : 'bg-white border-gray-200'
       )}>
-        {/* Header with scene info */}
+        {/* Header */}
         <div className={cn(
           'sticky top-0 z-10 px-6 py-4 border-b backdrop-blur-md',
-          theme === 'dark'
-            ? 'bg-slate-900/90 border-slate-700'
-            : 'bg-white/90 border-gray-200'
+          theme === 'dark' ? 'bg-slate-900/90 border-slate-700' : 'bg-white/90 border-gray-200'
         )}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <span className="text-3xl font-bold font-mono text-amber-500">
-                {event.year}
-              </span>
-              <Badge color={category.color}>
-                {isZh ? category.zh : category.en}
-              </Badge>
-              {event.importance === 1 && (
-                <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
-              )}
+              <span className="text-3xl font-bold font-mono text-amber-500">{event.year}</span>
+              <Badge color={category.color}>{isZh ? category.zh : category.en}</Badge>
+              {event.importance === 1 && <Star className="w-5 h-5 text-amber-500 fill-amber-500" />}
             </div>
-            <button
-              onClick={onClose}
-              className={cn(
-                'p-2 rounded-full transition-colors',
-                theme === 'dark'
-                  ? 'hover:bg-slate-700 text-gray-400'
-                  : 'hover:bg-gray-100 text-gray-600'
-              )}
-            >
+            <button onClick={onClose} className={cn('p-2 rounded-full transition-colors', theme === 'dark' ? 'hover:bg-slate-700 text-gray-400' : 'hover:bg-gray-100 text-gray-600')}>
               <X className="w-5 h-5" />
             </button>
           </div>
-
-          {/* Scene metadata */}
           {event.scene && (
-            <div className={cn(
-              'flex items-center gap-4 mt-2 text-xs',
-              theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-            )}>
-              {event.scene.location && (
-                <span className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3" />
-                  {event.scene.location}
-                </span>
-              )}
-              {event.scene.season && (
-                <span className="flex items-center gap-1">
-                  <Calendar className="w-3 h-3" />
-                  {event.scene.season}
-                </span>
-              )}
+            <div className={cn('flex items-center gap-4 mt-2 text-xs', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
+              {event.scene.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{event.scene.location}</span>}
+              {event.scene.season && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{event.scene.season}</span>}
             </div>
           )}
         </div>
 
-        {/* Story Content */}
+        {/* Content */}
         <div className="px-6 py-6">
-          <h2 className={cn(
-            'text-2xl font-bold mb-2',
-            theme === 'dark' ? 'text-white' : 'text-gray-900'
-          )}>
+          <h2 className={cn('text-2xl font-bold mb-2', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
             {isZh ? event.titleZh : event.titleEn}
           </h2>
-
           {event.scientistEn && (
-            <p className={cn(
-              'text-base mb-6 flex items-center gap-2',
-              theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'
-            )}>
-              {event.scientistBio?.portraitEmoji && (
-                <span className="text-2xl">{event.scientistBio.portraitEmoji}</span>
-              )}
+            <p className={cn('text-base mb-6 flex items-center gap-2', theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600')}>
+              {event.scientistBio?.portraitEmoji && <span className="text-2xl">{event.scientistBio.portraitEmoji}</span>}
               <User className="w-4 h-4" />
               {isZh ? event.scientistZh : event.scientistEn}
               {event.scientistBio?.birthYear && event.scientistBio?.deathYear && (
-                <span className={cn(
-                  'text-sm',
-                  theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                )}>
+                <span className={cn('text-sm', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
                   ({event.scientistBio.birthYear} - {event.scientistBio.deathYear})
                 </span>
               )}
             </p>
           )}
-
-          {/* The Story */}
           {event.story && (
-            <div className={cn(
-              'prose prose-lg max-w-none mb-8',
-              theme === 'dark' ? 'prose-invert' : ''
-            )}>
-              <div className={cn(
-                'text-base leading-relaxed whitespace-pre-line font-serif',
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-              )}>
-                {isZh ? event.story.zh : event.story.en}
-              </div>
+            <div className={cn('text-base leading-relaxed whitespace-pre-line font-serif mb-8', theme === 'dark' ? 'text-gray-300' : 'text-gray-700')}>
+              {isZh ? event.story.zh : event.story.en}
             </div>
           )}
-
-          {/* Scientist Bio Card */}
           {event.scientistBio?.bioEn && (
-            <div className={cn(
-              'rounded-xl p-4 mb-6 border',
-              theme === 'dark'
-                ? 'bg-slate-800/50 border-slate-700'
-                : 'bg-amber-50 border-amber-200'
-            )}>
-              <h4 className={cn(
-                'text-sm font-semibold mb-2 flex items-center gap-2',
-                theme === 'dark' ? 'text-amber-400' : 'text-amber-700'
-              )}>
-                <User className="w-4 h-4" />
-                {isZh ? '科学家简介' : 'About the Scientist'}
+            <div className={cn('rounded-xl p-4 mb-6 border', theme === 'dark' ? 'bg-slate-800/50 border-slate-700' : 'bg-amber-50 border-amber-200')}>
+              <h4 className={cn('text-sm font-semibold mb-2 flex items-center gap-2', theme === 'dark' ? 'text-amber-400' : 'text-amber-700')}>
+                <User className="w-4 h-4" />{isZh ? '科学家简介' : 'About the Scientist'}
               </h4>
-              <p className={cn(
-                'text-sm',
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-              )}>
+              <p className={cn('text-sm', theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>
                 {isZh ? event.scientistBio.bioZh : event.scientistBio.bioEn}
               </p>
-              {event.scientistBio.nationality && (
-                <p className={cn(
-                  'text-xs mt-2',
-                  theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                )}>
-                  {isZh ? '国籍' : 'Nationality'}: {event.scientistBio.nationality}
-                </p>
-              )}
             </div>
           )}
-
-          {/* Key Facts */}
           {event.details && (
-            <div className={cn(
-              'rounded-xl p-4 border',
-              theme === 'dark'
-                ? 'bg-cyan-900/20 border-cyan-800/50'
-                : 'bg-cyan-50 border-cyan-200'
-            )}>
-              <h4 className={cn(
-                'text-sm font-semibold mb-3 flex items-center gap-2',
-                theme === 'dark' ? 'text-cyan-400' : 'text-cyan-700'
-              )}>
-                <Lightbulb className="w-4 h-4" />
-                {isZh ? '关键事实' : 'Key Facts'}
+            <div className={cn('rounded-xl p-4 border', theme === 'dark' ? 'bg-cyan-900/20 border-cyan-800/50' : 'bg-cyan-50 border-cyan-200')}>
+              <h4 className={cn('text-sm font-semibold mb-3 flex items-center gap-2', theme === 'dark' ? 'text-cyan-400' : 'text-cyan-700')}>
+                <Lightbulb className="w-4 h-4" />{isZh ? '关键事实' : 'Key Facts'}
               </h4>
-              <ul className={cn(
-                'text-sm space-y-2',
-                theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-              )}>
+              <ul className={cn('text-sm space-y-2', theme === 'dark' ? 'text-gray-300' : 'text-gray-600')}>
                 {(isZh ? event.details.zh : event.details.en).map((detail, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <span className="text-cyan-500 mt-1">•</span>
-                    {detail}
-                  </li>
+                  <li key={i} className="flex items-start gap-2"><span className="text-cyan-500 mt-1">•</span>{detail}</li>
                 ))}
               </ul>
             </div>
           )}
         </div>
 
-        {/* Navigation Footer */}
-        <div className={cn(
-          'sticky bottom-0 px-6 py-4 border-t backdrop-blur-md flex items-center justify-between',
-          theme === 'dark'
-            ? 'bg-slate-900/90 border-slate-700'
-            : 'bg-white/90 border-gray-200'
-        )}>
-          <button
-            onClick={onPrev}
-            disabled={!hasPrev}
-            className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-lg transition-colors',
-              hasPrev
-                ? theme === 'dark'
-                  ? 'text-gray-300 hover:bg-slate-700'
-                  : 'text-gray-700 hover:bg-gray-100'
-                : 'opacity-30 cursor-not-allowed text-gray-500'
-            )}
-          >
-            <ChevronLeft className="w-4 h-4" />
-            {isZh ? '上一个' : 'Previous'}
+        {/* Navigation */}
+        <div className={cn('sticky bottom-0 px-6 py-4 border-t backdrop-blur-md flex items-center justify-between', theme === 'dark' ? 'bg-slate-900/90 border-slate-700' : 'bg-white/90 border-gray-200')}>
+          <button onClick={onPrev} disabled={!hasPrev} className={cn('flex items-center gap-2 px-4 py-2 rounded-lg transition-colors', hasPrev ? (theme === 'dark' ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100') : 'opacity-30 cursor-not-allowed text-gray-500')}>
+            <ChevronLeft className="w-4 h-4" />{isZh ? '上一个' : 'Previous'}
           </button>
-
-          <span className={cn(
-            'text-sm',
-            theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-          )}>
-            {isZh ? '按 ← → 键导航 · ESC 关闭' : 'Press ← → to navigate · ESC to close'}
-          </span>
-
-          <button
-            onClick={onNext}
-            disabled={!hasNext}
-            className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-lg transition-colors',
-              hasNext
-                ? theme === 'dark'
-                  ? 'text-gray-300 hover:bg-slate-700'
-                  : 'text-gray-700 hover:bg-gray-100'
-                : 'opacity-30 cursor-not-allowed text-gray-500'
-            )}
-          >
-            {isZh ? '下一个' : 'Next'}
-            <ChevronRight className="w-4 h-4" />
+          <span className={cn('text-sm', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>{isZh ? '按 ← → 键导航' : 'Press ← → to navigate'}</span>
+          <button onClick={onNext} disabled={!hasNext} className={cn('flex items-center gap-2 px-4 py-2 rounded-lg transition-colors', hasNext ? (theme === 'dark' ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100') : 'opacity-30 cursor-not-allowed text-gray-500')}>
+            {isZh ? '下一个' : 'Next'}<ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -1482,211 +733,78 @@ function StoryModal({ event, onClose, onNext, onPrev, hasNext, hasPrev }: StoryM
   )
 }
 
-// Timeline event card component
-interface TimelineCardProps {
+// Center Timeline Event Component - NEW DESIGN
+interface CenterTimelineEventProps {
   event: TimelineEvent
-  isExpanded: boolean
-  onToggle: () => void
+  side: 'left' | 'right'
   onReadStory: () => void
 }
 
-function TimelineCard({ event, isExpanded, onToggle, onReadStory }: TimelineCardProps) {
+function CenterTimelineEvent({ event, side, onReadStory }: CenterTimelineEventProps) {
   const { theme } = useTheme()
   const { i18n } = useTranslation()
   const isZh = i18n.language === 'zh'
   const category = CATEGORY_LABELS[event.category]
-
-  // Track-based colors
-  const isOpticsTrack = event.track === 'optics'
-  const trackColor = isOpticsTrack
-    ? { dot: 'bg-amber-500 border-amber-500/30', border: theme === 'dark' ? 'border-amber-500/50' : 'border-amber-400' }
-    : { dot: 'bg-cyan-500 border-cyan-500/30', border: theme === 'dark' ? 'border-cyan-500/50' : 'border-cyan-400' }
+  const isOptics = event.track === 'optics'
 
   return (
     <div className={cn(
-      'relative pl-8 pb-8 border-l-2 last:pb-0',
-      isOpticsTrack
-        ? theme === 'dark' ? 'border-amber-500/30' : 'border-amber-300'
-        : theme === 'dark' ? 'border-cyan-500/30' : 'border-cyan-300'
+      'relative flex items-center',
+      side === 'left' ? 'justify-end pr-8' : 'justify-start pl-8'
     )}>
-      {/* Timeline dot with track indicator */}
-      <div className={cn(
-        'absolute -left-2.5 w-5 h-5 rounded-full border-4',
-        trackColor.dot
-      )} />
-
-      {/* Year label */}
-      <div className={cn(
-        'absolute -left-20 w-14 text-right font-mono text-sm font-semibold',
-        theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-      )}>
-        {event.year}
-      </div>
-
       {/* Card */}
       <div
+        onClick={onReadStory}
         className={cn(
-          'rounded-xl border p-4 transition-all',
+          'w-full max-w-md p-4 rounded-xl border cursor-pointer transition-all hover:scale-[1.02] hover:shadow-lg',
           theme === 'dark'
-            ? `bg-slate-800/50 border-slate-700 hover:${trackColor.border}`
-            : `bg-white border-gray-200 hover:${trackColor.border} hover:shadow-md`
+            ? isOptics
+              ? 'bg-amber-900/20 border-amber-700/50 hover:border-amber-500/70'
+              : 'bg-cyan-900/20 border-cyan-700/50 hover:border-cyan-500/70'
+            : isOptics
+              ? 'bg-amber-50 border-amber-200 hover:border-amber-400'
+              : 'bg-cyan-50 border-cyan-200 hover:border-cyan-400'
         )}
       >
-        <div
-          className="flex items-start justify-between gap-3 cursor-pointer"
-          onClick={onToggle}
-        >
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              {/* Track badge */}
-              <span className={cn(
-                'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium',
-                isOpticsTrack
-                  ? theme === 'dark' ? 'bg-amber-500/20 text-amber-400' : 'bg-amber-100 text-amber-700'
-                  : theme === 'dark' ? 'bg-cyan-500/20 text-cyan-400' : 'bg-cyan-100 text-cyan-700'
-              )}>
-                {isOpticsTrack ? <Sun className="w-3 h-3" /> : <Sparkles className="w-3 h-3" />}
-                {isOpticsTrack ? (isZh ? '光学' : 'Optics') : (isZh ? '偏振' : 'Polarization')}
-              </span>
-              <Badge color={category.color}>
-                {isZh ? category.zh : category.en}
-              </Badge>
-              {event.importance === 1 && (
-                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-              )}
-            </div>
-            <h3 className={cn(
-              'font-semibold text-lg mb-1',
-              theme === 'dark' ? 'text-white' : 'text-gray-900'
-            )}>
-              {isZh ? event.titleZh : event.titleEn}
-            </h3>
-            {event.scientistEn && (
-              <p className={cn(
-                'text-sm mb-2 flex items-center gap-1',
-                theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'
-              )}>
-                {event.scientistBio?.portraitEmoji && (
-                  <span className="text-base mr-1">{event.scientistBio.portraitEmoji}</span>
-                )}
-                <User className="w-3.5 h-3.5" />
-                {isZh ? event.scientistZh : event.scientistEn}
-              </p>
-            )}
-            <p className={cn(
-              'text-sm',
-              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-            )}>
-              {isZh ? event.descriptionZh : event.descriptionEn}
-            </p>
-          </div>
-          <div className={cn(
-            'flex-shrink-0 p-1 rounded-full transition-colors',
-            theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100'
+        {/* Header */}
+        <div className="flex items-center gap-2 mb-2 flex-wrap">
+          <span className={cn(
+            'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium',
+            isOptics
+              ? theme === 'dark' ? 'bg-amber-500/30 text-amber-300' : 'bg-amber-200 text-amber-800'
+              : theme === 'dark' ? 'bg-cyan-500/30 text-cyan-300' : 'bg-cyan-200 text-cyan-800'
           )}>
-            {isExpanded ? (
-              <ChevronUp className="w-5 h-5 text-gray-400" />
-            ) : (
-              <ChevronDown className="w-5 h-5 text-gray-400" />
-            )}
-          </div>
+            {isOptics ? <Sun className="w-3 h-3" /> : <Sparkles className="w-3 h-3" />}
+            {isOptics ? (isZh ? '光学' : 'Optics') : (isZh ? '偏振' : 'Polarization')}
+          </span>
+          <Badge color={category.color} size="sm">{isZh ? category.zh : category.en}</Badge>
+          {event.importance === 1 && <Star className="w-4 h-4 text-amber-500 fill-amber-500" />}
         </div>
 
-        {/* Expanded details */}
-        {isExpanded && (
-          <div className={cn(
-            'mt-4 pt-4 border-t',
-            theme === 'dark' ? 'border-slate-700' : 'border-gray-200'
-          )}>
-            {event.details && (
-              <>
-                <h4 className={cn(
-                  'text-sm font-semibold mb-2 flex items-center gap-2',
-                  theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                )}>
-                  <Lightbulb className="w-4 h-4" />
-                  {isZh ? '深入了解' : 'Learn More'}
-                </h4>
-                <ul className={cn(
-                  'text-sm space-y-1.5 list-disc list-inside mb-4',
-                  theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                )}>
-                  {(isZh ? event.details.zh : event.details.en).map((detail, i) => (
-                    <li key={i}>{detail}</li>
-                  ))}
-                </ul>
-              </>
-            )}
+        {/* Title */}
+        <h3 className={cn('font-semibold text-lg mb-1', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
+          {isZh ? event.titleZh : event.titleEn}
+        </h3>
 
-            {/* Read Story Button */}
-            {event.story && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onReadStory()
-                }}
-                className={cn(
-                  'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors',
-                  theme === 'dark'
-                    ? 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30'
-                    : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
-                )}
-              >
-                <BookOpen className="w-4 h-4" />
-                {isZh ? '阅读完整故事' : 'Read Full Story'}
-              </button>
-            )}
+        {/* Scientist */}
+        {event.scientistEn && (
+          <p className={cn('text-sm mb-2 flex items-center gap-1', theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>
+            {event.scientistBio?.portraitEmoji && <span className="mr-1">{event.scientistBio.portraitEmoji}</span>}
+            <User className="w-3 h-3" />
+            {isZh ? event.scientistZh : event.scientistEn}
+          </p>
+        )}
 
-            {/* References section */}
-            {event.references && event.references.length > 0 && (
-              <div className={cn(
-                'mt-4 pt-4 border-t',
-                theme === 'dark' ? 'border-slate-700' : 'border-gray-200'
-              )}>
-                <h4 className={cn(
-                  'text-xs font-semibold mb-2 flex items-center gap-2',
-                  theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-                )}>
-                  <ExternalLink className="w-3 h-3" />
-                  {isZh ? '参考文献' : 'References'}
-                </h4>
-                <ul className="space-y-1">
-                  {event.references.map((ref, idx) => (
-                    <li key={idx} className={cn(
-                      'text-xs',
-                      theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-                    )}>
-                      {ref.url ? (
-                        <a
-                          href={ref.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={cn(
-                            'hover:underline',
-                            theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'
-                          )}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {ref.title}
-                        </a>
-                      ) : (
-                        ref.title
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+        {/* Description */}
+        <p className={cn('text-sm line-clamp-2', theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>
+          {isZh ? event.descriptionZh : event.descriptionEn}
+        </p>
 
-            {/* Historical note (if story accuracy is uncertain) */}
-            {event.historicalNote && (
-              <div className={cn(
-                'mt-3 p-2 rounded text-xs italic',
-                theme === 'dark' ? 'bg-yellow-500/10 text-yellow-400' : 'bg-yellow-100 text-yellow-700'
-              )}>
-                {isZh ? event.historicalNote.zh : event.historicalNote.en}
-              </div>
-            )}
+        {/* Read More */}
+        {event.story && (
+          <div className={cn('mt-3 text-xs font-medium flex items-center gap-1', theme === 'dark' ? 'text-indigo-400' : 'text-indigo-600')}>
+            <BookOpen className="w-3 h-3" />
+            {isZh ? '阅读故事' : 'Read Story'}
           </div>
         )}
       </div>
@@ -1694,458 +812,562 @@ function TimelineCard({ event, isExpanded, onToggle, onReadStory }: TimelineCard
   )
 }
 
-// Tabs configuration
-const TABS = [
-  { id: 'timeline', label: 'Timeline', labelZh: '时间线', icon: <Clock className="w-4 h-4" /> },
-  { id: 'scientists', label: 'Scientists', labelZh: '科学家', icon: <User className="w-4 h-4" /> },
-  { id: 'experiments', label: 'Key Experiments', labelZh: '关键实验', icon: <FlaskConical className="w-4 h-4" /> },
-]
+// Interactive Knowledge Graph Component - NEW
+interface KnowledgeGraphProps {
+  nodes: KnowledgeNode[]
+  links: KnowledgeLink[]
+}
 
-export function ChroniclesPage() {
-  const { t } = useTranslation()
+function KnowledgeGraph({ nodes, links }: KnowledgeGraphProps) {
   const { theme } = useTheme()
   const { i18n } = useTranslation()
   const isZh = i18n.language === 'zh'
-  const [activeTab, setActiveTab] = useState('timeline')
-  const [expandedEvent, setExpandedEvent] = useState<number | null>(null)
-  const [filter, setFilter] = useState<string>('')
-  const [trackFilter, setTrackFilter] = useState<'all' | 'optics' | 'polarization'>('all')
-  const [storyModalEvent, setStoryModalEvent] = useState<number | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [selectedNode, setSelectedNode] = useState<KnowledgeNode | null>(null)
+  const [zoom, setZoom] = useState(1)
+  const [pan, setPan] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+  const [hoveredNode, setHoveredNode] = useState<string | null>(null)
+  const [filterCategory, setFilterCategory] = useState<string | null>(null)
 
-  // Filter events by category and track
-  const filteredEvents = TIMELINE_EVENTS.filter(e => {
-    const categoryMatch = !filter || e.category === filter
-    const trackMatch = trackFilter === 'all' || e.track === trackFilter
-    return categoryMatch && trackMatch
-  }).sort((a, b) => a.year - b.year)
+  // Calculate node positions using force-directed layout simulation
+  const nodePositions = useMemo(() => {
+    const width = 900
+    const height = 600
+    const positions: Record<string, { x: number; y: number }> = {}
 
-  // Get unique scientists from events
-  const scientists = TIMELINE_EVENTS.filter(e => e.scientistBio?.bioEn).reduce((acc, event) => {
-    const key = event.scientistEn || ''
-    if (key && !acc.find(s => s.scientistEn === key)) {
-      acc.push(event)
+    // Simple circular layout with category grouping
+    const categoryGroups: Record<string, KnowledgeNode[]> = {}
+    nodes.forEach(node => {
+      if (!categoryGroups[node.category]) categoryGroups[node.category] = []
+      categoryGroups[node.category].push(node)
+    })
+
+    const categories = Object.keys(categoryGroups)
+    const categoryAngles: Record<string, number> = {}
+    categories.forEach((cat, i) => {
+      categoryAngles[cat] = (2 * Math.PI * i) / categories.length - Math.PI / 2
+    })
+
+    nodes.forEach((node) => {
+      const catNodes = categoryGroups[node.category]
+      const indexInCat = catNodes.indexOf(node)
+      const catAngle = categoryAngles[node.category]
+      const radius = 200 + (indexInCat % 3) * 60
+      const angleOffset = (indexInCat * 0.4) - (catNodes.length * 0.2)
+
+      positions[node.id] = {
+        x: width / 2 + radius * Math.cos(catAngle + angleOffset),
+        y: height / 2 + radius * Math.sin(catAngle + angleOffset)
+      }
+    })
+
+    return positions
+  }, [nodes])
+
+  // Get connected nodes for highlighting
+  const getConnectedNodes = useCallback((nodeId: string) => {
+    const connected = new Set<string>()
+    links.forEach(link => {
+      if (link.source === nodeId) connected.add(link.target)
+      if (link.target === nodeId) connected.add(link.source)
+    })
+    return connected
+  }, [links])
+
+  const connectedNodes = hoveredNode ? getConnectedNodes(hoveredNode) : new Set<string>()
+
+  // Mouse handlers for panning
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (e.button === 0) {
+      setIsDragging(true)
+      setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y })
     }
-    return acc
-  }, [] as TimelineEvent[])
-
-  // Story modal navigation
-  const handleOpenStory = (index: number) => {
-    setStoryModalEvent(index)
   }
 
-  const handleCloseStory = () => {
-    setStoryModalEvent(null)
-  }
-
-  const handleNextStory = () => {
-    if (storyModalEvent !== null && storyModalEvent < filteredEvents.length - 1) {
-      setStoryModalEvent(storyModalEvent + 1)
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging) {
+      setPan({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y })
     }
   }
 
-  const handlePrevStory = () => {
-    if (storyModalEvent !== null && storyModalEvent > 0) {
-      setStoryModalEvent(storyModalEvent - 1)
+  const handleMouseUp = () => setIsDragging(false)
+
+  // Filter nodes based on category
+  const filteredNodes = filterCategory
+    ? nodes.filter(n => n.category === filterCategory)
+    : nodes
+
+  const filteredNodeIds = new Set(filteredNodes.map(n => n.id))
+  const filteredLinks = links.filter(l =>
+    filteredNodeIds.has(l.source) && filteredNodeIds.has(l.target)
+  )
+
+  return (
+    <div className="relative h-[600px] overflow-hidden rounded-xl border" ref={containerRef}>
+      {/* Controls */}
+      <div className={cn(
+        'absolute top-4 left-4 z-10 flex flex-col gap-2',
+      )}>
+        <div className={cn(
+          'flex items-center gap-1 p-1 rounded-lg border',
+          theme === 'dark' ? 'bg-slate-900/90 border-slate-700' : 'bg-white/90 border-gray-200'
+        )}>
+          <button onClick={() => setZoom(z => Math.min(z + 0.2, 2))} className={cn('p-2 rounded-md', theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100')}>
+            <ZoomIn className="w-4 h-4" />
+          </button>
+          <button onClick={() => setZoom(z => Math.max(z - 0.2, 0.5))} className={cn('p-2 rounded-md', theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100')}>
+            <ZoomOut className="w-4 h-4" />
+          </button>
+          <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }) }} className={cn('p-2 rounded-md', theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100')}>
+            <Maximize2 className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Category Filter */}
+        <div className={cn(
+          'p-2 rounded-lg border',
+          theme === 'dark' ? 'bg-slate-900/90 border-slate-700' : 'bg-white/90 border-gray-200'
+        )}>
+          <div className={cn('text-xs font-medium mb-2 flex items-center gap-1', theme === 'dark' ? 'text-gray-400' : 'text-gray-500')}>
+            <Filter className="w-3 h-3" />{isZh ? '筛选' : 'Filter'}
+          </div>
+          <div className="flex flex-col gap-1">
+            <button
+              onClick={() => setFilterCategory(null)}
+              className={cn(
+                'text-xs px-2 py-1 rounded text-left',
+                !filterCategory ? 'bg-indigo-500 text-white' : (theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100')
+              )}
+            >
+              {isZh ? '全部' : 'All'}
+            </button>
+            {['fundamental', 'phenomenon', 'theory', 'device', 'application'].map(cat => (
+              <button
+                key={cat}
+                onClick={() => setFilterCategory(cat)}
+                className={cn(
+                  'text-xs px-2 py-1 rounded text-left flex items-center gap-2',
+                  filterCategory === cat ? 'bg-indigo-500 text-white' : (theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100')
+                )}
+              >
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: NODE_CATEGORY_COLORS[cat as keyof typeof NODE_CATEGORY_COLORS].bg }} />
+                {isZh ?
+                  { fundamental: '基础', phenomenon: '现象', theory: '理论', device: '器件', application: '应用' }[cat] :
+                  cat.charAt(0).toUpperCase() + cat.slice(1)
+                }
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Selected Node Info */}
+      {selectedNode && (
+        <div className={cn(
+          'absolute top-4 right-4 z-10 w-64 p-4 rounded-xl border shadow-lg',
+          theme === 'dark' ? 'bg-slate-900 border-slate-700' : 'bg-white border-gray-200'
+        )}>
+          <button onClick={() => setSelectedNode(null)} className="absolute top-2 right-2 p-1 rounded-full hover:bg-slate-700/50">
+            <X className="w-4 h-4" />
+          </button>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-4 h-4 rounded-full" style={{ backgroundColor: NODE_CATEGORY_COLORS[selectedNode.category].bg }} />
+            <h4 className={cn('font-semibold', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
+              {isZh ? selectedNode.labelZh : selectedNode.labelEn}
+            </h4>
+          </div>
+          <p className={cn('text-sm mb-3', theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>
+            {isZh ? selectedNode.descriptionZh : selectedNode.descriptionEn}
+          </p>
+          <div className={cn('text-xs', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
+            {isZh ? '类别：' : 'Category: '}
+            {isZh ?
+              { fundamental: '基础概念', phenomenon: '物理现象', theory: '理论定律', device: '光学器件', application: '实际应用' }[selectedNode.category] :
+              selectedNode.category
+            }
+          </div>
+          {/* Related links */}
+          <div className="mt-3 pt-3 border-t border-slate-700">
+            <div className={cn('text-xs font-medium mb-2', theme === 'dark' ? 'text-gray-400' : 'text-gray-500')}>
+              {isZh ? '相关连接' : 'Connections'}
+            </div>
+            {links.filter(l => l.source === selectedNode.id || l.target === selectedNode.id).slice(0, 5).map((link, i) => {
+              const otherId = link.source === selectedNode.id ? link.target : link.source
+              const otherNode = nodes.find(n => n.id === otherId)
+              return otherNode ? (
+                <div key={i} className={cn('text-xs flex items-center gap-2 py-1', theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>
+                  <span>→</span>
+                  <span>{isZh ? otherNode.labelZh : otherNode.labelEn}</span>
+                  <span className={cn('text-xs', theme === 'dark' ? 'text-gray-600' : 'text-gray-400')}>
+                    ({isZh ? link.relationZh : link.relationEn})
+                  </span>
+                </div>
+              ) : null
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* SVG Graph */}
+      <svg
+        className="w-full h-full cursor-grab active:cursor-grabbing"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+      >
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill={theme === 'dark' ? '#475569' : '#94a3b8'} />
+          </marker>
+        </defs>
+
+        <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
+          {/* Links */}
+          {filteredLinks.map((link, i) => {
+            const sourcePos = nodePositions[link.source]
+            const targetPos = nodePositions[link.target]
+            if (!sourcePos || !targetPos) return null
+
+            const isHighlighted = hoveredNode === link.source || hoveredNode === link.target
+            const isConnected = hoveredNode && (link.source === hoveredNode || link.target === hoveredNode)
+
+            return (
+              <line
+                key={i}
+                x1={sourcePos.x}
+                y1={sourcePos.y}
+                x2={targetPos.x}
+                y2={targetPos.y}
+                stroke={isConnected ? (theme === 'dark' ? '#60a5fa' : '#3b82f6') : (theme === 'dark' ? '#334155' : '#cbd5e1')}
+                strokeWidth={link.strength * (isHighlighted ? 2 : 1)}
+                opacity={hoveredNode && !isConnected ? 0.2 : 0.6}
+                markerEnd="url(#arrowhead)"
+              />
+            )
+          })}
+
+          {/* Nodes */}
+          {filteredNodes.map(node => {
+            const pos = nodePositions[node.id]
+            if (!pos) return null
+
+            const isHovered = hoveredNode === node.id
+            const isConnected = connectedNodes.has(node.id)
+            const isSelected = selectedNode?.id === node.id
+            const colors = NODE_CATEGORY_COLORS[node.category]
+
+            return (
+              <g
+                key={node.id}
+                transform={`translate(${pos.x}, ${pos.y})`}
+                onMouseEnter={() => setHoveredNode(node.id)}
+                onMouseLeave={() => setHoveredNode(null)}
+                onClick={() => setSelectedNode(node)}
+                className="cursor-pointer"
+                opacity={hoveredNode && !isHovered && !isConnected ? 0.3 : 1}
+              >
+                {/* Glow effect on hover */}
+                {(isHovered || isSelected) && (
+                  <circle
+                    r={32}
+                    fill={colors.bg}
+                    opacity={0.3}
+                    className="animate-pulse"
+                  />
+                )}
+
+                {/* Node circle */}
+                <circle
+                  r={isHovered ? 26 : 22}
+                  fill={colors.bg}
+                  stroke={isSelected ? '#fff' : colors.border}
+                  strokeWidth={isSelected ? 3 : 2}
+                  className="transition-all duration-200"
+                />
+
+                {/* Node label */}
+                <text
+                  y={36}
+                  textAnchor="middle"
+                  className={cn('text-xs font-medium', theme === 'dark' ? 'fill-gray-300' : 'fill-gray-700')}
+                  style={{ fontSize: '10px' }}
+                >
+                  {isZh ? node.labelZh : node.labelEn}
+                </text>
+              </g>
+            )
+          })}
+        </g>
+      </svg>
+
+      {/* Legend */}
+      <div className={cn(
+        'absolute bottom-4 left-4 p-3 rounded-lg border',
+        theme === 'dark' ? 'bg-slate-900/90 border-slate-700' : 'bg-white/90 border-gray-200'
+      )}>
+        <div className={cn('text-xs font-medium mb-2', theme === 'dark' ? 'text-gray-400' : 'text-gray-500')}>
+          {isZh ? '图例' : 'Legend'}
+        </div>
+        <div className="flex flex-wrap gap-3">
+          {Object.entries(NODE_CATEGORY_COLORS).map(([cat, colors]) => (
+            <div key={cat} className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full" style={{ backgroundColor: colors.bg }} />
+              <span className={cn('text-xs', theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>
+                {isZh ?
+                  { fundamental: '基础', phenomenon: '现象', theory: '理论', device: '器件', application: '应用' }[cat] :
+                  cat.charAt(0).toUpperCase() + cat.slice(1)
+                }
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Page Tabs
+const PAGE_TABS = [
+  { id: 'timeline', labelEn: 'Timeline', labelZh: '时间线', icon: <Clock className="w-4 h-4" /> },
+  { id: 'graph', labelEn: 'Knowledge Graph', labelZh: '知识图谱', icon: <Network className="w-4 h-4" /> },
+]
+
+export function ChroniclesPage() {
+  const { i18n } = useTranslation()
+  const { theme } = useTheme()
+  const isZh = i18n.language === 'zh'
+
+  const [activeTab, setActiveTab] = useState<'timeline' | 'graph'>('timeline')
+  const [storyEvent, setStoryEvent] = useState<TimelineEvent | null>(null)
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
+
+  // Get sorted events by year
+  const sortedEvents = useMemo(() => {
+    let events = [...TIMELINE_EVENTS].sort((a, b) => a.year - b.year)
+    if (categoryFilter) {
+      events = events.filter(e => e.category === categoryFilter)
     }
-  }
+    return events
+  }, [categoryFilter])
+
+  // Get unique years for the center timeline
+  const uniqueYears = useMemo(() => {
+    const years = new Set(sortedEvents.map(e => e.year))
+    return Array.from(years).sort((a, b) => a - b)
+  }, [sortedEvents])
+
+  // Story navigation
+  const storyIndex = storyEvent ? sortedEvents.findIndex(e => e.year === storyEvent.year && e.titleEn === storyEvent.titleEn) : -1
+  const hasPrevStory = storyIndex > 0
+  const hasNextStory = storyIndex >= 0 && storyIndex < sortedEvents.length - 1
+  const goToPrevStory = () => storyIndex > 0 && setStoryEvent(sortedEvents[storyIndex - 1])
+  const goToNextStory = () => storyIndex < sortedEvents.length - 1 && setStoryEvent(sortedEvents[storyIndex + 1])
 
   return (
     <div className={cn(
       'min-h-screen',
       theme === 'dark'
         ? 'bg-gradient-to-br from-[#0a0a1a] via-[#1a1a3a] to-[#0a0a2a]'
-        : 'bg-gradient-to-br from-[#fffbeb] via-[#fef3c7] to-[#fffbeb]'
+        : 'bg-gradient-to-br from-[#fffbeb] via-[#f0f9ff] to-[#f0fdf4]'
     )}>
       {/* Header */}
       <header className={cn(
         'sticky top-0 z-40 border-b backdrop-blur-md',
-        theme === 'dark'
-          ? 'bg-slate-900/80 border-slate-700'
-          : 'bg-white/80 border-gray-200'
+        theme === 'dark' ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-gray-200'
       )}>
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-14 sm:h-16">
-            {/* Left: Home link */}
-            <Link
-              to="/"
-              className={cn(
-                'flex items-center gap-2 text-sm font-medium transition-colors',
-                theme === 'dark'
-                  ? 'text-gray-400 hover:text-white'
-                  : 'text-gray-600 hover:text-gray-900'
-              )}
-            >
-              <Home className="w-4 h-4" />
-              <span className="hidden sm:inline">{t('common.home')}</span>
-            </Link>
-
-            {/* Center: Title */}
-            <div className="flex items-center gap-2">
-              <span className="text-xl">📜</span>
-              <h1 className={cn(
-                'text-lg sm:text-xl font-bold',
-                theme === 'dark' ? 'text-amber-400' : 'text-amber-600'
-              )}>
-                {isZh ? '光的编年史' : 'Chronicles of Light'}
-              </h1>
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link to="/" className={cn('p-2 rounded-lg transition-colors', theme === 'dark' ? 'hover:bg-slate-800 text-gray-400' : 'hover:bg-gray-100 text-gray-500')}>
+                <Home className="w-5 h-5" />
+              </Link>
+              <div>
+                <h1 className={cn('text-xl font-bold', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
+                  {isZh ? '光的编年史' : 'Chronicles of Light'}
+                </h1>
+                <p className={cn('text-sm', theme === 'dark' ? 'text-gray-400' : 'text-gray-500')}>
+                  {isZh ? '双线叙事：广义光学 × 偏振光学' : 'Dual Narrative: General Optics × Polarization'}
+                </p>
+              </div>
             </div>
-
-            {/* Right: Settings */}
             <LanguageThemeSwitcher />
           </div>
         </div>
       </header>
 
-      {/* Main content */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        {/* Hero section */}
-        <div className="text-center mb-8">
-          <h2 className={cn(
-            'text-2xl sm:text-3xl font-bold mb-3',
-            theme === 'dark' ? 'text-white' : 'text-gray-900'
-          )}>
-            {isZh ? '双线叙事：光学与偏振' : 'Dual Narrative: Optics & Polarization'}
-          </h2>
-          <p className={cn(
-            'text-base max-w-3xl mx-auto mb-4',
-            theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-          )}>
-            {isZh
-              ? '从17世纪的偶然发现到现代应用，探索三个多世纪的光学奥秘。左侧追溯广义光学史上的核心发现，右侧聚焦偏振光的专属旅程。'
-              : 'From 17th-century discoveries to modern applications — explore over three centuries of optical mysteries. Left track traces core optics history, right track follows the polarization journey.'}
-          </p>
-          {/* Dual track legend */}
-          <div className="flex justify-center gap-6 text-sm">
-            <div className="flex items-center gap-2">
-              <Sun className={cn('w-5 h-5', theme === 'dark' ? 'text-amber-400' : 'text-amber-600')} />
-              <span className={theme === 'dark' ? 'text-amber-400' : 'text-amber-600'}>
-                {isZh ? '广义光学' : 'General Optics'}
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Sparkles className={cn('w-5 h-5', theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600')} />
-              <span className={theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'}>
-                {isZh ? '偏振光' : 'Polarization'}
-              </span>
-            </div>
-          </div>
-        </div>
-
+      <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Tabs */}
-        <div className="mb-6">
-          <Tabs tabs={TABS} activeTab={activeTab} onChange={setActiveTab} />
-        </div>
+        <Tabs
+          tabs={PAGE_TABS.map(tab => ({ ...tab, label: isZh ? tab.labelZh : tab.labelEn }))}
+          activeTab={activeTab}
+          onChange={(id: string) => setActiveTab(id as 'timeline' | 'graph')}
+          className="mb-8"
+        />
 
-        {/* Content */}
-        {activeTab === 'timeline' && (
+        {activeTab === 'timeline' ? (
           <>
-            {/* Track filters */}
-            <div className={cn(
-              'flex flex-wrap items-center gap-2 mb-4 p-3 rounded-lg',
-              theme === 'dark' ? 'bg-slate-800/50' : 'bg-gray-50'
-            )}>
-              <span className={cn('text-sm font-medium mr-2', theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>
-                {isZh ? '轨道：' : 'Track:'}
+            {/* Category Filter */}
+            <div className="flex items-center gap-3 mb-8 flex-wrap">
+              <span className={cn('text-sm', theme === 'dark' ? 'text-gray-400' : 'text-gray-500')}>
+                {isZh ? '筛选：' : 'Filter:'}
               </span>
               <button
-                onClick={() => setTrackFilter('all')}
+                onClick={() => setCategoryFilter(null)}
                 className={cn(
-                  'px-3 py-1.5 rounded-full text-sm font-medium transition-colors flex items-center gap-1.5',
-                  trackFilter === 'all'
-                    ? 'bg-gray-600 text-white'
-                    : theme === 'dark'
-                      ? 'text-gray-400 hover:text-white hover:bg-slate-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                  'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+                  !categoryFilter
+                    ? 'bg-indigo-500 text-white'
+                    : theme === 'dark' ? 'bg-slate-800 text-gray-300 hover:bg-slate-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 )}
               >
                 {isZh ? '全部' : 'All'}
               </button>
-              <button
-                onClick={() => setTrackFilter('optics')}
-                className={cn(
-                  'px-3 py-1.5 rounded-full text-sm font-medium transition-colors flex items-center gap-1.5',
-                  trackFilter === 'optics'
-                    ? 'bg-amber-500 text-white'
-                    : theme === 'dark'
-                      ? 'text-amber-400/70 hover:text-amber-400 hover:bg-amber-500/20'
-                      : 'text-amber-600 hover:text-amber-700 hover:bg-amber-100'
-                )}
-              >
-                <Sun className="w-3.5 h-3.5" />
-                {isZh ? '广义光学' : 'Optics'}
-              </button>
-              <button
-                onClick={() => setTrackFilter('polarization')}
-                className={cn(
-                  'px-3 py-1.5 rounded-full text-sm font-medium transition-colors flex items-center gap-1.5',
-                  trackFilter === 'polarization'
-                    ? 'bg-cyan-500 text-white'
-                    : theme === 'dark'
-                      ? 'text-cyan-400/70 hover:text-cyan-400 hover:bg-cyan-500/20'
-                      : 'text-cyan-600 hover:text-cyan-700 hover:bg-cyan-100'
-                )}
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                {isZh ? '偏振光' : 'Polarization'}
-              </button>
-            </div>
-
-            {/* Category filters */}
-            <div className={cn(
-              'flex flex-wrap items-center gap-2 mb-6 p-3 rounded-lg',
-              theme === 'dark' ? 'bg-slate-800/50' : 'bg-gray-50'
-            )}>
-              <span className={cn('text-sm font-medium mr-2', theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>
-                {isZh ? '类型：' : 'Type:'}
-              </span>
-              <button
-                onClick={() => setFilter('')}
-                className={cn(
-                  'px-3 py-1.5 rounded-full text-sm font-medium transition-colors',
-                  !filter
-                    ? 'bg-gray-600 text-white'
-                    : theme === 'dark'
-                      ? 'text-gray-400 hover:text-white hover:bg-slate-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
-                )}
-              >
-                {isZh ? '全部' : 'All'}
-              </button>
-              {Object.entries(CATEGORY_LABELS).map(([key, val]) => (
+              {Object.entries(CATEGORY_LABELS).map(([key, value]) => (
                 <button
                   key={key}
-                  onClick={() => setFilter(key)}
+                  onClick={() => setCategoryFilter(key)}
                   className={cn(
-                    'px-3 py-1.5 rounded-full text-sm font-medium transition-colors',
-                    filter === key
-                      ? 'bg-gray-600 text-white'
-                      : theme === 'dark'
-                        ? 'text-gray-400 hover:text-white hover:bg-slate-700'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                    'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+                    categoryFilter === key
+                      ? 'bg-indigo-500 text-white'
+                      : theme === 'dark' ? 'bg-slate-800 text-gray-300 hover:bg-slate-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   )}
                 >
-                  {isZh ? val.zh : val.en}
+                  {isZh ? value.zh : value.en}
                 </button>
               ))}
             </div>
 
-            {/* Timeline */}
-            <div className="relative ml-20">
-              {filteredEvents.map((event, index) => (
-                <TimelineCard
-                  key={event.year}
-                  event={event}
-                  isExpanded={expandedEvent === index}
-                  onToggle={() => setExpandedEvent(expandedEvent === index ? null : index)}
-                  onReadStory={() => handleOpenStory(index)}
-                />
-              ))}
+            {/* Legend */}
+            <div className={cn(
+              'flex items-center justify-center gap-8 mb-8 p-4 rounded-xl border',
+              theme === 'dark' ? 'bg-slate-800/30 border-slate-700' : 'bg-gray-50 border-gray-200'
+            )}>
+              <div className="flex items-center gap-2">
+                <Sun className={cn('w-5 h-5', theme === 'dark' ? 'text-amber-400' : 'text-amber-600')} />
+                <span className={cn('text-sm font-medium', theme === 'dark' ? 'text-amber-400' : 'text-amber-700')}>
+                  {isZh ? '广义光学' : 'General Optics'}
+                </span>
+                <span className={cn('text-xs', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>← {isZh ? '左侧' : 'Left'}</span>
+              </div>
+              <div className={cn('w-px h-6', theme === 'dark' ? 'bg-slate-600' : 'bg-gray-300')} />
+              <div className="flex items-center gap-2">
+                <span className={cn('text-xs', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>{isZh ? '右侧' : 'Right'} →</span>
+                <Sparkles className={cn('w-5 h-5', theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600')} />
+                <span className={cn('text-sm font-medium', theme === 'dark' ? 'text-cyan-400' : 'text-cyan-700')}>
+                  {isZh ? '偏振光学' : 'Polarization Optics'}
+                </span>
+              </div>
+            </div>
+
+            {/* CENTER TIMELINE - NEW DESIGN */}
+            <div className="relative">
+              {/* Center vertical line */}
+              <div className={cn(
+                'absolute left-1/2 top-0 bottom-0 w-1 -translate-x-1/2 rounded-full',
+                theme === 'dark'
+                  ? 'bg-gradient-to-b from-amber-500/50 via-indigo-500/50 to-cyan-500/50'
+                  : 'bg-gradient-to-b from-amber-300 via-indigo-300 to-cyan-300'
+              )} />
+
+              {/* Events */}
+              <div className="relative space-y-4">
+                {uniqueYears.map(year => {
+                  const yearEvents = sortedEvents.filter(e => e.year === year)
+                  const opticsEvents = yearEvents.filter(e => e.track === 'optics')
+                  const polarizationEvents = yearEvents.filter(e => e.track === 'polarization')
+
+                  return (
+                    <div key={year} className="relative">
+                      {/* Year marker on center line */}
+                      <div className="absolute left-1/2 -translate-x-1/2 z-10">
+                        <div className={cn(
+                          'px-4 py-2 rounded-full font-mono font-bold text-lg shadow-lg',
+                          theme === 'dark'
+                            ? 'bg-slate-800 text-amber-400 border border-amber-500/50'
+                            : 'bg-white text-amber-600 border border-amber-300'
+                        )}>
+                          {year}
+                        </div>
+                      </div>
+
+                      {/* Events container */}
+                      <div className="grid grid-cols-2 gap-4 pt-14">
+                        {/* Left side - Optics */}
+                        <div className="space-y-4">
+                          {opticsEvents.map((event, i) => (
+                            <CenterTimelineEvent
+                              key={`${event.year}-${event.titleEn}-${i}`}
+                              event={event}
+                              side="left"
+                              onReadStory={() => setStoryEvent(event)}
+                            />
+                          ))}
+                        </div>
+
+                        {/* Right side - Polarization */}
+                        <div className="space-y-4">
+                          {polarizationEvents.map((event, i) => (
+                            <CenterTimelineEvent
+                              key={`${event.year}-${event.titleEn}-${i}`}
+                              event={event}
+                              side="right"
+                              onReadStory={() => setStoryEvent(event)}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Timeline end marker */}
+              <div className="flex justify-center pt-8">
+                <div className={cn(
+                  'px-6 py-3 rounded-full',
+                  theme === 'dark' ? 'bg-slate-800 text-gray-400' : 'bg-gray-100 text-gray-500'
+                )}>
+                  {isZh ? '探索仍在继续...' : 'The exploration continues...'}
+                </div>
+              </div>
             </div>
           </>
-        )}
-
-        {activeTab === 'scientists' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {scientists.map((event) => (
-              <div
-                key={event.scientistEn}
-                className={cn(
-                  'rounded-xl border p-5 transition-all hover:shadow-lg',
-                  theme === 'dark'
-                    ? 'bg-slate-800/50 border-slate-700 hover:border-amber-500/50'
-                    : 'bg-white border-gray-200 hover:border-amber-400'
-                )}
-              >
-                <div className="flex items-start gap-4">
-                  {/* Portrait Emoji */}
-                  <div className={cn(
-                    'flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center text-3xl',
-                    theme === 'dark' ? 'bg-slate-700' : 'bg-amber-100'
-                  )}>
-                    {event.scientistBio?.portraitEmoji || '👤'}
-                  </div>
-
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className={cn(
-                      'font-bold text-lg mb-1',
-                      theme === 'dark' ? 'text-white' : 'text-gray-900'
-                    )}>
-                      {isZh ? event.scientistZh : event.scientistEn}
-                    </h3>
-
-                    {/* Lifespan & Nationality */}
-                    <div className={cn(
-                      'flex flex-wrap items-center gap-2 mb-2 text-xs',
-                      theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                    )}>
-                      {event.scientistBio?.birthYear && event.scientistBio?.deathYear && (
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          {event.scientistBio.birthYear} - {event.scientistBio.deathYear}
-                        </span>
-                      )}
-                      {event.scientistBio?.nationality && (
-                        <span className="flex items-center gap-1">
-                          <MapPin className="w-3 h-3" />
-                          {event.scientistBio.nationality}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Key Discovery */}
-                    <Badge color={CATEGORY_LABELS[event.category].color} className="mb-2">
-                      {event.year}: {isZh ? event.titleZh : event.titleEn}
-                    </Badge>
-
-                    {/* Bio */}
-                    <p className={cn(
-                      'text-sm line-clamp-3',
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                    )}>
-                      {isZh ? event.scientistBio?.bioZh : event.scientistBio?.bioEn}
-                    </p>
-
-                    {/* Read Story Link */}
-                    {event.story && (
-                      <button
-                        onClick={() => {
-                          const idx = TIMELINE_EVENTS.findIndex(e => e.scientistEn === event.scientistEn)
-                          if (idx >= 0) handleOpenStory(idx)
-                        }}
-                        className={cn(
-                          'mt-3 flex items-center gap-1 text-sm font-medium transition-colors',
-                          theme === 'dark'
-                            ? 'text-amber-400 hover:text-amber-300'
-                            : 'text-amber-600 hover:text-amber-700'
-                        )}
-                      >
-                        <BookOpen className="w-4 h-4" />
-                        {isZh ? '阅读故事' : 'Read Story'}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {activeTab === 'experiments' && (
-          <div className="space-y-4">
-            {/* Intro */}
+        ) : (
+          /* Knowledge Graph Tab */
+          <div>
             <div className={cn(
-              'rounded-xl border p-6 mb-6',
-              theme === 'dark' ? 'bg-slate-800/50 border-slate-700' : 'bg-amber-50 border-amber-200'
+              'mb-6 p-4 rounded-xl border',
+              theme === 'dark' ? 'bg-slate-800/30 border-slate-700' : 'bg-blue-50 border-blue-200'
             )}>
-              <div className="flex items-start gap-4">
-                <FlaskConical className={cn(
-                  'w-10 h-10 flex-shrink-0',
-                  theme === 'dark' ? 'text-amber-400' : 'text-amber-600'
-                )} />
-                <div>
-                  <h3 className={cn(
-                    'text-lg font-semibold mb-2',
-                    theme === 'dark' ? 'text-white' : 'text-gray-900'
-                  )}>
-                    {isZh ? '历史性实验' : 'Historic Experiments'}
-                  </h3>
-                  <p className={cn(
-                    'text-sm',
-                    theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                  )}>
-                    {isZh
-                      ? '这些实验改变了我们对光的理解。点击每个实验了解其原理和历史意义。'
-                      : 'These experiments transformed our understanding of light. Click each experiment to learn about its principles and historical significance.'}
-                  </p>
-                </div>
-              </div>
+              <h3 className={cn('font-semibold mb-2 flex items-center gap-2', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
+                <Network className="w-5 h-5" />
+                {isZh ? '光学知识图谱' : 'Optical Knowledge Graph'}
+              </h3>
+              <p className={cn('text-sm', theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>
+                {isZh
+                  ? '探索光学概念之间的相互联系。点击节点查看详情，悬停高亮相关连接。使用左侧筛选器聚焦特定类别。'
+                  : 'Explore the interconnections between optical concepts. Click nodes for details, hover to highlight connections. Use the filter to focus on specific categories.'
+                }
+              </p>
             </div>
-
-            {/* Experiment Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {TIMELINE_EVENTS.filter(e => e.category === 'experiment' || e.category === 'discovery').map((event) => (
-                <div
-                  key={event.year}
-                  className={cn(
-                    'rounded-xl border p-5 transition-all cursor-pointer hover:shadow-lg',
-                    theme === 'dark'
-                      ? 'bg-slate-800/50 border-slate-700 hover:border-cyan-500/50'
-                      : 'bg-white border-gray-200 hover:border-cyan-400'
-                  )}
-                  onClick={() => {
-                    const idx = TIMELINE_EVENTS.findIndex(e => e.year === event.year)
-                    if (idx >= 0) handleOpenStory(idx)
-                  }}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className={cn(
-                      'flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center',
-                      theme === 'dark' ? 'bg-cyan-900/30' : 'bg-cyan-100'
-                    )}>
-                      <span className="text-2xl font-bold font-mono text-cyan-500">
-                        {event.year.toString().slice(-2)}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Badge color={CATEGORY_LABELS[event.category].color}>
-                          {isZh ? CATEGORY_LABELS[event.category].zh : CATEGORY_LABELS[event.category].en}
-                        </Badge>
-                        <span className={cn(
-                          'text-xs font-mono',
-                          theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                        )}>
-                          {event.year}
-                        </span>
-                      </div>
-                      <h4 className={cn(
-                        'font-semibold mb-1',
-                        theme === 'dark' ? 'text-white' : 'text-gray-900'
-                      )}>
-                        {isZh ? event.titleZh : event.titleEn}
-                      </h4>
-                      {event.scientistEn && (
-                        <p className={cn(
-                          'text-xs mb-2',
-                          theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'
-                        )}>
-                          {event.scientistBio?.portraitEmoji} {isZh ? event.scientistZh : event.scientistEn}
-                        </p>
-                      )}
-                      <p className={cn(
-                        'text-sm line-clamp-2',
-                        theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                      )}>
-                        {isZh ? event.descriptionZh : event.descriptionEn}
-                      </p>
-                      {event.scene?.location && (
-                        <p className={cn(
-                          'text-xs mt-2 flex items-center gap-1',
-                          theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                        )}>
-                          <MapPin className="w-3 h-3" />
-                          {event.scene.location}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <KnowledgeGraph nodes={KNOWLEDGE_NODES} links={KNOWLEDGE_LINKS} />
           </div>
         )}
       </main>
 
       {/* Story Modal */}
-      {storyModalEvent !== null && filteredEvents[storyModalEvent] && (
+      {storyEvent && (
         <StoryModal
-          event={filteredEvents[storyModalEvent]}
-          onClose={handleCloseStory}
-          onNext={handleNextStory}
-          onPrev={handlePrevStory}
-          hasNext={storyModalEvent < filteredEvents.length - 1}
-          hasPrev={storyModalEvent > 0}
+          event={storyEvent}
+          onClose={() => setStoryEvent(null)}
+          onNext={goToNextStory}
+          onPrev={goToPrevStory}
+          hasNext={hasNextStory}
+          hasPrev={hasPrevStory}
         />
       )}
     </div>
