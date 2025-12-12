@@ -22,9 +22,9 @@ A beautifully crafted puzzle game that transforms the invisible geometry of pola
 - **Intuitive Light Physics** - Malus's Law, birefringence, and wave interference made playable
 - **Multiple Camera Views** - First-person, isometric, and top-down perspectives
 - **Polarization Visualization** - Toggle vision modes to see hidden polarization states
-- **Educational Course** - 16 interactive demos across 6 physics units with difficulty levels
+- **Educational Course** - 17 interactive demos across 6 physics units with difficulty levels
 - **Course Search** - Global search across all demos, physics content, and applications
-- **Difficulty Levels** - Beginner, Intermediate, and Advanced content modes
+- **Difficulty Levels** - Foundation, Application, and Research content modes
 - **Real-World Connections** - SVG illustrations showing everyday applications of polarization
 - **Bilingual Support** - English and Chinese interface
 - **Dark/Light Theme** - Comfortable viewing in any environment
@@ -194,9 +194,9 @@ The course offers three difficulty levels to accommodate different learners:
 
 | Level | Description | Content |
 |-------|-------------|---------|
-| Beginner (🌱) | Accessible for middle school students | Vivid analogies, no formulas, limited details |
-| Intermediate (📚) | Standard learning mode | Full formulas, moderate detail depth |
-| Advanced (🎓) | Rigorous academic content | All formulas, complete details, advanced concepts |
+| Foundation (🌱) | Problem-driven research introduction | Discover phenomena through simple explanations. No formulas required! |
+| Application (🔬) | Rotational research training | Hands-on experiments with quantitative formulas and measurement principles |
+| Research (🚀) | Independent original research | Frontier research methods with rigorous academic treatment |
 
 Visit `/demos` to explore interactive visualizations.
 
@@ -245,9 +245,9 @@ MIT License
 - **直观的光学物理** - 马吕斯定律、双折射和波干涉变得可玩
 - **多视角相机** - 第一人称、等距视角和俯视视角
 - **偏振可视化** - 切换视觉模式查看隐藏的偏振状态
-- **教育课程** - 6个单元共16个交互式演示，支持难度分级
+- **教育课程** - 6个单元共17个交互式演示，支持难度分级
 - **课程搜索** - 全局搜索演示、物理内容和应用
-- **难度级别** - 初级、中级、高级三种内容模式
+- **难度级别** - 基础层、应用层、研究层三种内容模式
 - **生活实例** - SVG插图展示偏振光的日常应用
 - **双语支持** - 中英文界面
 - **深色/浅色主题** - 在任何环境下都能舒适观看
@@ -417,9 +417,9 @@ npm run preview  # 预览生产构建
 
 | 级别 | 描述 | 内容 |
 |------|------|------|
-| 初级 (🌱) | 适合初中学生 | 生动类比，无公式，有限细节 |
-| 中级 (📚) | 标准学习模式 | 完整公式，适度深度 |
-| 高级 (🎓) | 严谨学术内容 | 全部公式，完整细节，进阶概念 |
+| 基础层 (🌱) | 问题驱动的研究入门 | 通过简单解释发现现象。无需公式！ |
+| 应用层 (🔬) | 轮转式研究训练 | 实验设计与定量公式，强调测量原理 |
+| 研究层 (🚀) | 独立原创研究 | 前沿研究方法与严谨学术处理 |
 
 访问 `/demos` 探索交互式可视化演示。
 
