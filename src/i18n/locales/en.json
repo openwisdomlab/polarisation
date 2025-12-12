@@ -77,6 +77,24 @@
       "link1": "Get Weekly Quest",
       "link2": "Use Toolbox",
       "link3": "Submit & Showcase"
+    },
+    "applications": {
+      "title": "Polarization Applications",
+      "subtitle": "Real-World Scenes × Principle Analysis",
+      "description": "Explore polarization in photography, displays, medicine, remote sensing, and discover polarization wonders in nature.",
+      "cta": "Explore Applications",
+      "link1": "Photography & Imaging",
+      "link2": "Polarization in Nature",
+      "link3": "Industrial Applications"
+    },
+    "experiments": {
+      "title": "DIY Experiments",
+      "subtitle": "Hands-on × Home Experiments",
+      "description": "Experience the magic of polarized light using phones, tape, plastic and other everyday items—no expensive equipment needed.",
+      "cta": "Start Experimenting",
+      "link1": "Easy Experiments",
+      "link2": "Medium Experiments",
+      "link3": "All Experiments"
     }
   },
   "game": {
