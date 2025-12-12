@@ -16,7 +16,8 @@ import {
   ApplicationsPage,
   ExperimentsPage,
   PoincareSphereViewerPage,
-  JonesCalculatorPage
+  JonesCalculatorPage,
+  StokesCalculatorPage
 } from '@/pages'
 
 export function App() {
@@ -54,6 +55,7 @@ export function App() {
         {/* Lab tools */}
         <Route path="/lab/poincare" element={<PoincareSphereViewerPage />} />
         <Route path="/lab/jones" element={<JonesCalculatorPage />} />
+        <Route path="/lab/stokes" element={<StokesCalculatorPage />} />
       </Routes>
     </BrowserRouter>
   )
