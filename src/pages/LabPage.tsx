@@ -345,6 +345,7 @@ const ANALYSIS_TOOLS: AnalysisTool[] = [
     descriptionZh: '从强度测量计算和可视化斯托克斯参数。',
     icon: <Calculator className="w-5 h-5" />,
     available: true,
+    link: '/lab/stokes',
   },
   {
     id: 'mueller-sim',
