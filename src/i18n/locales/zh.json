@@ -1897,6 +1897,69 @@
         "rcp": "右旋圆偏振",
         "unpolarized": "自然光"
       }
+    },
+    "jones": {
+      "title": "Jones矩阵",
+      "description": "描述相干偏振光变换的2×2复数矩阵",
+      "demoTitle": "Jones矩阵计算器",
+      "demoSubtitle": "2×2复数矩阵 - 相干光偏振变换",
+      "ui": {
+        "jonesMatrix": "Jones矩阵 J",
+        "jonesTransform": "Jones矢量变换",
+        "inputJones": "输入Jones矢量",
+        "outputJones": "输出Jones矢量",
+        "inputPolarization": "输入偏振态",
+        "outputPolarization": "输出偏振态",
+        "selectElement": "选择光学元件",
+        "elementAngle": "快轴角度 θ",
+        "inputState": "输入偏振态",
+        "result": "计算结果",
+        "inputIntensity": "输入强度",
+        "outputIntensity": "输出强度",
+        "transmittance": "透过率",
+        "codeExport": "代码导出",
+        "showCode": "显示代码",
+        "hideCode": "隐藏代码",
+        "jonesVsMueller": "Jones与Mueller对比",
+        "complexAmplitude": "复振幅表示"
+      },
+      "elements": {
+        "polarizer": "偏振片",
+        "half-wave": "半波片",
+        "quarter-wave": "四分之一波片",
+        "rotator": "旋光器",
+        "identity": "无元件"
+      },
+      "info": {
+        "jonesDesc": "2×2复数矩阵，适用于完全偏振的相干光",
+        "muellerDesc": "4×4实数矩阵，适用于任意偏振态",
+        "relation": "转换关系",
+        "relationDesc": "Jones可转换为Mueller，但反之不行",
+        "amplitude": "Ex, Ey是电场的复振幅",
+        "phase": "复数相位编码两分量间的相对相位",
+        "coherence": "仅适用于相干的完全偏振光"
+      }
+    },
+    "calculator": {
+      "title": "偏振计算器",
+      "description": "综合偏振计算工具，支持级联系统和代码导出",
+      "subtitle": "搭建光学系统，计算Mueller/Jones矩阵，导出代码",
+      "opticalSystem": "光学系统",
+      "inputState": "输入偏振态",
+      "muellerSystem": "系统Mueller矩阵",
+      "jonesSystem": "系统Jones矩阵",
+      "inputStokes": "输入Stokes矢量",
+      "outputStokes": "输出Stokes矢量",
+      "transmittance": "透过率",
+      "dop": "偏振度",
+      "elements": "元件数",
+      "noElements": "点击上方按钮添加光学元件",
+      "reset": "重置系统",
+      "codeExport": "导出代码",
+      "cascadeRule": "级联规则",
+      "cascadeDesc": "级联光学元件时，矩阵按逆序相乘（最后一个元件在最前面）",
+      "muellerJones": "Mueller与Jones",
+      "tips": "使用提示"
     }
   },
   "basics": {

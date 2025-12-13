@@ -26,6 +26,8 @@ import { MieScatteringDemo } from '@/components/demos/unit4/MieScatteringDemo'
 import { RayleighScatteringDemo } from '@/components/demos/unit4/RayleighScatteringDemo'
 import { StokesVectorDemo } from '@/components/demos/unit5/StokesVectorDemo'
 import { MuellerMatrixDemo } from '@/components/demos/unit5/MuellerMatrixDemo'
+import { JonesMatrixDemo } from '@/components/demos/unit5/JonesMatrixDemo'
+import { PolarizationCalculatorDemo } from '@/components/demos/unit5/PolarizationCalculatorDemo'
 
 // Optical Basics demos
 import { LightWaveDemo } from '@/components/demos/basics/LightWaveDemo'
@@ -1347,6 +1349,24 @@ const DEMOS: DemoItem[] = [
     descriptionKey: 'demos.mueller.description',
     visualType: '2D',
     difficulty: 'research', // 缪勒矩阵的完备表征
+  },
+  {
+    id: 'jones',
+    titleKey: 'demos.jones.title',
+    unit: 5,
+    component: JonesMatrixDemo,
+    descriptionKey: 'demos.jones.description',
+    visualType: '2D',
+    difficulty: 'research', // Jones矩阵的复数表示
+  },
+  {
+    id: 'calculator',
+    titleKey: 'demos.calculator.title',
+    unit: 5,
+    component: PolarizationCalculatorDemo,
+    descriptionKey: 'demos.calculator.description',
+    visualType: '2D',
+    difficulty: 'application', // 综合计算工具
   },
 ]
 

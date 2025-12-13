@@ -1897,6 +1897,69 @@
         "rcp": "RCP",
         "unpolarized": "Unpolarized"
       }
+    },
+    "jones": {
+      "title": "Jones Matrix",
+      "description": "2×2 complex matrix for coherent polarization transformation",
+      "demoTitle": "Jones Matrix Calculator",
+      "demoSubtitle": "2×2 Complex Matrix - Coherent Light Polarization Transform",
+      "ui": {
+        "jonesMatrix": "Jones Matrix J",
+        "jonesTransform": "Jones Vector Transform",
+        "inputJones": "Input Jones",
+        "outputJones": "Output Jones",
+        "inputPolarization": "Input Polarization",
+        "outputPolarization": "Output Polarization",
+        "selectElement": "Select Optical Element",
+        "elementAngle": "Fast Axis Angle θ",
+        "inputState": "Input Polarization State",
+        "result": "Calculation Result",
+        "inputIntensity": "Input Intensity",
+        "outputIntensity": "Output Intensity",
+        "transmittance": "Transmittance",
+        "codeExport": "Code Export",
+        "showCode": "Show Code",
+        "hideCode": "Hide Code",
+        "jonesVsMueller": "Jones vs Mueller",
+        "complexAmplitude": "Complex Amplitude"
+      },
+      "elements": {
+        "polarizer": "Polarizer",
+        "half-wave": "λ/2 Plate",
+        "quarter-wave": "λ/4 Plate",
+        "rotator": "Rotator",
+        "identity": "None"
+      },
+      "info": {
+        "jonesDesc": "2×2 complex matrix, for fully polarized coherent light",
+        "muellerDesc": "4×4 real matrix, for any polarization state",
+        "relation": "Relationship",
+        "relationDesc": "Jones → Mueller conversion exists, but not vice versa",
+        "amplitude": "Ex, Ey are complex amplitudes of electric field",
+        "phase": "Complex phase encodes relative phase between components",
+        "coherence": "Only valid for coherent, fully polarized light"
+      }
+    },
+    "calculator": {
+      "title": "Polarization Calculator",
+      "description": "Comprehensive polarization calculation tool with cascade system and code export",
+      "subtitle": "Build optical systems, calculate Mueller/Jones matrices, export code",
+      "opticalSystem": "Optical System",
+      "inputState": "Input Polarization",
+      "muellerSystem": "System Mueller Matrix",
+      "jonesSystem": "System Jones Matrix",
+      "inputStokes": "Input Stokes Vector",
+      "outputStokes": "Output Stokes Vector",
+      "transmittance": "Transmittance",
+      "dop": "Degree of Polarization",
+      "elements": "Elements",
+      "noElements": "Click buttons above to add optical elements",
+      "reset": "Reset System",
+      "codeExport": "Export Code",
+      "cascadeRule": "Cascade Rule",
+      "cascadeDesc": "For cascaded optical elements, multiply matrices in reverse order (last element first)",
+      "muellerJones": "Mueller vs Jones",
+      "tips": "Tips"
     }
   },
   "basics": {
