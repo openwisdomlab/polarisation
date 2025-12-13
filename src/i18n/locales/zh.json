@@ -26,7 +26,7 @@
       "link3": "偏振光之旅"
     },
     "opticalDesignStudio": {
-      "title": "光学设计室",
+      "title": "光学设计室：器件与光路",
       "subtitle": "器件图鉴 × 光路设计 × 经典实验",
       "description": "浏览完整的光学器件百科，设计自定义光路，模拟经典实验，对接UC2模块化硬件——一体化光学工作站。",
       "cta": "进入设计室",
@@ -64,33 +64,13 @@
     },
     "labGroup": {
       "title": "虚拟课题组：光研社",
-      "subtitle": "课题 × 社区 × 工具 × 成果",
-      "description": "以课题驱动学习：研究任务、社区讨论、分析工具与作品墙，和伙伴一起把知识做成项目成果。",
+      "subtitle": "课题 × 应用 × 计算 × 社区",
+      "description": "以课题驱动学习：研究任务与科研前沿、偏振应用案例（显示/医学/自然）、专业计算工具（Jones/Mueller/Stokes）、社区讨论与成果展示——和伙伴一起把知识做成项目成果。",
       "cta": "加入光研社",
       "link1": "研究任务",
-      "link2": "社区广场",
-      "link3": "数据分析",
-      "link4": "科研前沿"
-    },
-    "applications": {
-      "title": "偏振应用馆：科技与自然",
-      "subtitle": "现实场景 × 原理解析",
-      "description": "探索偏振在显示、医学、遥感等领域的实际应用，以及天空偏振、蜜蜂导航等自然界中的偏振奇观。",
-      "cta": "探索应用",
-      "link1": "LCD显示技术",
-      "link2": "天空偏振",
-      "link3": "蜜蜂偏振导航",
-      "link4": "医学诊断"
-    },
-    "simulationLab": {
-      "title": "计算工坊：偏振计算器",
-      "subtitle": "Jones矩阵 × Mueller矩阵 × Stokes参数",
-      "description": "专业偏振计算工具：Jones矩阵变换、Mueller矩阵级联、Stokes参数换算——用计算深入理解偏振光学。",
-      "cta": "开始计算",
-      "link1": "Jones矩阵",
-      "link2": "Mueller矩阵",
-      "link3": "Stokes参数",
-      "link4": "庞加莱球"
+      "link2": "应用案例",
+      "link3": "计算工具",
+      "link4": "社区广场"
     },
     "openData": {
       "title": "开放数据：偏振数据集",

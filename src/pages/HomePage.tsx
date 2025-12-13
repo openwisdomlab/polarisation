@@ -146,7 +146,7 @@ const MODULES: ModuleConfig[] = [
     ],
   },
   {
-    // 虚拟课题组：光研社 (Virtual Lab Group: Light Research Guild) - Enhanced with community
+    // 虚拟课题组：光研社 (Virtual Lab Group: Light Research Guild) - Merged with Applications & Calculations
     key: 'labGroup',
     icon: '⚗', // Alembic - represents research/lab
     colorTheme: {
@@ -160,52 +160,10 @@ const MODULES: ModuleConfig[] = [
     },
     mainRoute: '/lab',
     quickLinks: [
-      { labelKey: 'link1', route: '/lab?tab=tasks' },
-      { labelKey: 'link2', route: '/lab?tab=community' }, // Community forum
-      { labelKey: 'link3', route: '/lab?tab=analysis' },
-      { labelKey: 'link4', route: '/lab?tab=frontier' },
-    ],
-  },
-  {
-    // 偏振应用馆：科技与自然 (Polarization Applications: Tech & Nature) - Enhanced with sky polarization
-    key: 'applications',
-    icon: '⊛', // Circled asterisk - represents applications/branching
-    colorTheme: {
-      border: 'red-vivid', // Vivid Red #EF4444 (brighter, distinct from pink)
-      borderHover: 'red-vivid',
-      shadow: 'rgba(239,68,68,0.25)',
-      text: 'red-vivid',
-      gradientFrom: 'red-vivid',
-      gradientTo: 'red-600',
-      buttonText: 'white',
-    },
-    mainRoute: '/applications',
-    quickLinks: [
-      { labelKey: 'link1', route: '/applications?id=lcd-display' },
-      { labelKey: 'link2', route: '/applications?id=sky-polarization' }, // Sky polarization
-      { labelKey: 'link3', route: '/applications?id=bee-navigation' },
-      { labelKey: 'link4', route: '/applications?category=medical' },
-    ],
-  },
-  {
-    // 计算工坊：偏振计算器 (Calculation Workshop: Polarization Calculators) - Focused on computation
-    key: 'simulationLab',
-    icon: '⎔', // Keyboard/calculator symbol - represents pure computation
-    colorTheme: {
-      border: 'violet-soft', // Soft Violet #8B5CF6
-      borderHover: 'violet-soft',
-      shadow: 'rgba(139,92,246,0.25)',
-      text: 'violet-soft',
-      gradientFrom: 'violet-soft',
-      gradientTo: 'violet-600',
-      buttonText: 'white',
-    },
-    mainRoute: '/calc',
-    quickLinks: [
-      { labelKey: 'link1', route: '/calc/jones' }, // Jones matrix calculator
-      { labelKey: 'link2', route: '/calc/mueller' }, // Mueller matrix calculator
-      { labelKey: 'link3', route: '/calc/stokes' }, // Stokes parameter calculator
-      { labelKey: 'link4', route: '/calc/poincare' }, // Poincaré sphere viewer
+      { labelKey: 'link1', route: '/lab?tab=tasks' }, // Research tasks
+      { labelKey: 'link2', route: '/lab?tab=applications' }, // Merged: Applications
+      { labelKey: 'link3', route: '/lab?tab=calculators' }, // Merged: Calculations
+      { labelKey: 'link4', route: '/lab?tab=community' }, // Community forum
     ],
   },
   // 开放数据 (Open Data) - Hidden temporarily
