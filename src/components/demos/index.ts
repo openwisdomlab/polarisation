@@ -36,3 +36,5 @@ export * from './unit4/RayleighScatteringDemo'
 // Unit 5: 全偏振技术
 export * from './unit5/StokesVectorDemo'
 export * from './unit5/MuellerMatrixDemo'
+export * from './unit5/JonesMatrixDemo'
+export * from './unit5/PolarizationCalculatorDemo'
