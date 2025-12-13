@@ -13,7 +13,7 @@ const POLARIZATION_COLORS = [
   'rgba(68, 68, 255, 0.15)',   // 135° - Blue
 ]
 
-// Module configuration for the 9 creative hubs
+// Module configuration for the 10 creative hubs
 interface ModuleConfig {
   key: string
   icon: string
@@ -31,6 +31,7 @@ interface ModuleConfig {
     labelKey: string
     route: string
   }>
+  comingSoon?: boolean // Mark module as coming soon
 }
 
 const MODULES: ModuleConfig[] = [
@@ -55,9 +56,9 @@ const MODULES: ModuleConfig[] = [
     ],
   },
   {
-    // 光学工作台：器件与光路 (Optical Workbench: Devices & Light Paths) - MERGED: deviceLibrary + opticalBench
-    key: 'opticsLab',
-    icon: '⟠', // Circled cross - represents optical alignment/bench
+    // 器件图鉴：偏振器件百科 (Device Library: Optical Component Encyclopedia)
+    key: 'deviceLibrary',
+    icon: '⬡', // Hexagon - represents structured catalog
     colorTheme: {
       border: 'sapphire-soft', // Sapphire Blue #4169E1
       borderHover: 'sapphire-soft',
@@ -67,12 +68,31 @@ const MODULES: ModuleConfig[] = [
       gradientTo: 'blue-700',
       buttonText: 'white',
     },
-    mainRoute: '/optics',
+    mainRoute: '/devices',
     quickLinks: [
-      { labelKey: 'link1', route: '/optics?tab=devices' }, // Device library
-      { labelKey: 'link2', route: '/optics?tab=bench' }, // Optical bench designer
-      { labelKey: 'link3', route: '/optics?tab=uc2' }, // UC2 hardware
-      { labelKey: 'link4', route: '/optics?tab=classics' }, // Classic experiments
+      { labelKey: 'link1', route: '/devices?cat=polarizers' }, // Polarizers
+      { labelKey: 'link2', route: '/devices?cat=waveplates' }, // Wave plates
+      { labelKey: 'link3', route: '/devices?cat=crystals' }, // Birefringent crystals
+    ],
+  },
+  {
+    // 光学工作台：光路设计 (Optical Workbench: Light Path Design)
+    key: 'opticalBench',
+    icon: '⟠', // Circled cross - represents optical alignment/bench
+    colorTheme: {
+      border: 'indigo-soft', // Indigo #6366F1
+      borderHover: 'indigo-soft',
+      shadow: 'rgba(99,102,241,0.25)',
+      text: 'indigo-soft',
+      gradientFrom: 'indigo-soft',
+      gradientTo: 'indigo-700',
+      buttonText: 'white',
+    },
+    mainRoute: '/bench',
+    quickLinks: [
+      { labelKey: 'link1', route: '/bench?mode=design' }, // Design mode
+      { labelKey: 'link2', route: '/bench?tab=uc2' }, // UC2 hardware
+      { labelKey: 'link3', route: '/bench?tab=experiments' }, // Classic experiments
     ],
   },
   {
@@ -179,9 +199,9 @@ const MODULES: ModuleConfig[] = [
     ],
   },
   {
-    // 仿真工坊：计算偏振 (Simulation Workshop: Computational Polarization) - NEW
+    // 计算工坊：偏振计算器 (Calculation Workshop: Polarization Calculators) - Focused on computation
     key: 'simulationLab',
-    icon: '⚙', // Gear - represents computation and simulation
+    icon: '⎔', // Keyboard/calculator symbol - represents pure computation
     colorTheme: {
       border: 'violet-soft', // Soft Violet #8B5CF6
       borderHover: 'violet-soft',
@@ -191,16 +211,15 @@ const MODULES: ModuleConfig[] = [
       gradientTo: 'violet-600',
       buttonText: 'white',
     },
-    mainRoute: '/simulation',
+    mainRoute: '/calc',
     quickLinks: [
-      { labelKey: 'link1', route: '/simulation?tool=mueller' }, // Mueller matrix calculator
-      { labelKey: 'link2', route: '/simulation?tool=jones' }, // Jones matrix
-      { labelKey: 'link3', route: '/simulation?tool=stokes' }, // Stokes visualization
-      { labelKey: 'link4', route: '/simulation?tab=code' }, // Code library
+      { labelKey: 'link1', route: '/calc?tool=jones' }, // Jones matrix calculator
+      { labelKey: 'link2', route: '/calc?tool=mueller' }, // Mueller matrix calculator
+      { labelKey: 'link3', route: '/calc?tool=stokes' }, // Stokes parameter calculator
     ],
   },
   {
-    // 开放数据：偏振数据集 (Open Data: Polarization Datasets) - NEW
+    // 开放数据：偏振数据集 (Open Data: Polarization Datasets) - Coming Soon
     key: 'openData',
     icon: '◎', // Bullseye - represents data and precision
     colorTheme: {
@@ -213,12 +232,8 @@ const MODULES: ModuleConfig[] = [
       buttonText: 'white',
     },
     mainRoute: '/data',
-    quickLinks: [
-      { labelKey: 'link1', route: '/data?tab=datasets' }, // Datasets
-      { labelKey: 'link2', route: '/data?tab=spectra' }, // Spectral data
-      { labelKey: 'link3', route: '/data?tab=contribute' }, // User contributions
-      { labelKey: 'link4', route: '/data?tab=api' }, // API access
-    ],
+    quickLinks: [], // No quick links for coming soon module
+    comingSoon: true, // Mark as coming soon
   },
 ]
 
@@ -232,11 +247,17 @@ const getColorClasses = (module: ModuleConfig, theme: 'dark' | 'light') => {
       light: 'border-[#C9A227]/40 hover:border-[#C9A227]/70',
       shadow: 'hover:shadow-[0_15px_40px_rgba(201,162,39,0.25)]',
     },
-    // 2. Sapphire Blue #4169E1 - Optics Lab (crystal/prism blue)
+    // 2. Sapphire Blue #4169E1 - Device Library (crystal/prism blue)
     'sapphire-soft': {
       dark: 'border-[#4169E1]/30 hover:border-[#4169E1]/60',
       light: 'border-[#4169E1]/40 hover:border-[#4169E1]/70',
       shadow: 'hover:shadow-[0_15px_40px_rgba(65,105,225,0.25)]',
+    },
+    // 2b. Indigo #6366F1 - Optical Bench (light path design)
+    'indigo-soft': {
+      dark: 'border-[#6366F1]/30 hover:border-[#6366F1]/60',
+      light: 'border-[#6366F1]/40 hover:border-[#6366F1]/70',
+      shadow: 'hover:shadow-[0_15px_40px_rgba(99,102,241,0.25)]',
     },
     // 3. Deep Cyan #0891B2 - Demo Gallery (scientific/technical)
     'cyan-deep': {
@@ -294,6 +315,7 @@ const getTextColorClass = (color: string, theme: 'dark' | 'light') => {
   const textMap: Record<string, { dark: string; light: string }> = {
     'amber-warm': { dark: 'text-[#C9A227]', light: 'text-[#A68620]' },
     'sapphire-soft': { dark: 'text-[#4169E1]', light: 'text-[#3558C4]' },
+    'indigo-soft': { dark: 'text-[#6366F1]', light: 'text-[#4F46E5]' },
     'cyan-deep': { dark: 'text-[#0891B2]', light: 'text-[#067B96]' },
     'orange-warm': { dark: 'text-[#F59E0B]', light: 'text-[#D97706]' },
     'pink-vivid': { dark: 'text-[#EC4899]', light: 'text-[#DB2777]' },
@@ -310,6 +332,7 @@ const getGradientClass = (from: string, to: string) => {
   const gradientMap: Record<string, string> = {
     'amber-warm-amber-700': 'from-[#C9A227] to-[#92650F]',
     'sapphire-soft-blue-700': 'from-[#4169E1] to-[#1D4ED8]',
+    'indigo-soft-indigo-700': 'from-[#6366F1] to-[#4338CA]',
     'cyan-deep-cyan-700': 'from-[#0891B2] to-[#0E7490]',
     'orange-warm-amber-600': 'from-[#F59E0B] to-[#D97706]',
     'pink-vivid-rose-600': 'from-[#EC4899] to-[#DB2777]',
@@ -326,6 +349,7 @@ const getGlowClass = (from: string) => {
   const glowMap: Record<string, string> = {
     'amber-warm': 'drop-shadow-[0_0_20px_rgba(201,162,39,0.4)]',
     'sapphire-soft': 'drop-shadow-[0_0_20px_rgba(65,105,225,0.4)]',
+    'indigo-soft': 'drop-shadow-[0_0_20px_rgba(99,102,241,0.4)]',
     'cyan-deep': 'drop-shadow-[0_0_20px_rgba(8,145,178,0.4)]',
     'orange-warm': 'drop-shadow-[0_0_20px_rgba(245,158,11,0.4)]',
     'pink-vivid': 'drop-shadow-[0_0_20px_rgba(236,72,153,0.4)]',
@@ -487,33 +511,42 @@ function ModuleCard({ module, index }: { module: ModuleConfig; index: number }) 
         {t(`home.${module.key}.description`)}
       </p>
 
-      {/* Quick Links */}
-      <div className="flex flex-wrap justify-center gap-1.5 mb-3 relative z-10">
-        {module.quickLinks.map((link, linkIndex) => (
-          <Link
-            key={linkIndex}
-            to={link.route}
-            className={`text-[10px] px-2 py-0.5 rounded-full transition-all
-                       hover:scale-105 ${
-              theme === 'dark'
-                ? 'bg-gray-800 text-gray-400 hover:text-gray-200 hover:bg-gray-700'
-                : 'bg-gray-100 text-gray-600 hover:text-gray-900 hover:bg-gray-200'
-            }`}
-          >
-            {t(`home.${module.key}.${link.labelKey}`)}
-          </Link>
-        ))}
-      </div>
+      {/* Quick Links - only show if not coming soon */}
+      {!module.comingSoon && module.quickLinks.length > 0 && (
+        <div className="flex flex-wrap justify-center gap-1.5 mb-3 relative z-10">
+          {module.quickLinks.map((link, linkIndex) => (
+            <Link
+              key={linkIndex}
+              to={link.route}
+              className={`text-[10px] px-2 py-0.5 rounded-full transition-all
+                         hover:scale-105 ${
+                theme === 'dark'
+                  ? 'bg-gray-800 text-gray-400 hover:text-gray-200 hover:bg-gray-700'
+                  : 'bg-gray-100 text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+              }`}
+            >
+              {t(`home.${module.key}.${link.labelKey}`)}
+            </Link>
+          ))}
+        </div>
+      )}
 
-      {/* Main CTA Button */}
-      <Link
-        to={module.mainRoute}
-        className={`inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider relative z-10
-                   bg-gradient-to-r ${gradientClass} text-${module.colorTheme.buttonText}
-                   transition-transform ${isHovered ? 'scale-105' : ''}`}
-      >
-        {t(`home.${module.key}.cta`)}
-      </Link>
+      {/* Coming Soon badge or Main CTA Button */}
+      {module.comingSoon ? (
+        <div className={`inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider relative z-10 mt-3
+                       ${theme === 'dark' ? 'bg-slate-700/50 text-slate-400' : 'bg-slate-200/80 text-slate-500'}`}>
+          {t('common.comingSoon')}
+        </div>
+      ) : (
+        <Link
+          to={module.mainRoute}
+          className={`inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider relative z-10
+                     bg-gradient-to-r ${gradientClass} text-${module.colorTheme.buttonText}
+                     transition-transform ${isHovered ? 'scale-105' : ''}`}
+        >
+          {t(`home.${module.key}.cta`)}
+        </Link>
+      )}
 
       {/* Polarization angle indicator (subtle, only on hover) */}
       {isHovered && (

@@ -129,8 +129,8 @@ export function OpticalBenchIcon({ className, size = 48, primaryColor, secondary
     >
       <defs>
         <linearGradient id="bench-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor={primaryColor || '#8B5CF6'} />
-          <stop offset="100%" stopColor={secondaryColor || '#7C3AED'} />
+          <stop offset="0%" stopColor={primaryColor || '#6366F1'} />
+          <stop offset="100%" stopColor={secondaryColor || '#4338CA'} />
         </linearGradient>
         <filter id="bench-glow">
           <feGaussianBlur stdDeviation="1.5" result="blur" />

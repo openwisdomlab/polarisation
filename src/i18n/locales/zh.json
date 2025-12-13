@@ -9,7 +9,8 @@
     "darkMode": "深色模式",
     "language": "语言",
     "english": "英文",
-    "chinese": "中文"
+    "chinese": "中文",
+    "comingSoon": "待更新"
   },
   "home": {
     "title": "PolarCraft",
@@ -24,15 +25,23 @@
       "link2": "重现马吕斯定律",
       "link3": "偏振光之旅"
     },
-    "opticsLab": {
-      "title": "光学工作台：器件与光路",
-      "subtitle": "器件图鉴 × 光路搭建 × UC2硬件",
-      "description": "系统认识偏振器件，在虚拟光学台上自由组装光路，还可对接UC2模块化硬件——从学习到实验的一站式体验。",
+    "deviceLibrary": {
+      "title": "器件图鉴：偏振器件百科",
+      "subtitle": "偏振片 × 波片 × 晶体",
+      "description": "系统学习偏振光学器件：从基础偏振片到各类波片，从方解石到液晶——建立完整的器件知识体系。",
+      "cta": "查看图鉴",
+      "link1": "偏振片",
+      "link2": "波片",
+      "link3": "双折射晶体"
+    },
+    "opticalBench": {
+      "title": "光学工作台：光路设计",
+      "subtitle": "虚拟光学台 × UC2硬件 × 经典实验",
+      "description": "在虚拟光学台上自由组装光路，模拟经典实验，还可对接UC2模块化硬件——从设计到实验的完整体验。",
       "cta": "进入工作台",
-      "link1": "器件图鉴",
-      "link2": "光路设计",
-      "link3": "UC2硬件",
-      "link4": "经典实验"
+      "link1": "光路设计",
+      "link2": "UC2硬件",
+      "link3": "经典实验"
     },
     "formulaLab": {
       "title": "偏振演示馆：原理可视化",
@@ -83,24 +92,19 @@
       "link4": "医学诊断"
     },
     "simulationLab": {
-      "title": "仿真工坊：计算偏振",
-      "subtitle": "数值模拟 × 矩阵计算 × 代码工具",
-      "description": "Mueller矩阵计算器、Jones矩阵仿真、Stokes可视化——用计算工具深入理解偏振光学。",
-      "cta": "开始仿真",
-      "link1": "Mueller矩阵",
-      "link2": "Jones矩阵",
-      "link3": "Stokes可视化",
-      "link4": "代码库"
+      "title": "计算工坊：偏振计算器",
+      "subtitle": "Jones矩阵 × Mueller矩阵 × Stokes参数",
+      "description": "专业偏振计算工具：Jones矩阵变换、Mueller矩阵级联、Stokes参数换算——用计算深入理解偏振光学。",
+      "cta": "开始计算",
+      "link1": "Jones矩阵",
+      "link2": "Mueller矩阵",
+      "link3": "Stokes参数"
     },
     "openData": {
       "title": "开放数据：偏振数据集",
-      "subtitle": "实验数据 × 共享资源 × 开放科学",
-      "description": "开放科学数据平台：共享偏振实验数据、光谱数据、用户贡献数据集，支持科研与教学。",
-      "cta": "浏览数据",
-      "link1": "数据集",
-      "link2": "光谱数据",
-      "link3": "贡献数据",
-      "link4": "API接口"
+      "subtitle": "待更新",
+      "description": "开放科学数据平台：偏振实验数据、光谱数据、用户贡献数据集——即将上线，敬请期待。",
+      "cta": "待更新"
     }
   },
   "game": {
