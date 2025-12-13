@@ -119,6 +119,32 @@ body {
   }
 }
 
+/* Floating animation for polarization particles */
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.1);
+    opacity: 0.6;
+  }
+}
+
+/* Spinning animation for polarization indicators */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* 2D Game animations */
 .animate-beam-flow {
   animation: beamFlow 1s linear infinite;
