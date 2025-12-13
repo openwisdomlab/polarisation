@@ -842,6 +842,148 @@ function ExperimentCard({
 // UC2 Panel - moved to separate UC2 module
 
 // ============================================
+// Experiments Panel - Organized by difficulty
+// ============================================
+
+function ExperimentsPanel({ onLoad }: { onLoad: (exp: ClassicExperiment) => void }) {
+  const { i18n } = useTranslation()
+  const { theme } = useTheme()
+  const isZh = i18n.language === 'zh'
+  const [expandedDifficulty, setExpandedDifficulty] = useState<string | null>('beginner')
+
+  // Group experiments by difficulty
+  const experimentsByDifficulty = useMemo(() => {
+    const groups: Record<string, ClassicExperiment[]> = {
+      beginner: [],
+      intermediate: [],
+      advanced: [],
+    }
+    CLASSIC_EXPERIMENTS.forEach(exp => {
+      if (groups[exp.difficulty]) {
+        groups[exp.difficulty].push(exp)
+      }
+    })
+    return groups
+  }, [])
+
+  const difficultyConfig = [
+    { id: 'beginner', labelEn: 'Beginner', labelZh: '入门', icon: '🌱', color: 'green' },
+    { id: 'intermediate', labelEn: 'Intermediate', labelZh: '进阶', icon: '🔬', color: 'blue' },
+    { id: 'advanced', labelEn: 'Advanced', labelZh: '高级', icon: '🚀', color: 'purple' },
+  ]
+
+  return (
+    <div className="space-y-3">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <p className={cn('text-xs', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
+          {isZh ? '选择实验加载到光路' : 'Select experiment to load'}
+        </p>
+        <span className={cn('text-xs px-1.5 py-0.5 rounded', theme === 'dark' ? 'bg-slate-700 text-gray-400' : 'bg-gray-100 text-gray-500')}>
+          {CLASSIC_EXPERIMENTS.length} {isZh ? '个' : 'total'}
+        </span>
+      </div>
+
+      {/* Difficulty Groups */}
+      {difficultyConfig.map(diff => {
+        const experiments = experimentsByDifficulty[diff.id] || []
+        if (experiments.length === 0) return null
+
+        const isExpanded = expandedDifficulty === diff.id
+        const displayExperiments = isExpanded ? experiments : experiments.slice(0, 2)
+
+        return (
+          <div key={diff.id} className={cn(
+            'rounded-xl border overflow-hidden',
+            theme === 'dark' ? 'border-slate-700 bg-slate-800/30' : 'border-gray-200 bg-white/50'
+          )}>
+            {/* Difficulty Header */}
+            <button
+              onClick={() => setExpandedDifficulty(isExpanded ? null : diff.id)}
+              className={cn(
+                'w-full flex items-center justify-between px-3 py-2 text-left transition-colors',
+                theme === 'dark' ? 'hover:bg-slate-700/50' : 'hover:bg-gray-50'
+              )}
+            >
+              <div className="flex items-center gap-2">
+                <span>{diff.icon}</span>
+                <span className={cn('text-sm font-medium', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
+                  {isZh ? diff.labelZh : diff.labelEn}
+                </span>
+                <span className={cn(
+                  'text-xs px-1.5 py-0.5 rounded-full',
+                  diff.color === 'green'
+                    ? theme === 'dark' ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-700'
+                    : diff.color === 'blue'
+                      ? theme === 'dark' ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-700'
+                      : theme === 'dark' ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-100 text-purple-700'
+                )}>
+                  {experiments.length}
+                </span>
+              </div>
+              <ChevronRight className={cn(
+                'w-4 h-4 transition-transform',
+                isExpanded ? 'rotate-90' : '',
+                theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+              )} />
+            </button>
+
+            {/* Experiments List */}
+            <div className={cn(
+              'border-t px-2 py-2 space-y-2',
+              theme === 'dark' ? 'border-slate-700' : 'border-gray-200'
+            )}>
+              {displayExperiments.map(exp => (
+                <ExperimentCard
+                  key={exp.id}
+                  experiment={exp}
+                  onLoad={() => onLoad(exp)}
+                />
+              ))}
+
+              {/* Show more button */}
+              {experiments.length > 2 && !isExpanded && (
+                <button
+                  onClick={() => setExpandedDifficulty(diff.id)}
+                  className={cn(
+                    'w-full text-xs py-1 rounded-lg transition-colors',
+                    theme === 'dark'
+                      ? 'text-gray-400 hover:text-gray-300 hover:bg-slate-700'
+                      : 'text-gray-500 hover:text-gray-600 hover:bg-gray-100'
+                  )}
+                >
+                  {isZh ? `查看全部 ${experiments.length} 个` : `View all ${experiments.length}`}
+                </button>
+              )}
+            </div>
+          </div>
+        )
+      })}
+
+      {/* Quick tips */}
+      <div className={cn(
+        'p-3 rounded-xl border',
+        theme === 'dark' ? 'bg-cyan-500/10 border-cyan-500/20' : 'bg-cyan-50 border-cyan-200'
+      )}>
+        <div className="flex items-start gap-2">
+          <Lightbulb className={cn('w-4 h-4 mt-0.5 flex-shrink-0', theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600')} />
+          <div>
+            <h4 className={cn('text-xs font-medium mb-1', theme === 'dark' ? 'text-cyan-300' : 'text-cyan-700')}>
+              {isZh ? '使用提示' : 'Quick Tips'}
+            </h4>
+            <ul className={cn('text-xs space-y-0.5', theme === 'dark' ? 'text-cyan-400/80' : 'text-cyan-600')}>
+              <li>• {isZh ? '点击实验卡片加载预设光路' : 'Click to load preset optical path'}</li>
+              <li>• {isZh ? '可拖动组件调整位置' : 'Drag components to adjust position'}</li>
+              <li>• {isZh ? '按 R 键旋转选中的组件' : 'Press R to rotate selected component'}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ============================================
 // Main Page Component
 // ============================================
 
@@ -979,10 +1121,171 @@ export function OpticalDesignStudioPage() {
         </div>
       </header>
 
-      {/* Device Library - Top Horizontal Bar */}
+      {/* Interactive Optical Path Schematic - Top Section */}
+      <div className={cn(
+        'flex-shrink-0 border-b',
+        theme === 'dark' ? 'bg-slate-900/50 border-slate-800' : 'bg-white/50 border-gray-200'
+      )}>
+        <div className="px-4 py-3">
+          {/* Schematic Title */}
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Lightbulb className={cn('w-4 h-4', theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600')} />
+              <h2 className={cn('font-semibold text-sm', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
+                {isZh ? '典型偏振光路原理图' : 'Typical Polarized Light Path Schematic'}
+              </h2>
+            </div>
+            <span className={cn('text-xs', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
+              {isZh ? '点击组件查看详情' : 'Click components for details'}
+            </span>
+          </div>
+
+          {/* Interactive Schematic SVG */}
+          <div className={cn(
+            'relative rounded-xl p-4 overflow-hidden',
+            theme === 'dark' ? 'bg-slate-950/50' : 'bg-gray-50'
+          )}>
+            <svg viewBox="0 0 800 120" className="w-full h-24">
+              {/* Background pattern */}
+              <defs>
+                <pattern id="schematic-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke={theme === 'dark' ? '#334155' : '#e2e8f0'} strokeWidth="0.5" opacity="0.5" />
+                </pattern>
+                <linearGradient id="schematic-beam-red" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#ff4444" />
+                  <stop offset="100%" stopColor="#ff6666" />
+                </linearGradient>
+                <linearGradient id="schematic-beam-orange" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#ffaa00" />
+                  <stop offset="100%" stopColor="#ffcc44" />
+                </linearGradient>
+                <linearGradient id="schematic-beam-green" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#44ff44" />
+                  <stop offset="100%" stopColor="#66ff66" />
+                </linearGradient>
+                <filter id="schematic-glow">
+                  <feGaussianBlur stdDeviation="2" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#schematic-grid)" />
+
+              {/* Optical rail */}
+              <rect x="40" y="95" width="720" height="6" rx="3" fill={theme === 'dark' ? '#475569' : '#cbd5e1'} opacity="0.5" />
+
+              {/* 1. Light Source / Emitter */}
+              <g className="cursor-pointer hover:opacity-80" onClick={() => setSelectedDevice(DEVICES.find(d => d.id === 'linear-polarizer') || null)}>
+                <rect x="50" y="40" width="40" height="50" rx="4" fill={theme === 'dark' ? '#6366F1' : '#818cf8'} opacity="0.9" />
+                <circle cx="90" cy="65" r="8" fill="url(#schematic-beam-red)" filter="url(#schematic-glow)" />
+                <text x="70" y="25" textAnchor="middle" fill={theme === 'dark' ? '#94a3b8' : '#64748b'} fontSize="10" fontWeight="500">
+                  {isZh ? '光源' : 'Source'}
+                </text>
+                <text x="70" y="108" textAnchor="middle" fill={theme === 'dark' ? '#64748b' : '#94a3b8'} fontSize="8">
+                  {isZh ? '自然光' : 'Unpolarized'}
+                </text>
+              </g>
+
+              {/* Beam 1: Unpolarized (represented as mixed) */}
+              <line x1="98" y1="65" x2="180" y2="65" stroke="url(#schematic-beam-red)" strokeWidth="4" opacity="0.8" filter="url(#schematic-glow)" />
+
+              {/* 2. Polarizer */}
+              <g className="cursor-pointer hover:opacity-80" onClick={() => setSelectedDevice(DEVICES.find(d => d.id === 'linear-polarizer') || null)}>
+                <rect x="180" y="30" width="20" height="70" rx="2" fill={theme === 'dark' ? '#6366F1' : '#818cf8'} opacity="0.9" />
+                <line x1="190" y1="35" x2="190" y2="95" stroke="white" strokeWidth="2" opacity="0.6" />
+                <text x="190" y="18" textAnchor="middle" fill={theme === 'dark' ? '#94a3b8' : '#64748b'} fontSize="10" fontWeight="500">
+                  {isZh ? '偏振片' : 'Polarizer'}
+                </text>
+                <text x="190" y="115" textAnchor="middle" fill={theme === 'dark' ? '#64748b' : '#94a3b8'} fontSize="8">
+                  0°
+                </text>
+              </g>
+
+              {/* Beam 2: Horizontally polarized (red) */}
+              <line x1="200" y1="65" x2="310" y2="65" stroke="url(#schematic-beam-red)" strokeWidth="4" opacity="0.9" filter="url(#schematic-glow)" />
+
+              {/* 3. Wave Plate (λ/4) */}
+              <g className="cursor-pointer hover:opacity-80" onClick={() => setSelectedDevice(DEVICES.find(d => d.id === 'quarter-wave-plate') || null)}>
+                <ellipse cx="330" cy="65" rx="15" ry="35" fill="none" stroke={theme === 'dark' ? '#8B5CF6' : '#a78bfa'} strokeWidth="3" opacity="0.9" />
+                <line x1="320" y1="50" x2="340" y2="50" stroke={theme === 'dark' ? '#8B5CF6' : '#a78bfa'} strokeWidth="2" opacity="0.6" />
+                <line x1="320" y1="80" x2="340" y2="80" stroke={theme === 'dark' ? '#8B5CF6' : '#a78bfa'} strokeWidth="2" opacity="0.6" />
+                <text x="330" y="18" textAnchor="middle" fill={theme === 'dark' ? '#94a3b8' : '#64748b'} fontSize="10" fontWeight="500">
+                  {isZh ? 'λ/4波片' : 'λ/4 Plate'}
+                </text>
+                <text x="330" y="115" textAnchor="middle" fill={theme === 'dark' ? '#64748b' : '#94a3b8'} fontSize="8">
+                  45°
+                </text>
+              </g>
+
+              {/* Beam 3: Circularly/elliptically polarized (orange transition) */}
+              <line x1="345" y1="65" x2="450" y2="65" stroke="url(#schematic-beam-orange)" strokeWidth="4" opacity="0.9" filter="url(#schematic-glow)" />
+
+              {/* 4. Sample / Birefringent crystal */}
+              <g className="cursor-pointer hover:opacity-80" onClick={() => setSelectedDevice(DEVICES.find(d => d.id === 'calcite-splitter') || null)}>
+                <path d="M450 30 L490 30 L500 65 L490 100 L450 100 L460 65 Z" fill={theme === 'dark' ? '#0891B2' : '#22d3ee'} opacity="0.3" />
+                <path d="M450 30 L490 30 L500 65 L490 100 L450 100 L460 65 Z" fill="none" stroke={theme === 'dark' ? '#0891B2' : '#06b6d4'} strokeWidth="2" />
+                <text x="475" y="18" textAnchor="middle" fill={theme === 'dark' ? '#94a3b8' : '#64748b'} fontSize="10" fontWeight="500">
+                  {isZh ? '样品/晶体' : 'Sample'}
+                </text>
+              </g>
+
+              {/* Beam 4: After sample */}
+              <line x1="500" y1="65" x2="580" y2="65" stroke="url(#schematic-beam-green)" strokeWidth="4" opacity="0.9" filter="url(#schematic-glow)" />
+
+              {/* 5. Analyzer (second polarizer) */}
+              <g className="cursor-pointer hover:opacity-80" onClick={() => setSelectedDevice(DEVICES.find(d => d.id === 'linear-polarizer') || null)}>
+                <rect x="580" y="30" width="20" height="70" rx="2" fill={theme === 'dark' ? '#6366F1' : '#818cf8'} opacity="0.9" />
+                <line x1="590" y1="40" x2="590" y2="90" stroke="white" strokeWidth="2" opacity="0.6" transform="rotate(90 590 65)" />
+                <text x="590" y="18" textAnchor="middle" fill={theme === 'dark' ? '#94a3b8' : '#64748b'} fontSize="10" fontWeight="500">
+                  {isZh ? '检偏器' : 'Analyzer'}
+                </text>
+                <text x="590" y="115" textAnchor="middle" fill={theme === 'dark' ? '#64748b' : '#94a3b8'} fontSize="8">
+                  90°
+                </text>
+              </g>
+
+              {/* Beam 5: Final output */}
+              <line x1="600" y1="65" x2="680" y2="65" stroke="url(#schematic-beam-green)" strokeWidth="3" opacity="0.6" filter="url(#schematic-glow)" />
+
+              {/* 6. Detector */}
+              <g className="cursor-pointer hover:opacity-80">
+                <rect x="680" y="35" width="50" height="60" rx="4" fill={theme === 'dark' ? '#10B981' : '#34d399'} opacity="0.9" />
+                <circle cx="705" cy="65" r="10" fill={theme === 'dark' ? '#34d399' : '#6ee7b7'} opacity="0.8" />
+                <text x="705" y="18" textAnchor="middle" fill={theme === 'dark' ? '#94a3b8' : '#64748b'} fontSize="10" fontWeight="500">
+                  {isZh ? '探测器' : 'Detector'}
+                </text>
+                <text x="705" y="115" textAnchor="middle" fill={theme === 'dark' ? '#64748b' : '#94a3b8'} fontSize="8">
+                  I = I₀cos²θ
+                </text>
+              </g>
+
+              {/* Legend */}
+              <g transform="translate(40, 2)">
+                <circle cx="0" cy="0" r="3" fill="#ff4444" />
+                <text x="8" y="3" fill={theme === 'dark' ? '#64748b' : '#94a3b8'} fontSize="7">0°</text>
+                <circle cx="30" cy="0" r="3" fill="#ffaa00" />
+                <text x="38" y="3" fill={theme === 'dark' ? '#64748b' : '#94a3b8'} fontSize="7">45°</text>
+                <circle cx="60" cy="0" r="3" fill="#44ff44" />
+                <text x="68" y="3" fill={theme === 'dark' ? '#64748b' : '#94a3b8'} fontSize="7">90°</text>
+              </g>
+            </svg>
+
+            {/* Annotation tooltips */}
+            <div className="absolute bottom-2 right-2 flex gap-2">
+              <span className={cn('px-2 py-0.5 rounded text-xs', theme === 'dark' ? 'bg-slate-800 text-gray-400' : 'bg-gray-200 text-gray-600')}>
+                {isZh ? '马吕斯定律: I = I₀ cos²θ' : "Malus's Law: I = I₀ cos²θ"}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Device Library - Improved Grid Layout with Categories */}
       <div className={cn(
         'flex-shrink-0 border-b transition-all duration-300',
-        deviceLibraryCollapsed ? 'h-10' : 'h-auto',
+        deviceLibraryCollapsed ? 'h-10' : 'h-auto max-h-64',
         theme === 'dark' ? 'bg-slate-900/70 border-slate-800' : 'bg-white/70 border-gray-200'
       )}>
         {/* Header with collapse toggle */}
@@ -996,6 +1299,9 @@ export function OpticalDesignStudioPage() {
               <h2 className={cn('font-semibold text-sm', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
                 {isZh ? '器件库' : 'Device Library'}
               </h2>
+              <span className={cn('text-xs px-1.5 py-0.5 rounded-full', theme === 'dark' ? 'bg-slate-700 text-gray-400' : 'bg-gray-100 text-gray-500')}>
+                {filteredDevices.length}
+              </span>
             </div>
             {!deviceLibraryCollapsed && (
               <>
@@ -1007,37 +1313,16 @@ export function OpticalDesignStudioPage() {
                   )} />
                   <input
                     type="text"
-                    placeholder={isZh ? '搜索...' : 'Search...'}
+                    placeholder={isZh ? '搜索器件...' : 'Search devices...'}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className={cn(
-                      'w-40 pl-7 pr-2 py-1 rounded-lg border text-xs',
+                      'w-48 pl-7 pr-2 py-1 rounded-lg border text-xs',
                       theme === 'dark'
                         ? 'bg-slate-800/50 border-slate-700 text-white placeholder-gray-500'
                         : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400'
                     )}
                   />
-                </div>
-                {/* Category Filter */}
-                <div className="flex items-center gap-1">
-                  {CATEGORIES.map(cat => (
-                    <button
-                      key={cat.id}
-                      onClick={() => setSelectedCategory(cat.id)}
-                      className={cn(
-                        'px-2 py-0.5 rounded text-xs font-medium transition-colors',
-                        selectedCategory === cat.id
-                          ? theme === 'dark'
-                            ? 'bg-indigo-500/20 text-indigo-400'
-                            : 'bg-indigo-100 text-indigo-700'
-                          : theme === 'dark'
-                            ? 'text-gray-400 hover:text-gray-200'
-                            : 'text-gray-500 hover:text-gray-700'
-                      )}
-                    >
-                      {isZh ? cat.labelZh : cat.labelEn}
-                    </button>
-                  ))}
                 </div>
               </>
             )}
@@ -1053,24 +1338,64 @@ export function OpticalDesignStudioPage() {
           </button>
         </div>
 
-        {/* Device List - Horizontal scrollable */}
+        {/* Category Tabs + Device Grid */}
         {!deviceLibraryCollapsed && (
-          <div className="overflow-x-auto overflow-y-hidden px-4 py-2">
-            <div className="flex gap-2 min-w-max">
-              {filteredDevices.map(device => (
-                <DeviceCard
-                  key={device.id}
-                  device={device}
-                  isSelected={selectedDevice?.id === device.id}
-                  onClick={() => setSelectedDevice(device)}
-                  onAddToBench={() => addDeviceToBench(device)}
-                />
-              ))}
-              {filteredDevices.length === 0 && (
-                <p className={cn('text-sm py-2', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
-                  {isZh ? '未找到器件' : 'No devices found'}
-                </p>
-              )}
+          <div className="flex h-48">
+            {/* Category tabs - Vertical */}
+            <div className={cn(
+              'flex flex-col w-28 flex-shrink-0 border-r p-1 gap-1',
+              theme === 'dark' ? 'border-slate-800' : 'border-gray-100'
+            )}>
+              {CATEGORIES.map(cat => {
+                const count = cat.id === 'all' ? DEVICES.length : DEVICES.filter(d => d.category === cat.id).length
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={cn(
+                      'flex items-center justify-between px-2 py-1.5 rounded-lg text-xs font-medium transition-all',
+                      selectedCategory === cat.id
+                        ? theme === 'dark'
+                          ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
+                          : 'bg-indigo-100 text-indigo-700 border border-indigo-200'
+                        : theme === 'dark'
+                          ? 'text-gray-400 hover:text-gray-200 hover:bg-slate-800'
+                          : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                    )}
+                  >
+                    <span className="truncate">{isZh ? cat.labelZh : cat.labelEn}</span>
+                    <span className={cn(
+                      'ml-1 px-1.5 py-0.5 rounded-full text-[10px]',
+                      selectedCategory === cat.id
+                        ? theme === 'dark' ? 'bg-indigo-500/30' : 'bg-indigo-200'
+                        : theme === 'dark' ? 'bg-slate-700' : 'bg-gray-200'
+                    )}>
+                      {count}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Device Grid */}
+            <div className="flex-1 overflow-y-auto p-2">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
+                {filteredDevices.map(device => (
+                  <DeviceCard
+                    key={device.id}
+                    device={device}
+                    isSelected={selectedDevice?.id === device.id}
+                    onClick={() => setSelectedDevice(device)}
+                    onAddToBench={() => addDeviceToBench(device)}
+                  />
+                ))}
+                {filteredDevices.length === 0 && (
+                  <div className={cn('col-span-full text-center py-8', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
+                    <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">{isZh ? '未找到匹配的器件' : 'No matching devices found'}</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -1122,18 +1447,7 @@ export function OpticalDesignStudioPage() {
           {!sidebarCollapsed && (
             <div className="flex-1 overflow-y-auto p-3 isolate">
               {sidebarTab === 'experiments' && (
-                <div className="space-y-2">
-                  <p className={cn('text-xs mb-2', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
-                    {isZh ? '选择经典实验加载到光路' : 'Select an experiment to load'}
-                  </p>
-                  {CLASSIC_EXPERIMENTS.map(exp => (
-                    <ExperimentCard
-                      key={exp.id}
-                      experiment={exp}
-                      onLoad={() => loadExperiment(exp)}
-                    />
-                  ))}
-                </div>
+                <ExperimentsPanel onLoad={loadExperiment} />
               )}
 
               {sidebarTab === 'design' && (

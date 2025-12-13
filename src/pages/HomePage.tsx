@@ -13,6 +13,14 @@ const POLARIZATION_COLORS = [
   'rgba(68, 68, 255, 0.15)',   // 135° - Blue
 ]
 
+// Solid polarization colors for glow effects
+const POLARIZATION_GLOW_COLORS = [
+  'rgba(255, 68, 68, 0.6)',    // 0° - Red
+  'rgba(255, 170, 0, 0.6)',    // 45° - Orange
+  'rgba(68, 255, 68, 0.6)',    // 90° - Green
+  'rgba(68, 136, 255, 0.6)',   // 135° - Blue
+]
+
 // Module configuration for the 10 creative hubs
 interface ModuleConfig {
   key: string
@@ -332,12 +340,24 @@ function ModuleCard({ module, index }: { module: ModuleConfig; index: number }) 
   const { theme } = useTheme()
   const [isHovered, setIsHovered] = useState(false)
   const [polarAngle, setPolarAngle] = useState(0)
+  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 })
   const animationRef = useRef<number | null>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
 
   const colorClasses = getColorClasses(module, theme)
   const textColorClass = getTextColorClass(module.colorTheme.text, theme)
   const gradientClass = getGradientClass(module.colorTheme.gradientFrom, module.colorTheme.gradientTo)
   const glowClass = getGlowClass(module.colorTheme.gradientFrom)
+
+  // Track mouse position for dynamic polarization effect
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (cardRef.current) {
+      const rect = cardRef.current.getBoundingClientRect()
+      const x = (e.clientX - rect.left) / rect.width
+      const y = (e.clientY - rect.top) / rect.height
+      setMousePos({ x, y })
+    }
+  }
 
   // Animate polarization angle on hover - simulates rotating polarizer
   useEffect(() => {
@@ -345,8 +365,8 @@ function ModuleCard({ module, index }: { module: ModuleConfig; index: number }) 
       const startTime = Date.now()
       const animate = () => {
         const elapsed = Date.now() - startTime
-        // Slow rotation: 360° in 4 seconds
-        const angle = (elapsed / 4000) * 360 % 360
+        // Slow rotation: 360° in 6 seconds for smoother effect
+        const angle = (elapsed / 6000) * 360 % 360
         setPolarAngle(angle)
         animationRef.current = requestAnimationFrame(animate)
       }
@@ -369,15 +389,22 @@ function ModuleCard({ module, index }: { module: ModuleConfig; index: number }) 
   // This creates the "polarizer rotation" effect where brightness varies
   const malusIntensity = Math.pow(Math.cos((polarAngle * Math.PI) / 180), 2)
 
-  // Get current polarization color based on angle quadrant
+  // Get current polarization color based on angle quadrant (smooth transition)
   const colorIndex = Math.floor((polarAngle / 45) % 4)
+  const nextColorIndex = (colorIndex + 1) % 4
   const polarizationColor = POLARIZATION_COLORS[colorIndex]
+  const polarizationGlowColor = POLARIZATION_GLOW_COLORS[colorIndex]
+  const nextPolarizationColor = POLARIZATION_COLORS[nextColorIndex]
 
   // Calculate overlay opacity based on Malus's Law (inverted for visibility effect)
-  const overlayOpacity = isHovered ? 0.3 + 0.4 * (1 - malusIntensity) : 0
+  const overlayOpacity = isHovered ? 0.25 + 0.35 * (1 - malusIntensity) : 0
+
+  // Calculate icon rotation: icon rotates same as polarization angle (simulating analyzer)
+  const iconRotation = isHovered ? polarAngle * 0.5 : 0
 
   return (
     <div
+      ref={cardRef}
       className={`group relative rounded-2xl p-4 sm:p-5 text-center
                  transition-all duration-400 hover:-translate-y-2 hover:scale-[1.02] ${
         theme === 'dark'
@@ -386,27 +413,33 @@ function ModuleCard({ module, index }: { module: ModuleConfig; index: number }) 
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onMouseMove={handleMouseMove}
       style={{
         // Add subtle brightness variation based on Malus's Law
-        filter: isHovered ? `brightness(${0.9 + 0.2 * malusIntensity})` : 'none',
+        filter: isHovered ? `brightness(${0.92 + 0.16 * malusIntensity})` : 'none',
       }}
     >
-      {/* Polarization rotating overlay - simulates viewing through rotating polarizer */}
+      {/* Polarization gradient overlay - simulates viewing through rotating polarizer */}
       <div
-        className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-200"
+        className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-300"
         style={{
           background: isHovered
-            ? `linear-gradient(${polarAngle}deg, ${polarizationColor} 0%, transparent 50%, ${polarizationColor} 100%)`
+            ? `conic-gradient(from ${polarAngle}deg at ${mousePos.x * 100}% ${mousePos.y * 100}%,
+                ${polarizationColor} 0deg,
+                ${nextPolarizationColor} 90deg,
+                ${polarizationColor} 180deg,
+                ${nextPolarizationColor} 270deg,
+                ${polarizationColor} 360deg)`
             : 'none',
           opacity: overlayOpacity,
         }}
       />
 
-      {/* Polarization cross-hatch pattern overlay - visible on hover */}
+      {/* Polarization wave pattern overlay - simulates light wave oscillation */}
       <div
         className="absolute inset-0 rounded-2xl pointer-events-none overflow-hidden"
         style={{
-          opacity: isHovered ? 0.08 : 0,
+          opacity: isHovered ? 0.12 : 0,
           transition: 'opacity 0.3s ease',
         }}
       >
@@ -416,30 +449,76 @@ function ModuleCard({ module, index }: { module: ModuleConfig; index: number }) 
             background: `repeating-linear-gradient(
               ${polarAngle}deg,
               transparent,
-              transparent 2px,
-              ${theme === 'dark' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.15)'} 2px,
-              ${theme === 'dark' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.15)'} 4px
+              transparent 3px,
+              ${polarizationGlowColor} 3px,
+              ${polarizationGlowColor} 4px
+            )`,
+            transform: `translateX(${Math.sin(polarAngle * Math.PI / 180) * 10}px)`,
+          }}
+        />
+      </div>
+
+      {/* Cross-polarization effect - perpendicular lines for interference pattern */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none overflow-hidden"
+        style={{
+          opacity: isHovered ? 0.05 * (1 - malusIntensity) : 0,
+          transition: 'opacity 0.3s ease',
+        }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `repeating-linear-gradient(
+              ${polarAngle + 90}deg,
+              transparent,
+              transparent 6px,
+              ${theme === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.2)'} 6px,
+              ${theme === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.2)'} 7px
             )`,
           }}
         />
       </div>
 
-      {/* Icon with rotation effect */}
+      {/* Polarization glow ring - appears at extinction positions */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none"
+        style={{
+          boxShadow: isHovered
+            ? `inset 0 0 ${20 + 15 * malusIntensity}px ${polarizationGlowColor.replace('0.6', String(0.2 * malusIntensity))}`
+            : 'none',
+          transition: 'box-shadow 0.1s ease',
+        }}
+      />
+
+      {/* Icon with synchronized rotation effect */}
       <div className="mb-2 flex justify-center relative z-10">
         {(() => {
           const IconComponent = ModuleIconMap[module.key as ModuleIconKey]
           if (IconComponent) {
             return (
               <div
+                className="relative"
                 style={{
-                  transform: isHovered ? `rotate(${polarAngle * 0.1}deg)` : 'none',
-                  transition: isHovered ? 'none' : 'transform 0.3s ease',
+                  transform: isHovered ? `rotate(${iconRotation}deg) scale(1.1)` : 'none',
+                  transition: isHovered ? 'transform 0.05s linear' : 'transform 0.3s ease',
                 }}
               >
                 <IconComponent
                   size={48}
-                  className={`transition-transform duration-300 ${isHovered ? 'scale-110' : ''} ${glowClass}`}
+                  className={`transition-none ${glowClass}`}
                 />
+                {/* Polarization indicator ring around icon */}
+                {isHovered && (
+                  <div
+                    className="absolute -inset-2 rounded-full border-2 pointer-events-none"
+                    style={{
+                      borderColor: polarizationGlowColor.replace('0.6', '0.4'),
+                      borderStyle: 'dashed',
+                      animation: 'spin 4s linear infinite',
+                    }}
+                  />
+                )}
               </div>
             )
           }
@@ -447,8 +526,8 @@ function ModuleCard({ module, index }: { module: ModuleConfig; index: number }) 
             <span
               className={`text-3xl sm:text-4xl ${glowClass}`}
               style={{
-                transform: isHovered ? `rotate(${polarAngle * 0.1}deg)` : 'none',
-                transition: isHovered ? 'none' : 'transform 0.3s ease',
+                transform: isHovered ? `rotate(${iconRotation}deg) scale(1.1)` : 'none',
+                transition: isHovered ? 'transform 0.05s linear' : 'transform 0.3s ease',
                 display: 'inline-block',
               }}
             >
@@ -529,6 +608,136 @@ function ModuleCard({ module, index }: { module: ModuleConfig; index: number }) 
   )
 }
 
+// Animated polarization background component
+function PolarizationBackground({ theme }: { theme: 'dark' | 'light' }) {
+  const [time, setTime] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(t => (t + 1) % 360)
+    }, 50)
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden">
+      {/* Primary rotating polarization gradient */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: theme === 'dark'
+            ? `conic-gradient(from ${time}deg at 50% 50%,
+                rgba(255, 68, 68, 0.03) 0deg,
+                rgba(255, 170, 0, 0.03) 90deg,
+                rgba(68, 255, 68, 0.03) 180deg,
+                rgba(68, 136, 255, 0.03) 270deg,
+                rgba(255, 68, 68, 0.03) 360deg)`
+            : `conic-gradient(from ${time}deg at 50% 50%,
+                rgba(255, 68, 68, 0.02) 0deg,
+                rgba(255, 170, 0, 0.02) 90deg,
+                rgba(68, 255, 68, 0.02) 180deg,
+                rgba(68, 136, 255, 0.02) 270deg,
+                rgba(255, 68, 68, 0.02) 360deg)`,
+        }}
+      />
+
+      {/* Secondary counter-rotating gradient for interference effect */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: theme === 'dark'
+            ? `conic-gradient(from ${360 - time}deg at 30% 70%,
+                rgba(68, 136, 255, 0.02) 0deg,
+                rgba(68, 255, 68, 0.02) 90deg,
+                rgba(255, 170, 0, 0.02) 180deg,
+                rgba(255, 68, 68, 0.02) 270deg,
+                rgba(68, 136, 255, 0.02) 360deg)`
+            : `conic-gradient(from ${360 - time}deg at 30% 70%,
+                rgba(68, 136, 255, 0.015) 0deg,
+                rgba(68, 255, 68, 0.015) 90deg,
+                rgba(255, 170, 0, 0.015) 180deg,
+                rgba(255, 68, 68, 0.015) 270deg,
+                rgba(68, 136, 255, 0.015) 360deg)`,
+        }}
+      />
+
+      {/* Animated polarization wave lines */}
+      <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.15 }}>
+        <defs>
+          <linearGradient id="wave-grad-1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor={theme === 'dark' ? '#ff4444' : '#ff6666'} stopOpacity="0.3" />
+            <stop offset="50%" stopColor={theme === 'dark' ? '#44ff44' : '#66ff66'} stopOpacity="0.3" />
+            <stop offset="100%" stopColor={theme === 'dark' ? '#4488ff' : '#6699ff'} stopOpacity="0.3" />
+          </linearGradient>
+        </defs>
+        {/* Horizontal wave lines simulating E-field */}
+        {[0.2, 0.35, 0.5, 0.65, 0.8].map((yPos, i) => (
+          <path
+            key={`h-${i}`}
+            d={`M 0 ${yPos * 100}% Q 25% ${yPos * 100 + Math.sin((time + i * 30) * Math.PI / 180) * 3}%, 50% ${yPos * 100}% T 100% ${yPos * 100}%`}
+            fill="none"
+            stroke="url(#wave-grad-1)"
+            strokeWidth="1"
+            style={{
+              transform: `translateX(${Math.sin((time + i * 60) * Math.PI / 180) * 20}px)`,
+            }}
+          />
+        ))}
+        {/* Vertical wave lines simulating B-field (perpendicular) */}
+        {[0.15, 0.4, 0.6, 0.85].map((xPos, i) => (
+          <path
+            key={`v-${i}`}
+            d={`M ${xPos * 100}% 0 Q ${xPos * 100 + Math.cos((time + i * 45) * Math.PI / 180) * 2}% 50%, ${xPos * 100}% 100%`}
+            fill="none"
+            stroke={theme === 'dark' ? 'rgba(100, 200, 255, 0.15)' : 'rgba(50, 150, 200, 0.1)'}
+            strokeWidth="1"
+            style={{
+              transform: `translateY(${Math.cos((time + i * 45) * Math.PI / 180) * 15}px)`,
+            }}
+          />
+        ))}
+      </svg>
+
+      {/* Light beam decorations with polarization colors */}
+      {[
+        { left: 10, color: 'rgba(255, 68, 68, 0.2)', delay: 0 },
+        { left: 30, color: 'rgba(255, 170, 0, 0.2)', delay: 1.5 },
+        { left: 70, color: 'rgba(68, 255, 68, 0.2)', delay: 3 },
+        { left: 90, color: 'rgba(68, 136, 255, 0.2)', delay: 4.5 },
+      ].map((beam, i) => (
+        <div
+          key={i}
+          className="absolute w-0.5 h-screen animate-beam-move"
+          style={{
+            left: `${beam.left}%`,
+            background: `linear-gradient(to bottom, transparent 0%, ${beam.color} 50%, transparent 100%)`,
+            animationDelay: `${beam.delay}s`,
+            filter: 'blur(1px)',
+          }}
+        />
+      ))}
+
+      {/* Floating polarization particles */}
+      {[0, 1, 2, 3, 4, 5].map((i) => (
+        <div
+          key={`particle-${i}`}
+          className="absolute rounded-full animate-float"
+          style={{
+            width: `${4 + i * 2}px`,
+            height: `${4 + i * 2}px`,
+            left: `${15 + i * 15}%`,
+            top: `${20 + (i % 3) * 25}%`,
+            background: POLARIZATION_GLOW_COLORS[i % 4].replace('0.6', '0.3'),
+            filter: 'blur(2px)',
+            animationDelay: `${i * 0.5}s`,
+            animationDuration: `${4 + i}s`,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 export function HomePage() {
   const { t } = useTranslation()
   const { theme } = useTheme()
@@ -544,21 +753,8 @@ export function HomePage() {
         <LanguageThemeSwitcher />
       </div>
 
-      {/* Light beam decorations */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {[10, 30, 70, 90].map((left, i) => (
-          <div
-            key={i}
-            className={`absolute w-0.5 h-screen bg-gradient-to-b from-transparent to-transparent animate-beam-move ${
-              theme === 'dark' ? 'via-cyan-400/30' : 'via-cyan-500/20'
-            }`}
-            style={{
-              left: `${left}%`,
-              animationDelay: `${i * 2}s`,
-            }}
-          />
-        ))}
-      </div>
+      {/* Animated polarization background */}
+      <PolarizationBackground theme={theme} />
 
       {/* Header */}
       <header className="text-center mb-6 sm:mb-10 md:mb-12 relative z-10 px-2">
