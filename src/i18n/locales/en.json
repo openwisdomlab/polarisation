@@ -9,7 +9,8 @@
     "darkMode": "Dark Mode",
     "language": "Language",
     "english": "English",
-    "chinese": "Chinese"
+    "chinese": "Chinese",
+    "comingSoon": "Coming Soon"
   },
   "home": {
     "title": "PolarCraft",
@@ -24,15 +25,23 @@
       "link2": "Recreate Malus's Law",
       "link3": "Polarization Journey"
     },
-    "opticsLab": {
-      "title": "Optical Workbench: Devices & Paths",
-      "subtitle": "Device Guide × Path Design × UC2 Hardware",
-      "description": "Systematically learn optical devices, freely assemble light paths on a virtual optical bench, and interface with UC2 modular hardware—an all-in-one experience from learning to experimentation.",
+    "deviceLibrary": {
+      "title": "Device Library: Optics Encyclopedia",
+      "subtitle": "Polarizers × Wave Plates × Crystals",
+      "description": "Systematically learn polarization optics devices: from basic polarizers to wave plates, from calcite to liquid crystals—build complete device knowledge.",
+      "cta": "View Library",
+      "link1": "Polarizers",
+      "link2": "Wave Plates",
+      "link3": "Birefringent Crystals"
+    },
+    "opticalBench": {
+      "title": "Optical Workbench: Path Design",
+      "subtitle": "Virtual Bench × UC2 Hardware × Experiments",
+      "description": "Freely assemble light paths on a virtual optical bench, simulate classic experiments, and interface with UC2 modular hardware—complete design-to-experiment experience.",
       "cta": "Enter Workbench",
-      "link1": "Device Guide",
-      "link2": "Path Design",
-      "link3": "UC2 Hardware",
-      "link4": "Classic Experiments"
+      "link1": "Path Design",
+      "link2": "UC2 Hardware",
+      "link3": "Classic Experiments"
     },
     "formulaLab": {
       "title": "Demo Gallery: Principle Visualization",
@@ -83,24 +92,19 @@
       "link4": "Medical Diagnostics"
     },
     "simulationLab": {
-      "title": "Simulation Workshop: Computational Polarization",
-      "subtitle": "Numerical Simulation × Matrix Calculation × Code Tools",
-      "description": "Mueller matrix calculator, Jones matrix simulation, Stokes visualization—use computational tools to deeply understand polarization optics.",
-      "cta": "Start Simulation",
-      "link1": "Mueller Matrix",
-      "link2": "Jones Matrix",
-      "link3": "Stokes Visualization",
-      "link4": "Code Library"
+      "title": "Calculation Workshop: Polarization Calculators",
+      "subtitle": "Jones Matrix × Mueller Matrix × Stokes Parameters",
+      "description": "Professional polarization calculation tools: Jones matrix transforms, Mueller matrix cascades, Stokes parameter conversions—compute to understand polarization optics.",
+      "cta": "Start Calculating",
+      "link1": "Jones Matrix",
+      "link2": "Mueller Matrix",
+      "link3": "Stokes Parameters"
     },
     "openData": {
       "title": "Open Data: Polarization Datasets",
-      "subtitle": "Experimental Data × Shared Resources × Open Science",
-      "description": "An open science data platform: share polarization experimental data, spectral data, user-contributed datasets to support research and education.",
-      "cta": "Browse Data",
-      "link1": "Datasets",
-      "link2": "Spectral Data",
-      "link3": "Contribute Data",
-      "link4": "API Access"
+      "subtitle": "Coming Soon",
+      "description": "Open science data platform: polarization experimental data, spectral data, user-contributed datasets—coming soon, stay tuned.",
+      "cta": "Coming Soon"
     }
   },
   "game": {
