@@ -495,16 +495,227 @@ export function ExperimentsIcon({ className, size = 48, primaryColor, secondaryC
   )
 }
 
-// Export a map for easy lookup
+// 10. OpticsLab - 光学工作台 (Optical bench with components and light path)
+export function OpticsLabIcon({ className, size = 48, primaryColor, secondaryColor }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      fill="none"
+      className={cn('transition-all duration-300', className)}
+    >
+      <defs>
+        <linearGradient id="opticslab-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor={primaryColor || '#4169E1'} />
+          <stop offset="100%" stopColor={secondaryColor || '#1D4ED8'} />
+        </linearGradient>
+        <filter id="opticslab-glow">
+          <feGaussianBlur stdDeviation="1.5" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      {/* Optical rail base */}
+      <rect x="4" y="36" width="40" height="4" rx="2" fill="url(#opticslab-grad)" opacity="0.3" />
+      {/* Light source (laser) */}
+      <rect x="6" y="20" width="6" height="12" rx="1" fill="url(#opticslab-grad)" opacity="0.8" />
+      <circle cx="9" cy="26" r="2" fill="url(#opticslab-grad)" filter="url(#opticslab-glow)" />
+      {/* Main light beam */}
+      <path d="M12 26 L42 26" stroke="url(#opticslab-grad)" strokeWidth="2" strokeLinecap="round" opacity="0.6" filter="url(#opticslab-glow)" />
+      {/* Lens 1 */}
+      <ellipse cx="20" cy="26" rx="2" ry="8" fill="none" stroke="url(#opticslab-grad)" strokeWidth="2" opacity="0.8" />
+      {/* Polarizer */}
+      <rect x="28" y="18" width="3" height="16" rx="1" fill="url(#opticslab-grad)" opacity="0.7" />
+      <line x1="29.5" y1="20" x2="29.5" y2="32" stroke="white" strokeWidth="0.5" opacity="0.5" />
+      {/* Detector/screen */}
+      <rect x="38" y="18" width="6" height="16" rx="1" fill="url(#opticslab-grad)" opacity="0.9" />
+      {/* Scattered beams */}
+      <path d="M20 22 L24 18" stroke="url(#opticslab-grad)" strokeWidth="1" opacity="0.4" />
+      <path d="M20 30 L24 34" stroke="url(#opticslab-grad)" strokeWidth="1" opacity="0.4" />
+    </svg>
+  )
+}
+
+// 11. CreativeLab - 偏振造物局 (Creative workshop with polarization art)
+export function CreativeLabIcon({ className, size = 48, primaryColor, secondaryColor }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      fill="none"
+      className={cn('transition-all duration-300', className)}
+    >
+      <defs>
+        <linearGradient id="creative-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor={primaryColor || '#EC4899'} />
+          <stop offset="100%" stopColor={secondaryColor || '#DB2777'} />
+        </linearGradient>
+        <linearGradient id="creative-rainbow" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#ff4444" />
+          <stop offset="33%" stopColor="#44ff44" />
+          <stop offset="66%" stopColor="#4444ff" />
+          <stop offset="100%" stopColor="#ff4444" />
+        </linearGradient>
+        <filter id="creative-glow">
+          <feGaussianBlur stdDeviation="1.5" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      {/* Paintbrush/wand shape */}
+      <path
+        d="M8 40 L16 32 L24 24 L32 16 L36 12"
+        fill="none"
+        stroke="url(#creative-grad)"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Brush tip with polarization colors */}
+      <path
+        d="M36 12 L40 8 L44 10 L42 14 L38 16 Z"
+        fill="url(#creative-grad)"
+        opacity="0.8"
+      />
+      {/* Color sparkles representing polarization states */}
+      <circle cx="18" cy="14" r="3" fill="#ff4444" opacity="0.7" filter="url(#creative-glow)" />
+      <circle cx="28" cy="10" r="2.5" fill="#44ff44" opacity="0.7" filter="url(#creative-glow)" />
+      <circle cx="12" cy="22" r="2" fill="#4444ff" opacity="0.7" filter="url(#creative-glow)" />
+      <circle cx="22" cy="36" r="2.5" fill="#ffaa00" opacity="0.7" filter="url(#creative-glow)" />
+      {/* Decorative stars */}
+      <path d="M38 28 L40 30 L42 28 L40 32 Z" fill="url(#creative-grad)" opacity="0.5" />
+      <path d="M6 12 L8 14 L10 12 L8 16 Z" fill="url(#creative-grad)" opacity="0.5" />
+      {/* Arc representing creative flow */}
+      <path
+        d="M10 30 Q24 10, 38 20"
+        fill="none"
+        stroke="url(#creative-rainbow)"
+        strokeWidth="1.5"
+        strokeDasharray="3 2"
+        opacity="0.6"
+      />
+    </svg>
+  )
+}
+
+// 12. SimulationLab - 仿真工坊 (Computation/simulation with matrices)
+export function SimulationLabIcon({ className, size = 48, primaryColor, secondaryColor }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      fill="none"
+      className={cn('transition-all duration-300', className)}
+    >
+      <defs>
+        <linearGradient id="sim-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor={primaryColor || '#8B5CF6'} />
+          <stop offset="100%" stopColor={secondaryColor || '#7C3AED'} />
+        </linearGradient>
+        <filter id="sim-glow">
+          <feGaussianBlur stdDeviation="1" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      {/* Main gear */}
+      <circle cx="24" cy="24" r="12" fill="none" stroke="url(#sim-grad)" strokeWidth="2.5" />
+      <circle cx="24" cy="24" r="5" fill="url(#sim-grad)" opacity="0.3" />
+      {/* Gear teeth */}
+      <path d="M24 8 L22 12 L26 12 Z" fill="url(#sim-grad)" />
+      <path d="M24 40 L22 36 L26 36 Z" fill="url(#sim-grad)" />
+      <path d="M8 24 L12 22 L12 26 Z" fill="url(#sim-grad)" />
+      <path d="M40 24 L36 22 L36 26 Z" fill="url(#sim-grad)" />
+      <path d="M12.7 12.7 L15.5 14.1 L14.1 15.5 Z" fill="url(#sim-grad)" />
+      <path d="M35.3 35.3 L32.5 33.9 L33.9 32.5 Z" fill="url(#sim-grad)" />
+      <path d="M12.7 35.3 L14.1 32.5 L15.5 33.9 Z" fill="url(#sim-grad)" />
+      <path d="M35.3 12.7 L33.9 15.5 L32.5 14.1 Z" fill="url(#sim-grad)" />
+      {/* Matrix brackets */}
+      <path d="M18 20 L16 20 L16 28 L18 28" fill="none" stroke="url(#sim-grad)" strokeWidth="1.5" opacity="0.8" />
+      <path d="M30 20 L32 20 L32 28 L30 28" fill="none" stroke="url(#sim-grad)" strokeWidth="1.5" opacity="0.8" />
+      {/* Matrix elements */}
+      <circle cx="21" cy="22" r="1" fill="url(#sim-grad)" filter="url(#sim-glow)" />
+      <circle cx="27" cy="22" r="1" fill="url(#sim-grad)" filter="url(#sim-glow)" />
+      <circle cx="21" cy="26" r="1" fill="url(#sim-grad)" filter="url(#sim-glow)" />
+      <circle cx="27" cy="26" r="1" fill="url(#sim-grad)" filter="url(#sim-glow)" />
+      {/* Binary/code elements */}
+      <text x="4" y="14" fill="url(#sim-grad)" fontSize="6" opacity="0.5" fontFamily="monospace">01</text>
+      <text x="38" y="42" fill="url(#sim-grad)" fontSize="6" opacity="0.5" fontFamily="monospace">10</text>
+    </svg>
+  )
+}
+
+// 13. OpenData - 开放数据 (Database with sharing/open science)
+export function OpenDataIcon({ className, size = 48, primaryColor, secondaryColor }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      fill="none"
+      className={cn('transition-all duration-300', className)}
+    >
+      <defs>
+        <linearGradient id="data-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor={primaryColor || '#64748B'} />
+          <stop offset="100%" stopColor={secondaryColor || '#475569'} />
+        </linearGradient>
+        <filter id="data-glow">
+          <feGaussianBlur stdDeviation="1" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      {/* Database cylinder */}
+      <ellipse cx="24" cy="12" rx="14" ry="5" fill="none" stroke="url(#data-grad)" strokeWidth="2.5" />
+      <path d="M10 12 L10 36" stroke="url(#data-grad)" strokeWidth="2.5" />
+      <path d="M38 12 L38 36" stroke="url(#data-grad)" strokeWidth="2.5" />
+      <ellipse cx="24" cy="36" rx="14" ry="5" fill="none" stroke="url(#data-grad)" strokeWidth="2.5" />
+      {/* Middle section line */}
+      <ellipse cx="24" cy="24" rx="14" ry="5" fill="none" stroke="url(#data-grad)" strokeWidth="1.5" opacity="0.4" />
+      {/* Data rows/bars */}
+      <rect x="14" y="16" width="8" height="2" rx="1" fill="url(#data-grad)" opacity="0.6" />
+      <rect x="26" y="16" width="6" height="2" rx="1" fill="url(#data-grad)" opacity="0.4" />
+      <rect x="14" y="28" width="10" height="2" rx="1" fill="url(#data-grad)" opacity="0.5" />
+      <rect x="28" y="28" width="4" height="2" rx="1" fill="url(#data-grad)" opacity="0.3" />
+      {/* Open/share symbol */}
+      <circle cx="38" cy="8" r="6" fill="none" stroke="url(#data-grad)" strokeWidth="1.5" opacity="0.7" />
+      <path d="M35 8 L41 8 M38 5 L38 11" stroke="url(#data-grad)" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
+      {/* Connection dots */}
+      <circle cx="8" cy="40" r="2" fill="url(#data-grad)" opacity="0.5" filter="url(#data-glow)" />
+      <circle cx="40" cy="40" r="2" fill="url(#data-grad)" opacity="0.5" filter="url(#data-glow)" />
+      <path d="M10 40 L24 44 L38 40" fill="none" stroke="url(#data-grad)" strokeWidth="1" opacity="0.4" strokeDasharray="2 2" />
+    </svg>
+  )
+}
+
+// Export a map for easy lookup - all 9 homepage modules + extras
 export const ModuleIconMap = {
+  // 9 main homepage modules
   chronicles: ChroniclesIcon,
-  deviceLibrary: DeviceLibraryIcon,
-  opticalBench: OpticalBenchIcon,
+  opticsLab: OpticsLabIcon,
   formulaLab: DemoGalleryIcon,
   polarquest: PolarQuestIcon,
-  gallery: GalleryIcon,
+  creativeLab: CreativeLabIcon,
   labGroup: LabGroupIcon,
   applications: ApplicationsIcon,
+  simulationLab: SimulationLabIcon,
+  openData: OpenDataIcon,
+  // Legacy/alternate names for backward compatibility
+  deviceLibrary: DeviceLibraryIcon,
+  opticalBench: OpticalBenchIcon,
+  gallery: GalleryIcon,
   experiments: ExperimentsIcon,
 }
 

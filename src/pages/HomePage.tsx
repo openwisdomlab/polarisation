@@ -100,11 +100,11 @@ const MODULES: ModuleConfig[] = [
     key: 'polarquest',
     icon: '⬢', // Hexagon - represents game/puzzle block
     colorTheme: {
-      border: 'gold-soft', // Soft Gold #DAA520
-      borderHover: 'gold-soft',
-      shadow: 'rgba(218,165,32,0.25)',
-      text: 'gold-soft',
-      gradientFrom: 'gold-soft',
+      border: 'orange-warm', // Warm Orange #F59E0B (distinct from amber)
+      borderHover: 'orange-warm',
+      shadow: 'rgba(245,158,11,0.25)',
+      text: 'orange-warm',
+      gradientFrom: 'orange-warm',
       gradientTo: 'amber-600',
       buttonText: 'black',
     },
@@ -116,15 +116,15 @@ const MODULES: ModuleConfig[] = [
     ],
   },
   {
-    // 创意实验室：艺术与DIY (Creative Lab: Art & DIY) - MERGED: gallery + experiments + photography
+    // 偏振造物局：艺术与DIY (Polarization Workshop: Art & DIY) - MERGED: gallery + experiments + photography
     key: 'creativeLab',
     icon: '✧', // Sparkle - represents art and creativity
     colorTheme: {
-      border: 'rose-soft', // Soft Rose #D97A8A
-      borderHover: 'rose-soft',
-      shadow: 'rgba(217,122,138,0.25)',
-      text: 'rose-soft',
-      gradientFrom: 'rose-soft',
+      border: 'pink-vivid', // Vivid Pink #EC4899 (more distinct from coral)
+      borderHover: 'pink-vivid',
+      shadow: 'rgba(236,72,153,0.25)',
+      text: 'pink-vivid',
+      gradientFrom: 'pink-vivid',
       gradientTo: 'rose-600',
       buttonText: 'white',
     },
@@ -141,11 +141,11 @@ const MODULES: ModuleConfig[] = [
     key: 'labGroup',
     icon: '⚗', // Alembic - represents research/lab
     colorTheme: {
-      border: 'emerald-soft', // Soft Emerald #3AAE8C
-      borderHover: 'emerald-soft',
-      shadow: 'rgba(58,174,140,0.25)',
-      text: 'emerald-soft',
-      gradientFrom: 'emerald-soft',
+      border: 'emerald-bright', // Bright Emerald #10B981 (more vivid green)
+      borderHover: 'emerald-bright',
+      shadow: 'rgba(16,185,129,0.25)',
+      text: 'emerald-bright',
+      gradientFrom: 'emerald-bright',
       gradientTo: 'emerald-600',
       buttonText: 'black',
     },
@@ -162,12 +162,12 @@ const MODULES: ModuleConfig[] = [
     key: 'applications',
     icon: '⊛', // Circled asterisk - represents applications/branching
     colorTheme: {
-      border: 'coral-soft', // Soft Coral #E57373
-      borderHover: 'coral-soft',
-      shadow: 'rgba(229,115,115,0.25)',
-      text: 'coral-soft',
-      gradientFrom: 'coral-soft',
-      gradientTo: 'red-500',
+      border: 'red-vivid', // Vivid Red #EF4444 (brighter, distinct from pink)
+      borderHover: 'red-vivid',
+      shadow: 'rgba(239,68,68,0.25)',
+      text: 'red-vivid',
+      gradientFrom: 'red-vivid',
+      gradientTo: 'red-600',
       buttonText: 'white',
     },
     mainRoute: '/applications',
@@ -204,12 +204,12 @@ const MODULES: ModuleConfig[] = [
     key: 'openData',
     icon: '◎', // Bullseye - represents data and precision
     colorTheme: {
-      border: 'teal-soft', // Soft Teal #2AA198
-      borderHover: 'teal-soft',
-      shadow: 'rgba(42,161,152,0.25)',
-      text: 'teal-soft',
-      gradientFrom: 'teal-soft',
-      gradientTo: 'teal-600',
+      border: 'slate-cool', // Cool Slate #64748B (neutral, distinct from blues)
+      borderHover: 'slate-cool',
+      shadow: 'rgba(100,116,139,0.25)',
+      text: 'slate-cool',
+      gradientFrom: 'slate-cool',
+      gradientTo: 'slate-600',
       buttonText: 'white',
     },
     mainRoute: '/data',
@@ -222,63 +222,63 @@ const MODULES: ModuleConfig[] = [
   },
 ]
 
-// Color mapping for Tailwind classes - using softer, eye-friendly colors
+// Color mapping for Tailwind classes - using distinct, visually-friendly colors
+// 9 distinct colors spread across the spectrum for maximum differentiation
 const getColorClasses = (module: ModuleConfig, theme: 'dark' | 'light') => {
-  // Soft color palette for reduced eye strain
   const colorMap: Record<string, { dark: string; light: string; shadow: string }> = {
-    // Warm Amber #C9A227 - Chronicles of Light (historical parchment feel)
+    // 1. Warm Amber #C9A227 - Chronicles of Light (historical parchment feel)
     'amber-warm': {
       dark: 'border-[#C9A227]/30 hover:border-[#C9A227]/60',
       light: 'border-[#C9A227]/40 hover:border-[#C9A227]/70',
       shadow: 'hover:shadow-[0_15px_40px_rgba(201,162,39,0.25)]',
     },
-    // Sapphire Blue #4169E1 - Device Library (crystal/prism blue)
+    // 2. Sapphire Blue #4169E1 - Optics Lab (crystal/prism blue)
     'sapphire-soft': {
       dark: 'border-[#4169E1]/30 hover:border-[#4169E1]/60',
       light: 'border-[#4169E1]/40 hover:border-[#4169E1]/70',
       shadow: 'hover:shadow-[0_15px_40px_rgba(65,105,225,0.25)]',
     },
-    // Soft Violet #8B5CF6 - Optical Bench
-    'violet-soft': {
-      dark: 'border-[#8B5CF6]/30 hover:border-[#8B5CF6]/60',
-      light: 'border-[#8B5CF6]/40 hover:border-[#8B5CF6]/70',
-      shadow: 'hover:shadow-[0_15px_40px_rgba(139,92,246,0.25)]',
-    },
-    // Deep Cyan #0891B2 - Demo Gallery (scientific/technical)
+    // 3. Deep Cyan #0891B2 - Demo Gallery (scientific/technical)
     'cyan-deep': {
       dark: 'border-[#0891B2]/30 hover:border-[#0891B2]/60',
       light: 'border-[#0891B2]/40 hover:border-[#0891B2]/70',
       shadow: 'hover:shadow-[0_15px_40px_rgba(8,145,178,0.25)]',
     },
-    // Soft Gold #DAA520 - PolarQuest (gaming gold)
-    'gold-soft': {
-      dark: 'border-[#DAA520]/30 hover:border-[#DAA520]/60',
-      light: 'border-[#DAA520]/40 hover:border-[#DAA520]/70',
-      shadow: 'hover:shadow-[0_15px_40px_rgba(218,165,32,0.25)]',
+    // 4. Warm Orange #F59E0B - PolarQuest (gaming orange, distinct from amber)
+    'orange-warm': {
+      dark: 'border-[#F59E0B]/30 hover:border-[#F59E0B]/60',
+      light: 'border-[#F59E0B]/40 hover:border-[#F59E0B]/70',
+      shadow: 'hover:shadow-[0_15px_40px_rgba(245,158,11,0.25)]',
     },
-    // Soft Rose #D97A8A - PolarCraft Studio
-    'rose-soft': {
-      dark: 'border-[#D97A8A]/30 hover:border-[#D97A8A]/60',
-      light: 'border-[#D97A8A]/40 hover:border-[#D97A8A]/70',
-      shadow: 'hover:shadow-[0_15px_40px_rgba(217,122,138,0.25)]',
+    // 5. Vivid Pink #EC4899 - Creative Lab/偏振造物局 (distinct from red)
+    'pink-vivid': {
+      dark: 'border-[#EC4899]/30 hover:border-[#EC4899]/60',
+      light: 'border-[#EC4899]/40 hover:border-[#EC4899]/70',
+      shadow: 'hover:shadow-[0_15px_40px_rgba(236,72,153,0.25)]',
     },
-    // Soft Emerald #3AAE8C - Virtual Lab Group
-    'emerald-soft': {
-      dark: 'border-[#3AAE8C]/30 hover:border-[#3AAE8C]/60',
-      light: 'border-[#3AAE8C]/40 hover:border-[#3AAE8C]/70',
-      shadow: 'hover:shadow-[0_15px_40px_rgba(58,174,140,0.25)]',
+    // 6. Bright Emerald #10B981 - Lab Group (vivid green)
+    'emerald-bright': {
+      dark: 'border-[#10B981]/30 hover:border-[#10B981]/60',
+      light: 'border-[#10B981]/40 hover:border-[#10B981]/70',
+      shadow: 'hover:shadow-[0_15px_40px_rgba(16,185,129,0.25)]',
     },
-    // Soft Coral #E57373 - Applications Gallery (warm/inviting)
-    'coral-soft': {
-      dark: 'border-[#E57373]/30 hover:border-[#E57373]/60',
-      light: 'border-[#E57373]/40 hover:border-[#E57373]/70',
-      shadow: 'hover:shadow-[0_15px_40px_rgba(229,115,115,0.25)]',
+    // 7. Vivid Red #EF4444 - Applications (bright red, distinct from pink)
+    'red-vivid': {
+      dark: 'border-[#EF4444]/30 hover:border-[#EF4444]/60',
+      light: 'border-[#EF4444]/40 hover:border-[#EF4444]/70',
+      shadow: 'hover:shadow-[0_15px_40px_rgba(239,68,68,0.25)]',
     },
-    // Soft Teal #2AA198 - DIY Experiments
-    'teal-soft': {
-      dark: 'border-[#2AA198]/30 hover:border-[#2AA198]/60',
-      light: 'border-[#2AA198]/40 hover:border-[#2AA198]/70',
-      shadow: 'hover:shadow-[0_15px_40px_rgba(42,161,152,0.25)]',
+    // 8. Soft Violet #8B5CF6 - Simulation Lab (purple)
+    'violet-soft': {
+      dark: 'border-[#8B5CF6]/30 hover:border-[#8B5CF6]/60',
+      light: 'border-[#8B5CF6]/40 hover:border-[#8B5CF6]/70',
+      shadow: 'hover:shadow-[0_15px_40px_rgba(139,92,246,0.25)]',
+    },
+    // 9. Cool Slate #64748B - Open Data (neutral gray-blue)
+    'slate-cool': {
+      dark: 'border-[#64748B]/30 hover:border-[#64748B]/60',
+      light: 'border-[#64748B]/40 hover:border-[#64748B]/70',
+      shadow: 'hover:shadow-[0_15px_40px_rgba(100,116,139,0.25)]',
     },
   }
 
@@ -290,49 +290,49 @@ const getColorClasses = (module: ModuleConfig, theme: 'dark' | 'light') => {
 }
 
 const getTextColorClass = (color: string, theme: 'dark' | 'light') => {
-  // Soft color text classes
+  // Distinct color text classes matching the new palette
   const textMap: Record<string, { dark: string; light: string }> = {
     'amber-warm': { dark: 'text-[#C9A227]', light: 'text-[#A68620]' },
     'sapphire-soft': { dark: 'text-[#4169E1]', light: 'text-[#3558C4]' },
-    'violet-soft': { dark: 'text-[#8B5CF6]', light: 'text-[#7C3AED]' },
     'cyan-deep': { dark: 'text-[#0891B2]', light: 'text-[#067B96]' },
-    'gold-soft': { dark: 'text-[#DAA520]', light: 'text-[#B8891A]' },
-    'rose-soft': { dark: 'text-[#D97A8A]', light: 'text-[#C06575]' },
-    'emerald-soft': { dark: 'text-[#3AAE8C]', light: 'text-[#2E9375]' },
-    'coral-soft': { dark: 'text-[#E57373]', light: 'text-[#C75050]' },
-    'teal-soft': { dark: 'text-[#2AA198]', light: 'text-[#238B83]' },
+    'orange-warm': { dark: 'text-[#F59E0B]', light: 'text-[#D97706]' },
+    'pink-vivid': { dark: 'text-[#EC4899]', light: 'text-[#DB2777]' },
+    'emerald-bright': { dark: 'text-[#10B981]', light: 'text-[#059669]' },
+    'red-vivid': { dark: 'text-[#EF4444]', light: 'text-[#DC2626]' },
+    'violet-soft': { dark: 'text-[#8B5CF6]', light: 'text-[#7C3AED]' },
+    'slate-cool': { dark: 'text-[#64748B]', light: 'text-[#475569]' },
   }
   return theme === 'dark' ? textMap[color].dark : textMap[color].light
 }
 
 const getGradientClass = (from: string, to: string) => {
-  // Soft gradient classes
+  // Distinct gradient classes matching the new palette
   const gradientMap: Record<string, string> = {
     'amber-warm-amber-700': 'from-[#C9A227] to-[#92650F]',
     'sapphire-soft-blue-700': 'from-[#4169E1] to-[#1D4ED8]',
-    'violet-soft-violet-600': 'from-[#8B5CF6] to-[#7C3AED]',
     'cyan-deep-cyan-700': 'from-[#0891B2] to-[#0E7490]',
-    'gold-soft-amber-600': 'from-[#DAA520] to-[#D97706]',
-    'rose-soft-rose-600': 'from-[#D97A8A] to-[#E11D48]',
-    'emerald-soft-emerald-600': 'from-[#3AAE8C] to-[#059669]',
-    'coral-soft-red-500': 'from-[#E57373] to-[#EF4444]',
-    'teal-soft-teal-600': 'from-[#2AA198] to-[#0D9488]',
+    'orange-warm-amber-600': 'from-[#F59E0B] to-[#D97706]',
+    'pink-vivid-rose-600': 'from-[#EC4899] to-[#DB2777]',
+    'emerald-bright-emerald-600': 'from-[#10B981] to-[#059669]',
+    'red-vivid-red-600': 'from-[#EF4444] to-[#DC2626]',
+    'violet-soft-violet-600': 'from-[#8B5CF6] to-[#7C3AED]',
+    'slate-cool-slate-600': 'from-[#64748B] to-[#475569]',
   }
   return gradientMap[`${from}-${to}`] || 'from-gray-400 to-gray-500'
 }
 
 const getGlowClass = (from: string) => {
-  // Softer glow effects for reduced eye strain
+  // Glow effects matching the new distinct color palette
   const glowMap: Record<string, string> = {
-    'cyan-soft': 'drop-shadow-[0_0_20px_rgba(34,199,214,0.4)]',
-    'indigo-soft': 'drop-shadow-[0_0_20px_rgba(91,110,225,0.4)]',
+    'amber-warm': 'drop-shadow-[0_0_20px_rgba(201,162,39,0.4)]',
+    'sapphire-soft': 'drop-shadow-[0_0_20px_rgba(65,105,225,0.4)]',
+    'cyan-deep': 'drop-shadow-[0_0_20px_rgba(8,145,178,0.4)]',
+    'orange-warm': 'drop-shadow-[0_0_20px_rgba(245,158,11,0.4)]',
+    'pink-vivid': 'drop-shadow-[0_0_20px_rgba(236,72,153,0.4)]',
+    'emerald-bright': 'drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]',
+    'red-vivid': 'drop-shadow-[0_0_20px_rgba(239,68,68,0.4)]',
     'violet-soft': 'drop-shadow-[0_0_20px_rgba(139,92,246,0.4)]',
-    'slate-soft': 'drop-shadow-[0_0_20px_rgba(107,122,153,0.4)]',
-    'amber-soft': 'drop-shadow-[0_0_20px_rgba(217,164,65,0.4)]',
-    'rose-soft': 'drop-shadow-[0_0_20px_rgba(217,122,138,0.4)]',
-    'emerald-soft': 'drop-shadow-[0_0_20px_rgba(58,174,140,0.4)]',
-    'orange-soft': 'drop-shadow-[0_0_20px_rgba(232,136,74,0.4)]',
-    'teal-soft': 'drop-shadow-[0_0_20px_rgba(42,161,152,0.4)]',
+    'slate-cool': 'drop-shadow-[0_0_20px_rgba(100,116,139,0.4)]',
   }
   return glowMap[from] || ''
 }
