@@ -26,7 +26,7 @@
       "link3": "Polarization Journey"
     },
     "opticalDesignStudio": {
-      "title": "Optical Design Studio",
+      "title": "Optical Design Studio: Devices & Paths",
       "subtitle": "Device Library × Light Path Design × Experiments",
       "description": "Browse comprehensive optical device catalog, design custom light paths, simulate classic experiments, and interface with UC2 modular hardware—an all-in-one optics workstation.",
       "cta": "Enter Studio",
@@ -64,33 +64,13 @@
     },
     "labGroup": {
       "title": "Virtual Lab: Light Research Guild",
-      "subtitle": "Quests × Community × Tools × Showcase",
-      "description": "Learn by doing research: tasks, community discussions, analysis tools, and a showcase to turn knowledge into real projects with peers.",
+      "subtitle": "Quests × Applications × Calculations × Community",
+      "description": "Learn by doing research: research tasks & frontiers, application cases (displays/medicine/nature), professional calculation tools (Jones/Mueller/Stokes), community discussions & showcase—turn knowledge into real projects with peers.",
       "cta": "Join Guild",
       "link1": "Research Tasks",
-      "link2": "Community Forum",
-      "link3": "Data Analysis",
-      "link4": "Research Frontier"
-    },
-    "applications": {
-      "title": "Applications: Tech & Nature",
-      "subtitle": "Real-World Scenes × Principle Analysis",
-      "description": "Explore polarization in displays, medicine, remote sensing, and discover natural wonders like sky polarization and bee navigation.",
-      "cta": "Explore Applications",
-      "link1": "LCD Display",
-      "link2": "Sky Polarization",
-      "link3": "Bee Navigation",
-      "link4": "Medical Diagnostics"
-    },
-    "simulationLab": {
-      "title": "Calculation Workshop: Polarization Calculators",
-      "subtitle": "Jones Matrix × Mueller Matrix × Stokes Parameters",
-      "description": "Professional polarization calculation tools: Jones matrix transforms, Mueller matrix cascades, Stokes parameter conversions—compute to understand polarization optics.",
-      "cta": "Start Calculating",
-      "link1": "Jones Matrix",
-      "link2": "Mueller Matrix",
-      "link3": "Stokes Parameters",
-      "link4": "Poincaré Sphere"
+      "link2": "Applications",
+      "link3": "Calculators",
+      "link4": "Community"
     },
     "openData": {
       "title": "Open Data: Polarization Datasets",
