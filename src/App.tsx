@@ -53,6 +53,12 @@ export function App() {
         <Route path="/applications" element={<ApplicationsPage />} />
         <Route path="/experiments" element={<ExperimentsPage />} />
 
+        {/* Homepage module routes - redirect to relevant existing pages */}
+        <Route path="/optics" element={<Navigate to="/bench" replace />} />
+        <Route path="/creative" element={<Navigate to="/experiments" replace />} />
+        <Route path="/simulation" element={<Navigate to="/lab" replace />} />
+        <Route path="/data" element={<Navigate to="/lab" replace />} />
+
         {/* Lab tools */}
         <Route path="/lab/poincare" element={<PoincareSphereViewerPage />} />
         <Route path="/lab/jones" element={<JonesCalculatorPage />} />
