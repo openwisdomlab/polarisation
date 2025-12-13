@@ -14,9 +14,9 @@
   "home": {
     "title": "PolarCraft",
     "subtitle": "Ultimate Exploration of Polarized Light Physics",
-    "description": "An educational platform based on real polarization physics. From stories to simulations, from puzzles to experiments — explore the fascinating world of polarized light.",
+    "description": "A gamified education and open science platform based on real polarization physics. From stories to simulations, from puzzles to experiments, from gaming to frontier research in a virtual lab group — explore the fascinating world of polarized light.",
     "chronicles": {
-      "title": "Chronicles of Light",
+      "title": "Chronicles of Light: Discovery Journey",
       "subtitle": "Historical Stories × Classic Experiments",
       "description": "Dual narrative: left traces core discoveries in optics history, right follows the polarized light journey—ignite curiosity with stories, verify intuition with experiments.",
       "cta": "Explore",
@@ -24,26 +24,18 @@
       "link2": "Recreate Malus's Law",
       "link3": "Polarization Journey"
     },
-    "deviceLibrary": {
-      "title": "Polarization Device Library",
-      "subtitle": "Device Principles × Visual Guide",
-      "description": "Systematically learn polarizers, wave plates, beam splitters and more: working principles, specifications, applications—build your optics knowledge map.",
-      "cta": "Browse Devices",
-      "link1": "Polarizer Family",
-      "link2": "Wave Plates & Retarders",
-      "link3": "Beam Splitters"
-    },
-    "opticalBench": {
-      "title": "Optical Path Designer",
-      "subtitle": "Build Light Paths × Simulate Results",
-      "description": "Assemble optical systems like LEGO: from classic experiments to creative designs, watch light paths evolve in real-time, verify your optical intuition.",
-      "cta": "Start Building",
-      "link1": "Malus's Law Setup",
-      "link2": "Free Design Mode",
-      "link3": "UC2 Modular Hardware"
+    "opticsLab": {
+      "title": "Optical Workbench: Devices & Paths",
+      "subtitle": "Device Guide × Path Design × UC2 Hardware",
+      "description": "Systematically learn optical devices, freely assemble light paths on a virtual optical bench, and interface with UC2 modular hardware—an all-in-one experience from learning to experimentation.",
+      "cta": "Enter Workbench",
+      "link1": "Device Guide",
+      "link2": "Path Design",
+      "link3": "UC2 Hardware",
+      "link4": "Classic Experiments"
     },
     "formulaLab": {
-      "title": "Polarization Demo Gallery",
+      "title": "Demo Gallery: Principle Visualization",
       "subtitle": "Visual Demos × Interactive Simulation",
       "description": "Turn laws into visible experiments—from Malus's Law to birefringence, see it, interact with it, remember it.",
       "cta": "Start Exploring",
@@ -60,41 +52,55 @@
       "link2": "3D Voxel Level",
       "link3": "Challenge Mode"
     },
-    "gallery": {
-      "title": "PolarCraft Studio",
-      "subtitle": "Artworks × Creative Products",
-      "description": "Make with polarization—art installations, science posters, creative merchandise—bring the beauty of optics into everyday life.",
-      "cta": "Browse Studio",
-      "link1": "Polarization Art Gallery",
-      "link2": "Art Generator",
-      "link3": "Creative Products"
+    "creativeLab": {
+      "title": "Creative Lab: Art & DIY",
+      "subtitle": "Polarization Art × Photography × Life Experiments",
+      "description": "Create with polarization: photography techniques, tape birefringence art, phone screen experiments—bring the beauty of optics into everyday life.",
+      "cta": "Explore Creativity",
+      "link1": "Art Gallery",
+      "link2": "Photography Zone",
+      "link3": "DIY Experiments",
+      "link4": "Creative Products"
     },
     "labGroup": {
-      "title": "Light Research Guild",
-      "subtitle": "Quests × Tools × Showcase",
-      "description": "Learn by doing research—quests, discussions, tools, and a showcase to turn knowledge into real projects.",
+      "title": "Virtual Lab: Light Research Guild",
+      "subtitle": "Quests × Community × Tools × Showcase",
+      "description": "Learn by doing research: tasks, community discussions, analysis tools, and a showcase to turn knowledge into real projects with peers.",
       "cta": "Join Guild",
       "link1": "Research Tasks",
-      "link2": "Data Analysis Workbench",
-      "link3": "Research Frontier"
+      "link2": "Community Forum",
+      "link3": "Data Analysis",
+      "link4": "Research Frontier"
     },
     "applications": {
-      "title": "Polarization Applications",
+      "title": "Applications: Tech & Nature",
       "subtitle": "Real-World Scenes × Principle Analysis",
-      "description": "Explore polarization in photography, displays, medicine, remote sensing, and discover polarization wonders in nature.",
+      "description": "Explore polarization in displays, medicine, remote sensing, and discover natural wonders like sky polarization and bee navigation.",
       "cta": "Explore Applications",
-      "link1": "LCD Display Technology",
-      "link2": "Bee Navigation",
-      "link3": "Medical Diagnostics"
+      "link1": "LCD Display",
+      "link2": "Sky Polarization",
+      "link3": "Bee Navigation",
+      "link4": "Medical Diagnostics"
     },
-    "experiments": {
-      "title": "DIY Experiments",
-      "subtitle": "Hands-on × Home Experiments",
-      "description": "Experience the magic of polarized light using phones, tape, plastic and other everyday items—no expensive equipment needed.",
-      "cta": "Start Experimenting",
-      "link1": "Phone Screen Test",
-      "link2": "Tape Birefringence Art",
-      "link3": "All Experiments"
+    "simulationLab": {
+      "title": "Simulation Workshop: Computational Polarization",
+      "subtitle": "Numerical Simulation × Matrix Calculation × Code Tools",
+      "description": "Mueller matrix calculator, Jones matrix simulation, Stokes visualization—use computational tools to deeply understand polarization optics.",
+      "cta": "Start Simulation",
+      "link1": "Mueller Matrix",
+      "link2": "Jones Matrix",
+      "link3": "Stokes Visualization",
+      "link4": "Code Library"
+    },
+    "openData": {
+      "title": "Open Data: Polarization Datasets",
+      "subtitle": "Experimental Data × Shared Resources × Open Science",
+      "description": "An open science data platform: share polarization experimental data, spectral data, user-contributed datasets to support research and education.",
+      "cta": "Browse Data",
+      "link1": "Datasets",
+      "link2": "Spectral Data",
+      "link3": "Contribute Data",
+      "link4": "API Access"
     }
   },
   "game": {

@@ -35,7 +35,7 @@ interface ModuleConfig {
 
 const MODULES: ModuleConfig[] = [
   {
-    // 光的编年史：历史故事 × 经典实验 (Chronicles of Light)
+    // 光的编年史：偏振发现之旅 (Chronicles of Light: Polarization Discovery Journey)
     key: 'chronicles',
     icon: '⏳', // Hourglass - represents history and time
     colorTheme: {
@@ -55,9 +55,9 @@ const MODULES: ModuleConfig[] = [
     ],
   },
   {
-    // 偏振器件库：器件原理 × 分类图鉴 (Polarization Device Library)
-    key: 'deviceLibrary',
-    icon: '◈', // Diamond with dot - represents optical crystal/prism
+    // 光学工作台：器件与光路 (Optical Workbench: Devices & Light Paths) - MERGED: deviceLibrary + opticalBench
+    key: 'opticsLab',
+    icon: '⟠', // Circled cross - represents optical alignment/bench
     colorTheme: {
       border: 'sapphire-soft', // Sapphire Blue #4169E1
       borderHover: 'sapphire-soft',
@@ -67,35 +67,16 @@ const MODULES: ModuleConfig[] = [
       gradientTo: 'blue-700',
       buttonText: 'white',
     },
-    mainRoute: '/devices',
+    mainRoute: '/optics',
     quickLinks: [
-      { labelKey: 'link1', route: '/devices?category=polarizers' },
-      { labelKey: 'link2', route: '/devices?category=waveplates' },
-      { labelKey: 'link3', route: '/devices?category=splitters' },
+      { labelKey: 'link1', route: '/optics?tab=devices' }, // Device library
+      { labelKey: 'link2', route: '/optics?tab=bench' }, // Optical bench designer
+      { labelKey: 'link3', route: '/optics?tab=uc2' }, // UC2 hardware
+      { labelKey: 'link4', route: '/optics?tab=classics' }, // Classic experiments
     ],
   },
   {
-    // 光路设计室：搭建光路 × 模拟验证 (Optical Path Designer)
-    key: 'opticalBench',
-    icon: '⟠', // Circled cross - represents optical alignment/bench
-    colorTheme: {
-      border: 'violet-soft', // Soft Violet #8B5CF6
-      borderHover: 'violet-soft',
-      shadow: 'rgba(139,92,246,0.25)',
-      text: 'violet-soft',
-      gradientFrom: 'violet-soft',
-      gradientTo: 'violet-600',
-      buttonText: 'white',
-    },
-    mainRoute: '/bench',
-    quickLinks: [
-      { labelKey: 'link1', route: '/bench?setup=malus-law' },
-      { labelKey: 'link2', route: '/bench?mode=free' },
-      { labelKey: 'link3', route: '/devices?category=uc2' },
-    ],
-  },
-  {
-    // 偏振演示馆：可视化演示 × 交互模拟 (Polarization Demo Gallery - renamed from 理论基石)
+    // 偏振演示馆：原理可视化 (Polarization Demo Gallery: Principle Visualization)
     key: 'formulaLab',
     icon: '◐', // Half-filled circle - represents polarizer
     colorTheme: {
@@ -135,8 +116,8 @@ const MODULES: ModuleConfig[] = [
     ],
   },
   {
-    // 偏振造物局：文创与作品 (PolarCraft Studio)
-    key: 'gallery',
+    // 创意实验室：艺术与DIY (Creative Lab: Art & DIY) - MERGED: gallery + experiments + photography
+    key: 'creativeLab',
     icon: '✧', // Sparkle - represents art and creativity
     colorTheme: {
       border: 'rose-soft', // Soft Rose #D97A8A
@@ -147,15 +128,16 @@ const MODULES: ModuleConfig[] = [
       gradientTo: 'rose-600',
       buttonText: 'white',
     },
-    mainRoute: '/merchandise',
+    mainRoute: '/creative',
     quickLinks: [
-      { labelKey: 'link1', route: '/merchandise?tab=gallery' },
-      { labelKey: 'link2', route: '/merchandise?tab=generator' },
-      { labelKey: 'link3', route: '/merchandise?tab=products' },
+      { labelKey: 'link1', route: '/creative?tab=gallery' }, // Art gallery
+      { labelKey: 'link2', route: '/creative?tab=photography' }, // Polarization photography
+      { labelKey: 'link3', route: '/creative?tab=diy' }, // DIY experiments
+      { labelKey: 'link4', route: '/creative?tab=products' }, // Creative products
     ],
   },
   {
-    // 虚拟课题组：光研社 (Virtual Lab Group: Light Research Guild)
+    // 虚拟课题组：光研社 (Virtual Lab Group: Light Research Guild) - Enhanced with community
     key: 'labGroup',
     icon: '⚗', // Alembic - represents research/lab
     colorTheme: {
@@ -170,12 +152,13 @@ const MODULES: ModuleConfig[] = [
     mainRoute: '/lab',
     quickLinks: [
       { labelKey: 'link1', route: '/lab?tab=tasks' },
-      { labelKey: 'link2', route: '/lab?tab=analysis' },
-      { labelKey: 'link3', route: '/lab?tab=frontier' },
+      { labelKey: 'link2', route: '/lab?tab=community' }, // Community forum
+      { labelKey: 'link3', route: '/lab?tab=analysis' },
+      { labelKey: 'link4', route: '/lab?tab=frontier' },
     ],
   },
   {
-    // 偏振应用图鉴：现实场景 × 原理解析 (Polarization Applications Gallery)
+    // 偏振应用馆：科技与自然 (Polarization Applications: Tech & Nature) - Enhanced with sky polarization
     key: 'applications',
     icon: '⊛', // Circled asterisk - represents applications/branching
     colorTheme: {
@@ -190,14 +173,36 @@ const MODULES: ModuleConfig[] = [
     mainRoute: '/applications',
     quickLinks: [
       { labelKey: 'link1', route: '/applications?id=lcd-display' },
-      { labelKey: 'link2', route: '/applications?category=nature&id=bee-navigation' },
-      { labelKey: 'link3', route: '/applications?category=medical' },
+      { labelKey: 'link2', route: '/applications?id=sky-polarization' }, // Sky polarization
+      { labelKey: 'link3', route: '/applications?id=bee-navigation' },
+      { labelKey: 'link4', route: '/applications?category=medical' },
     ],
   },
   {
-    // 偏振实验手册：DIY × 家庭实验 (DIY Experiments Handbook)
-    key: 'experiments',
-    icon: '⚡', // Lightning - represents hands-on experiments
+    // 仿真工坊：计算偏振 (Simulation Workshop: Computational Polarization) - NEW
+    key: 'simulationLab',
+    icon: '⚙', // Gear - represents computation and simulation
+    colorTheme: {
+      border: 'violet-soft', // Soft Violet #8B5CF6
+      borderHover: 'violet-soft',
+      shadow: 'rgba(139,92,246,0.25)',
+      text: 'violet-soft',
+      gradientFrom: 'violet-soft',
+      gradientTo: 'violet-600',
+      buttonText: 'white',
+    },
+    mainRoute: '/simulation',
+    quickLinks: [
+      { labelKey: 'link1', route: '/simulation?tool=mueller' }, // Mueller matrix calculator
+      { labelKey: 'link2', route: '/simulation?tool=jones' }, // Jones matrix
+      { labelKey: 'link3', route: '/simulation?tool=stokes' }, // Stokes visualization
+      { labelKey: 'link4', route: '/simulation?tab=code' }, // Code library
+    ],
+  },
+  {
+    // 开放数据：偏振数据集 (Open Data: Polarization Datasets) - NEW
+    key: 'openData',
+    icon: '◎', // Bullseye - represents data and precision
     colorTheme: {
       border: 'teal-soft', // Soft Teal #2AA198
       borderHover: 'teal-soft',
@@ -207,11 +212,12 @@ const MODULES: ModuleConfig[] = [
       gradientTo: 'teal-600',
       buttonText: 'white',
     },
-    mainRoute: '/experiments',
+    mainRoute: '/data',
     quickLinks: [
-      { labelKey: 'link1', route: '/experiments?id=phone-screen-test' },
-      { labelKey: 'link2', route: '/experiments?id=tape-art' },
-      { labelKey: 'link3', route: '/experiments' },
+      { labelKey: 'link1', route: '/data?tab=datasets' }, // Datasets
+      { labelKey: 'link2', route: '/data?tab=spectra' }, // Spectral data
+      { labelKey: 'link3', route: '/data?tab=contribute' }, // User contributions
+      { labelKey: 'link4', route: '/data?tab=api' }, // API access
     ],
   },
 ]
