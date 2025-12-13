@@ -25,23 +25,14 @@
       "link2": "Recreate Malus's Law",
       "link3": "Polarization Journey"
     },
-    "deviceLibrary": {
-      "title": "Device Library: Optics Encyclopedia",
-      "subtitle": "Polarizers × Wave Plates × Crystals",
-      "description": "Systematically learn polarization optics devices: from basic polarizers to wave plates, from calcite to liquid crystals—build complete device knowledge.",
-      "cta": "View Library",
-      "link1": "Polarizers",
-      "link2": "Wave Plates",
-      "link3": "Birefringent Crystals"
-    },
-    "opticalBench": {
-      "title": "Optical Workbench: Path Design",
-      "subtitle": "Virtual Bench × UC2 Hardware × Experiments",
-      "description": "Freely assemble light paths on a virtual optical bench, simulate classic experiments, and interface with UC2 modular hardware—complete design-to-experiment experience.",
-      "cta": "Enter Workbench",
-      "link1": "Path Design",
-      "link2": "UC2 Hardware",
-      "link3": "Classic Experiments"
+    "opticalDesignStudio": {
+      "title": "Optical Design Studio",
+      "subtitle": "Device Library × Light Path Design × Experiments",
+      "description": "Browse comprehensive optical device catalog, design custom light paths, simulate classic experiments, and interface with UC2 modular hardware—an all-in-one optics workstation.",
+      "cta": "Enter Studio",
+      "link1": "Device Library",
+      "link2": "Experiments",
+      "link3": "Free Design"
     },
     "formulaLab": {
       "title": "Demo Gallery: Principle Visualization",

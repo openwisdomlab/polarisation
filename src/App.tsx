@@ -11,8 +11,7 @@ import {
   EscapeRoomPage,
   ChroniclesPage,
   LabPage,
-  DevicesPage,
-  BenchPage,
+  OpticalDesignStudioPage,
   ApplicationsPage,
   ExperimentsPage,
   CalculationWorkshopPage,
@@ -48,14 +47,17 @@ export function App() {
         <Route path="/chronicles" element={<ChroniclesPage />} />
         <Route path="/lab" element={<LabPage />} />
 
-        {/* New modules */}
-        <Route path="/devices" element={<DevicesPage />} />
-        <Route path="/bench" element={<BenchPage />} />
+        {/* Optical Design Studio - merged 器件图鉴 + 光学工作台 */}
+        <Route path="/optical-studio" element={<OpticalDesignStudioPage />} />
+
+        {/* Legacy routes - redirect to merged optical studio */}
+        <Route path="/devices" element={<Navigate to="/optical-studio" replace />} />
+        <Route path="/bench" element={<Navigate to="/optical-studio" replace />} />
+        <Route path="/optics" element={<Navigate to="/optical-studio" replace />} />
+
+        {/* Other modules */}
         <Route path="/applications" element={<ApplicationsPage />} />
         <Route path="/experiments" element={<ExperimentsPage />} />
-
-        {/* Homepage module routes - redirect to relevant existing pages */}
-        <Route path="/optics" element={<Navigate to="/bench" replace />} />
         <Route path="/creative" element={<Navigate to="/experiments" replace />} />
         <Route path="/simulation" element={<Navigate to="/lab" replace />} />
 

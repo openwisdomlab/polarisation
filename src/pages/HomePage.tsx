@@ -56,29 +56,10 @@ const MODULES: ModuleConfig[] = [
     ],
   },
   {
-    // 器件图鉴：偏振器件百科 (Device Library: Optical Component Encyclopedia)
-    key: 'deviceLibrary',
-    icon: '⬡', // Hexagon - represents structured catalog
-    colorTheme: {
-      border: 'sapphire-soft', // Sapphire Blue #4169E1
-      borderHover: 'sapphire-soft',
-      shadow: 'rgba(65,105,225,0.25)',
-      text: 'sapphire-soft',
-      gradientFrom: 'sapphire-soft',
-      gradientTo: 'blue-700',
-      buttonText: 'white',
-    },
-    mainRoute: '/devices',
-    quickLinks: [
-      { labelKey: 'link1', route: '/devices?cat=polarizers' }, // Polarizers
-      { labelKey: 'link2', route: '/devices?cat=waveplates' }, // Wave plates
-      { labelKey: 'link3', route: '/devices?cat=crystals' }, // Birefringent crystals
-    ],
-  },
-  {
-    // 光学工作台：光路设计 (Optical Workbench: Light Path Design)
-    key: 'opticalBench',
-    icon: '⟠', // Circled cross - represents optical alignment/bench
+    // 光学设计室：器件图鉴 × 光路设计 (Optical Design Studio: Device Library × Path Design)
+    // Merged module combining deviceLibrary + opticalBench
+    key: 'opticalDesignStudio',
+    icon: '⬡', // Hexagon - represents optical components
     colorTheme: {
       border: 'indigo-soft', // Indigo #6366F1
       borderHover: 'indigo-soft',
@@ -88,11 +69,11 @@ const MODULES: ModuleConfig[] = [
       gradientTo: 'indigo-700',
       buttonText: 'white',
     },
-    mainRoute: '/bench',
+    mainRoute: '/optical-studio',
     quickLinks: [
-      { labelKey: 'link1', route: '/bench?mode=design' }, // Design mode
-      { labelKey: 'link2', route: '/bench?tab=uc2' }, // UC2 hardware
-      { labelKey: 'link3', route: '/bench?tab=experiments' }, // Classic experiments
+      { labelKey: 'link1', route: '/optical-studio?tab=devices' }, // Device library
+      { labelKey: 'link2', route: '/optical-studio?tab=experiments' }, // Classic experiments
+      { labelKey: 'link3', route: '/optical-studio?tab=design' }, // Free design mode
     ],
   },
   {
