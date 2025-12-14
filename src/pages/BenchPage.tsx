@@ -592,6 +592,311 @@ function UC2Panel({
   )
 }
 
+// Component Properties Panel - type-specific editable controls
+function ComponentPropertiesPanel({
+  component,
+  onPropertyChange,
+}: {
+  component: BenchComponent
+  onPropertyChange: (key: string, value: number | string | boolean) => void
+}) {
+  const { theme } = useTheme()
+  const { i18n } = useTranslation()
+  const isZh = i18n.language === 'zh'
+
+  const sliderClass = cn(
+    'w-full h-2 rounded-lg appearance-none cursor-pointer',
+    theme === 'dark' ? 'bg-slate-700' : 'bg-gray-200'
+  )
+
+  const labelClass = cn(
+    'text-xs font-medium',
+    theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+  )
+
+  const valueClass = cn(
+    'text-xs font-mono',
+    theme === 'dark' ? 'text-violet-400' : 'text-violet-600'
+  )
+
+  // Render type-specific controls
+  switch (component.type) {
+    case 'emitter':
+      return (
+        <div className="space-y-3">
+          {/* Polarization Angle */}
+          <div>
+            <div className="flex justify-between mb-1">
+              <span className={labelClass}>{isZh ? '偏振角度' : 'Polarization'}</span>
+              <span className={valueClass}>{(component.properties.polarization as number) || 0}°</span>
+            </div>
+            <input
+              type="range"
+              min="-1"
+              max="180"
+              step="15"
+              value={(component.properties.polarization as number) ?? 0}
+              onChange={(e) => onPropertyChange('polarization', parseInt(e.target.value))}
+              className={sliderClass}
+            />
+            <p className={cn('text-xs mt-1', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
+              {isZh ? '-1 = 非偏振, 0-180° = 线偏振角' : '-1 = unpolarized, 0-180° = linear'}
+            </p>
+          </div>
+          {/* Wavelength (optional) */}
+          <div>
+            <div className="flex justify-between mb-1">
+              <span className={labelClass}>{isZh ? '波长' : 'Wavelength'}</span>
+              <span className={valueClass}>{(component.properties.wavelength as number) || 589} nm</span>
+            </div>
+            <input
+              type="range"
+              min="400"
+              max="700"
+              step="10"
+              value={(component.properties.wavelength as number) || 589}
+              onChange={(e) => onPropertyChange('wavelength', parseInt(e.target.value))}
+              className={sliderClass}
+            />
+          </div>
+        </div>
+      )
+
+    case 'polarizer':
+      return (
+        <div className="space-y-3">
+          {/* Polarizer Angle */}
+          <div>
+            <div className="flex justify-between mb-1">
+              <span className={labelClass}>{isZh ? '透光轴角度' : 'Transmission Axis'}</span>
+              <span className={valueClass}>{(component.properties.angle as number) || 0}°</span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="180"
+              step="5"
+              value={(component.properties.angle as number) || 0}
+              onChange={(e) => onPropertyChange('angle', parseInt(e.target.value))}
+              className={sliderClass}
+            />
+            <p className={cn('text-xs mt-1', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
+              {isZh ? 'I = I₀ × cos²(θ₁ - θ₂)' : 'I = I₀ × cos²(θ₁ - θ₂)'}
+            </p>
+          </div>
+        </div>
+      )
+
+    case 'waveplate':
+      return (
+        <div className="space-y-3">
+          {/* Retardation Type */}
+          <div>
+            <div className="flex justify-between mb-1">
+              <span className={labelClass}>{isZh ? '延迟量' : 'Retardation'}</span>
+              <span className={valueClass}>
+                {(component.properties.retardation as number) === 90 ? 'λ/4' :
+                 (component.properties.retardation as number) === 180 ? 'λ/2' :
+                 `${(component.properties.retardation as number) || 90}°`}
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => onPropertyChange('retardation', 90)}
+                className={cn(
+                  'flex-1 py-1.5 px-2 rounded text-xs font-medium transition-colors',
+                  (component.properties.retardation as number) === 90 || !component.properties.retardation
+                    ? 'bg-violet-500/30 text-violet-300 border border-violet-500/50'
+                    : theme === 'dark'
+                      ? 'bg-slate-700 text-gray-400 hover:bg-slate-600'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                )}
+              >
+                λ/4 (90°)
+              </button>
+              <button
+                onClick={() => onPropertyChange('retardation', 180)}
+                className={cn(
+                  'flex-1 py-1.5 px-2 rounded text-xs font-medium transition-colors',
+                  (component.properties.retardation as number) === 180
+                    ? 'bg-violet-500/30 text-violet-300 border border-violet-500/50'
+                    : theme === 'dark'
+                      ? 'bg-slate-700 text-gray-400 hover:bg-slate-600'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                )}
+              >
+                λ/2 (180°)
+              </button>
+            </div>
+          </div>
+          {/* Fast Axis Angle */}
+          <div>
+            <div className="flex justify-between mb-1">
+              <span className={labelClass}>{isZh ? '快轴角度' : 'Fast Axis'}</span>
+              <span className={valueClass}>{(component.properties.fastAxis as number) || 0}°</span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="180"
+              step="5"
+              value={(component.properties.fastAxis as number) || 0}
+              onChange={(e) => onPropertyChange('fastAxis', parseInt(e.target.value))}
+              className={sliderClass}
+            />
+          </div>
+        </div>
+      )
+
+    case 'splitter':
+      return (
+        <div className="space-y-3">
+          {/* Splitter Type */}
+          <div>
+            <span className={labelClass}>{isZh ? '分束器类型' : 'Splitter Type'}</span>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {[
+                { value: 'calcite', labelEn: 'Calcite', labelZh: '方解石' },
+                { value: 'pbs', labelEn: 'PBS', labelZh: '偏振分束' },
+                { value: 'wollaston', labelEn: 'Wollaston', labelZh: '渥拉斯顿' },
+              ].map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => onPropertyChange('type', opt.value)}
+                  className={cn(
+                    'py-1 px-2 rounded text-xs font-medium transition-colors',
+                    component.properties.type === opt.value
+                      ? 'bg-emerald-500/30 text-emerald-300 border border-emerald-500/50'
+                      : theme === 'dark'
+                        ? 'bg-slate-700 text-gray-400 hover:bg-slate-600'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  )}
+                >
+                  {isZh ? opt.labelZh : opt.labelEn}
+                </button>
+              ))}
+            </div>
+          </div>
+          {/* Separation Angle (for Wollaston) */}
+          {component.properties.type === 'wollaston' && (
+            <div>
+              <div className="flex justify-between mb-1">
+                <span className={labelClass}>{isZh ? '分离角' : 'Separation'}</span>
+                <span className={valueClass}>{(component.properties.angle as number) || 15}°</span>
+              </div>
+              <input
+                type="range"
+                min="5"
+                max="30"
+                step="5"
+                value={(component.properties.angle as number) || 15}
+                onChange={(e) => onPropertyChange('angle', parseInt(e.target.value))}
+                className={sliderClass}
+              />
+            </div>
+          )}
+        </div>
+      )
+
+    case 'mirror':
+      return (
+        <div className="space-y-3">
+          {/* Mirror Surface */}
+          <div>
+            <span className={labelClass}>{isZh ? '反射面类型' : 'Surface Type'}</span>
+            <div className="flex gap-2 mt-2">
+              {[
+                { value: 'metal', labelEn: 'Metal', labelZh: '金属' },
+                { value: 'glass', labelEn: 'Glass', labelZh: '玻璃' },
+              ].map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => onPropertyChange('material', opt.value)}
+                  className={cn(
+                    'flex-1 py-1.5 px-2 rounded text-xs font-medium transition-colors',
+                    component.properties.material === opt.value
+                      ? 'bg-cyan-500/30 text-cyan-300 border border-cyan-500/50'
+                      : theme === 'dark'
+                        ? 'bg-slate-700 text-gray-400 hover:bg-slate-600'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  )}
+                >
+                  {isZh ? opt.labelZh : opt.labelEn}
+                </button>
+              ))}
+            </div>
+            <p className={cn('text-xs mt-2', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
+              {isZh ? '玻璃表面: tan θ_B = n (布儒斯特角)' : 'Glass: tan θ_B = n (Brewster\'s angle)'}
+            </p>
+          </div>
+        </div>
+      )
+
+    case 'sensor':
+      return (
+        <div className="space-y-3">
+          {/* Sensor Mode */}
+          <div>
+            <span className={labelClass}>{isZh ? '检测模式' : 'Detection Mode'}</span>
+            <div className="flex gap-2 mt-2">
+              {[
+                { value: 'intensity', labelEn: 'Intensity', labelZh: '强度' },
+                { value: 'polarization', labelEn: 'Polarization', labelZh: '偏振' },
+              ].map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => onPropertyChange('mode', opt.value)}
+                  className={cn(
+                    'flex-1 py-1.5 px-2 rounded text-xs font-medium transition-colors',
+                    (component.properties.mode || 'intensity') === opt.value
+                      ? 'bg-rose-500/30 text-rose-300 border border-rose-500/50'
+                      : theme === 'dark'
+                        ? 'bg-slate-700 text-gray-400 hover:bg-slate-600'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  )}
+                >
+                  {isZh ? opt.labelZh : opt.labelEn}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )
+
+    case 'lens':
+      return (
+        <div className="space-y-3">
+          {/* Focal Length */}
+          <div>
+            <div className="flex justify-between mb-1">
+              <span className={labelClass}>{isZh ? '焦距' : 'Focal Length'}</span>
+              <span className={valueClass}>{(component.properties.focalLength as number) || 50} mm</span>
+            </div>
+            <input
+              type="range"
+              min="-100"
+              max="100"
+              step="10"
+              value={(component.properties.focalLength as number) || 50}
+              onChange={(e) => onPropertyChange('focalLength', parseInt(e.target.value))}
+              className={sliderClass}
+            />
+            <p className={cn('text-xs mt-1', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
+              {isZh ? '正值: 凸透镜 | 负值: 凹透镜' : 'Positive: convex | Negative: concave'}
+            </p>
+          </div>
+        </div>
+      )
+
+    default:
+      return (
+        <p className={cn('text-xs', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
+          {isZh ? '此器件无可编辑属性' : 'No editable properties for this component'}
+        </p>
+      )
+  }
+}
+
 // Main page tabs
 const PAGE_TABS = [
   { id: 'classic', labelEn: 'Classic Setups', labelZh: '经典光路', icon: <Lightbulb className="w-4 h-4" /> },
@@ -657,6 +962,17 @@ export function BenchPage() {
     if (selectedId) {
       setComponents(prev => prev.map(c =>
         c.id === selectedId ? { ...c, rotation: (c.rotation + delta) % 360 } : c
+      ))
+    }
+  }, [selectedId])
+
+  // Update component property
+  const updateComponentProperty = useCallback((key: string, value: number | string | boolean) => {
+    if (selectedId) {
+      setComponents(prev => prev.map(c =>
+        c.id === selectedId
+          ? { ...c, properties: { ...c.properties, [key]: value } }
+          : c
       ))
     }
   }, [selectedId])
@@ -1272,15 +1588,24 @@ export function BenchPage() {
                 </div>
               </div>
 
-              {/* Properties would go here in a full implementation */}
+              {/* Component Properties Panel */}
               <div className={cn(
-                'text-sm p-3 rounded-lg',
-                theme === 'dark' ? 'bg-slate-800' : 'bg-gray-50'
+                'p-3 rounded-lg border',
+                theme === 'dark' ? 'bg-slate-800/50 border-slate-700' : 'bg-gray-50 border-gray-200'
               )}>
-                <p className={cn(theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>
-                  {isZh ? '拖拽移动位置，使用工具栏旋转或删除' : 'Drag to move, use toolbar to rotate or delete'}
-                </p>
+                <ComponentPropertiesPanel
+                  component={selectedComponent}
+                  onPropertyChange={updateComponentProperty}
+                />
               </div>
+
+              {/* Usage hint */}
+              <p className={cn(
+                'text-xs mt-2',
+                theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+              )}>
+                {isZh ? '使用工具栏旋转或删除器件' : 'Use toolbar to rotate or delete'}
+              </p>
             </div>
           )}
         </main>
