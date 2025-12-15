@@ -986,16 +986,87 @@ const getDemoInfo = (t: (key: string) => string, difficultyLevel?: DifficultyLev
     diagram: <MuellerDiagram />,
     visualType: '2D',
   },
+  jones: {
+    questions: getQuestions(t, 'demos.jones', difficultyLevel),
+    lifeScene: getLifeScene(t, 'demos.jones', difficultyLevel),
+    physics: {
+      principle: t('demos.jones.physics.principle'),
+      formula: t('demos.jones.physics.formula'),
+      details: [
+        t('demos.jones.physics.details.0'),
+        t('demos.jones.physics.details.1'),
+        t('demos.jones.physics.details.2'),
+      ],
+    },
+    experiment: {
+      title: t('demos.jones.experiment.title'),
+      example: t('demos.jones.experiment.example'),
+      details: [
+        t('demos.jones.experiment.details.0'),
+        t('demos.jones.experiment.details.1'),
+        t('demos.jones.experiment.details.2'),
+      ],
+    },
+    frontier: {
+      title: t('demos.jones.frontier.title'),
+      example: t('demos.jones.frontier.example'),
+      details: [
+        t('demos.jones.frontier.details.0'),
+        t('demos.jones.frontier.details.1'),
+        t('demos.jones.frontier.details.2'),
+      ],
+    },
+    diy: getDiy(t, 'demos.jones'),
+    visualType: '2D',
+  },
+  calculator: {
+    questions: getQuestions(t, 'demos.calculator', difficultyLevel),
+    lifeScene: getLifeScene(t, 'demos.calculator', difficultyLevel),
+    physics: {
+      principle: t('demos.calculator.physics.principle'),
+      formula: t('demos.calculator.physics.formula'),
+      details: [
+        t('demos.calculator.physics.details.0'),
+        t('demos.calculator.physics.details.1'),
+        t('demos.calculator.physics.details.2'),
+      ],
+    },
+    experiment: {
+      title: t('demos.calculator.experiment.title'),
+      example: t('demos.calculator.experiment.example'),
+      details: [
+        t('demos.calculator.experiment.details.0'),
+        t('demos.calculator.experiment.details.1'),
+        t('demos.calculator.experiment.details.2'),
+      ],
+    },
+    frontier: {
+      title: t('demos.calculator.frontier.title'),
+      example: t('demos.calculator.frontier.example'),
+      details: [
+        t('demos.calculator.frontier.details.0'),
+        t('demos.calculator.frontier.details.1'),
+        t('demos.calculator.frontier.details.2'),
+      ],
+    },
+    diy: getDiy(t, 'demos.calculator'),
+    visualType: '2D',
+  },
 })
 
 // 课程难度层级类型
 export type DifficultyLevel = 'foundation' | 'application' | 'research'
 
+// Props interface for demo components that support difficulty levels
+interface DemoComponentProps {
+  difficultyLevel?: DifficultyLevel
+}
+
 interface DemoItem {
   id: string
   titleKey: string
   unit: number // 0 = basics
-  component: React.ComponentType
+  component: React.ComponentType<DemoComponentProps>
   descriptionKey: string
   visualType: '2D' | '3D'
   difficulty: DifficultyLevel // 课程难度层级
@@ -2319,7 +2390,7 @@ export function DemosPage() {
             >
               <div className="p-5 min-h-[550px]">
                 <Suspense fallback={<DemoLoading />}>
-                  {DemoComponent && <DemoComponent />}
+                  {DemoComponent && <DemoComponent difficultyLevel={effectiveDifficultyLevel} />}
                 </Suspense>
               </div>
             </div>
