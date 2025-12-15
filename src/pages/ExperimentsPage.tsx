@@ -14,10 +14,9 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
-import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
-import { Badge, Tabs } from '@/components/shared'
+import { Badge, Tabs, PersistentHeader } from '@/components/shared'
 import {
-  Home, Beaker, Clock, DollarSign, AlertTriangle, ChevronRight,
+  Beaker, Clock, DollarSign, AlertTriangle, ChevronRight,
   CheckCircle2, Star, Lightbulb, Camera, X,
   ShoppingBag, Eye, GraduationCap,
   Palette, ImageIcon, Sparkles, Package, Heart,
@@ -1466,42 +1465,16 @@ export function ExperimentsPage() {
         ? 'bg-gradient-to-br from-[#0a0a1a] via-[#1a1a3a] to-[#0a0a2a]'
         : 'bg-gradient-to-br from-[#f0f9ff] via-[#e0f2fe] to-[#f0f9ff]'
     )}>
-      {/* Header */}
-      <header className={cn(
-        'sticky top-0 z-40 border-b backdrop-blur-md',
-        theme === 'dark' ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-gray-200'
-      )}>
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link
-                to="/"
-                className={cn(
-                  'p-2 rounded-lg transition-colors',
-                  theme === 'dark' ? 'hover:bg-slate-800 text-gray-400' : 'hover:bg-gray-100 text-gray-500'
-                )}
-              >
-                <Home className="w-5 h-5" />
-              </Link>
-              <div>
-                <h1 className={cn(
-                  'text-xl font-bold',
-                  theme === 'dark' ? 'text-white' : 'text-gray-900'
-                )}>
-                  {isZh ? '偏振造物局' : 'Polarization Workshop'}
-                </h1>
-                <p className={cn(
-                  'text-sm',
-                  theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-                )}>
-                  {isZh ? '艺术与DIY创作中心' : 'Art & DIY Creation Center'}
-                </p>
-              </div>
-            </div>
-            <LanguageThemeSwitcher />
-          </div>
-        </div>
-      </header>
+      {/* Header with Persistent Logo */}
+      <PersistentHeader
+        moduleKey="creativeLab"
+        moduleNameKey="home.creativeLab.title"
+        variant="glass"
+        className={cn(
+          'sticky top-0 z-40',
+          theme === 'dark' ? 'bg-slate-900/80' : 'bg-white/80'
+        )}
+      />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Sub-module Tabs */}
