@@ -1797,7 +1797,7 @@ export function DemosPage() {
       {/* Navigation Header with Persistent Logo */}
       <PersistentHeader
         moduleKey="formulaLab"
-        moduleNameKey="modules.formulaLab.title"
+        moduleNameKey="home.formulaLab.title"
         variant="glass"
         compact={isCompact}
         className={cn(
