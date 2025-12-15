@@ -325,11 +325,10 @@ export function OpticalDesignStudioPageV2() {
         onToggleCollapse={() => setDeviceLibraryCollapsed(!deviceLibraryCollapsed)}
       />
 
-      {/* Principles Panel - First Principles of Polarization Optics */}
-      <PrinciplesPanel />
-
       {/* Main Content Area */}
       <div className="flex-1 flex overflow-hidden relative">
+        {/* Floating Principles Panel - Quick Reference for Optical Principles */}
+        <PrinciplesPanel />
         {/* Left Sidebar */}
         <Sidebar
           collapsed={sidebarCollapsed}
