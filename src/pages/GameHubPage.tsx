@@ -13,9 +13,9 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
-import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
+import { PersistentHeader } from '@/components/shared/PersistentHeader'
 import {
-  Home, Grid, Box, Layers, DoorOpen,
+  Grid, Box, Layers, DoorOpen,
   Gamepad2, Sparkles, ChevronRight
 } from 'lucide-react'
 import type { ModuleTab } from '@/components/shared'
@@ -252,7 +252,7 @@ function GameHubOverview() {
 
 export function GameHubPage() {
   const { theme } = useTheme()
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
   const isZh = i18n.language === 'zh'
 
   return (
@@ -262,45 +262,18 @@ export function GameHubPage() {
         ? 'bg-gradient-to-br from-[#0a0a1a] via-[#1a1a3a] to-[#0a0a2a]'
         : 'bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#f8fafc]'
     )}>
-      {/* Header */}
-      <header className={cn(
-        'sticky top-0 z-40 border-b backdrop-blur-md',
-        theme === 'dark'
-          ? 'bg-slate-900/80 border-slate-700'
-          : 'bg-white/80 border-gray-200'
-      )}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-14 sm:h-16">
-            {/* Left: Home link */}
-            <Link
-              to="/"
-              className={cn(
-                'flex items-center gap-2 text-sm font-medium transition-colors',
-                theme === 'dark'
-                  ? 'text-gray-400 hover:text-white'
-                  : 'text-gray-600 hover:text-gray-900'
-              )}
-            >
-              <Home className="w-4 h-4" />
-              <span className="hidden sm:inline">{t('common.home')}</span>
-            </Link>
-
-            {/* Center: Title */}
-            <div className="flex items-center gap-2">
-              <span className="text-xl">🎮</span>
-              <h1 className={cn(
-                'text-lg sm:text-xl font-bold',
-                theme === 'dark' ? 'text-purple-400' : 'text-purple-600'
-              )}>
-                {isZh ? '偏振探秘' : 'PolarQuest'}
-              </h1>
-            </div>
-
-            {/* Right: Settings */}
-            <LanguageThemeSwitcher />
-          </div>
-        </div>
-      </header>
+      {/* Header with Persistent Logo */}
+      <PersistentHeader
+        moduleKey="polarquest"
+        moduleName={isZh ? '偏振探秘' : 'PolarQuest'}
+        variant="glass"
+        className={cn(
+          'sticky top-0 z-40',
+          theme === 'dark'
+            ? 'bg-slate-900/80 border-b border-slate-700'
+            : 'bg-white/80 border-b border-gray-200'
+        )}
+      />
 
       {/* Main content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">

@@ -11,10 +11,9 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
-import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
-import { Tabs, Badge } from '@/components/shared'
+import { Tabs, Badge, PersistentHeader } from '@/components/shared'
 import {
-  Home, FlaskConical, Users, Target, Award,
+  FlaskConical, Users, Target, Award,
   BookOpen, CheckCircle2,
   Clock, Lock, ChevronRight, Lightbulb,
   GraduationCap, Beaker, Microscope,
@@ -549,7 +548,6 @@ function GroupCard({ group }: { group: StudyGroup }) {
 }
 
 export function LabPage() {
-  const { t } = useTranslation()
   const { theme } = useTheme()
   const { i18n } = useTranslation()
   const isZh = i18n.language === 'zh'
@@ -568,45 +566,18 @@ export function LabPage() {
         ? 'bg-gradient-to-br from-[#0a0a1a] via-[#1a1a3a] to-[#0a0a2a]'
         : 'bg-gradient-to-br from-[#fefce8] via-[#fef9c3] to-[#fefce8]'
     )}>
-      {/* Header */}
-      <header className={cn(
-        'sticky top-0 z-40 border-b backdrop-blur-md',
-        theme === 'dark'
-          ? 'bg-slate-900/80 border-slate-700'
-          : 'bg-white/80 border-gray-200'
-      )}>
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-14 sm:h-16">
-            {/* Left: Home link */}
-            <Link
-              to="/"
-              className={cn(
-                'flex items-center gap-2 text-sm font-medium transition-colors',
-                theme === 'dark'
-                  ? 'text-gray-400 hover:text-white'
-                  : 'text-gray-600 hover:text-gray-900'
-              )}
-            >
-              <Home className="w-4 h-4" />
-              <span className="hidden sm:inline">{t('common.home')}</span>
-            </Link>
-
-            {/* Center: Title */}
-            <div className="flex items-center gap-2">
-              <span className="text-xl">🔬</span>
-              <h1 className={cn(
-                'text-lg sm:text-xl font-bold',
-                theme === 'dark' ? 'text-yellow-400' : 'text-yellow-600'
-              )}>
-                {isZh ? '虚拟课题组' : 'Virtual Lab Group'}
-              </h1>
-            </div>
-
-            {/* Right: Settings */}
-            <LanguageThemeSwitcher />
-          </div>
-        </div>
-      </header>
+      {/* Header with Persistent Logo */}
+      <PersistentHeader
+        moduleKey="labGroup"
+        moduleName={isZh ? '虚拟课题组' : 'Virtual Lab Group'}
+        variant="glass"
+        className={cn(
+          'sticky top-0 z-40',
+          theme === 'dark'
+            ? 'bg-slate-900/80 border-b border-slate-700'
+            : 'bg-white/80 border-b border-gray-200'
+        )}
+      />
 
       {/* Main content */}
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">

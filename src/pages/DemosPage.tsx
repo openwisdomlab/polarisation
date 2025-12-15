@@ -9,8 +9,9 @@ import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 import { ListItem } from '@/components/demos/DemoControls'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
-import { Home, Gamepad2, BookOpen, Box, BarChart2, Menu, X, ChevronDown, ChevronRight, Lightbulb, HelpCircle, Search, GraduationCap } from 'lucide-react'
+import { Gamepad2, BookOpen, Box, BarChart2, Menu, X, ChevronDown, ChevronRight, Lightbulb, HelpCircle, Search, GraduationCap } from 'lucide-react'
 import { useIsMobile } from '@/hooks/useIsMobile'
+import { PersistentHeader } from '@/components/shared/PersistentHeader'
 
 // Demo components
 import { MalusLawDemo } from '@/components/demos/unit1/MalusLawDemo'
@@ -1793,86 +1794,66 @@ export function DemosPage() {
         theme === 'dark' ? 'bg-[#0a0a0f] text-gray-200' : 'bg-[#f8fafc] text-gray-800'
       )}
     >
-      {/* Navigation Header */}
-      <header
+      {/* Navigation Header with Persistent Logo */}
+      <PersistentHeader
+        moduleKey="formulaLab"
+        moduleNameKey="modules.formulaLab.title"
+        variant="glass"
+        compact={isCompact}
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 flex items-center justify-between backdrop-blur-sm',
+          'fixed top-0 left-0 right-0 z-50',
           isCompact ? 'px-3 py-2' : 'px-6 py-3',
           theme === 'dark'
             ? 'bg-slate-900/95 border-b border-cyan-400/20'
             : 'bg-white/95 border-b border-cyan-500/20'
         )}
-      >
-        <div className="flex items-center gap-2 sm:gap-4">
-          {/* Mobile menu button */}
-          {isCompact && (
-            <button
-              onClick={() => setShowMobileSidebar(!showMobileSidebar)}
-              className={cn(
-                'p-2 rounded-lg transition-colors',
-                theme === 'dark'
-                  ? 'text-cyan-400 hover:bg-cyan-400/10'
-                  : 'text-cyan-600 hover:bg-cyan-100'
-              )}
-            >
-              {showMobileSidebar ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          )}
-          <Link
-            to="/"
-            className={cn(
-              'flex items-center gap-2 transition-colors',
-              theme === 'dark'
-                ? 'text-cyan-400 hover:text-cyan-300'
-                : 'text-cyan-600 hover:text-cyan-500'
-            )}
-          >
-            <Home className={cn(isCompact ? 'w-4 h-4' : 'w-5 h-5')} />
-          </Link>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <span className={cn(isCompact ? 'text-xl' : 'text-2xl')}>⟡</span>
-            <span
-              className={cn(
-                'font-bold',
-                isCompact ? 'text-base' : 'text-xl',
-                theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'
-              )}
-            >
-              PolarCraft
-            </span>
-          </div>
-        </div>
-
-        <nav className="flex items-center gap-2 sm:gap-4">
-          {!isCompact && (
-            <>
-              <Link
-                to="/game"
+        showSettings={false}
+        rightContent={
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Mobile menu button */}
+            {isCompact && (
+              <button
+                onClick={() => setShowMobileSidebar(!showMobileSidebar)}
                 className={cn(
-                  'flex items-center gap-2 px-4 py-2 rounded-lg transition-all',
+                  'p-2 rounded-lg transition-colors',
                   theme === 'dark'
-                    ? 'text-gray-400 hover:text-white hover:bg-cyan-400/10'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-cyan-100'
+                    ? 'text-cyan-400 hover:bg-cyan-400/10'
+                    : 'text-cyan-600 hover:bg-cyan-100'
                 )}
               >
-                <Gamepad2 className="w-4 h-4" />
-                <span>{t('common.game')}</span>
-              </Link>
-              <Link
-                to="/demos"
-                className={cn(
-                  'flex items-center gap-2 px-4 py-2 rounded-lg',
-                  theme === 'dark' ? 'text-cyan-400 bg-cyan-400/15' : 'text-cyan-600 bg-cyan-100'
-                )}
-              >
-                <BookOpen className="w-4 h-4" />
-                <span>{t('common.course')}</span>
-              </Link>
-            </>
-          )}
-          <LanguageThemeSwitcher />
-        </nav>
-      </header>
+                {showMobileSidebar ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            )}
+            {!isCompact && (
+              <>
+                <Link
+                  to="/game"
+                  className={cn(
+                    'flex items-center gap-2 px-4 py-2 rounded-lg transition-all',
+                    theme === 'dark'
+                      ? 'text-gray-400 hover:text-white hover:bg-cyan-400/10'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-cyan-100'
+                  )}
+                >
+                  <Gamepad2 className="w-4 h-4" />
+                  <span>{t('common.game')}</span>
+                </Link>
+                <Link
+                  to="/demos"
+                  className={cn(
+                    'flex items-center gap-2 px-4 py-2 rounded-lg',
+                    theme === 'dark' ? 'text-cyan-400 bg-cyan-400/15' : 'text-cyan-600 bg-cyan-100'
+                  )}
+                >
+                  <BookOpen className="w-4 h-4" />
+                  <span>{t('common.course')}</span>
+                </Link>
+              </>
+            )}
+            <LanguageThemeSwitcher />
+          </div>
+        }
+      />
 
       {/* Main Container */}
       <div className={cn("flex", isCompact ? "pt-[52px]" : "pt-[60px]")}>
