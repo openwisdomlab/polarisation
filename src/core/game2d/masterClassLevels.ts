@@ -884,9 +884,9 @@ export const MASTER_CLASS_LEVELS: MasterClassLevel[] = [
 ]
 
 /**
- * Get levels by campaign
+ * Get master class levels by campaign
  */
-export function getLevelsByCampaign(campaign: 'tutorial' | 'hacker' | 'artist'): MasterClassLevel[] {
+export function getMasterClassLevelsByCampaign(campaign: 'tutorial' | 'hacker' | 'artist'): MasterClassLevel[] {
   return MASTER_CLASS_LEVELS.filter((level) => level.campaign === campaign)
 }
 
@@ -898,9 +898,9 @@ export function getMasterClassLevelById(id: string): MasterClassLevel | undefine
 }
 
 /**
- * Get all campaign names
+ * Get all master class campaign names
  */
-export const CAMPAIGNS = {
+export const MASTER_CLASS_CAMPAIGNS = {
   tutorial: {
     name: 'Tutorial',
     nameZh: '教程',

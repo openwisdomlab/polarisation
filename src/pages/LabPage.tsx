@@ -6,19 +6,21 @@
  * and collaborative learning about polarization physics.
  */
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 import { Tabs, Badge, PersistentHeader } from '@/components/shared'
+import { ResearchTaskModal } from '@/components/lab'
+import { useLabStore } from '@/stores/labStore'
 import {
   FlaskConical, Users, Target, Award,
   BookOpen, CheckCircle2,
   Clock, Lock, ChevronRight, Lightbulb,
   GraduationCap, Beaker, Microscope,
   BarChart3, Sparkles, Newspaper, Calculator,
-  TrendingUp, Puzzle
+  TrendingUp, Puzzle, PlayCircle
 } from 'lucide-react'
 
 // Research tasks data
@@ -388,7 +390,7 @@ const ANALYSIS_TOOLS: AnalysisTool[] = [
 ]
 
 // Task card component
-function TaskCard({ task }: { task: ResearchTask }) {
+function TaskCard({ task, onStart }: { task: ResearchTask; onStart?: (taskId: string) => void }) {
   const { theme } = useTheme()
   const { i18n } = useTranslation()
   const isZh = i18n.language === 'zh'
@@ -397,30 +399,51 @@ function TaskCard({ task }: { task: ResearchTask }) {
   const isLocked = task.status === 'locked'
   const isComingSoon = task.status === 'coming-soon'
 
+  // Get task progress from store
+  const taskProgress = useLabStore(state => state.taskProgress[task.id])
+  const taskStatus = taskProgress?.status
+
+  const handleClick = () => {
+    if (!isLocked && !isComingSoon && onStart) {
+      onStart(task.id)
+    }
+  }
+
   return (
-    <div className={cn(
-      'rounded-xl border p-4 transition-all',
-      isLocked || isComingSoon
-        ? cn(
-            'opacity-60',
-            theme === 'dark' ? 'bg-slate-800/30 border-slate-700' : 'bg-gray-50 border-gray-200'
-          )
-        : cn(
-            'cursor-pointer hover:-translate-y-0.5 hover:shadow-lg',
-            theme === 'dark'
-              ? 'bg-slate-800/50 border-slate-700 hover:border-yellow-500/50'
-              : 'bg-white border-gray-200 hover:border-yellow-400'
-          )
-    )}>
+    <div
+      onClick={handleClick}
+      className={cn(
+        'rounded-xl border p-4 transition-all',
+        isLocked || isComingSoon
+          ? cn(
+              'opacity-60',
+              theme === 'dark' ? 'bg-slate-800/30 border-slate-700' : 'bg-gray-50 border-gray-200'
+            )
+          : cn(
+              'cursor-pointer hover:-translate-y-0.5 hover:shadow-lg',
+              theme === 'dark'
+                ? 'bg-slate-800/50 border-slate-700 hover:border-yellow-500/50'
+                : 'bg-white border-gray-200 hover:border-yellow-400'
+            )
+      )}
+    >
       <div className="flex items-start gap-3">
         <div className={cn(
           'w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0',
           isLocked || isComingSoon
             ? theme === 'dark' ? 'bg-slate-700' : 'bg-gray-200'
-            : theme === 'dark' ? 'bg-yellow-500/20' : 'bg-yellow-100'
+            : taskStatus === 'submitted' || taskStatus === 'published'
+              ? theme === 'dark' ? 'bg-green-500/20' : 'bg-green-100'
+              : taskStatus === 'in-progress'
+                ? theme === 'dark' ? 'bg-cyan-500/20' : 'bg-cyan-100'
+                : theme === 'dark' ? 'bg-yellow-500/20' : 'bg-yellow-100'
         )}>
           {isLocked ? (
             <Lock className={cn('w-5 h-5', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')} />
+          ) : taskStatus === 'submitted' || taskStatus === 'published' ? (
+            <CheckCircle2 className={cn('w-5 h-5', theme === 'dark' ? 'text-green-400' : 'text-green-600')} />
+          ) : taskStatus === 'in-progress' ? (
+            <PlayCircle className={cn('w-5 h-5', theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600')} />
           ) : (
             <CategoryIcon className={cn(
               'w-5 h-5',
@@ -447,6 +470,21 @@ function TaskCard({ task }: { task: ResearchTask }) {
                 {isZh ? '即将推出' : 'Coming Soon'}
               </Badge>
             )}
+            {taskStatus === 'in-progress' && (
+              <Badge color="cyan" size="sm">
+                {isZh ? '进行中' : 'In Progress'}
+              </Badge>
+            )}
+            {taskStatus === 'submitted' && (
+              <Badge color="green" size="sm">
+                {isZh ? '已提交' : 'Submitted'}
+              </Badge>
+            )}
+            {taskStatus === 'published' && (
+              <Badge color="purple" size="sm">
+                {isZh ? '已发表' : 'Published'}
+              </Badge>
+            )}
           </div>
           <h3 className={cn(
             'font-semibold mb-1',
@@ -463,9 +501,19 @@ function TaskCard({ task }: { task: ResearchTask }) {
           {!isLocked && !isComingSoon && (
             <div className={cn(
               'mt-3 flex items-center gap-1 text-sm font-medium',
-              theme === 'dark' ? 'text-yellow-400' : 'text-yellow-600'
+              taskStatus === 'in-progress'
+                ? theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'
+                : taskStatus === 'submitted' || taskStatus === 'published'
+                  ? theme === 'dark' ? 'text-green-400' : 'text-green-600'
+                  : theme === 'dark' ? 'text-yellow-400' : 'text-yellow-600'
             )}>
-              <span>{isZh ? '开始任务' : 'Start Task'}</span>
+              <span>
+                {taskStatus === 'in-progress'
+                  ? (isZh ? '继续任务' : 'Continue')
+                  : taskStatus === 'submitted' || taskStatus === 'published'
+                    ? (isZh ? '查看结果' : 'View Results')
+                    : (isZh ? '开始任务' : 'Start Task')}
+              </span>
               <ChevronRight className="w-4 h-4" />
             </div>
           )}
@@ -554,10 +602,37 @@ export function LabPage() {
   const [activeTab, setActiveTab] = useState('tasks')
   const [difficultyFilter, setDifficultyFilter] = useState<string>('')
 
+  // Lab store
+  const { openTask, taskProgress, publications } = useLabStore()
+
+  // Calculate progress statistics
+  const stats = useMemo(() => {
+    const progressEntries = Object.values(taskProgress)
+    const completedCount = progressEntries.filter(
+      p => p.status === 'submitted' || p.status === 'published'
+    ).length
+    const inProgressCount = progressEntries.filter(
+      p => p.status === 'in-progress'
+    ).length
+    const availableTasks = RESEARCH_TASKS.filter(t => t.status === 'available').length
+
+    return {
+      available: availableTasks - completedCount - inProgressCount,
+      completed: completedCount,
+      inProgress: inProgressCount,
+      publications: publications.length,
+    }
+  }, [taskProgress, publications])
+
   // Filter tasks
   const filteredTasks = difficultyFilter
     ? RESEARCH_TASKS.filter(t => t.difficulty === difficultyFilter)
     : RESEARCH_TASKS
+
+  // Handle starting a task
+  const handleStartTask = (taskId: string) => {
+    openTask(taskId)
+  }
 
   return (
     <div className={cn(
@@ -609,10 +684,10 @@ export function LabPage() {
           theme === 'dark' ? 'bg-slate-800/50' : 'bg-white border border-gray-200'
         )}>
           {[
-            { icon: Target, label: isZh ? '可用任务' : 'Available', value: RESEARCH_TASKS.filter(t => t.status === 'available').length, color: 'yellow' },
-            { icon: CheckCircle2, label: isZh ? '已完成' : 'Completed', value: 0, color: 'green' },
-            { icon: Users, label: isZh ? '学习小组' : 'Groups', value: STUDY_GROUPS.length, color: 'blue' },
-            { icon: Award, label: isZh ? '获得徽章' : 'Badges', value: 0, color: 'purple' },
+            { icon: Target, label: isZh ? '可用任务' : 'Available', value: stats.available, color: 'yellow' },
+            { icon: CheckCircle2, label: isZh ? '已完成' : 'Completed', value: stats.completed, color: 'green' },
+            { icon: PlayCircle, label: isZh ? '进行中' : 'In Progress', value: stats.inProgress, color: 'cyan' },
+            { icon: Award, label: isZh ? '发表成果' : 'Published', value: stats.publications, color: 'purple' },
           ].map((stat, i) => {
             const Icon = stat.icon
             return (
@@ -621,7 +696,7 @@ export function LabPage() {
                   'w-6 h-6 mx-auto mb-1',
                   stat.color === 'yellow' && (theme === 'dark' ? 'text-yellow-400' : 'text-yellow-600'),
                   stat.color === 'green' && (theme === 'dark' ? 'text-green-400' : 'text-green-600'),
-                  stat.color === 'blue' && (theme === 'dark' ? 'text-blue-400' : 'text-blue-600'),
+                  stat.color === 'cyan' && (theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'),
                   stat.color === 'purple' && (theme === 'dark' ? 'text-purple-400' : 'text-purple-600')
                 )} />
                 <div className={cn(
@@ -688,7 +763,7 @@ export function LabPage() {
             {/* Tasks grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {filteredTasks.map(task => (
-                <TaskCard key={task.id} task={task} />
+                <TaskCard key={task.id} task={task} onStart={handleStartTask} />
               ))}
             </div>
           </>
@@ -997,6 +1072,9 @@ export function LabPage() {
           </div>
         )}
       </main>
+
+      {/* Research Task Modal */}
+      <ResearchTaskModal />
     </div>
   )
 }
