@@ -18,7 +18,7 @@ import {
   Play, Eye, ChevronRight, ChevronLeft,
   FlaskConical, Wrench, Target, GraduationCap,
   CheckCircle2, Lightbulb, Search,
-  Sun, Filter, Layers, Radio
+  Sun, Filter, Layers, Radio, BookOpen
 } from 'lucide-react'
 import { useOpticalBenchStore } from '@/stores/opticalBenchStore'
 import {
@@ -29,8 +29,9 @@ import {
   DIFFICULTY_CONFIG,
 } from '@/data'
 import type { ClassicExperiment, Challenge, Tutorial } from '@/stores/opticalBenchStore'
+import { PolarizationDevicesPanel } from './PolarizationDevicesPanel'
 
-type PanelTab = 'experiments' | 'design' | 'challenges' | 'tutorials'
+type PanelTab = 'experiments' | 'design' | 'challenges' | 'tutorials' | 'devices'
 
 // ============================================
 // Tab Button Component
@@ -643,6 +644,7 @@ export function LeftPanel({ collapsed = false, onToggleCollapse }: LeftPanelProp
 
   const tabs: { id: PanelTab; icon: React.ReactNode; labelEn: string; labelZh: string }[] = [
     { id: 'design', icon: <Wrench className="w-4 h-4" />, labelEn: 'Design', labelZh: '设计' },
+    { id: 'devices', icon: <BookOpen className="w-4 h-4" />, labelEn: 'Devices', labelZh: '器件' },
     { id: 'experiments', icon: <FlaskConical className="w-4 h-4" />, labelEn: 'Experiments', labelZh: '实验' },
     { id: 'challenges', icon: <Target className="w-4 h-4" />, labelEn: 'Challenges', labelZh: '挑战' },
     { id: 'tutorials', icon: <GraduationCap className="w-4 h-4" />, labelEn: 'Tutorials', labelZh: '教程' },
@@ -733,7 +735,7 @@ export function LeftPanel({ collapsed = false, onToggleCollapse }: LeftPanelProp
         </div>
       )}
 
-      {/* Search (for experiments/challenges) */}
+      {/* Search (for experiments/challenges/devices) */}
       {!collapsed && (activeTab === 'experiments' || activeTab === 'challenges') && (
         <div className="p-2">
           <div className="relative">
@@ -761,6 +763,12 @@ export function LeftPanel({ collapsed = false, onToggleCollapse }: LeftPanelProp
       {!collapsed && (
         <div className="flex-1 overflow-y-auto p-2 space-y-2">
           {activeTab === 'design' && <ComponentPalette />}
+
+          {activeTab === 'devices' && (
+            <div className="h-full -m-2">
+              <PolarizationDevicesPanel compact />
+            </div>
+          )}
 
           {activeTab === 'experiments' && (
             <>

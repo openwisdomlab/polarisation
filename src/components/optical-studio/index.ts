@@ -23,6 +23,7 @@ export { ChallengePanel } from './ChallengePanel'
 export { TutorialOverlay } from './TutorialOverlay'
 export { FormulaDisplay } from './FormulaDisplay'
 export { PrinciplesPanel } from './PrinciplesPanel'
+export { PolarizationDevicesPanel } from './PolarizationDevicesPanel'
 
 // Hooks
 export { useKeyboardShortcuts } from './useKeyboardShortcuts'
