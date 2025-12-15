@@ -16,11 +16,13 @@ export type OpticalComponentType =
   | 'rotator'
   | 'sensor'
   // Advanced components for interference puzzles
-  | 'halfWavePlate'     // λ/2 plate - flips polarization about fast axis
-  | 'quarterWavePlate'  // λ/4 plate - converts linear ↔ circular
-  | 'phaseShifter'      // Introduces phase delay without changing polarization
-  | 'beamCombiner'      // Combines two beams coherently (for interference)
-  | 'circularFilter'    // Passes only RCP or LCP light
+  | 'halfWavePlate'       // λ/2 plate - flips polarization about fast axis
+  | 'quarterWavePlate'    // λ/4 plate - converts linear ↔ circular
+  | 'phaseShifter'        // Introduces phase delay without changing polarization
+  | 'beamCombiner'        // Combines two beams coherently (for interference)
+  | 'circularFilter'      // Passes only RCP or LCP light
+  | 'coincidenceCounter'  // Requires TWO beams with specific phase relationship
+  | 'opticalIsolator'     // One-way light valve (blocks back-reflection)
 
 // 光学元件基础接口
 export interface OpticalComponent {
@@ -84,6 +86,37 @@ export interface OpticalComponent {
    * Linked component ID for beam combiners
    */
   linkedComponentId?: string
+
+  // === Coincidence Counter Properties ===
+
+  /**
+   * Required number of beams for coincidenceCounter (default: 2)
+   */
+  requiredBeamCount?: number
+
+  /**
+   * Required phase difference between beams in degrees for coincidenceCounter
+   * 0 = constructive, 180 = destructive
+   */
+  requiredPhaseDifference?: number
+
+  /**
+   * Tolerance for phase matching in degrees (default: 30)
+   */
+  phaseTolerance?: number
+
+  // === Optical Isolator Properties ===
+
+  /**
+   * Allowed direction for optical isolator
+   * Light from opposite direction is blocked
+   */
+  allowedDirection?: Direction2D
+
+  /**
+   * Faraday rotation angle for optical isolator (default: 45)
+   */
+  faradayRotation?: number
 }
 
 // 光束段 (extended for Jones calculus)

@@ -553,6 +553,86 @@ function processComponentInteraction(
       }
       break
     }
+
+    case 'coincidenceCounter': {
+      // Coincidence counter: requires multiple beams with specific phase relationship
+      // This enables "quantum-style" puzzles where timing/phase matters
+      const counter = ctx.sensors.get(component.id)
+      if (counter) {
+        // Record incoming beam with phase information
+        counter.incomingBeams.push({
+          jones: inputJones,
+          coherenceId: ctx.coherenceId,
+        })
+
+        const requiredBeams = component.requiredBeamCount ?? 2
+        const requiredPhaseDiff = component.requiredPhaseDifference ?? 0
+        const phaseTol = component.phaseTolerance ?? 30
+
+        // Check if we have enough beams
+        if (counter.incomingBeams.length >= requiredBeams) {
+          // Calculate phase difference between first two beams
+          const beam1 = counter.incomingBeams[0].jones
+          const beam2 = counter.incomingBeams[1].jones
+
+          // Phase of each beam (from Ex component)
+          const phase1 = Math.atan2(beam1[0].im, beam1[0].re) * (180 / Math.PI)
+          const phase2 = Math.atan2(beam2[0].im, beam2[0].re) * (180 / Math.PI)
+          let phaseDiff = Math.abs(phase1 - phase2)
+          if (phaseDiff > 180) phaseDiff = 360 - phaseDiff
+
+          // Check if phase difference matches requirement
+          const phaseMatch =
+            Math.abs(phaseDiff - requiredPhaseDiff) <= phaseTol ||
+            Math.abs(phaseDiff - (360 - requiredPhaseDiff)) <= phaseTol
+
+          // Superpose beams for intensity calculation
+          const superposedJones = superposeJonesVectors(
+            counter.incomingBeams.map((b) => ({ jones: b.jones, pathLength: 0 }))
+          )
+
+          counter.receivedJones = superposedJones
+          counter.receivedIntensity = jonesIntensity(superposedJones)
+          counter.receivedPolarization = jonesVectorToPolarization(superposedJones)
+
+          const reqIntensity = component.requiredIntensity ?? 30
+          counter.activated =
+            counter.incomingBeams.length >= requiredBeams &&
+            phaseMatch &&
+            counter.receivedIntensity >= reqIntensity
+          counter.fidelity = phaseMatch ? 1.0 : 0.0
+        }
+      }
+      break
+    }
+
+    case 'opticalIsolator': {
+      // Optical isolator: allows light in one direction only
+      // Implemented as: Polarizer(45°) → Faraday Rotator(45°) → Polarizer(0°)
+      // Light going forward passes, light going backward is blocked
+      const allowedDir = compState.allowedDirection ?? direction
+      const faradayAngle = compState.faradayRotation ?? 45
+
+      // Check if light is coming from allowed direction
+      if (direction === allowedDir) {
+        // Forward direction: apply Faraday rotation and pass
+        // Faraday rotation is non-reciprocal (same rotation regardless of direction)
+        const rotMatrix = rotatorMatrix(faradayAngle)
+        const outputJones = applyJonesMatrix(rotMatrix, inputJones)
+        const attenuatedJones = scaleJonesIntensity(outputJones, ctx.config.rotatorLoss)
+
+        traceLightPathJones(
+          endX,
+          endY,
+          direction,
+          attenuatedJones,
+          ctx,
+          depth + 1
+        )
+      }
+      // Backward direction: light is blocked (no output)
+      break
+    }
   }
 }
 
