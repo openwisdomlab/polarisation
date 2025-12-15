@@ -10,7 +10,6 @@ import { useState, useCallback, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
-  Home,
   BookOpen,
   ChevronLeft,
   ChevronRight,
@@ -31,6 +30,7 @@ import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 import { useIsMobile } from '@/hooks/useIsMobile'
+import { PersistentHeader } from '@/components/shared/PersistentHeader'
 
 // 导入共享模块
 import { getPolarizationColor, POLARIZATION_DISPLAY_CONFIG } from '@/lib/polarization'
@@ -586,72 +586,56 @@ export function Game2DPage() {
           : 'bg-gradient-to-br from-slate-100 via-blue-50 to-slate-100'
       )}
     >
-      {/* Header */}
-      <header
-        className={cn(
-          'flex items-center justify-between border-b',
-          isCompact ? 'p-2' : 'p-4',
-          isDark ? 'border-slate-700/50 bg-slate-900/50' : 'border-slate-200 bg-white/80'
-        )}
-      >
-        <div className="flex items-center gap-2 sm:gap-3">
-          <Link
-            to="/"
-            className={cn(
-              'p-2 rounded-lg transition-colors',
-              isDark ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-slate-200 text-slate-600'
+      {/* Header with Persistent Logo */}
+      <PersistentHeader
+        moduleKey="polarquest"
+        moduleName="PolarCraft 2D"
+        variant="solid"
+        compact={isCompact}
+        showSettings={!isCompact}
+        rightContent={
+          <div className="flex items-center gap-2">
+            {!isCompact && (
+              <>
+                <Link
+                  to="/game"
+                  className={cn(
+                    'p-2 rounded-lg transition-colors',
+                    isDark ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-slate-200 text-slate-600'
+                  )}
+                  title={t('game.title')}
+                >
+                  <Zap className="w-5 h-5" />
+                </Link>
+                <Link
+                  to="/demos"
+                  className={cn(
+                    'p-2 rounded-lg transition-colors',
+                    isDark ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-slate-200 text-slate-600'
+                  )}
+                  title={t('demos.title')}
+                >
+                  <BookOpen className="w-5 h-5" />
+                </Link>
+              </>
             )}
-          >
-            <Home className={cn(isCompact ? 'w-4 h-4' : 'w-5 h-5')} />
-          </Link>
-          {!isCompact && (
-            <>
-              <Link
-                to="/game"
+            {isCompact && (
+              <button
+                onClick={() => setShowMobileInfo(!showMobileInfo)}
                 className={cn(
                   'p-2 rounded-lg transition-colors',
-                  isDark ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-slate-200 text-slate-600'
+                  showMobileInfo
+                    ? isDark ? 'bg-cyan-400/20 text-cyan-400' : 'bg-cyan-100 text-cyan-600'
+                    : isDark ? 'text-slate-300' : 'text-slate-600'
                 )}
               >
-                <Zap className="w-5 h-5" />
-              </Link>
-              <Link
-                to="/demos"
-                className={cn(
-                  'p-2 rounded-lg transition-colors',
-                  isDark ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-slate-200 text-slate-600'
-                )}
-              >
-                <BookOpen className="w-5 h-5" />
-              </Link>
-              <div className="h-6 w-px bg-slate-500/30 mx-2" />
-            </>
-          )}
-          <h1 className={cn(
-            'font-bold',
-            isCompact ? 'text-base' : 'text-xl',
-            isDark ? 'text-cyan-400' : 'text-cyan-600'
-          )}>
-            PolarCraft 2D
-          </h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isCompact && (
-            <button
-              onClick={() => setShowMobileInfo(!showMobileInfo)}
-              className={cn(
-                'p-2 rounded-lg transition-colors',
-                showMobileInfo
-                  ? isDark ? 'bg-cyan-400/20 text-cyan-400' : 'bg-cyan-100 text-cyan-600'
-                  : isDark ? 'text-slate-300' : 'text-slate-600'
-              )}
-            >
-              <Info className="w-4 h-4" />
-            </button>
-          )}
-          <LanguageThemeSwitcher />
-        </div>
-      </header>
+                <Info className="w-4 h-4" />
+              </button>
+            )}
+            {isCompact && <LanguageThemeSwitcher compact />}
+          </div>
+        }
+      />
 
       {/* Main Content */}
       <main className={cn(

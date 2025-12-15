@@ -18,10 +18,9 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
-import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
-import { Badge } from '@/components/shared'
+import { Badge, PersistentHeader } from '@/components/shared'
 import {
-  Home, Search, Play, Pause, RotateCcw,
+  Search, Play, Pause, RotateCcw,
   ChevronRight, ChevronLeft, Trash2, Eye, EyeOff,
   Lightbulb, Layers, Book, FlaskConical, Wrench,
   ExternalLink, X, Plus,
@@ -1082,44 +1081,18 @@ export function OpticalDesignStudioPage() {
         ? 'bg-gradient-to-br from-[#0a0a1a] via-[#1a1a3a] to-[#0a0a2a]'
         : 'bg-gradient-to-br from-[#f0f9ff] via-[#e0f2fe] to-[#f0f9ff]'
     )}>
-      {/* Header */}
-      <header className={cn(
-        'sticky top-0 z-40 border-b backdrop-blur-md',
-        theme === 'dark' ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-gray-200'
-      )}>
-        <div className="px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link
-                to="/"
-                className={cn(
-                  'p-2 rounded-lg transition-colors',
-                  theme === 'dark' ? 'hover:bg-slate-800 text-gray-400' : 'hover:bg-gray-100 text-gray-500'
-                )}
-              >
-                <Home className="w-5 h-5" />
-              </Link>
-              <div>
-                <h1 className={cn(
-                  'text-lg font-bold',
-                  theme === 'dark' ? 'text-white' : 'text-gray-900'
-                )}>
-                  {isZh ? '光学设计室' : 'Optical Design Studio'}
-                </h1>
-                <p className={cn(
-                  'text-xs',
-                  theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-                )}>
-                  {isZh ? '器件图鉴 × 光路设计' : 'Device Library × Path Design'}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <LanguageThemeSwitcher />
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Header with Persistent Logo */}
+      <PersistentHeader
+        moduleKey="opticalDesignStudio"
+        moduleName={isZh ? '光学设计室' : 'Optical Design Studio'}
+        variant="glass"
+        className={cn(
+          'sticky top-0 z-40',
+          theme === 'dark'
+            ? 'bg-slate-900/80 border-b border-slate-800'
+            : 'bg-white/80 border-b border-gray-200'
+        )}
+      />
 
       {/* Interactive Optical Path Schematic - Top Section */}
       <div className={cn(
