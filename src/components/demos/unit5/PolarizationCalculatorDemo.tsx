@@ -725,11 +725,22 @@ function StokesDisplay({
   )
 }
 
+// 难度层级类型
+type DifficultyLevel = 'foundation' | 'application' | 'research'
+
+// 主组件 Props
+interface PolarizationCalculatorDemoProps {
+  difficultyLevel?: DifficultyLevel
+}
+
 // 主组件
-export function PolarizationCalculatorDemo() {
+export function PolarizationCalculatorDemo({ difficultyLevel }: PolarizationCalculatorDemoProps) {
   const { t, i18n } = useTranslation()
   const { theme } = useTheme()
   const isZh = i18n.language === 'zh'
+
+  // Foundation level hides advanced features (matrices and code export)
+  const isFoundation = difficultyLevel === 'foundation'
 
   // 状态
   const [elements, setElements] = useState<OpticalElement[]>([
@@ -944,11 +955,13 @@ export function PolarizationCalculatorDemo() {
 
         {/* 右侧：结果显示 */}
         <div className="lg:col-span-2 space-y-3">
-          {/* 系统矩阵 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <MatrixDisplay matrix={systemMueller} type="mueller" theme={theme} t={t} />
-            <MatrixDisplay matrix={systemJones as unknown as MuellerMatrix} type="jones" theme={theme} t={t} />
-          </div>
+          {/* 系统矩阵 - 基础模式下隐藏 */}
+          {!isFoundation && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <MatrixDisplay matrix={systemMueller} type="mueller" theme={theme} t={t} />
+              <MatrixDisplay matrix={systemJones as unknown as MuellerMatrix} type="jones" theme={theme} t={t} />
+            </div>
+          )}
 
           {/* Stokes 矢量变换 */}
           <div className="grid grid-cols-2 gap-3">
@@ -992,90 +1005,92 @@ export function PolarizationCalculatorDemo() {
             </div>
           </div>
 
-          {/* 代码导出 */}
-          <div className={cn(
-            'rounded-lg border overflow-hidden',
-            theme === 'dark' ? 'bg-slate-800/50 border-slate-600' : 'bg-white border-gray-200'
-          )}>
+          {/* 代码导出 - 基础模式下隐藏 */}
+          {!isFoundation && (
             <div className={cn(
-              'flex items-center justify-between px-3 py-2 border-b',
-              theme === 'dark' ? 'border-slate-700' : 'border-gray-200'
+              'rounded-lg border overflow-hidden',
+              theme === 'dark' ? 'bg-slate-800/50 border-slate-600' : 'bg-white border-gray-200'
             )}>
-              <button
-                onClick={() => setShowCode(!showCode)}
-                className={cn(
-                  'flex items-center gap-2 text-sm font-medium',
-                  theme === 'dark' ? 'text-purple-400' : 'text-purple-600'
-                )}
-              >
-                <Code className="w-4 h-4" />
-                {t('demos.calculator.codeExport')}
-                {showCode ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </button>
-
-              {showCode && (
-                <div className="flex items-center gap-2">
-                  <div className="flex rounded overflow-hidden">
-                    {(['python', 'matlab'] as const).map((type) => (
-                      <button
-                        key={type}
-                        onClick={() => setCodeType(type)}
-                        className={cn(
-                          'px-2 py-1 text-xs',
-                          codeType === type
-                            ? theme === 'dark' ? 'bg-purple-500/30 text-purple-300' : 'bg-purple-100 text-purple-700'
-                            : theme === 'dark' ? 'bg-slate-700 text-gray-400' : 'bg-gray-100 text-gray-600'
-                        )}
-                      >
-                        {type === 'python' ? 'Python' : 'MATLAB'}
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    onClick={handleCopy}
-                    className={cn(
-                      'p-1.5 rounded',
-                      theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100'
-                    )}
-                    title="Copy"
-                  >
-                    {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                  </button>
-                  <button
-                    onClick={handleDownload}
-                    className={cn(
-                      'p-1.5 rounded',
-                      theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100'
-                    )}
-                    title="Download"
-                  >
-                    <Download className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
-            </div>
-
-            <AnimatePresence>
-              {showCode && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
+              <div className={cn(
+                'flex items-center justify-between px-3 py-2 border-b',
+                theme === 'dark' ? 'border-slate-700' : 'border-gray-200'
+              )}>
+                <button
+                  onClick={() => setShowCode(!showCode)}
+                  className={cn(
+                    'flex items-center gap-2 text-sm font-medium',
+                    theme === 'dark' ? 'text-purple-400' : 'text-purple-600'
+                  )}
                 >
-                  <pre className={cn(
-                    'p-3 text-[10px] leading-relaxed overflow-x-auto max-h-64',
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  )}>
-                    <code>
-                      {codeType === 'python'
-                        ? generatePythonCode(elements, inputState)
-                        : generateMatlabCode(elements, inputState)}
-                    </code>
-                  </pre>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+                  <Code className="w-4 h-4" />
+                  {t('demos.calculator.codeExport')}
+                  {showCode ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </button>
+
+                {showCode && (
+                  <div className="flex items-center gap-2">
+                    <div className="flex rounded overflow-hidden">
+                      {(['python', 'matlab'] as const).map((type) => (
+                        <button
+                          key={type}
+                          onClick={() => setCodeType(type)}
+                          className={cn(
+                            'px-2 py-1 text-xs',
+                            codeType === type
+                              ? theme === 'dark' ? 'bg-purple-500/30 text-purple-300' : 'bg-purple-100 text-purple-700'
+                              : theme === 'dark' ? 'bg-slate-700 text-gray-400' : 'bg-gray-100 text-gray-600'
+                          )}
+                        >
+                          {type === 'python' ? 'Python' : 'MATLAB'}
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={handleCopy}
+                      className={cn(
+                        'p-1.5 rounded',
+                        theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100'
+                      )}
+                      title="Copy"
+                    >
+                      {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                    </button>
+                    <button
+                      onClick={handleDownload}
+                      className={cn(
+                        'p-1.5 rounded',
+                        theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100'
+                      )}
+                      title="Download"
+                    >
+                      <Download className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <AnimatePresence>
+                {showCode && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                  >
+                    <pre className={cn(
+                      'p-3 text-[10px] leading-relaxed overflow-x-auto max-h-64',
+                      theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                    )}>
+                      <code>
+                        {codeType === 'python'
+                          ? generatePythonCode(elements, inputState)
+                          : generateMatlabCode(elements, inputState)}
+                      </code>
+                    </pre>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
         </div>
       </div>
 
