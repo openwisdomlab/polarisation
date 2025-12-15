@@ -7,7 +7,13 @@
 export { OpticalCanvas } from './OpticalCanvas'
 export { CanvasToolbar } from './CanvasToolbar'
 
-// Side panels
+// Redesigned layout components (V2)
+export { UnifiedToolbar } from './UnifiedToolbar'
+export { LeftPanel } from './LeftPanel'
+export { RightPanel } from './RightPanel'
+export { StatusBar } from './StatusBar'
+
+// Legacy side panels (kept for compatibility)
 export { DeviceLibrary } from './DeviceLibrary'
 export { Sidebar } from './Sidebar'
 export { ComponentPropertiesPanel } from './ComponentPropertiesPanel'
