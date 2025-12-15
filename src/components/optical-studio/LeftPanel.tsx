@@ -17,7 +17,8 @@ import { Badge } from '@/components/shared'
 import {
   Play, Eye, ChevronRight, ChevronLeft,
   FlaskConical, Wrench, Target, GraduationCap,
-  CheckCircle2, Lightbulb, Search
+  CheckCircle2, Lightbulb, Search,
+  Sun, Filter, Layers, Radio
 } from 'lucide-react'
 import { useOpticalBenchStore } from '@/stores/opticalBenchStore'
 import {
@@ -289,6 +290,170 @@ function TutorialCard({ tutorial, onStart }: TutorialCardProps) {
 }
 
 // ============================================
+// Component Category Config
+// ============================================
+
+interface ComponentCategory {
+  id: string
+  labelEn: string
+  labelZh: string
+  icon: React.ReactNode
+  color: string
+  components: string[]
+}
+
+const COMPONENT_CATEGORIES: ComponentCategory[] = [
+  {
+    id: 'sources',
+    labelEn: 'Light Sources',
+    labelZh: '光源',
+    icon: <Sun className="w-3.5 h-3.5" />,
+    color: '#f59e0b',
+    components: ['emitter'],
+  },
+  {
+    id: 'filters',
+    labelEn: 'Polarization Filters',
+    labelZh: '偏振滤波',
+    icon: <Filter className="w-3.5 h-3.5" />,
+    color: '#3b82f6',
+    components: ['polarizer', 'waveplate'],
+  },
+  {
+    id: 'modifiers',
+    labelEn: 'Beam Modifiers',
+    labelZh: '光束调节',
+    icon: <Layers className="w-3.5 h-3.5" />,
+    color: '#8b5cf6',
+    components: ['mirror', 'splitter', 'lens'],
+  },
+  {
+    id: 'detectors',
+    labelEn: 'Detectors',
+    labelZh: '探测器',
+    icon: <Radio className="w-3.5 h-3.5" />,
+    color: '#10b981',
+    components: ['sensor'],
+  },
+]
+
+// ============================================
+// Component Mini SVG Icons
+// ============================================
+
+function ComponentSVGIcon({ type, size = 32 }: { type: string; size?: number }) {
+  const { theme } = useTheme()
+  const isDark = theme === 'dark'
+
+  const icons: Record<string, React.ReactNode> = {
+    emitter: (
+      <svg viewBox="0 0 40 40" width={size} height={size}>
+        {/* Light source body */}
+        <rect x="4" y="12" width="12" height="16" rx="2" fill={isDark ? '#fbbf24' : '#f59e0b'} opacity="0.9" />
+        {/* Light rays */}
+        <line x1="18" y1="20" x2="36" y2="20" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="3" strokeLinecap="round" />
+        <line x1="18" y1="20" x2="30" y2="12" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+        <line x1="18" y1="20" x2="30" y2="28" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+        {/* Polarization indicator */}
+        <line x1="22" y1="16" x2="22" y2="24" stroke={isDark ? '#ff4444' : '#ef4444'} strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    ),
+    polarizer: (
+      <svg viewBox="0 0 40 40" width={size} height={size}>
+        {/* Polarizer body */}
+        <rect x="16" y="4" width="8" height="32" rx="2" fill={isDark ? '#3b82f6' : '#2563eb'} opacity="0.8" />
+        {/* Transmission axis lines */}
+        <line x1="20" y1="8" x2="20" y2="32" stroke={isDark ? '#93c5fd' : '#60a5fa'} strokeWidth="1.5" strokeDasharray="2,2" />
+        {/* Input light */}
+        <line x1="4" y1="20" x2="14" y2="20" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="2" strokeLinecap="round" />
+        {/* Output light (dimmer) */}
+        <line x1="26" y1="20" x2="36" y2="20" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="2" strokeLinecap="round" opacity="0.5" />
+        {/* cos²θ indicator */}
+        <text x="20" y="40" textAnchor="middle" fontSize="6" fill={isDark ? '#60a5fa' : '#3b82f6'}>cos²θ</text>
+      </svg>
+    ),
+    waveplate: (
+      <svg viewBox="0 0 40 40" width={size} height={size}>
+        {/* Waveplate body */}
+        <rect x="14" y="6" width="12" height="28" rx="2" fill={isDark ? '#8b5cf6' : '#7c3aed'} opacity="0.8" />
+        {/* Crystal structure lines */}
+        <line x1="17" y1="10" x2="23" y2="30" stroke={isDark ? '#c4b5fd' : '#a78bfa'} strokeWidth="1" />
+        <line x1="23" y1="10" x2="17" y2="30" stroke={isDark ? '#c4b5fd' : '#a78bfa'} strokeWidth="1" />
+        {/* Input wave */}
+        <path d="M4,20 Q8,16 12,20" fill="none" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="2" />
+        {/* Output wave (phase shifted) */}
+        <path d="M28,20 Q32,24 36,20" fill="none" stroke={isDark ? '#a78bfa' : '#8b5cf6'} strokeWidth="2" />
+        {/* λ/4 or λ/2 label */}
+        <text x="20" y="22" textAnchor="middle" fontSize="7" fill="white" fontWeight="bold">λ/4</text>
+      </svg>
+    ),
+    mirror: (
+      <svg viewBox="0 0 40 40" width={size} height={size}>
+        {/* Mirror surface */}
+        <rect x="18" y="4" width="4" height="32" rx="1" fill={isDark ? '#94a3b8' : '#64748b'} />
+        {/* Reflective coating */}
+        <line x1="20" y1="6" x2="20" y2="34" stroke={isDark ? '#e2e8f0' : '#cbd5e1'} strokeWidth="2" />
+        {/* Input ray */}
+        <line x1="4" y1="8" x2="18" y2="20" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="2" strokeLinecap="round" />
+        {/* Output ray */}
+        <line x1="22" y1="20" x2="36" y2="8" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="2" strokeLinecap="round" />
+        {/* Angle indicator */}
+        <path d="M14,16 A6,6 0 0 1 16,22" fill="none" stroke={isDark ? '#94a3b8' : '#64748b'} strokeWidth="1" />
+      </svg>
+    ),
+    splitter: (
+      <svg viewBox="0 0 40 40" width={size} height={size}>
+        {/* Crystal body */}
+        <polygon points="12,8 28,8 32,32 8,32" fill={isDark ? '#8b5cf6' : '#7c3aed'} opacity="0.7" />
+        {/* Input ray */}
+        <line x1="2" y1="20" x2="12" y2="20" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="2" strokeLinecap="round" />
+        {/* o-ray (ordinary) */}
+        <line x1="28" y1="16" x2="38" y2="12" stroke="#ff4444" strokeWidth="2" strokeLinecap="round" />
+        {/* e-ray (extraordinary) */}
+        <line x1="28" y1="24" x2="38" y2="28" stroke="#44ff44" strokeWidth="2" strokeLinecap="round" />
+        {/* Labels */}
+        <text x="38" y="10" fontSize="6" fill="#ff4444">o</text>
+        <text x="38" y="32" fontSize="6" fill="#44ff44">e</text>
+      </svg>
+    ),
+    lens: (
+      <svg viewBox="0 0 40 40" width={size} height={size}>
+        {/* Lens shape */}
+        <ellipse cx="20" cy="20" rx="6" ry="16" fill={isDark ? '#06b6d4' : '#0891b2'} opacity="0.6" />
+        <ellipse cx="20" cy="20" rx="6" ry="16" fill="none" stroke={isDark ? '#22d3ee' : '#06b6d4'} strokeWidth="2" />
+        {/* Input rays */}
+        <line x1="2" y1="12" x2="14" y2="16" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="2" y1="20" x2="14" y2="20" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="2" y1="28" x2="14" y2="24" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="1.5" strokeLinecap="round" />
+        {/* Output rays (focused) */}
+        <line x1="26" y1="16" x2="36" y2="20" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="26" y1="20" x2="36" y2="20" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="26" y1="24" x2="36" y2="20" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="1.5" strokeLinecap="round" />
+        {/* Focal point */}
+        <circle cx="36" cy="20" r="2" fill={isDark ? '#f59e0b' : '#d97706'} />
+      </svg>
+    ),
+    sensor: (
+      <svg viewBox="0 0 40 40" width={size} height={size}>
+        {/* Sensor body */}
+        <rect x="22" y="8" width="14" height="24" rx="2" fill={isDark ? '#10b981' : '#059669'} opacity="0.8" />
+        {/* Detection surface */}
+        <rect x="22" y="12" width="3" height="16" fill={isDark ? '#34d399' : '#10b981'} />
+        {/* Input light */}
+        <line x1="4" y1="20" x2="20" y2="20" stroke={isDark ? '#fcd34d' : '#fbbf24'} strokeWidth="2" strokeLinecap="round" />
+        {/* Detection indicator */}
+        <circle cx="32" cy="20" r="4" fill={isDark ? '#34d399' : '#10b981'} />
+        <circle cx="32" cy="20" r="2" fill="white" opacity="0.8" />
+        {/* Reading display */}
+        <text x="32" y="36" textAnchor="middle" fontSize="5" fill={isDark ? '#10b981' : '#059669'}>I = ?</text>
+      </svg>
+    ),
+  }
+
+  return icons[type] || null
+}
+
+// ============================================
 // Component Palette (Design Tab)
 // ============================================
 
@@ -297,57 +462,154 @@ function ComponentPalette() {
   const { i18n } = useTranslation()
   const isZh = i18n.language === 'zh'
   const addComponent = useOpticalBenchStore(state => state.addComponent)
+  const [hoveredComponent, setHoveredComponent] = useState<string | null>(null)
+
+  // Component descriptions for hover
+  const componentDescriptions: Record<string, { en: string; zh: string }> = {
+    emitter: { en: 'Emits polarized or unpolarized light', zh: '发射偏振光或自然光' },
+    polarizer: { en: 'Filters light by polarization (Malus\'s Law)', zh: '按偏振方向过滤光（马吕斯定律）' },
+    waveplate: { en: 'Shifts phase (λ/4 or λ/2)', zh: '改变相位（λ/4或λ/2波片）' },
+    mirror: { en: 'Reflects light beam', zh: '反射光束' },
+    splitter: { en: 'Splits into o-ray and e-ray', zh: '分离为寻常光和非常光' },
+    lens: { en: 'Focuses or diverges light', zh: '聚焦或发散光束' },
+    sensor: { en: 'Measures light intensity', zh: '测量光强' },
+  }
 
   return (
     <div className="space-y-3">
+      {/* Header with tip */}
       <div className={cn(
-        'flex items-center gap-2 p-2 rounded-lg',
-        theme === 'dark' ? 'bg-slate-800/30' : 'bg-gray-50'
+        'flex items-center gap-2 p-2.5 rounded-xl',
+        theme === 'dark'
+          ? 'bg-gradient-to-r from-violet-500/10 to-indigo-500/10 border border-violet-500/20'
+          : 'bg-gradient-to-r from-violet-50 to-indigo-50 border border-violet-200'
       )}>
-        <Lightbulb className={cn('w-4 h-4', theme === 'dark' ? 'text-amber-400' : 'text-amber-600')} />
-        <p className={cn('text-[10px]', theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>
-          {isZh ? '点击添加组件到光路' : 'Click to add components'}
-        </p>
+        <div className={cn(
+          'w-8 h-8 rounded-lg flex items-center justify-center',
+          theme === 'dark' ? 'bg-violet-500/20' : 'bg-violet-100'
+        )}>
+          <Lightbulb className={cn('w-4 h-4', theme === 'dark' ? 'text-violet-400' : 'text-violet-600')} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className={cn('text-xs font-medium', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
+            {isZh ? '光学组件库' : 'Optical Components'}
+          </p>
+          <p className={cn('text-[10px]', theme === 'dark' ? 'text-gray-400' : 'text-gray-500')}>
+            {isZh ? '点击或按 1-7 添加' : 'Click or press 1-7 to add'}
+          </p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
-        {PALETTE_COMPONENTS.map((item, index) => (
-          <button
-            key={item.type}
-            data-component={item.type}
-            onClick={() => addComponent(item.type)}
-            className={cn(
-              'flex flex-col items-center gap-1.5 p-2.5 rounded-lg border transition-all hover:scale-[1.02]',
-              theme === 'dark'
-                ? 'bg-slate-800/50 border-slate-700/50 hover:border-violet-500/50 hover:bg-slate-800'
-                : 'bg-white border-gray-200 hover:border-violet-400 hover:bg-violet-50'
-            )}
-          >
-            <span className="text-xl">{item.icon}</span>
-            <span className={cn('text-[10px] font-medium text-center', theme === 'dark' ? 'text-gray-300' : 'text-gray-700')}>
-              {isZh ? item.nameZh : item.nameEn}
+      {/* Categorized Components */}
+      {COMPONENT_CATEGORIES.map((category) => (
+        <div key={category.id} className="space-y-1.5">
+          {/* Category Header */}
+          <div className="flex items-center gap-2 px-1">
+            <div
+              className="w-5 h-5 rounded flex items-center justify-center"
+              style={{ backgroundColor: `${category.color}20`, color: category.color }}
+            >
+              {category.icon}
+            </div>
+            <span className={cn('text-[10px] font-semibold uppercase tracking-wide', theme === 'dark' ? 'text-gray-400' : 'text-gray-500')}>
+              {isZh ? category.labelZh : category.labelEn}
             </span>
-            <kbd className={cn(
-              'text-[9px] px-1.5 py-0.5 rounded',
-              theme === 'dark' ? 'bg-slate-700/50 text-gray-500' : 'bg-gray-100 text-gray-400'
-            )}>
-              {index + 1}
-            </kbd>
-          </button>
-        ))}
-      </div>
+          </div>
 
-      {/* Quick Tips */}
+          {/* Components Grid */}
+          <div className="grid grid-cols-2 gap-1.5">
+            {PALETTE_COMPONENTS.filter(c => category.components.includes(c.type)).map((item) => {
+              const globalIndex = PALETTE_COMPONENTS.findIndex(p => p.type === item.type)
+              const isHovered = hoveredComponent === item.type
+
+              return (
+                <button
+                  key={item.type}
+                  data-component={item.type}
+                  onClick={() => addComponent(item.type)}
+                  onMouseEnter={() => setHoveredComponent(item.type)}
+                  onMouseLeave={() => setHoveredComponent(null)}
+                  className={cn(
+                    'relative flex flex-col items-center gap-1 p-2 rounded-lg border transition-all duration-200',
+                    isHovered ? 'scale-[1.02] shadow-lg' : '',
+                    theme === 'dark'
+                      ? 'bg-slate-800/50 border-slate-700/50 hover:border-violet-500/50'
+                      : 'bg-white border-gray-200 hover:border-violet-400'
+                  )}
+                  style={{
+                    borderColor: isHovered ? category.color : undefined,
+                    boxShadow: isHovered ? `0 0 12px ${category.color}30` : undefined,
+                  }}
+                >
+                  {/* SVG Icon */}
+                  <ComponentSVGIcon type={item.type} size={36} />
+
+                  {/* Name */}
+                  <span className={cn('text-[10px] font-medium text-center leading-tight', theme === 'dark' ? 'text-gray-300' : 'text-gray-700')}>
+                    {isZh ? item.nameZh : item.nameEn}
+                  </span>
+
+                  {/* Keyboard shortcut badge */}
+                  <kbd className={cn(
+                    'absolute top-1 right-1 text-[8px] px-1 py-0.5 rounded',
+                    theme === 'dark' ? 'bg-slate-700/70 text-gray-500' : 'bg-gray-100 text-gray-400'
+                  )}>
+                    {globalIndex + 1}
+                  </kbd>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      ))}
+
+      {/* Hovered Component Description */}
+      {hoveredComponent && componentDescriptions[hoveredComponent] && (
+        <div className={cn(
+          'p-2 rounded-lg text-[10px] animate-in fade-in duration-150',
+          theme === 'dark' ? 'bg-slate-800/50 text-gray-300' : 'bg-gray-50 text-gray-600'
+        )}>
+          <span className="font-medium">
+            {isZh
+              ? PALETTE_COMPONENTS.find(p => p.type === hoveredComponent)?.nameZh
+              : PALETTE_COMPONENTS.find(p => p.type === hoveredComponent)?.nameEn
+            }:
+          </span>{' '}
+          {isZh ? componentDescriptions[hoveredComponent].zh : componentDescriptions[hoveredComponent].en}
+        </div>
+      )}
+
+      {/* Quick Reference Card */}
       <div className={cn(
-        'p-2 rounded-lg border text-[10px]',
-        theme === 'dark' ? 'bg-slate-800/30 border-slate-700/50 text-gray-500' : 'bg-gray-50 border-gray-200 text-gray-500'
+        'p-2.5 rounded-xl border',
+        theme === 'dark'
+          ? 'bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-slate-700/50'
+          : 'bg-gradient-to-br from-gray-50 to-white border-gray-200'
       )}>
-        <p className="mb-1 font-medium">{isZh ? '提示：' : 'Tips:'}</p>
-        <ul className="space-y-0.5">
-          <li>• {isZh ? '按 1-7 快速添加组件' : 'Press 1-7 to quick add'}</li>
-          <li>• {isZh ? '拖动组件调整位置' : 'Drag to move components'}</li>
-          <li>• {isZh ? '按 R 旋转选中组件' : 'Press R to rotate'}</li>
-        </ul>
+        <div className="flex items-center gap-1.5 mb-2">
+          <Search className={cn('w-3 h-3', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')} />
+          <span className={cn('text-[10px] font-semibold', theme === 'dark' ? 'text-gray-400' : 'text-gray-500')}>
+            {isZh ? '快捷操作' : 'Quick Actions'}
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[9px]">
+          <div className={cn('flex items-center gap-1', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
+            <kbd className={cn('px-1 rounded', theme === 'dark' ? 'bg-slate-700' : 'bg-gray-200')}>1-7</kbd>
+            <span>{isZh ? '添加组件' : 'Add'}</span>
+          </div>
+          <div className={cn('flex items-center gap-1', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
+            <kbd className={cn('px-1 rounded', theme === 'dark' ? 'bg-slate-700' : 'bg-gray-200')}>R</kbd>
+            <span>{isZh ? '旋转' : 'Rotate'}</span>
+          </div>
+          <div className={cn('flex items-center gap-1', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
+            <kbd className={cn('px-1 rounded', theme === 'dark' ? 'bg-slate-700' : 'bg-gray-200')}>Del</kbd>
+            <span>{isZh ? '删除' : 'Delete'}</span>
+          </div>
+          <div className={cn('flex items-center gap-1', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
+            <kbd className={cn('px-1 rounded', theme === 'dark' ? 'bg-slate-700' : 'bg-gray-200')}>Space</kbd>
+            <span>{isZh ? '模拟' : 'Simulate'}</span>
+          </div>
+        </div>
       </div>
     </div>
   )
