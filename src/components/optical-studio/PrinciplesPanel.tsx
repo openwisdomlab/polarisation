@@ -12,6 +12,7 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
@@ -27,6 +28,8 @@ import {
   PinOff,
   BookOpen,
   Sparkles,
+  ExternalLink,
+  GraduationCap,
 } from 'lucide-react'
 
 // ============================================
@@ -48,6 +51,8 @@ interface Principle {
   tipZh: string
   color: string
   relatedComponents: string[]
+  linkedDemo?: string // Link to demos page
+  courseUnit?: number // Related course unit
 }
 
 // ============================================
@@ -66,6 +71,8 @@ const PRINCIPLES: Principle[] = [
     tipZh: '利用正交偏振可以在干涉仪中分离光路。',
     color: '#22d3ee',
     relatedComponents: ['polarizer', 'splitter'],
+    linkedDemo: 'polarization-types',
+    courseUnit: 0,
   },
   {
     id: 'malus',
@@ -79,6 +86,8 @@ const PRINCIPLES: Principle[] = [
     tipZh: '90°夹角完全阻挡光；45°夹角透过50%光强。',
     color: '#3b82f6',
     relatedComponents: ['polarizer', 'emitter'],
+    linkedDemo: 'malus-law',
+    courseUnit: 1,
   },
   {
     id: 'birefringence',
@@ -91,6 +100,8 @@ const PRINCIPLES: Principle[] = [
     tipZh: '双折射晶体用于偏振分束器和波片。',
     color: '#8b5cf6',
     relatedComponents: ['splitter', 'waveplate'],
+    linkedDemo: 'birefringence',
+    courseUnit: 1,
   },
   {
     id: 'interference',
@@ -104,6 +115,8 @@ const PRINCIPLES: Principle[] = [
     tipZh: '理解干涉是掌握波片原理的关键。',
     color: '#f59e0b',
     relatedComponents: ['waveplate'],
+    linkedDemo: 'waveplate',
+    courseUnit: 1,
   },
 ]
 
@@ -338,6 +351,43 @@ function PrincipleDetailCard({ principle, onClose }: PrincipleDetailCardProps) {
           </div>
           <PrincipleMiniDiagram principleId={principle.id} />
         </div>
+
+        {/* Link to Course Demo */}
+        {principle.linkedDemo && (
+          <Link
+            to={`/demos?demo=${principle.linkedDemo}`}
+            className={cn(
+              'flex items-center justify-between p-3 rounded-xl border transition-all group',
+              theme === 'dark'
+                ? 'bg-gradient-to-r from-indigo-500/10 to-violet-500/10 border-indigo-500/30 hover:border-indigo-400/50'
+                : 'bg-gradient-to-r from-indigo-50 to-violet-50 border-indigo-200 hover:border-indigo-300'
+            )}
+          >
+            <div className="flex items-center gap-2">
+              <div className={cn(
+                'w-7 h-7 rounded-lg flex items-center justify-center',
+                theme === 'dark' ? 'bg-indigo-500/20' : 'bg-indigo-100'
+              )}>
+                <GraduationCap className={cn('w-4 h-4', theme === 'dark' ? 'text-indigo-400' : 'text-indigo-600')} />
+              </div>
+              <div>
+                <span className={cn('text-xs font-medium block', theme === 'dark' ? 'text-white' : 'text-gray-900')}>
+                  {isZh ? '深入学习' : 'Learn More'}
+                </span>
+                <span className={cn('text-[10px]', theme === 'dark' ? 'text-gray-400' : 'text-gray-500')}>
+                  {isZh ? `课程单元 ${principle.courseUnit}` : `Course Unit ${principle.courseUnit}`}
+                </span>
+              </div>
+            </div>
+            <div className={cn(
+              'flex items-center gap-1 transition-transform group-hover:translate-x-1',
+              theme === 'dark' ? 'text-indigo-400' : 'text-indigo-600'
+            )}>
+              <span className="text-[10px]">{isZh ? '查看演示' : 'View Demo'}</span>
+              <ExternalLink className="w-3 h-3" />
+            </div>
+          </Link>
+        )}
       </div>
     </div>
   )
