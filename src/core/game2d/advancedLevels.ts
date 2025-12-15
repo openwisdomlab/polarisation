@@ -730,6 +730,747 @@ export const ADVANCED_LEVELS: AdvancedLevel[] = [
       },
     ],
   },
+
+  // =========================================
+  // Level A7: Optical AND Gate
+  // =========================================
+  {
+    id: 'optical-and',
+    name: 'Optical AND Gate',
+    nameZh: '光学与门',
+    description:
+      'Build an AND gate using a coincidence counter: output ON only when BOTH inputs arrive with correct phase relationship.',
+    descriptionZh:
+      '使用符合计数器构建与门：只有当两个输入以正确的相位关系同时到达时，输出才为ON。',
+    difficulty: 'grandmaster',
+    category: 'logic',
+    hint: 'The coincidence counter requires two beams with Δφ=0° (in-phase) to activate.',
+    hintZh: '符合计数器需要两束相位差Δφ=0°（同相）的光才能激活。',
+    concepts: [
+      'AND truth table: 0∧0=0, 0∧1=0, 1∧0=0, 1∧1=1',
+      'Coincidence detection requires simultaneous arrival',
+      'Phase matching is essential for coincidence',
+      'Two independent paths must be aligned',
+    ],
+    conceptsZh: [
+      '与门真值表：0∧0=0, 0∧1=0, 1∧0=0, 1∧1=1',
+      '符合检测需要同时到达',
+      '相位匹配对于符合检测至关重要',
+      '两条独立路径必须对齐',
+    ],
+    goalDescription: 'Coincidence counter activates only when both sources are on and in-phase',
+    goalDescriptionZh: '只有当两个光源都开启且同相时，符合计数器才激活',
+    gridSize: { width: 100, height: 100 },
+    openEnded: false,
+    components: [
+      // Source A
+      {
+        id: 'ea',
+        type: 'emitter',
+        x: 10,
+        y: 30,
+        angle: 0,
+        polarizationAngle: 0,
+        direction: 'right',
+        locked: true,
+      },
+      // Source B
+      {
+        id: 'eb',
+        type: 'emitter',
+        x: 10,
+        y: 70,
+        angle: 0,
+        polarizationAngle: 0,
+        direction: 'right',
+        locked: true,
+      },
+      // Phase shifter for path A (player adjusts)
+      {
+        id: 'ps_a',
+        type: 'phaseShifter',
+        x: 35,
+        y: 30,
+        angle: 0,
+        phaseShift: 0,
+        locked: false,
+      },
+      // Phase shifter for path B (player adjusts)
+      {
+        id: 'ps_b',
+        type: 'phaseShifter',
+        x: 35,
+        y: 70,
+        angle: 0,
+        phaseShift: 0,
+        locked: false,
+      },
+      // Mirror A
+      {
+        id: 'm_a',
+        type: 'mirror',
+        x: 60,
+        y: 30,
+        angle: 45,
+        locked: true,
+      },
+      // Mirror B
+      {
+        id: 'm_b',
+        type: 'mirror',
+        x: 60,
+        y: 70,
+        angle: 135,
+        locked: true,
+      },
+      // Coincidence counter - requires BOTH beams with Δφ=0
+      {
+        id: 'cc1',
+        type: 'coincidenceCounter',
+        x: 60,
+        y: 50,
+        angle: 0,
+        requiredBeamCount: 2,
+        requiredPhaseDifference: 0, // In-phase
+        phaseTolerance: 30,
+        locked: true,
+      },
+      // Output sensor
+      {
+        id: 's1',
+        type: 'sensor',
+        x: 85,
+        y: 50,
+        angle: 0,
+        requiredIntensity: 80,
+        locked: true,
+      },
+    ],
+  },
+
+  // =========================================
+  // Level A8: Optical Diode
+  // =========================================
+  {
+    id: 'optical-diode',
+    name: 'Optical Diode',
+    nameZh: '光学二极管',
+    description:
+      'Use an optical isolator to create a one-way light path. Light must reach the sensor, but back-reflections must be blocked.',
+    descriptionZh:
+      '使用光学隔离器创建单向光路。光必须到达传感器，但反射光必须被阻挡。',
+    difficulty: 'master',
+    category: 'logic',
+    hint: 'The optical isolator uses Faraday rotation. Forward light passes with rotation, backward light is blocked.',
+    hintZh: '光学隔离器使用法拉第旋转。正向光通过并旋转，反向光被阻挡。',
+    concepts: [
+      'Non-reciprocal optical devices',
+      'Faraday rotation breaks time-reversal symmetry',
+      'Optical isolators protect laser sources',
+      '45° Faraday rotation + polarizer = one-way valve',
+    ],
+    conceptsZh: [
+      '非互易光学器件',
+      '法拉第旋转打破时间反演对称性',
+      '光学隔离器保护激光源',
+      '45°法拉第旋转 + 偏振片 = 单向阀',
+    ],
+    goalDescription: 'Light reaches the sensor, but reflections cannot return to source',
+    goalDescriptionZh: '光到达传感器，但反射不能返回光源',
+    gridSize: { width: 100, height: 100 },
+    openEnded: false,
+    components: [
+      // Light source
+      {
+        id: 'e1',
+        type: 'emitter',
+        x: 10,
+        y: 50,
+        angle: 0,
+        polarizationAngle: 0,
+        direction: 'right',
+        locked: true,
+      },
+      // Input polarizer
+      {
+        id: 'p1',
+        type: 'polarizer',
+        x: 25,
+        y: 50,
+        angle: 0,
+        polarizationAngle: 0,
+        locked: false,
+      },
+      // Optical isolator (player positions correctly)
+      {
+        id: 'iso1',
+        type: 'opticalIsolator',
+        x: 45,
+        y: 50,
+        angle: 0,
+        allowedDirection: 'right',
+        faradayRotation: 45,
+        locked: false,
+      },
+      // Mirror (creates potential back-reflection)
+      {
+        id: 'm1',
+        type: 'mirror',
+        x: 70,
+        y: 50,
+        angle: 45,
+        locked: true,
+      },
+      // Second mirror
+      {
+        id: 'm2',
+        type: 'mirror',
+        x: 70,
+        y: 30,
+        angle: 135,
+        locked: true,
+      },
+      // Partial mirror that creates back-reflection
+      {
+        id: 'm3',
+        type: 'mirror',
+        x: 85,
+        y: 30,
+        angle: 45,
+        locked: true,
+      },
+      // Output sensor
+      {
+        id: 's1',
+        type: 'sensor',
+        x: 85,
+        y: 50,
+        angle: 0,
+        requiredIntensity: 30,
+        locked: true,
+      },
+    ],
+  },
+
+  // =========================================
+  // Level A9: Polarization Multiplexer
+  // =========================================
+  {
+    id: 'polarization-mux',
+    name: 'Polarization Multiplexer',
+    nameZh: '偏振复用器',
+    description:
+      'Encode two independent signals on orthogonal polarizations (H and V). Both must reach their respective sensors without crosstalk.',
+    descriptionZh:
+      '将两个独立信号编码在正交偏振上（水平和垂直）。两者都必须到达各自的传感器而不发生串扰。',
+    difficulty: 'grandmaster',
+    category: 'logic',
+    hint: 'PBS (Polarizing Beam Splitter) separates H and V. Use 90° rotator to switch between paths.',
+    hintZh: '偏振分束器（PBS）分离H和V。使用90°旋光器在路径之间切换。',
+    concepts: [
+      'Polarization Division Multiplexing (PDM)',
+      'Orthogonal polarizations do not interfere',
+      'PBS separates H and V components',
+      'Doubling channel capacity with dual polarization',
+    ],
+    conceptsZh: [
+      '偏振分复用（PDM）',
+      '正交偏振不会干涉',
+      'PBS分离H和V分量',
+      '使用双偏振使信道容量翻倍',
+    ],
+    goalDescription: 'H-signal to Sensor H, V-signal to Sensor V, with no crosstalk',
+    goalDescriptionZh: 'H信号到传感器H，V信号到传感器V，无串扰',
+    gridSize: { width: 100, height: 100 },
+    openEnded: true,
+    components: [
+      // H-polarized source
+      {
+        id: 'e_h',
+        type: 'emitter',
+        x: 10,
+        y: 35,
+        angle: 0,
+        polarizationAngle: 0, // Horizontal
+        direction: 'right',
+        locked: true,
+      },
+      // V-polarized source
+      {
+        id: 'e_v',
+        type: 'emitter',
+        x: 10,
+        y: 65,
+        angle: 0,
+        polarizationAngle: 90, // Vertical
+        direction: 'right',
+        locked: true,
+      },
+      // Combiner mirrors
+      {
+        id: 'm1',
+        type: 'mirror',
+        x: 30,
+        y: 35,
+        angle: 45,
+        locked: false,
+      },
+      {
+        id: 'm2',
+        type: 'mirror',
+        x: 30,
+        y: 65,
+        angle: 135,
+        locked: false,
+      },
+      // Combined beam splitter (PBS - separates by polarization)
+      {
+        id: 'pbs1',
+        type: 'splitter',
+        x: 50,
+        y: 50,
+        angle: 0,
+        crystalAxisAngle: 0, // H passes, V reflects
+        locked: false,
+      },
+      // Demux mirrors
+      {
+        id: 'm3',
+        type: 'mirror',
+        x: 70,
+        y: 50,
+        angle: 45,
+        locked: false,
+      },
+      {
+        id: 'm4',
+        type: 'mirror',
+        x: 50,
+        y: 30,
+        angle: 135,
+        locked: false,
+      },
+      // H sensor
+      {
+        id: 's_h',
+        type: 'sensor',
+        x: 90,
+        y: 35,
+        angle: 0,
+        requiredIntensity: 40,
+        requiredPolarization: 0,
+        locked: true,
+      },
+      // V sensor
+      {
+        id: 's_v',
+        type: 'sensor',
+        x: 90,
+        y: 65,
+        angle: 0,
+        requiredIntensity: 40,
+        requiredPolarization: 90,
+        locked: true,
+      },
+    ],
+  },
+
+  // =========================================
+  // Level A10: Quantum Key Distribution (BB84 Simulator)
+  // =========================================
+  {
+    id: 'qkd-bb84',
+    name: 'BB84 Key Distribution',
+    nameZh: 'BB84密钥分发',
+    description:
+      'Simulate the BB84 quantum key distribution protocol. Encode bits using two bases: rectilinear (H/V) and diagonal (+45/-45). Only matching bases allow successful key exchange.',
+    descriptionZh:
+      '模拟BB84量子密钥分发协议。使用两种基：直角基（H/V）和对角基（+45/-45）编码比特。只有匹配的基才能成功交换密钥。',
+    difficulty: 'legendary',
+    category: 'quantum',
+    hint: 'Alice encodes in random basis, Bob measures in random basis. Only when bases match is the bit correctly received.',
+    hintZh: 'Alice用随机基编码，Bob用随机基测量。只有基匹配时才能正确接收比特。',
+    concepts: [
+      'Quantum key distribution (QKD)',
+      'BB84 protocol uses two conjugate bases',
+      'No-cloning theorem prevents eavesdropping',
+      'Basis mismatch = 50% chance of wrong result',
+    ],
+    conceptsZh: [
+      '量子密钥分发（QKD）',
+      'BB84协议使用两个共轭基',
+      '不可克隆定理防止窃听',
+      '基不匹配 = 50%概率错误结果',
+    ],
+    goalDescription: 'Correctly decode the key bit by choosing the matching measurement basis',
+    goalDescriptionZh: '通过选择匹配的测量基正确解码密钥比特',
+    gridSize: { width: 100, height: 100 },
+    openEnded: false,
+    components: [
+      // Alice's source (encoding bit "1" in diagonal basis = -45°)
+      {
+        id: 'e_alice',
+        type: 'emitter',
+        x: 10,
+        y: 50,
+        angle: 0,
+        polarizationAngle: 135, // -45° = "1" in diagonal basis
+        direction: 'right',
+        locked: true,
+      },
+      // Bob's basis choice (polarizer)
+      {
+        id: 'p_bob',
+        type: 'polarizer',
+        x: 40,
+        y: 50,
+        angle: 0,
+        polarizationAngle: 135, // Player must match Alice's basis!
+        locked: false,
+      },
+      // Measurement device (splitter to detect polarization)
+      {
+        id: 'bs_measure',
+        type: 'splitter',
+        x: 60,
+        y: 50,
+        angle: 0,
+        crystalAxisAngle: 135, // Diagonal basis measurement
+        locked: false,
+      },
+      // "0" detector (135°)
+      {
+        id: 's_0',
+        type: 'sensor',
+        x: 85,
+        y: 30,
+        angle: 0,
+        requiredIntensity: 30,
+        locked: true,
+      },
+      // "1" detector (45°) - should light up for correct measurement
+      {
+        id: 's_1',
+        type: 'sensor',
+        x: 85,
+        y: 50,
+        angle: 0,
+        requiredIntensity: 70, // Most light should go here
+        locked: true,
+      },
+      // Mirror for path routing
+      {
+        id: 'm1',
+        type: 'mirror',
+        x: 60,
+        y: 30,
+        angle: 135,
+        locked: true,
+      },
+    ],
+  },
+
+  // =========================================
+  // Level A11: The Photonic Router
+  // =========================================
+  {
+    id: 'photonic-router',
+    name: 'The Photonic Router',
+    nameZh: '光子路由器',
+    description:
+      'Build a 2×2 optical switch. Using polarization and phase, route input A to output 1 AND input B to output 2, without any crosstalk.',
+    descriptionZh:
+      '构建2×2光学开关。使用偏振和相位，将输入A路由到输出1，将输入B路由到输出2，不产生任何串扰。',
+    difficulty: 'legendary',
+    category: 'logic',
+    hint: 'Use different polarizations to avoid crosstalk. Phase shifters and rotators can help direct beams.',
+    hintZh: '使用不同的偏振来避免串扰。相移器和旋光器可以帮助引导光束。',
+    concepts: [
+      'Optical switching and routing',
+      'Non-blocking switch architecture',
+      'Polarization as routing address',
+      'Phase control for constructive/destructive routing',
+    ],
+    conceptsZh: [
+      '光开关和路由',
+      '无阻塞开关架构',
+      '偏振作为路由地址',
+      '相位控制实现建设性/破坏性路由',
+    ],
+    goalDescription: 'Input A→Output 1, Input B→Output 2, with full isolation',
+    goalDescriptionZh: '输入A→输出1，输入B→输出2，完全隔离',
+    gridSize: { width: 100, height: 100 },
+    openEnded: true,
+    components: [
+      // Input A (H-polarized)
+      {
+        id: 'e_a',
+        type: 'emitter',
+        x: 5,
+        y: 25,
+        angle: 0,
+        polarizationAngle: 0,
+        direction: 'right',
+        locked: true,
+      },
+      // Input B (V-polarized)
+      {
+        id: 'e_b',
+        type: 'emitter',
+        x: 5,
+        y: 75,
+        angle: 0,
+        polarizationAngle: 90,
+        direction: 'right',
+        locked: true,
+      },
+      // Rotator for A
+      {
+        id: 'r_a',
+        type: 'rotator',
+        x: 20,
+        y: 25,
+        angle: 0,
+        rotationAmount: 45,
+        locked: false,
+      },
+      // Rotator for B
+      {
+        id: 'r_b',
+        type: 'rotator',
+        x: 20,
+        y: 75,
+        angle: 0,
+        rotationAmount: 45,
+        locked: false,
+      },
+      // Phase shifter A
+      {
+        id: 'ps_a',
+        type: 'phaseShifter',
+        x: 35,
+        y: 25,
+        angle: 0,
+        phaseShift: 0,
+        locked: false,
+      },
+      // Phase shifter B
+      {
+        id: 'ps_b',
+        type: 'phaseShifter',
+        x: 35,
+        y: 75,
+        angle: 0,
+        phaseShift: 180,
+        locked: false,
+      },
+      // First crossing point - mirrors
+      {
+        id: 'm1',
+        type: 'mirror',
+        x: 50,
+        y: 25,
+        angle: 45,
+        locked: false,
+      },
+      {
+        id: 'm2',
+        type: 'mirror',
+        x: 50,
+        y: 75,
+        angle: 135,
+        locked: false,
+      },
+      // Central PBS
+      {
+        id: 'pbs1',
+        type: 'splitter',
+        x: 50,
+        y: 50,
+        angle: 0,
+        locked: false,
+      },
+      // Second set of mirrors
+      {
+        id: 'm3',
+        type: 'mirror',
+        x: 65,
+        y: 50,
+        angle: 45,
+        locked: false,
+      },
+      {
+        id: 'm4',
+        type: 'mirror',
+        x: 65,
+        y: 35,
+        angle: 135,
+        locked: false,
+      },
+      // Optical isolators to prevent back-propagation
+      {
+        id: 'iso1',
+        type: 'opticalIsolator',
+        x: 80,
+        y: 25,
+        angle: 0,
+        allowedDirection: 'right',
+        faradayRotation: 45,
+        locked: false,
+      },
+      {
+        id: 'iso2',
+        type: 'opticalIsolator',
+        x: 80,
+        y: 75,
+        angle: 0,
+        allowedDirection: 'right',
+        faradayRotation: 45,
+        locked: false,
+      },
+      // Output 1 sensor (should receive A)
+      {
+        id: 's_1',
+        type: 'sensor',
+        x: 95,
+        y: 25,
+        angle: 0,
+        requiredIntensity: 40,
+        locked: true,
+      },
+      // Output 2 sensor (should receive B)
+      {
+        id: 's_2',
+        type: 'sensor',
+        x: 95,
+        y: 75,
+        angle: 0,
+        requiredIntensity: 40,
+        locked: true,
+      },
+    ],
+  },
+
+  // =========================================
+  // Level A12: Sagnac Interferometer
+  // =========================================
+  {
+    id: 'sagnac',
+    name: 'Sagnac Interferometer',
+    nameZh: 'Sagnac干涉仪',
+    description:
+      'Build a Sagnac loop where counter-propagating beams interfere. In the absence of rotation, both outputs show specific interference patterns.',
+    descriptionZh:
+      '构建Sagnac环，其中反向传播的光束发生干涉。在没有旋转的情况下，两个输出显示特定的干涉图样。',
+    difficulty: 'grandmaster',
+    category: 'interference',
+    hint: 'In a Sagnac interferometer, CW and CCW beams travel the same path length. Any non-reciprocal element breaks the symmetry.',
+    hintZh: '在Sagnac干涉仪中，顺时针和逆时针光束经过相同的光程。任何非互易元件都会打破对称性。',
+    concepts: [
+      'Sagnac effect measures rotation',
+      'Counter-propagating beams are naturally phase-locked',
+      'Non-reciprocal elements create phase difference',
+      'Used in fiber optic gyroscopes',
+    ],
+    conceptsZh: [
+      'Sagnac效应测量旋转',
+      '反向传播光束自然相位锁定',
+      '非互易元件产生相位差',
+      '用于光纤陀螺仪',
+    ],
+    goalDescription: 'Create balanced interference at both output ports',
+    goalDescriptionZh: '在两个输出端创建平衡的干涉',
+    gridSize: { width: 100, height: 100 },
+    openEnded: true,
+    components: [
+      // Light source
+      {
+        id: 'e1',
+        type: 'emitter',
+        x: 10,
+        y: 50,
+        angle: 0,
+        polarizationAngle: 0,
+        direction: 'right',
+        locked: true,
+      },
+      // Input beam splitter
+      {
+        id: 'bs1',
+        type: 'splitter',
+        x: 30,
+        y: 50,
+        angle: 0,
+        locked: true,
+      },
+      // Loop corner 1 (upper left)
+      {
+        id: 'm1',
+        type: 'mirror',
+        x: 30,
+        y: 25,
+        angle: 135,
+        locked: true,
+      },
+      // Loop corner 2 (upper right)
+      {
+        id: 'm2',
+        type: 'mirror',
+        x: 70,
+        y: 25,
+        angle: 45,
+        locked: true,
+      },
+      // Loop corner 3 (lower right)
+      {
+        id: 'm3',
+        type: 'mirror',
+        x: 70,
+        y: 75,
+        angle: 135,
+        locked: true,
+      },
+      // Loop corner 4 (lower left) - back to splitter
+      {
+        id: 'm4',
+        type: 'mirror',
+        x: 30,
+        y: 75,
+        angle: 45,
+        locked: true,
+      },
+      // Phase shifter in loop (affects both directions equally)
+      {
+        id: 'ps1',
+        type: 'phaseShifter',
+        x: 50,
+        y: 25,
+        angle: 0,
+        phaseShift: 0,
+        locked: false,
+      },
+      // Output port 1
+      {
+        id: 's1',
+        type: 'sensor',
+        x: 10,
+        y: 25,
+        angle: 0,
+        requiredIntensity: 45,
+        locked: true,
+      },
+      // Output port 2
+      {
+        id: 's2',
+        type: 'sensor',
+        x: 10,
+        y: 75,
+        angle: 0,
+        requiredIntensity: 45,
+        locked: true,
+      },
+    ],
+  },
 ]
 
 /**
