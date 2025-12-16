@@ -34,17 +34,6 @@ const CATEGORY_COLORS = {
   application: { dark: { bg: '#1f2937', stroke: '#9ca3af', text: '#d1d5db' }, light: { bg: '#f3f4f6', stroke: '#6b7280', text: '#4b5563' } },
 }
 
-// 光谱刻度数据 - 增强版
-const SPECTRUM_SCALES = [
-  { position: 8, labelEn: 'Radio', labelZh: '无线电', category: null, wavelength: '1m+' },
-  { position: 18, labelEn: 'Microwave', labelZh: '微波', category: null, wavelength: 'cm' },
-  { position: 28, labelEn: 'IR', labelZh: '红外', category: 'geometric', wavelength: 'μm' },
-  { position: 42, labelEn: 'Visible', labelZh: '可见光', category: 'wave', wavelength: '380-700nm', isVisible: true },
-  { position: 58, labelEn: 'UV', labelZh: '紫外', category: 'polarization', wavelength: '10-400nm' },
-  { position: 72, labelEn: 'X-ray', labelZh: 'X射线', category: 'quantum', wavelength: '0.01-10nm' },
-  { position: 88, labelEn: 'Gamma', labelZh: '伽马', category: null, wavelength: '<0.01nm' },
-]
-
 // 分支对应的光谱区域
 const BRANCH_SPECTRUM_REGIONS = {
   geometric: { start: 22, end: 38, label: 'mm-μm' },
@@ -64,6 +53,14 @@ interface SpectrumScaleBarProps {
   onHover?: (branch: string | null) => void
 }
 
+// 分支在光谱上的位置映射（横向排列映射到光谱）
+const BRANCH_SPECTRUM_POSITIONS = {
+  geometric: { center: 30, labelEn: 'Geometric', labelZh: '几何光学' },
+  wave: { center: 44, labelEn: 'Wave', labelZh: '波动光学' },
+  polarization: { center: 58, labelEn: 'Polarization', labelZh: '偏振光学' },
+  quantum: { center: 74, labelEn: 'Quantum', labelZh: '量子光学' },
+}
+
 function SpectrumScaleBar({ activeBranch, theme, isZh, onHover }: SpectrumScaleBarProps) {
   const getColor = (category: keyof typeof CATEGORY_COLORS | null) => {
     if (!category) return theme === 'dark'
@@ -72,31 +69,84 @@ function SpectrumScaleBar({ activeBranch, theme, isZh, onHover }: SpectrumScaleB
     return theme === 'dark' ? CATEGORY_COLORS[category].dark : CATEGORY_COLORS[category].light
   }
 
+  const branchOrder = ['geometric', 'wave', 'polarization', 'quantum'] as const
+
   return (
-    <div className="mt-6 px-4">
+    <div className="mt-8 px-4">
       {/* 标题 */}
       <motion.div
-        className="text-center mb-3"
+        className="text-center mb-4"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        transition={{ delay: 0.3 }}
       >
         <span className={cn(
           'text-sm font-medium',
           theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
         )}>
-          {isZh ? '电磁波谱与研究尺度' : 'Electromagnetic Spectrum & Research Scales'}
+          {isZh ? '光学分支与电磁波谱对应关系' : 'Optical Branches Mapped to Electromagnetic Spectrum'}
         </span>
       </motion.div>
 
       {/* 光谱条容器 */}
-      <div className="relative h-20">
+      <div className="relative h-32">
+        {/* 分支标签 - 横向排列在光谱上方 */}
+        <div className="absolute left-0 right-0 top-0 h-12">
+          {branchOrder.map((branchId, index) => {
+            const branch = BRANCH_SPECTRUM_POSITIONS[branchId]
+            const colors = getColor(branchId)
+            const isActive = activeBranch === branchId
+
+            return (
+              <motion.div
+                key={branchId}
+                className="absolute flex flex-col items-center cursor-pointer"
+                style={{ left: `${branch.center}%`, transform: 'translateX(-50%)' }}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + index * 0.1 }}
+                onMouseEnter={() => onHover?.(branchId)}
+                onMouseLeave={() => onHover?.(null)}
+              >
+                {/* 分支名称 */}
+                <motion.span
+                  className={cn(
+                    'text-xs font-bold px-2 py-1 rounded-md transition-all duration-200',
+                    isActive ? 'scale-110' : 'scale-100'
+                  )}
+                  style={{
+                    color: colors.stroke,
+                    backgroundColor: isActive ? `${colors.stroke}20` : 'transparent',
+                  }}
+                  animate={isActive ? {
+                    boxShadow: [`0 0 0px ${colors.stroke}`, `0 0 8px ${colors.stroke}`, `0 0 0px ${colors.stroke}`],
+                  } : {}}
+                  transition={{ duration: 1.5, repeat: isActive ? Infinity : 0 }}
+                >
+                  {isZh ? branch.labelZh : branch.labelEn}
+                </motion.span>
+
+                {/* 连接线到光谱 */}
+                <motion.div
+                  className="w-0.5 rounded-full"
+                  style={{
+                    backgroundColor: colors.stroke,
+                    height: isActive ? 16 : 10,
+                    opacity: isActive ? 1 : 0.5,
+                  }}
+                  animate={{ height: isActive ? 16 : 10 }}
+                />
+              </motion.div>
+            )
+          })}
+        </div>
+
         {/* 主光谱渐变条 */}
         <motion.div
-          className="absolute left-0 right-0 top-6 h-4 rounded-full overflow-hidden"
+          className="absolute left-0 right-0 top-14 h-5 rounded-full overflow-hidden"
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
-          transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
+          transition={{ duration: 0.8, delay: 0.5, ease: 'easeOut' }}
           style={{ transformOrigin: 'left' }}
         >
           <div
@@ -119,12 +169,12 @@ function SpectrumScaleBar({ activeBranch, theme, isZh, onHover }: SpectrumScaleB
             className="absolute inset-0"
             style={{
               background: `linear-gradient(to right,
-                ${theme === 'dark' ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.5)'} 0%,
-                ${theme === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.3)'} 35%,
-                transparent 38%,
-                transparent 52%,
-                ${theme === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.3)'} 55%,
-                ${theme === 'dark' ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.5)'} 100%
+                ${theme === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.4)'} 0%,
+                ${theme === 'dark' ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.2)'} 30%,
+                transparent 35%,
+                transparent 55%,
+                ${theme === 'dark' ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.2)'} 60%,
+                ${theme === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.4)'} 100%
               )`,
             }}
           />
@@ -134,7 +184,7 @@ function SpectrumScaleBar({ activeBranch, theme, isZh, onHover }: SpectrumScaleB
         <AnimatePresence>
           {activeBranch && BRANCH_SPECTRUM_REGIONS[activeBranch as keyof typeof BRANCH_SPECTRUM_REGIONS] && (
             <motion.div
-              className="absolute top-5 h-6 rounded-full border-2"
+              className="absolute top-[52px] h-7 rounded-full border-2"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
@@ -142,262 +192,62 @@ function SpectrumScaleBar({ activeBranch, theme, isZh, onHover }: SpectrumScaleB
                 left: `${BRANCH_SPECTRUM_REGIONS[activeBranch as keyof typeof BRANCH_SPECTRUM_REGIONS].start}%`,
                 width: `${BRANCH_SPECTRUM_REGIONS[activeBranch as keyof typeof BRANCH_SPECTRUM_REGIONS].end - BRANCH_SPECTRUM_REGIONS[activeBranch as keyof typeof BRANCH_SPECTRUM_REGIONS].start}%`,
                 borderColor: getColor(activeBranch as keyof typeof CATEGORY_COLORS).stroke,
-                boxShadow: `0 0 12px ${getColor(activeBranch as keyof typeof CATEGORY_COLORS).stroke}`,
+                boxShadow: `0 0 15px ${getColor(activeBranch as keyof typeof CATEGORY_COLORS).stroke}`,
               }}
             />
           )}
         </AnimatePresence>
 
-        {/* 刻度标记 */}
-        {SPECTRUM_SCALES.map((scale, index) => {
-          const colors = getColor(scale.category as keyof typeof CATEGORY_COLORS | null)
-          const isActive = activeBranch && scale.category === activeBranch
-
-          return (
+        {/* 波长刻度 - 在光谱下方 */}
+        <div className="absolute left-0 right-0 top-[82px] flex justify-between px-4">
+          {[
+            { pos: 5, label: '1m+', labelZh: '无线电' },
+            { pos: 20, label: 'cm', labelZh: '微波' },
+            { pos: 35, label: 'μm', labelZh: '红外' },
+            { pos: 45, label: '380-700nm', labelZh: '可见光' },
+            { pos: 60, label: '10-400nm', labelZh: '紫外' },
+            { pos: 75, label: '0.01-10nm', labelZh: 'X射线' },
+            { pos: 92, label: '<0.01nm', labelZh: '伽马' },
+          ].map((scale, index) => (
             <motion.div
               key={index}
-              className="absolute flex flex-col items-center"
-              style={{ left: `${scale.position}%`, transform: 'translateX(-50%)' }}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ delay: 0.7 + index * 0.05 }}
-              onMouseEnter={() => scale.category && onHover?.(scale.category)}
-              onMouseLeave={() => onHover?.(null)}
             >
-              {/* 上方标签 */}
               <span className={cn(
-                'text-[10px] font-medium transition-all duration-200',
-                isActive ? 'scale-110' : 'scale-100'
-              )} style={{ color: isActive ? colors.stroke : colors.text }}>
-                {isZh ? scale.labelZh : scale.labelEn}
-              </span>
-
-              {/* 刻度线 */}
-              <motion.div
-                className="w-0.5 my-1 rounded-full"
-                style={{
-                  backgroundColor: isActive ? colors.stroke : colors.text,
-                  height: isActive ? 12 : 8,
-                }}
-                animate={{ height: isActive ? 12 : 8 }}
-              />
-
-              {/* 下方波长标注 */}
-              <span className={cn(
-                'text-[9px] transition-opacity duration-200',
-                isActive ? 'opacity-100' : 'opacity-50'
-              )} style={{ color: colors.text }}>
-                {scale.wavelength}
+                'text-[9px]',
+                theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+              )}>
+                {scale.label}
               </span>
             </motion.div>
-          )
-        })}
-
-        {/* 可见光区域标注 */}
-        <motion.div
-          className={cn(
-            'absolute text-[10px] px-2 py-0.5 rounded-full',
-            theme === 'dark' ? 'bg-emerald-900/50 text-emerald-300' : 'bg-emerald-100 text-emerald-700'
-          )}
-          style={{ left: '45%', top: '75%', transform: 'translateX(-50%)' }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-        >
-          {isZh ? '可见光区' : 'Visible'}
-        </motion.div>
+          ))}
+        </div>
       </div>
 
       {/* 波长方向指示 */}
-      <div className="flex justify-between mt-1 px-2">
+      <div className="flex justify-between mt-2 px-2">
         <span className={cn('text-[10px]', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
           {isZh ? '← 长波 (低能)' : '← Long λ (Low E)'}
         </span>
+        <motion.span
+          className={cn(
+            'text-[10px] px-2 py-0.5 rounded-full',
+            theme === 'dark' ? 'bg-emerald-900/50 text-emerald-300' : 'bg-emerald-100 text-emerald-700'
+          )}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.9 }}
+        >
+          {isZh ? '可见光区' : 'Visible Light'}
+        </motion.span>
         <span className={cn('text-[10px]', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}>
           {isZh ? '短波 (高能) →' : 'Short λ (High E) →'}
         </span>
       </div>
     </div>
-  )
-}
-
-// ============================================
-// 子组件：偏振光专属正弦波光束 (PolarizationBeam)
-// 动态正弦波路径，模拟横波振动
-// ============================================
-interface PolarizationBeamProps {
-  startX: number
-  startY: number
-  endX: number
-  endY: number
-  color: string
-  isActive: boolean
-}
-
-function PolarizationBeam({ startX, startY, endX, endY, color, isActive }: PolarizationBeamProps) {
-  // 生成多帧正弦波路径用于动画
-  const generateSineWavePath = useCallback((phase: number = 0, amplitude: number = 12, frequency: number = 4) => {
-    const dx = endX - startX
-    const dy = endY - startY
-    const angle = Math.atan2(dy, dx)
-
-    let path = `M ${startX} ${startY}`
-    const steps = 80
-
-    for (let i = 1; i <= steps; i++) {
-      const t = i / steps
-      const baseX = startX + dx * t
-      const baseY = startY + dy * t
-      // 渐变振幅，末端减弱
-      const ampFactor = Math.sin(t * Math.PI) * (isActive ? 1 : 0.5)
-      const offset = Math.sin((t * Math.PI * 2 * frequency) + phase) * amplitude * ampFactor
-      const perpX = -Math.sin(angle) * offset
-      const perpY = Math.cos(angle) * offset
-      path += ` L ${baseX + perpX} ${baseY + perpY}`
-    }
-
-    return path
-  }, [startX, startY, endX, endY, isActive])
-
-  // 生成多个相位的路径用于动画
-  const paths = useMemo(() => {
-    const pathFrames = []
-    for (let i = 0; i <= 20; i++) {
-      pathFrames.push(generateSineWavePath((i / 20) * Math.PI * 2))
-    }
-    return pathFrames
-  }, [generateSineWavePath])
-
-  return (
-    <g>
-      {/* 发光背景层 */}
-      <motion.path
-        d={paths[0]}
-        fill="none"
-        stroke={color}
-        strokeWidth={isActive ? 8 : 4}
-        strokeLinecap="round"
-        opacity={0.3}
-        filter="url(#beam-glow)"
-        animate={{
-          d: paths,
-        }}
-        transition={{
-          d: {
-            duration: 2,
-            repeat: Infinity,
-            ease: 'linear',
-          }
-        }}
-      />
-      {/* 主光束 */}
-      <motion.path
-        d={paths[0]}
-        fill="none"
-        stroke={color}
-        strokeWidth={isActive ? 3 : 2}
-        strokeLinecap="round"
-        animate={{
-          d: paths,
-          opacity: isActive ? [0.8, 1, 0.8] : 0.6,
-        }}
-        transition={{
-          d: {
-            duration: 2,
-            repeat: Infinity,
-            ease: 'linear',
-          },
-          opacity: {
-            duration: 1.5,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }
-        }}
-      />
-      {/* 流动粒子效果 */}
-      {isActive && (
-        <motion.circle
-          r={4}
-          fill={color}
-          filter="url(#particle-glow)"
-          animate={{
-            offsetDistance: ['0%', '100%'],
-            opacity: [0, 1, 1, 0],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: 'linear',
-          }}
-          style={{
-            offsetPath: `path('${generateSineWavePath(0)}')`,
-          }}
-        />
-      )}
-    </g>
-  )
-}
-
-// ============================================
-// 子组件：普通光束 (LightBeam)
-// 带流动动画的贝塞尔曲线光束
-// ============================================
-interface LightBeamProps {
-  path: string
-  color: string
-  isActive: boolean
-  delay?: number
-}
-
-function LightBeam({ path, color, isActive, delay = 0 }: LightBeamProps) {
-  return (
-    <g>
-      {/* 发光背景 */}
-      <motion.path
-        d={path}
-        fill="none"
-        stroke={color}
-        strokeWidth={isActive ? 6 : 3}
-        strokeLinecap="round"
-        opacity={0.2}
-        filter="url(#beam-glow)"
-        initial={{ pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{ duration: 0.8, delay: delay + 0.3 }}
-      />
-      {/* 主光束 */}
-      <motion.path
-        d={path}
-        fill="none"
-        stroke={color}
-        strokeWidth={isActive ? 3 : 2}
-        strokeLinecap="round"
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={{
-          pathLength: 1,
-          opacity: isActive ? 1 : 0.5,
-        }}
-        transition={{ duration: 0.8, delay }}
-      />
-      {/* 流动效果 */}
-      <motion.path
-        d={path}
-        fill="none"
-        stroke="white"
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeDasharray="8 24"
-        opacity={isActive ? 0.6 : 0.2}
-        animate={{
-          strokeDashoffset: [32, 0],
-        }}
-        transition={{
-          duration: 1,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-      />
-    </g>
   )
 }
 
@@ -839,173 +689,10 @@ function OpticalOverviewDiagram({ onFilterChange }: OpticalOverviewDiagramProps)
             transition={{ duration: 0.4, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            {/* 主要内容区域 */}
+            {/* 主要内容区域 - 横向排列的四大分支 */}
             <div className="p-6">
-              {/* 三段式布局：光源 - SVG连接 - 卡片 */}
-              <div className="grid lg:grid-cols-[180px_1fr_320px] gap-6 items-center">
-
-                {/* 左侧：光源与棱镜 */}
-                <div className="hidden lg:flex flex-col items-center gap-4">
-                  {/* 白光光源 */}
-                  <motion.div
-                    className="relative"
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    {/* 发光晕圈 */}
-                    <motion.div
-                      className="absolute -inset-4 rounded-full"
-                      style={{
-                        background: 'radial-gradient(circle, rgba(251,191,36,0.4) 0%, transparent 70%)',
-                      }}
-                      animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [0.5, 0.8, 0.5],
-                      }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    />
-                    {/* 光源核心 */}
-                    <div className={cn(
-                      'w-20 h-20 rounded-full flex flex-col items-center justify-center',
-                      'bg-gradient-to-br from-amber-200 via-yellow-100 to-amber-200',
-                      'shadow-lg shadow-amber-200/50'
-                    )}>
-                      <Sun className="w-6 h-6 text-amber-600" />
-                      <span className="text-xs font-bold text-amber-800 mt-1">
-                        {isZh ? '白光' : 'White'}
-                      </span>
-                    </div>
-                  </motion.div>
-
-                  <motion.span
-                    className={cn('text-xs', theme === 'dark' ? 'text-gray-500' : 'text-gray-400')}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                  >
-                    {isZh ? '光的本质' : 'Nature of Light'}
-                  </motion.span>
-
-                  {/* 棱镜 */}
-                  <motion.div
-                    className="relative mt-4"
-                    initial={{ scale: 0, rotate: -30 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ delay: 0.3, type: 'spring' }}
-                  >
-                    <svg width="100" height="100" viewBox="0 0 100 100">
-                      <defs>
-                        <linearGradient id="prism-fill" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor={theme === 'dark' ? '#64748b' : '#e2e8f0'} />
-                          <stop offset="50%" stopColor={theme === 'dark' ? '#475569' : '#f1f5f9'} />
-                          <stop offset="100%" stopColor={theme === 'dark' ? '#334155' : '#cbd5e1'} />
-                        </linearGradient>
-                        <filter id="prism-shadow">
-                          <feDropShadow dx="2" dy="4" stdDeviation="4" floodOpacity="0.3" />
-                        </filter>
-                      </defs>
-                      <polygon
-                        points="50,10 90,80 10,80"
-                        fill="url(#prism-fill)"
-                        stroke={theme === 'dark' ? '#94a3b8' : '#64748b'}
-                        strokeWidth="2"
-                        filter="url(#prism-shadow)"
-                      />
-                      {/* 棱镜高光 */}
-                      <polygon
-                        points="50,20 75,70 25,70"
-                        fill={theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.6)'}
-                      />
-                    </svg>
-                  </motion.div>
-
-                  <motion.span
-                    className={cn('text-xs font-medium', theme === 'dark' ? 'text-gray-400' : 'text-gray-500')}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                  >
-                    {isZh ? '物理学棱镜' : 'Physics Prism'}
-                  </motion.span>
-                </div>
-
-                {/* 中央：SVG 光束连接层 */}
-                <div className="relative h-[400px] hidden lg:block">
-                  <svg
-                    viewBox="0 0 300 400"
-                    className="w-full h-full"
-                    style={{ overflow: 'visible' }}
-                  >
-                    <defs>
-                      {/* 光束发光滤镜 */}
-                      <filter id="beam-glow" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="3" result="blur" />
-                        <feMerge>
-                          <feMergeNode in="blur" />
-                          <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                      </filter>
-                      <filter id="particle-glow" x="-100%" y="-100%" width="300%" height="300%">
-                        <feGaussianBlur stdDeviation="2" />
-                      </filter>
-                    </defs>
-
-                    {/* 几何光学光束 */}
-                    <LightBeam
-                      path="M 0 200 Q 80 120 280 60"
-                      color="#f97316"
-                      isActive={activeBranch === 'geometric'}
-                      delay={0.1}
-                    />
-
-                    {/* 波动光学光束 */}
-                    <LightBeam
-                      path="M 0 200 Q 100 160 280 140"
-                      color="#22c55e"
-                      isActive={activeBranch === 'wave'}
-                      delay={0.2}
-                    />
-
-                    {/* 偏振光学光束 - 特殊正弦波 */}
-                    <PolarizationBeam
-                      startX={0}
-                      startY={200}
-                      endX={280}
-                      endY={220}
-                      color="#22d3ee"
-                      isActive={activeBranch === 'polarization'}
-                    />
-
-                    {/* 量子光学光束 */}
-                    <LightBeam
-                      path="M 0 200 Q 120 280 280 340"
-                      color="#a855f7"
-                      isActive={activeBranch === 'quantum'}
-                      delay={0.4}
-                    />
-                  </svg>
-                </div>
-
-                {/* 右侧：分支卡片网格 */}
-                <div className="grid grid-cols-1 gap-3">
-                  {branches.map((branch, index) => (
-                    <BranchCard
-                      key={branch.id}
-                      branch={branch}
-                      isSelected={selectedBranch === branch.id}
-                      isZh={isZh}
-                      theme={theme}
-                      onClick={() => handleBranchSelect(branch.id)}
-                      onHover={(hovered) => setHoveredBranch(hovered ? branch.id : null)}
-                      index={index}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* 移动端简化视图 */}
-              <div className="lg:hidden grid grid-cols-2 gap-3 mt-4">
+              {/* 横向排列的分支卡片 */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {branches.map((branch, index) => (
                   <BranchCard
                     key={branch.id}
