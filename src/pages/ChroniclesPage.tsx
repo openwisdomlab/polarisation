@@ -197,9 +197,9 @@ function OpticalOverviewDiagram({ onNodeClick }: OpticalOverviewDiagramProps) {
 
   const getNodeRadius = (size: string) => {
     switch (size) {
-      case 'large': return 28
-      case 'medium': return 20
-      default: return 14
+      case 'large': return 5.5
+      case 'medium': return 4
+      default: return 3
     }
   }
 
@@ -262,10 +262,10 @@ function OpticalOverviewDiagram({ onNodeClick }: OpticalOverviewDiagramProps) {
           <motion.circle
             cx={`${node.x}%`}
             cy={`${node.y}%`}
-            r={radius + 12}
+            r={radius + 2}
             fill="none"
             stroke={colors.stroke}
-            strokeWidth="2"
+            strokeWidth="0.4"
             variants={pulseVariants}
             animate="animate"
           />
@@ -276,7 +276,7 @@ function OpticalOverviewDiagram({ onNodeClick }: OpticalOverviewDiagramProps) {
           <motion.circle
             cx={`${node.x}%`}
             cy={`${node.y}%`}
-            r={radius + 8}
+            r={radius + 1.5}
             fill={colors.stroke}
             opacity={0.15}
             variants={glowVariants}
@@ -291,16 +291,16 @@ function OpticalOverviewDiagram({ onNodeClick }: OpticalOverviewDiagramProps) {
           r={radius}
           fill={colors.bg}
           stroke={colors.stroke}
-          strokeWidth={isPolarization ? 3 : 2}
+          strokeWidth={isPolarization ? 0.5 : 0.3}
         />
 
         {/* 节点名称 */}
         <text
           x={`${node.x}%`}
-          y={`${node.y}%`}
+          y={`${node.y + (node.size === 'large' ? 4 : node.size === 'medium' ? 3.5 : 3)}%`}
           textAnchor="middle"
-          dominantBaseline="middle"
-          fontSize={node.size === 'large' ? 10 : node.size === 'medium' ? 8 : 7}
+          dominantBaseline="hanging"
+          fontSize={node.size === 'large' ? 2.8 : node.size === 'medium' ? 2.4 : 2}
           fontWeight={node.size === 'large' ? 'bold' : 'normal'}
           fill={colors.text}
         >
@@ -311,9 +311,9 @@ function OpticalOverviewDiagram({ onNodeClick }: OpticalOverviewDiagramProps) {
         {node.year && isHovered && (
           <text
             x={`${node.x}%`}
-            y={`${node.y + 5}%`}
+            y={`${node.y + (node.size === 'large' ? 7 : node.size === 'medium' ? 6 : 5)}%`}
             textAnchor="middle"
-            fontSize="8"
+            fontSize="1.8"
             fill={theme === 'dark' ? '#94a3b8' : '#64748b'}
           >
             {node.year}
