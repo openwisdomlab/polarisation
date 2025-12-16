@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
 import { useTheme } from '@/contexts/ThemeContext'
-import { ModuleIconMap, type ModuleIconKey, PolarCraftLogo } from '@/components/icons'
+import { ModuleIconMap, type ModuleIconKey, PolarCraftLogo, OpenWisdomLabLogo } from '@/components/icons'
 
 // Polarization angle colors for visual effect (based on polarization physics)
 const POLARIZATION_COLORS = [
@@ -762,9 +762,20 @@ export function HomePage() {
       <footer className={`mt-6 sm:mt-10 md:mt-12 text-center text-xs sm:text-sm relative z-10 ${
         theme === 'dark' ? 'text-gray-600' : 'text-gray-500'
       }`}>
-        <p>
+        <p className="mb-4">
           PolarCraft
         </p>
+        {/* Open Wisdom Lab Logo */}
+        <div className="flex justify-center items-center">
+          <a
+            href="https://www.openwisdomlab.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-opacity hover:opacity-80"
+          >
+            <OpenWisdomLabLogo height={50} theme={theme} />
+          </a>
+        </div>
       </footer>
     </div>
   )
