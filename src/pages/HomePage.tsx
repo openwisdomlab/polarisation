@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
 import { useTheme } from '@/contexts/ThemeContext'
-import { ModuleIconMap, type ModuleIconKey } from '@/components/icons'
+import { ModuleIconMap, type ModuleIconKey, PolarCraftLogo } from '@/components/icons'
 
 // Polarization angle colors for visual effect (based on polarization physics)
 const POLARIZATION_COLORS = [
@@ -724,7 +724,10 @@ export function HomePage() {
 
       {/* Header */}
       <header className="text-center mb-6 sm:mb-10 md:mb-12 relative z-10 px-2">
-        {/* Logo temporarily removed */}
+        {/* PolarCraft Logo */}
+        <div className="flex justify-center mb-4 sm:mb-6">
+          <PolarCraftLogo size={80} theme={theme} animated />
+        </div>
         <h1 className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 ${
           theme === 'dark'
             ? 'text-cyan-400 drop-shadow-[0_0_30px_rgba(100,200,255,0.5)]'
