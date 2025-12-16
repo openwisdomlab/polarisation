@@ -437,7 +437,7 @@ function OpticalOverviewDiagram() {
                 },
               ]
 
-              return nestedConfig.map((config, index) => {
+              return nestedConfig.map((config) => {
                 const { branch, x, y, width, height, labelPosition } = config
                 const colors = getColor(branch.category)
                 const isSelected = selectedBranch === branch.id
