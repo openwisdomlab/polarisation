@@ -273,26 +273,31 @@ function MediaModal({ media, onClose, seriesMedia, onNavigate }: MediaModalProps
           <X className="w-5 h-5" />
         </button>
 
-        {/* Media content - Use contain mode for modal to show full image without cropping */}
+        {/* Media content - Dynamic aspect ratio based on content */}
         <div className={cn(
-          'aspect-video',
+          'flex items-center justify-center',
           theme === 'dark' ? 'bg-slate-950' : 'bg-gray-900'
         )}>
           {isVideo ? (
-            <SecureVideoPlayer
+            <video
               src={media.path}
               poster={media.thumbnail}
-              className="w-full h-full"
+              className="max-w-full max-h-[70vh] w-auto h-auto"
               autoPlay
               loop
               muted
+              playsInline
+              controls
+              controlsList="nodownload"
+              onContextMenu={(e) => e.preventDefault()}
             />
           ) : (
-            <SecureImageViewer
+            <img
               src={media.path}
               alt={isZh ? media.nameZh : media.name}
-              className="w-full h-full"
-              objectFit="contain"
+              className="max-w-full max-h-[70vh] w-auto h-auto object-contain"
+              onContextMenu={(e) => e.preventDefault()}
+              draggable={false}
             />
           )}
         </div>
