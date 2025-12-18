@@ -260,7 +260,6 @@ interface MediaModalProps {
 }
 
 function MediaModal({ media, onClose, seriesMedia, onNavigate }: MediaModalProps) {
-  const { theme } = useTheme()
   const { i18n } = useTranslation()
   const isZh = i18n.language === 'zh'
 
@@ -273,39 +272,51 @@ function MediaModal({ media, onClose, seriesMedia, onNavigate }: MediaModalProps
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md"
       onClick={onClose}
     >
+      {/* Close button - 移到外层 */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-30 p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white"
+      >
+        <X className="w-5 h-5" />
+      </button>
+
+      {/* 导航按钮 - 左右两侧 */}
+      {canGoPrev && onNavigate && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onNavigate(seriesMedia![currentIndex - 1]) }}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+      )}
+      {canGoNext && onNavigate && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onNavigate(seriesMedia![currentIndex + 1]) }}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      )}
+
+      {/* 主内容区 - 自适应尺寸，无黑框 */}
       <div
-        className={cn(
-          'relative w-full max-w-4xl rounded-xl overflow-hidden',
-          theme === 'dark' ? 'bg-slate-900' : 'bg-white'
-        )}
+        className="relative w-full h-full flex flex-col items-center justify-center p-4 sm:p-8"
         onClick={e => e.stopPropagation()}
       >
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className={cn(
-            'absolute top-3 right-3 z-20 p-2 rounded-full transition-colors',
-            theme === 'dark'
-              ? 'bg-slate-800/80 text-white hover:bg-slate-700'
-              : 'bg-gray-100/80 text-gray-900 hover:bg-gray-200'
-          )}
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        {/* Media content - Dynamic aspect ratio based on content */}
-        <div className={cn(
-          'flex items-center justify-center',
-          theme === 'dark' ? 'bg-slate-950' : 'bg-gray-900'
-        )}>
+        {/* Media content - 完全自适应 */}
+        <div className="flex-1 flex items-center justify-center min-h-0 w-full">
           {isVideo ? (
             <video
               src={media.path}
               poster={media.thumbnail}
-              className="max-w-full max-h-[70vh] w-auto h-auto"
+              className="max-w-full max-h-[calc(100vh-200px)] w-auto h-auto rounded-lg shadow-2xl"
               autoPlay
               loop
               muted
@@ -318,37 +329,31 @@ function MediaModal({ media, onClose, seriesMedia, onNavigate }: MediaModalProps
             <img
               src={media.path}
               alt={isZh ? media.nameZh : media.name}
-              className="max-w-full max-h-[70vh] w-auto h-auto object-contain"
+              className="max-w-full max-h-[calc(100vh-200px)] w-auto h-auto object-contain rounded-lg shadow-2xl"
               onContextMenu={(e) => e.preventDefault()}
               draggable={false}
             />
           )}
         </div>
 
-        {/* Info panel */}
-        <div className="p-4">
+        {/* Info panel - 底部信息栏 */}
+        <div className="w-full max-w-2xl mt-4 p-4 bg-slate-900/90 backdrop-blur-sm rounded-xl border border-slate-700/50">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h3 className={cn(
-                'text-lg font-semibold',
-                theme === 'dark' ? 'text-white' : 'text-gray-900'
-              )}>
+              <h3 className="text-lg font-semibold text-white">
                 {isZh ? media.nameZh : media.name}
               </h3>
-              <p className={cn(
-                'text-sm mt-1',
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-              )}>
+              <p className="text-sm mt-1 text-gray-300">
                 {isZh ? media.descriptionZh : media.description}
               </p>
             </div>
             <div className={cn(
-              'px-2 py-1 rounded-full text-xs font-medium flex-shrink-0',
+              'px-2.5 py-1 rounded-full text-xs font-medium flex-shrink-0',
               media.polarizationSystem === 'crossed'
-                ? theme === 'dark' ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-100 text-purple-700'
+                ? 'bg-purple-500/20 text-purple-300'
                 : media.polarizationSystem === 'parallel'
-                  ? theme === 'dark' ? 'bg-cyan-500/20 text-cyan-400' : 'bg-cyan-100 text-cyan-700'
-                  : theme === 'dark' ? 'bg-gray-500/20 text-gray-400' : 'bg-gray-100 text-gray-700'
+                  ? 'bg-cyan-500/20 text-cyan-300'
+                  : 'bg-gray-500/20 text-gray-300'
             )}>
               {media.polarizationSystem === 'crossed' ? (isZh ? '正交偏振' : 'Crossed')
                 : media.polarizationSystem === 'parallel' ? (isZh ? '平行偏振' : 'Parallel')
@@ -356,43 +361,12 @@ function MediaModal({ media, onClose, seriesMedia, onNavigate }: MediaModalProps
             </div>
           </div>
 
-          {/* Navigation within series */}
+          {/* Navigation indicator */}
           {seriesMedia && seriesMedia.length > 1 && (
-            <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200 dark:border-slate-700">
-              <button
-                onClick={() => canGoPrev && onNavigate?.(seriesMedia[currentIndex - 1])}
-                disabled={!canGoPrev}
-                className={cn(
-                  'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
-                  canGoPrev
-                    ? theme === 'dark'
-                      ? 'bg-slate-700 text-white hover:bg-slate-600'
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                    : 'opacity-30 cursor-not-allowed'
-                )}
-              >
-                ← {isZh ? '上一个' : 'Previous'}
-              </button>
-              <span className={cn(
-                'text-sm',
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-              )}>
+            <div className="flex items-center justify-center mt-3 pt-3 border-t border-slate-700/50">
+              <span className="text-sm text-gray-400">
                 {currentIndex + 1} / {seriesMedia.length}
               </span>
-              <button
-                onClick={() => canGoNext && onNavigate?.(seriesMedia[currentIndex + 1])}
-                disabled={!canGoNext}
-                className={cn(
-                  'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
-                  canGoNext
-                    ? theme === 'dark'
-                      ? 'bg-slate-700 text-white hover:bg-slate-600'
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                    : 'opacity-30 cursor-not-allowed'
-                )}
-              >
-                {isZh ? '下一个' : 'Next'} →
-              </button>
             </div>
           )}
         </div>

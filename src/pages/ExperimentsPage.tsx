@@ -9,8 +9,8 @@
  * 4. 创作工坊 - Creative workshop and tutorials
  */
 
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
@@ -23,6 +23,12 @@ import {
   Palette, ImageIcon, Sparkles, Package, Heart,
   Scissors, Brush, Layers, Wrench, BookOpen, Film
 } from 'lucide-react'
+
+// Tab type definition
+type TabId = 'diy' | 'showcase' | 'gallery' | 'workshop'
+
+// Valid tab IDs for route matching
+const VALID_TABS: TabId[] = ['diy', 'showcase', 'gallery', 'workshop']
 
 // Experiment difficulty and cost levels
 type Difficulty = 'easy' | 'medium' | 'hard'
@@ -1482,11 +1488,40 @@ export function ExperimentsPage() {
   const { i18n } = useTranslation()
   const { theme } = useTheme()
   const isZh = i18n.language === 'zh'
+  const { tabId } = useParams<{ tabId?: string }>()
+  const navigate = useNavigate()
 
-  const [activeTab, setActiveTab] = useState<'diy' | 'showcase' | 'gallery' | 'workshop'>('diy')
+  // Determine active tab from URL param or default to 'diy'
+  const getActiveTab = (): TabId => {
+    if (tabId && VALID_TABS.includes(tabId as TabId)) {
+      return tabId as TabId
+    }
+    return 'diy'
+  }
+
+  const [activeTab, setActiveTab] = useState<TabId>(getActiveTab())
   const [selectedExperiment, setSelectedExperiment] = useState<Experiment | null>(null)
   const [filterDifficulty, setFilterDifficulty] = useState<Difficulty | 'all'>('all')
   const [filterCategory, setFilterCategory] = useState<string>('all')
+
+  // Sync active tab with URL
+  useEffect(() => {
+    const newTab = getActiveTab()
+    if (newTab !== activeTab) {
+      setActiveTab(newTab)
+      setFilterCategory('all')
+      setFilterDifficulty('all')
+    }
+  }, [tabId])
+
+  // Handle tab change - navigate to new route
+  const handleTabChange = (newTabId: string) => {
+    const tab = newTabId as TabId
+    setActiveTab(tab)
+    setFilterCategory('all')
+    setFilterDifficulty('all')
+    navigate(`/experiments/${tab}`)
+  }
 
   // Filter experiments
   const filteredExperiments = filterDifficulty === 'all'
@@ -1530,11 +1565,7 @@ export function ExperimentsPage() {
               label: isZh ? tab.labelZh : tab.labelEn,
             }))}
             activeTab={activeTab}
-            onChange={(id: string) => {
-              setActiveTab(id as 'diy' | 'showcase' | 'gallery' | 'workshop')
-              setFilterCategory('all')
-              setFilterDifficulty('all')
-            }}
+            onChange={handleTabChange}
           />
         </div>
 

@@ -64,8 +64,13 @@ export function App() {
 
         {/* Other modules */}
         <Route path="/applications" element={<ApplicationsPage />} />
+
+        {/* Experiments - 偏振造物局 (with sub-routes) */}
         <Route path="/experiments" element={<ExperimentsPage />} />
-        <Route path="/creative" element={<Navigate to="/experiments" replace />} />
+        <Route path="/experiments/:tabId" element={<ExperimentsPage />} />
+
+        {/* Legacy redirects */}
+        <Route path="/creative" element={<Navigate to="/experiments/showcase" replace />} />
         <Route path="/simulation" element={<Navigate to="/lab" replace />} />
 
         {/* Calculation Workshop - 计算工坊 */}
