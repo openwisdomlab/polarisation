@@ -103,14 +103,15 @@ function MediaThumbnail({
   item: MediaItem
   onClick: () => void
   isVideo?: boolean
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'sm' | 'md' | 'lg' | 'xl'
 }) {
   const { i18n } = useTranslation()
   const isZh = i18n.language === 'zh'
   const sizeClasses = {
-    sm: 'w-16 h-16',
-    md: 'w-24 h-24',
-    lg: 'w-32 h-32',
+    sm: 'w-20 h-20',
+    md: 'w-28 h-28',
+    lg: 'w-36 h-36',
+    xl: 'w-44 h-44',
   }
 
   return (
@@ -406,7 +407,7 @@ function SeriesLinkCard({
 }) {
   return (
     <Link
-      to={`/experiments?tab=cultural&series=${series.id}`}
+      to={`/experiments/showcase`}
       className="group flex items-center gap-3 p-2.5 rounded-lg bg-slate-800/50 border border-slate-700/50
         hover:border-pink-500/50 hover:bg-slate-800 transition-all"
     >
@@ -542,30 +543,30 @@ export function MediaGalleryPanel() {
             </div>
           </div>
 
-          {/* 缩略图预览 */}
+          {/* 缩略图预览 - 使用更大的网格布局 */}
           <div>
-            <p className="text-[10px] text-gray-500 mb-2 uppercase tracking-wider">
+            <p className="text-[10px] text-gray-500 mb-3 uppercase tracking-wider">
               {isZh ? '精选预览' : 'Featured Preview'}
             </p>
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-              {featuredMedia.slice(0, 6).map((item, index) => (
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
+              {featuredMedia.slice(0, 5).map((item, index) => (
                 <MediaThumbnail
                   key={item.id}
                   item={item}
                   isVideo={item.type === 'video'}
-                  size="sm"
+                  size="md"
                   onClick={() => handleSelectItem(item, index)}
                 />
               ))}
               <motion.button
-                className="w-16 h-16 flex-shrink-0 rounded-lg border border-dashed border-slate-600
+                className="w-28 h-28 flex-shrink-0 rounded-lg border border-dashed border-slate-600
                   flex flex-col items-center justify-center text-gray-500 hover:text-gray-400
-                  hover:border-slate-500 transition-colors gap-0.5"
-                whileHover={{ scale: 1.05 }}
+                  hover:border-purple-500/50 hover:bg-purple-500/5 transition-colors gap-1"
+                whileHover={{ scale: 1.02 }}
                 onClick={() => setIsExpanded(true)}
               >
-                <span className="text-xs font-medium">+{allMedia.all.length - 6}</span>
-                <span className="text-[8px]">{isZh ? '更多' : 'more'}</span>
+                <span className="text-lg font-medium">+{allMedia.all.length - 5}</span>
+                <span className="text-xs">{isZh ? '查看更多' : 'View more'}</span>
               </motion.button>
             </div>
           </div>
@@ -577,7 +578,7 @@ export function MediaGalleryPanel() {
                 {isZh ? '文创作品系列' : 'Art Series'}
               </p>
               <Link
-                to="/experiments?tab=cultural"
+                to="/experiments/showcase"
                 className="text-[10px] text-pink-400 hover:text-pink-300 flex items-center gap-1 transition-colors"
               >
                 {isZh ? '查看全部' : 'View all'}
@@ -633,14 +634,14 @@ export function MediaGalleryPanel() {
                 />
               </div>
 
-              {/* 媒体网格 */}
-              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 max-h-64 overflow-y-auto">
+              {/* 媒体网格 - 使用更大的尺寸 */}
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 max-h-80 overflow-y-auto pr-1">
                 {displayedMedia.map((item, index) => (
                   <MediaThumbnail
                     key={item.id}
                     item={item}
                     isVideo={item.type === 'video'}
-                    size="sm"
+                    size="md"
                     onClick={() => handleSelectItem(item, index)}
                   />
                 ))}
@@ -654,7 +655,7 @@ export function MediaGalleryPanel() {
                     {isZh ? '相关文创作品系列' : 'Related Art Series'}
                   </h4>
                   <Link
-                    to="/experiments?tab=cultural"
+                    to="/experiments/showcase"
                     className="text-[10px] text-pink-400 hover:text-pink-300 flex items-center gap-1 transition-colors"
                   >
                     {isZh ? '浏览全部文创展示' : 'Browse all artworks'}
