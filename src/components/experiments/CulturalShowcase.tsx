@@ -7,7 +7,7 @@ import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
-import { SecureVideoPlayer, SecureImageViewer } from '@/components/shared'
+import { SecureImageViewer } from '@/components/shared'
 import {
   CULTURAL_SERIES,
   getMediaBySeries,
