@@ -437,7 +437,28 @@ Little did he know that this transparent stone from the frozen north would one d
       en: 'Why does calcite create two images? What property of light could cause it to split into two separate beams?',
       zh: '为什么方解石会产生两个像？光的什么性质会导致它分裂成两束？'
     },
-    illustrationType: 'calcite'
+    illustrationType: 'calcite',
+    // 双折射现象的现代实验演示
+    experimentalResources: {
+      resourceIds: [
+        'tempered-glass',          // 钢化玻璃应力图案展示双折射
+        'plastic-wrap',            // 保鲜膜双折射
+        'plastic-wrap-thickness',  // 不同厚度的双折射色彩
+      ],
+      featuredImages: [
+        {
+          url: '/images/chromatic-polarization/钢化玻璃-正交偏振系统-正视图.jpg',
+          caption: 'Stress-induced birefringence in tempered glass - modern manifestation of Bartholin\'s discovery',
+          captionZh: '钢化玻璃中的应力双折射——巴托林发现在现代的体现'
+        }
+      ],
+      featuredVideo: {
+        url: '/videos/chromatic-polarization/实验-偏振片看钢化玻璃-朝西.mp4',
+        title: 'Observing birefringence in tempered glass under polarized light',
+        titleZh: '偏振光下观察钢化玻璃的双折射'
+      },
+      relatedModules: ['birefringence', 'stress-analysis', 'anisotropy']
+    }
   },
   {
     year: 1690,
@@ -653,7 +674,27 @@ Years later, dying young from tuberculosis contracted in Egypt, Malus would be r
       en: 'Malus discovered polarization by accident while looking at a sunset. What other great scientific discoveries were made by accident?',
       zh: '马吕斯在观看日落时偶然发现了偏振现象。还有哪些伟大的科学发现是偶然发生的？'
     },
-    illustrationType: 'reflection'
+    illustrationType: 'reflection',
+    // 反射偏振的现代实验演示
+    experimentalResources: {
+      resourceIds: [
+        'glass-comparison',        // 玻璃在偏振光下的对比
+        'glasses',                 // 眼镜镜片的偏振效果
+      ],
+      featuredImages: [
+        {
+          url: '/images/chromatic-polarization/玻璃对比-正交偏振系统-正视图.jpg',
+          caption: 'Glass under crossed polarizers - modern demonstration of Malus\'s reflection discovery',
+          captionZh: '正交偏振下的玻璃——马吕斯反射发现的现代演示'
+        }
+      ],
+      featuredVideo: {
+        url: '/videos/chromatic-polarization/实验-眼镜-正交偏振系统-旋转样品视频.mp4',
+        title: 'Eyeglass lenses showing stress patterns under polarized light',
+        titleZh: '偏振光下眼镜镜片显示的应力图案'
+      },
+      relatedModules: ['polarization-intro', 'malus-law', 'daily-polarization']
+    }
   },
   {
     year: 1809,
@@ -722,7 +763,28 @@ Tragically, Malus would not live to see his law's full impact. He died just thre
       en: 'Malus\'s Law shows that at 90° the light is completely blocked. What everyday objects use this "crossed polarizers" effect?',
       zh: '马吕斯定律表明在90°时光被完全阻挡。日常生活中有哪些物品利用这种"正交偏振片"效应？'
     },
-    illustrationType: 'polarizer'
+    illustrationType: 'polarizer',
+    // 马吕斯定律的现代实验演示
+    experimentalResources: {
+      resourceIds: [
+        'clear-tape',                // 透明胶展示偏振效果
+        'clear-tape-array',          // 透明胶阵列
+        'water-bottle',              // 矿泉水瓶偏振
+      ],
+      featuredImages: [
+        {
+          url: '/images/chromatic-polarization/透明胶条（重叠阵列）-正交偏振系统-正视图.jpg',
+          caption: 'Malus\'s Law in action - light intensity varies with polarizer angle',
+          captionZh: '马吕斯定律实际应用——光强随偏振片角度变化'
+        }
+      ],
+      featuredVideo: {
+        url: '/videos/chromatic-polarization/实验-透明胶条-正交偏振系统-旋转偏振片视频.mp4',
+        title: 'Rotating polarizer demonstrates Malus\'s cos²θ law',
+        titleZh: '旋转偏振片演示马吕斯cos²θ定律'
+      },
+      relatedModules: ['malus-law', 'polarization-intro']
+    }
   },
   {
     year: 1811,
@@ -1093,7 +1155,26 @@ Today, measuring optical rotation remains a standard technique in chemistry and 
       descriptionEn: 'Biot\'s polarimeter enabled Pasteur\'s discovery of molecular chirality in tartaric acid crystals',
       descriptionZh: '毕奥的旋光仪使巴斯德得以发现酒石酸晶体的分子手性'
     },
-    illustrationType: 'opticalactivity'
+    illustrationType: 'opticalactivity',
+    // 旋光性的现代实验演示
+    experimentalResources: {
+      resourceIds: [
+        'sugar-bag',               // 白砂糖的旋光性
+      ],
+      featuredImages: [
+        {
+          url: '/images/chromatic-polarization/白砂糖袋子-正交偏振系统-正视图（横向）.jpg',
+          caption: 'Sugar demonstrating optical rotation - the chiral molecules rotate the polarization plane',
+          captionZh: '白砂糖展示旋光性——手性分子旋转偏振面'
+        }
+      ],
+      featuredVideo: {
+        url: '/videos/chromatic-polarization/实验-白砂糖袋子-正交偏振系统-旋转样品视频.mp4',
+        title: 'Optical rotation by sugar - Biot\'s discovery demonstrated',
+        titleZh: '白砂糖的旋光性——毕奥发现的演示'
+      },
+      relatedModules: ['optical-rotation', 'daily-polarization']
+    }
   },
   {
     year: 1817,
@@ -1169,7 +1250,27 @@ The revolution he sparked continues to this day. Every polarizing sunglasses len
       season: 'Summer',
       mood: 'revolution'
     },
-    illustrationType: 'transverse'
+    illustrationType: 'transverse',
+    // 横波理论的现代实验演示
+    experimentalResources: {
+      resourceIds: [
+        'plastic-wrap-stretching',  // 保鲜膜拉伸展示偏振特性
+        'clear-tape',              // 透明胶的偏振效果
+      ],
+      featuredImages: [
+        {
+          url: '/images/chromatic-polarization/透明胶-正交偏振系统-正视图.jpg',
+          caption: 'Transverse wave nature revealed by polarized light through stressed material',
+          captionZh: '应力材料在偏振光下揭示光的横波特性'
+        }
+      ],
+      featuredVideo: {
+        url: '/videos/chromatic-polarization/实验-保鲜膜拉伸-正交偏振系统-旋转样品视频.mp4',
+        title: 'Stretching creates optical axis - demonstrating transverse wave polarization',
+        titleZh: '拉伸产生光轴——演示横波偏振'
+      },
+      relatedModules: ['birefringence', 'waveplate', 'polarization-intro']
+    }
   },
   {
     year: 1828,
