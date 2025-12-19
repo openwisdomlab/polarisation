@@ -510,6 +510,80 @@ In his dedication, he wrote: "One finds in this subject a kind of demonstration 
     illustrationType: 'wave'
   },
   {
+    year: 1704,
+    titleEn: 'Newton\'s Opticks Published',
+    titleZh: '牛顿《光学》出版',
+    descriptionEn: 'Isaac Newton publishes his comprehensive treatise on light, advocating the corpuscular (particle) theory that would dominate optics for a century.',
+    descriptionZh: '艾萨克·牛顿出版了他关于光的综合性论著，倡导微粒（粒子）理论，这一理论将主导光学领域一个世纪。',
+    scientistEn: 'Isaac Newton',
+    scientistZh: '艾萨克·牛顿',
+    category: 'theory',
+    importance: 1,
+    track: 'optics',
+    details: {
+      en: [
+        'Published 40 years after his prism experiments during the plague',
+        'Proposed light consists of tiny particles ("corpuscles")',
+        'Explained reflection as particles bouncing off surfaces',
+        'Described "fits of easy reflection and transmission" — anticipating wave concepts',
+        'Dominated optical theory until Fresnel\'s wave theory (1817)',
+        'Contains queries about light, heat, gravity, and the nature of matter'
+      ],
+      zh: [
+        '在瘟疫期间的棱镜实验40年后出版',
+        '提出光由微小粒子（"微粒"）组成',
+        '将反射解释为粒子从表面弹回',
+        '描述了"易反射与易透射的交替"——预示了波动概念',
+        '主导光学理论直到菲涅尔的波动理论（1817）',
+        '包含关于光、热、引力和物质本质的问题'
+      ]
+    },
+    story: {
+      en: `For four decades, Newton had kept his optical discoveries largely to himself. His bitter dispute with Robert Hooke over the nature of light had soured him on publishing. But in 1704, the year after Hooke's death, Newton finally released his masterwork: "Opticks."
+
+The book was a triumph of experimental physics. Newton described his prism experiments, his investigations of colors, and his "crucial experiment" proving that white light was a mixture. He explained thin-film colors (Newton's rings) and proposed theories for diffraction, which he called "inflexion."
+
+At the heart of Opticks was a bold hypothesis: light consisted of tiny particles — "corpuscles" — shot out from luminous bodies. These particles could explain reflection (bouncing) and refraction (bending due to attraction by matter). The corpuscular theory seemed to explain everything... almost.
+
+There were hints of doubt even in Newton's own writing. He described light having "fits of easy reflection and easy transmission" — a periodic property that sounded suspiciously wave-like. He was more cautious than his followers would be.
+
+For the next century, Newton's authority was so great that the corpuscular theory reigned supreme. Young's interference experiments (1801) challenged this view, but it took Fresnel's mathematical brilliance to finally overthrow Newton's particles. Even then, Einstein's photon (1905) would show that Newton wasn't entirely wrong — light is both wave and particle.
+
+Opticks remains a landmark in scientific literature — a book where a genius wrestled with nature's deepest mysteries and left questions that took two centuries to fully answer.`,
+      zh: `四十年来，牛顿基本上把他的光学发现藏在心里。他与罗伯特·胡克关于光本质的激烈争论让他对出版心生厌倦。但在1704年，胡克去世后的第二年，牛顿终于发表了他的巨著：《光学》。
+
+这本书是实验物理学的胜利。牛顿描述了他的棱镜实验、对颜色的研究，以及证明白光是混合物的"关键实验"。他解释了薄膜色彩（牛顿环）并提出了衍射理论，他称之为"偏折"。
+
+《光学》的核心是一个大胆的假设：光由微小粒子——"微粒"——组成，从发光体中射出。这些粒子可以解释反射（弹跳）和折射（由物质吸引引起的弯曲）。微粒理论似乎解释了一切……几乎。
+
+甚至在牛顿自己的著作中也有怀疑的迹象。他描述光有"易反射和易透射的交替"——这种周期性特性听起来可疑地像波。他比他的追随者更加谨慎。
+
+在接下来的一个世纪里，牛顿的权威如此之大，以至于微粒理论独占鳌头。杨的干涉实验（1801）挑战了这一观点，但需要菲涅尔的数学天才才能最终推翻牛顿的粒子说。即便如此，爱因斯坦的光子（1905）将表明牛顿并非完全错误——光既是波又是粒子。
+
+《光学》仍然是科学文献中的里程碑——在这本书中，一位天才与自然界最深奥的奥秘搏斗，留下了需要两个世纪才能完全解答的问题。`
+    },
+    scientistBio: {
+      birthYear: 1643,
+      deathYear: 1727,
+      nationality: 'English',
+      portraitEmoji: '🍎',
+      bioEn: 'Sir Isaac Newton was an English mathematician, physicist, and astronomer. He made seminal contributions to optics, calculus, and mechanics. His work "Opticks" (1704) laid the foundation for the corpuscular theory of light.',
+      bioZh: '艾萨克·牛顿爵士是英国数学家、物理学家和天文学家。他对光学、微积分和力学做出了开创性贡献。他的著作《光学》（1704）奠定了光的微粒理论基础。'
+    },
+    scene: {
+      location: 'London, England',
+      season: 'Winter',
+      mood: 'authoritative'
+    },
+    references: [
+      { title: 'Newton, I. (1704). Opticks: or, A Treatise of the Reflexions, Refractions, Inflexions and Colours of Light' }
+    ],
+    thinkingQuestion: {
+      en: 'Newton\'s particle theory dominated for a century, but turned out to be incomplete. Why is it important for scientists to question even the greatest authorities?',
+      zh: '牛顿的微粒理论统治了一个世纪，但最终被证明是不完整的。为什么科学家质疑即使是最伟大的权威也很重要？'
+    }
+  },
+  {
     year: 1808,
     titleEn: 'Discovery of Polarization by Reflection',
     titleZh: '反射偏振的发现',
@@ -840,6 +914,91 @@ Today, if you've ever seen the rainbow patterns in a stressed plastic ruler view
       },
       relatedModules: ['birefringence', 'stress-analysis', 'photoelasticity', 'interference']
     }
+  },
+  {
+    year: 1812,
+    titleEn: 'Brewster\'s Angle',
+    titleZh: '布儒斯特角',
+    descriptionEn: 'David Brewster discovers the specific angle at which reflected light is completely polarized, now called Brewster\'s angle.',
+    descriptionZh: '大卫·布儒斯特发现了反射光完全偏振的特定角度，现称为布儒斯特角。',
+    scientistEn: 'David Brewster',
+    scientistZh: '大卫·布儒斯特',
+    category: 'discovery',
+    importance: 1,
+    track: 'polarization',
+    details: {
+      en: [
+        'At Brewster\'s angle, reflected light is completely polarized',
+        'tan(θ_B) = n₂/n₁, where n₁ and n₂ are refractive indices',
+        'For air-glass interface: θ_B ≈ 56°',
+        'Reflected and refracted rays are perpendicular at this angle',
+        'Used in laser cavities (Brewster windows) to control polarization',
+        'Explains why polarized sunglasses reduce glare from water and roads'
+      ],
+      zh: [
+        '在布儒斯特角处，反射光完全偏振',
+        'tan(θ_B) = n₂/n₁，其中n₁和n₂是折射率',
+        '对于空气-玻璃界面：θ_B ≈ 56°',
+        '在此角度反射光和折射光垂直',
+        '用于激光腔（布儒斯特窗）控制偏振',
+        '解释了为什么偏振太阳镜能减少水面和路面的眩光'
+      ]
+    },
+    story: {
+      en: `In Edinburgh, 1812, David Brewster — a Scottish physicist with an inventor's restless mind — was systematically studying Malus's newly discovered polarization by reflection. Where Malus had made a serendipitous observation, Brewster sought precise laws.
+
+He measured, angle by angle, the polarization of light reflected from various substances. Glass, water, diamond — each material had its own characteristic. And then came the breakthrough: at one specific angle for each material, the reflected light was completely polarized.
+
+Not partially. Not mostly. Completely. Every photon (though he wouldn't have used that word) vibrated in a single plane.
+
+Brewster found that this magic angle followed a beautiful mathematical law: the tangent of the angle equaled the ratio of refractive indices. For glass in air, this meant about 56 degrees. At exactly this angle, reflected and refracted rays were perpendicular to each other.
+
+"The polarizing angle is determined by the ratio of sines," he wrote, deriving what would forever bear his name: Brewster's Law.
+
+The practical applications were immediate. Understanding why light from water surfaces was polarized explained age-old observations by fishermen. Later, laser engineers would cut their windows at Brewster's angle to create cavities with minimal reflection loss.
+
+Brewster went on to invent the kaleidoscope and contribute to photography, but his angle remains his most lasting legacy. Every pair of polarized sunglasses that cuts the glare from a wet road is a tribute to his meticulous measurements two centuries ago.`,
+      zh: `1812年，爱丁堡。大卫·布儒斯特——一位有着发明家般不安灵魂的苏格兰物理学家——正在系统地研究马吕斯新发现的反射偏振现象。马吕斯的观察是偶然的，布儒斯特则寻求精确的规律。
+
+他逐角度测量从各种物质反射的光的偏振程度。玻璃、水、钻石——每种材料都有自己的特性。然后突破来了：对于每种材料，在一个特定角度，反射光是完全偏振的。
+
+不是部分的。不是大部分。是完全的。每个光子（尽管他不会使用那个词）都在单一平面上振动。
+
+布儒斯特发现这个神奇的角度遵循一个美丽的数学定律：该角度的正切等于折射率之比。对于空气中的玻璃，这意味着大约56度。恰好在这个角度，反射光和折射光相互垂直。
+
+"偏振角由正弦之比决定，"他写道，推导出将永远以他命名的定律：布儒斯特定律。
+
+实际应用是立竿见影的。理解为什么水面的光是偏振的，解释了渔民几百年来的观察。后来，激光工程师会按布儒斯特角切割窗口，以创建反射损失最小的腔体。
+
+布儒斯特后来发明了万花筒并为摄影做出了贡献，但他的角度仍然是他最持久的遗产。每一副能减少湿滑路面眩光的偏振太阳镜，都是对他两个世纪前那些细致测量的致敬。`
+    },
+    scientistBio: {
+      birthYear: 1781,
+      deathYear: 1868,
+      nationality: 'Scottish',
+      portraitEmoji: '🔭',
+      bioEn: 'Sir David Brewster was a Scottish physicist, mathematician, astronomer, inventor, and writer. He invented the kaleidoscope, made important contributions to optics, and helped found the British Association for the Advancement of Science. He was knighted in 1831.',
+      bioZh: '大卫·布儒斯特爵士是苏格兰物理学家、数学家、天文学家、发明家和作家。他发明了万花筒，对光学做出了重要贡献，并帮助创建了英国科学促进会。他于1831年被封为爵士。'
+    },
+    scene: {
+      location: 'Edinburgh, Scotland',
+      season: 'Spring',
+      mood: 'precision'
+    },
+    references: [
+      { title: 'Brewster, D. (1815). On the Laws Which Regulate the Polarisation of Light by Reflexion from Transparent Bodies' }
+    ],
+    linkTo: {
+      year: 1808,
+      trackTarget: 'polarization',
+      descriptionEn: 'Brewster\'s systematic study refined Malus\'s discovery of polarization by reflection',
+      descriptionZh: '布儒斯特的系统研究完善了马吕斯关于反射偏振的发现'
+    },
+    thinkingQuestion: {
+      en: 'Why do fishermen often wear polarized sunglasses? How does Brewster\'s angle help explain this?',
+      zh: '为什么渔民经常戴偏振太阳镜？布儒斯特角如何帮助解释这一点？'
+    },
+    illustrationType: 'reflection'
   },
   {
     year: 1815,
@@ -1241,6 +1400,91 @@ Pasteur later said this moment changed his life. "The universe is asymmetric," h
     illustrationType: 'chirality'
   },
   {
+    year: 1850,
+    titleEn: 'Foucault Proves Light Slows in Water',
+    titleZh: '傅科证明光在水中减速',
+    descriptionEn: 'Léon Foucault demonstrates that light travels slower in water than in air, providing decisive evidence for the wave theory of light.',
+    descriptionZh: '莱昂·傅科证明光在水中的传播速度比在空气中慢，为光的波动理论提供了决定性证据。',
+    scientistEn: 'Léon Foucault',
+    scientistZh: '莱昂·傅科',
+    category: 'experiment',
+    importance: 1,
+    track: 'optics',
+    details: {
+      en: [
+        'Newton\'s particle theory predicted light should travel faster in denser media',
+        'Wave theory predicted light should travel slower in denser media',
+        'Foucault used a rapidly rotating mirror to compare light speeds',
+        'Result: light travels about 25% slower in water than in air',
+        'This definitively favored wave theory over particle theory',
+        'Foucault also conducted this experiment simultaneously with Fizeau (1850)'
+      ],
+      zh: [
+        '牛顿的微粒理论预测光在较密介质中应该传播更快',
+        '波动理论预测光在较密介质中应该传播更慢',
+        '傅科用快速旋转的镜子比较光速',
+        '结果：光在水中比在空气中慢约25%',
+        '这决定性地支持了波动理论而非微粒理论',
+        '傅科与斐索同时进行了这个实验（1850）'
+      ]
+    },
+    story: {
+      en: `In the laboratories of Paris, 1850, two young physicists — Léon Foucault and Hippolyte Fizeau — were racing to answer a question that had puzzled scientists for two centuries: does light travel faster or slower in water?
+
+The stakes were enormous. Newton's corpuscular theory predicted that light particles, pulled by denser matter, should speed up in water. Wave theory predicted the opposite: waves should slow down in denser media, just as sound travels faster in air than in water.
+
+Foucault's apparatus was ingenious. A beam of light bounced off a rapidly rotating mirror, traveled to a distant reflector, and returned. If the light speed changed, the returning beam would hit the rotating mirror at a slightly different angle, detectable as a shift in the image.
+
+The experiment was fiendishly difficult. The rotating mirror had to spin hundreds of times per second with perfect stability. The alignment had to be precise to fractions of a millimeter. But Foucault, working in a small Paris apartment, succeeded.
+
+The result was unambiguous: light traveled slower in water than in air. About 25% slower, matching wave theory's prediction exactly. Newton's century-old particle theory received its death blow.
+
+Fizeau, working independently, reached the same conclusion. Together, their experiments closed one of the longest-running debates in physics. Light was a wave — as Huygens, Young, and Fresnel had argued. The wave theory had triumphed.
+
+Foucault would later gain greater fame for his pendulum demonstrating Earth's rotation. But his optical experiment of 1850 was equally momentous — the decisive evidence that settled the nature of light.`,
+      zh: `1850年，巴黎的实验室里，两位年轻的物理学家——莱昂·傅科和伊波利特·斐索——正在竞相回答一个困扰科学家两个世纪的问题：光在水中传播是更快还是更慢？
+
+赌注是巨大的。牛顿的微粒理论预测，光粒子被较密的物质吸引，应该在水中加速。波动理论预测恰恰相反：波在较密介质中应该减慢，就像声音在空气中比在水中传播得慢一样。
+
+傅科的装置非常巧妙。一束光从快速旋转的镜子上反射，传到远处的反射器，然后返回。如果光速改变，返回的光束会以略微不同的角度击中旋转的镜子，可以检测到图像的偏移。
+
+实验极其困难。旋转的镜子必须以每秒数百次的速度完美稳定地旋转。对准必须精确到毫米的几分之一。但傅科在巴黎的一间小公寓里成功了。
+
+结果是明确的：光在水中比在空气中传播得慢。大约慢25%，与波动理论的预测完全一致。牛顿一个世纪之久的微粒理论遭受了致命打击。
+
+斐索独立工作，得出了同样的结论。他们的实验共同结束了物理学史上持续时间最长的争论之一。光是波——正如惠更斯、杨和菲涅尔所论证的那样。波动理论胜利了。
+
+傅科后来因展示地球自转的摆锤而获得更大的声誉。但他1850年的光学实验同样具有里程碑意义——这是确定光本质的决定性证据。`
+    },
+    scientistBio: {
+      birthYear: 1819,
+      deathYear: 1868,
+      nationality: 'French',
+      portraitEmoji: '🔄',
+      bioEn: 'Jean Bernard Léon Foucault was a French physicist best known for the Foucault pendulum that demonstrated Earth\'s rotation, and for measuring the speed of light. He also invented the gyroscope and made improvements to photographic processes.',
+      bioZh: '让·贝尔纳·莱昂·傅科是法国物理学家，以展示地球自转的傅科摆和测量光速而闻名。他还发明了陀螺仪，并改进了摄影工艺。'
+    },
+    scene: {
+      location: 'Paris, France',
+      season: 'Summer',
+      mood: 'decisive'
+    },
+    references: [
+      { title: 'Foucault, L. (1850). Méthode générale pour mesurer la vitesse de la lumière dans l\'air et les milieux transparents' }
+    ],
+    linkTo: {
+      year: 1817,
+      trackTarget: 'optics',
+      descriptionEn: 'Foucault\'s experiment provided the decisive proof for Fresnel\'s wave theory of light',
+      descriptionZh: '傅科的实验为菲涅尔的光波动理论提供了决定性证明'
+    },
+    thinkingQuestion: {
+      en: 'Newton\'s theory had dominated for over a century. Why did it take so long to perform this crucial experiment?',
+      zh: '牛顿的理论主导了一个多世纪。为什么这个关键实验花了这么长时间才进行？'
+    },
+    illustrationType: 'lightspeed'
+  },
+  {
     year: 1852,
     titleEn: 'Stokes Parameters',
     titleZh: '斯托克斯参数',
@@ -1408,6 +1652,178 @@ Rayleigh's work showed that polarization isn't just a laboratory curiosity — i
       zh: '如果你通过偏振太阳镜看天空，你注意到什么变化？为什么在距太阳90°的方向效果最强？'
     },
     illustrationType: 'rayleigh'
+  },
+  {
+    year: 1875,
+    titleEn: 'Kerr Effect',
+    titleZh: '克尔效应',
+    descriptionEn: 'John Kerr discovers that an electric field can induce birefringence in normally isotropic materials, enabling high-speed optical modulation.',
+    descriptionZh: '约翰·克尔发现电场能在通常各向同性的材料中诱导双折射，实现高速光调制。',
+    scientistEn: 'John Kerr',
+    scientistZh: '约翰·克尔',
+    category: 'discovery',
+    importance: 2,
+    track: 'polarization',
+    details: {
+      en: [
+        'Electric field applied to glass or liquid creates temporary birefringence',
+        'Birefringence is proportional to the square of the electric field: Δn ∝ E²',
+        'Effect is extremely fast — enables picosecond optical switching',
+        'Used in Kerr cells for high-speed photography shutters',
+        'Distinct from Faraday effect: Kerr is quadratic in field, Faraday is linear',
+        'Foundation for electro-optic modulators in modern telecommunications',
+        'Also observed magneto-optic Kerr effect (MOKE) for studying magnetic materials'
+      ],
+      zh: [
+        '对玻璃或液体施加电场会产生临时双折射',
+        '双折射与电场的平方成正比：Δn ∝ E²',
+        '效应极快——可实现皮秒级光学开关',
+        '用于克尔盒高速摄影快门',
+        '与法拉第效应不同：克尔效应与场的平方成正比，法拉第效应与场成线性关系',
+        '现代电信中电光调制器的基础',
+        '还观察到用于研究磁性材料的磁光克尔效应（MOKE）'
+      ]
+    },
+    story: {
+      en: `In Glasgow, 1875, John Kerr — a lecturer at the Free Church Teacher Training College — was exploring the interaction between light and electricity. The great Faraday had already shown that magnetism could rotate polarized light. Could electricity do something similar?
+
+Kerr's approach was systematic. He placed glass plates between electrodes and observed them with polarized light. When he applied a strong electric field, something remarkable happened: the previously isotropic glass became birefringent. It now behaved like a crystal!
+
+The effect was subtle but unmistakable. The glass, under electrical stress, could rotate the polarization of light passing through it. When the field was removed, the effect vanished instantly.
+
+Kerr measured carefully and found a beautiful relationship: the induced birefringence was proportional to the square of the electric field. This "quadratic" dependence distinguished his discovery from Faraday's linear effect.
+
+The practical implications were enormous. Because the effect was almost instantaneous — responding in trillionths of a second — Kerr cells could act as ultra-fast shutters. In the early 20th century, photographers would use Kerr cells to capture phenomena too fast for mechanical shutters: bullets in flight, electrical sparks, and eventually, the first images of nuclear explosions.
+
+Today, Kerr's discovery lives on in electro-optic modulators that switch light in fiber optic networks. Every time you stream a video, Kerr's 150-year-old effect helps carry the signal.`,
+      zh: `1875年，格拉斯哥。约翰·克尔——自由教会师范学院的讲师——正在探索光与电的相互作用。伟大的法拉第已经证明磁场可以旋转偏振光。电场能做类似的事情吗？
+
+克尔的方法是系统的。他将玻璃板放在电极之间，用偏振光观察它们。当他施加强电场时，发生了不可思议的事情：原本各向同性的玻璃变成了双折射的。它现在像晶体一样表现！
+
+效应微妙但明确。在电应力下，玻璃可以旋转通过它的光的偏振。当电场移除时，效应立即消失。
+
+克尔仔细测量，发现了一个美丽的关系：诱导的双折射与电场的平方成正比。这种"二次"依赖性使他的发现区别于法拉第的线性效应。
+
+实际意义是巨大的。因为效应几乎是瞬时的——在万亿分之一秒内响应——克尔盒可以充当超高速快门。在20世纪初，摄影师会使用克尔盒捕捉机械快门无法捕获的现象：飞行中的子弹、电火花，最终还有核爆炸的第一批图像。
+
+今天，克尔的发现存在于光纤网络中切换光的电光调制器中。每次你播放视频时，克尔150年前的效应都在帮助传输信号。`
+    },
+    scientistBio: {
+      birthYear: 1824,
+      deathYear: 1907,
+      nationality: 'Scottish',
+      portraitEmoji: '⚡',
+      bioEn: 'John Kerr was a Scottish physicist who discovered the electro-optic Kerr effect. He worked as a lecturer at the Free Church Training College in Glasgow for most of his career. He also made contributions to the theory of elasticity.',
+      bioZh: '约翰·克尔是苏格兰物理学家，发现了电光克尔效应。他职业生涯的大部分时间在格拉斯哥自由教会师范学院担任讲师。他还对弹性理论做出了贡献。'
+    },
+    scene: {
+      location: 'Glasgow, Scotland',
+      season: 'Winter',
+      mood: 'experimental precision'
+    },
+    references: [
+      { title: 'Kerr, J. (1875). A new relation between electricity and light' }
+    ],
+    linkTo: {
+      year: 1845,
+      trackTarget: 'polarization',
+      descriptionEn: 'Kerr\'s electro-optic effect complemented Faraday\'s magneto-optic effect',
+      descriptionZh: '克尔的电光效应补充了法拉第的磁光效应'
+    },
+    thinkingQuestion: {
+      en: 'Why is the Kerr effect proportional to E² while the Faraday effect is proportional to B? What fundamental difference does this reflect?',
+      zh: '为什么克尔效应与E²成正比，而法拉第效应与B成正比？这反映了什么根本区别？'
+    }
+  },
+  {
+    year: 1888,
+    titleEn: 'Hertz Confirms Electromagnetic Waves',
+    titleZh: '赫兹证实电磁波',
+    descriptionEn: 'Heinrich Hertz experimentally confirms Maxwell\'s prediction that electromagnetic waves exist and travel at the speed of light.',
+    descriptionZh: '海因里希·赫兹通过实验证实麦克斯韦的预测——电磁波存在并以光速传播。',
+    scientistEn: 'Heinrich Hertz',
+    scientistZh: '海因里希·赫兹',
+    category: 'experiment',
+    importance: 1,
+    track: 'optics',
+    details: {
+      en: [
+        'Generated radio waves using a spark-gap transmitter',
+        'Detected them with a loop antenna across the room',
+        'Measured wavelength and frequency, confirming speed = c',
+        'Demonstrated reflection, refraction, and polarization of radio waves',
+        'Proved light and radio waves are the same phenomenon at different frequencies',
+        'When asked about applications, reportedly said "It\'s of no use whatsoever"',
+        'Died at 36, never seeing radio, TV, or radar'
+      ],
+      zh: [
+        '使用火花隙发射器产生无线电波',
+        '用环形天线在房间另一端探测到它们',
+        '测量了波长和频率，证实速度 = c',
+        '演示了无线电波的反射、折射和偏振',
+        '证明光和无线电波是同一现象在不同频率下的表现',
+        '当被问及应用时，据说他说"这完全没有用处"',
+        '36岁去世，从未看到无线电、电视或雷达'
+      ]
+    },
+    story: {
+      en: `In Karlsruhe, 1888, a young physics professor named Heinrich Hertz was putting Maxwell's twenty-year-old theory to the ultimate test.
+
+Maxwell had predicted that oscillating electric charges would produce waves — invisible ripples of electric and magnetic fields that traveled at the speed of light. But no one had ever detected such waves.
+
+Hertz built a simple apparatus: two metal rods with a spark gap connected to an induction coil. When sparks jumped the gap, they created rapid oscillations. Across the room, he placed a loop of wire with its own tiny gap.
+
+And there it was: tiny sparks in the receiving loop, synchronized with the transmitter. Invisible waves were crossing the room!
+
+But Hertz didn't stop there. He measured the wavelength by creating standing waves with a metal reflector. He showed the waves could be refracted by a prism of pitch. And crucially, he demonstrated that they were polarized — just like light.
+
+Hertz had proven that light was not unique. It was simply electromagnetic waves at very high frequencies. Radio waves were the same thing, just slower oscillations. The entire electromagnetic spectrum — from radio through infrared to visible light to X-rays — was unified.
+
+When a journalist asked Hertz about practical applications, he famously replied: "It's of no use whatsoever." He couldn't imagine radio, television, or the wireless internet. He died in 1894 at just 36, from a bone disease.
+
+Today, the unit of frequency — hertz — bears his name. Every WiFi signal, every radar beam, every microwave oven owes its existence to that laboratory in Karlsruhe where a young physicist first caught an electromagnetic wave.`,
+      zh: `1888年，卡尔斯鲁厄。一位名叫海因里希·赫兹的年轻物理学教授正在对麦克斯韦二十年前的理论进行终极测试。
+
+麦克斯韦预测，振荡的电荷会产生波——以光速传播的电场和磁场的无形涟漪。但从未有人探测到这种波。
+
+赫兹建造了一个简单的装置：两根金属棒，中间有一个连接到感应线圈的火花隙。当火花跳过间隙时，会产生快速振荡。在房间的另一端，他放置了一个带有微小间隙的金属环。
+
+就在那里：接收环中出现了与发射器同步的微小火花。无形的波正在穿过房间！
+
+但赫兹没有止步于此。他通过用金属反射器创建驻波来测量波长。他展示了这些波可以被沥青棱镜折射。最关键的是，他证明了它们是偏振的——就像光一样。
+
+赫兹证明了光并非独一无二。它只是非常高频的电磁波。无线电波是同样的东西，只是更慢的振荡。整个电磁波谱——从无线电到红外再到可见光再到X射线——被统一了。
+
+当一位记者问赫兹关于实际应用时，他著名地回答说："这完全没有用处。"他无法想象无线电、电视或无线互联网。他于1894年因骨病去世，年仅36岁。
+
+今天，频率的单位——赫兹——以他的名字命名。每一个WiFi信号、每一束雷达波、每一个微波炉都归功于卡尔斯鲁厄那个实验室，那里一位年轻的物理学家首次捕获了电磁波。`
+    },
+    scientistBio: {
+      birthYear: 1857,
+      deathYear: 1894,
+      nationality: 'German',
+      portraitEmoji: '📡',
+      bioEn: 'Heinrich Rudolf Hertz was a German physicist who proved the existence of electromagnetic waves. His work validated Maxwell\'s theory and laid the groundwork for the development of radio, television, and radar. The SI unit of frequency (hertz) is named after him.',
+      bioZh: '海因里希·鲁道夫·赫兹是德国物理学家，证明了电磁波的存在。他的工作验证了麦克斯韦的理论，为无线电、电视和雷达的发展奠定了基础。频率的国际单位（赫兹）以他的名字命名。'
+    },
+    scene: {
+      location: 'Karlsruhe, Germany',
+      season: 'Autumn',
+      mood: 'experimental triumph'
+    },
+    references: [
+      { title: 'Hertz, H. (1888). Über Strahlen elektrischer Kraft' }
+    ],
+    linkTo: {
+      year: 1865,
+      trackTarget: 'optics',
+      descriptionEn: 'Hertz experimentally confirmed Maxwell\'s electromagnetic theory of light',
+      descriptionZh: '赫兹通过实验证实了麦克斯韦的光电磁理论'
+    },
+    thinkingQuestion: {
+      en: 'Hertz said his discovery had "no use whatsoever." Was he wrong? What does this teach us about basic research?',
+      zh: '赫兹说他的发现"完全没有用处"。他错了吗？这给我们关于基础研究的什么启示？'
+    }
   },
   {
     year: 1892,
@@ -1807,6 +2223,92 @@ Today, Mueller matrix polarimetry is a powerful diagnostic tool. From satellite 
     illustrationType: 'mueller'
   },
   {
+    year: 1960,
+    titleEn: 'Invention of the Laser',
+    titleZh: '激光的发明',
+    descriptionEn: 'Theodore Maiman demonstrates the first working laser, creating highly coherent, polarized light that will revolutionize optics.',
+    descriptionZh: '西奥多·梅曼展示了第一台可工作的激光器，创造出高度相干的偏振光，这将彻底革新光学。',
+    scientistEn: 'Theodore Maiman',
+    scientistZh: '西奥多·梅曼',
+    category: 'discovery',
+    importance: 1,
+    track: 'optics',
+    details: {
+      en: [
+        'First laser used a ruby crystal pumped by a flashlamp',
+        'Produced coherent light at 694.3 nm (deep red)',
+        'Laser light is inherently highly polarized',
+        'LASER = Light Amplification by Stimulated Emission of Radiation',
+        'Based on Einstein\'s 1917 theory of stimulated emission',
+        'Initial reaction: "a solution looking for a problem"',
+        'Now essential for fiber optics, surgery, manufacturing, holography, and research'
+      ],
+      zh: [
+        '第一台激光器使用闪光灯泵浦的红宝石晶体',
+        '产生694.3纳米（深红色）的相干光',
+        '激光天然具有高度偏振性',
+        'LASER = 受激辐射光放大',
+        '基于爱因斯坦1917年的受激辐射理论',
+        '最初的反应："一个在寻找问题的解决方案"',
+        '现在对光纤通信、手术、制造、全息术和研究必不可少'
+      ]
+    },
+    story: {
+      en: `May 16, 1960. In a small laboratory at Hughes Research Laboratories in Malibu, California, Theodore Maiman pointed a flashlamp at a synthetic ruby rod and changed the world.
+
+The idea of the laser had been in the air for years. Einstein had predicted stimulated emission in 1917 — the principle that atoms could be triggered to emit light in perfect synchrony. Charles Townes had won the Nobel Prize for the maser (microwave version) in 1954. But visible light lasers remained elusive.
+
+Maiman's approach was elegant in its simplicity. A polished ruby rod, its ends silvered to form mirrors, would serve as the gain medium. A powerful flashlamp, coiled around it, would pump the chromium atoms to excited states. And then — in a flash — they would all emit their photons in lockstep.
+
+The first pulse was just 0.2 milliseconds long. But it was light like no one had ever seen: a deep red beam of extraordinary intensity and perfect coherence. Every photon marched in step, vibrating in the same direction — naturally polarized.
+
+"A solution looking for a problem," some skeptics called it. How wrong they were.
+
+Within years, lasers would cut steel, read barcodes, carry phone calls through glass fibers, and perform surgery with unprecedented precision. The polarized nature of laser light made it perfect for holography, materials science, and quantum optics experiments.
+
+Maiman's 1960 flash of ruby light opened an era. Today, lasers are everywhere — in your DVD player, your supermarket checkout, your eye surgeon's office. The coherent, polarized beam that emerged from that Malibu laboratory touches nearly every aspect of modern life.`,
+      zh: `1960年5月16日。在加利福尼亚州马里布的休斯研究实验室的一个小实验室里，西奥多·梅曼将一盏闪光灯对准一根人造红宝石棒，改变了世界。
+
+激光的想法在空气中已经酝酿多年。爱因斯坦在1917年预测了受激发射——原子可以被触发以完美同步的方式发射光。查尔斯·汤斯在1954年因脉泽（微波版本）获得诺贝尔奖。但可见光激光器仍然难以捉摸。
+
+梅曼的方法在其简单性上很优雅。一根抛光的红宝石棒，两端镀银形成镜子，将作为增益介质。一盏强大的闪光灯，盘绕在它周围，将把铬原子泵浦到激发态。然后——一闪——它们将同步发射光子。
+
+第一个脉冲只有0.2毫秒长。但那是前所未见的光：一束深红色的光束，具有非凡的强度和完美的相干性。每个光子都步调一致，沿同一方向振动——天然偏振。
+
+"一个在寻找问题的解决方案，"一些怀疑论者这样说。他们大错特错。
+
+几年之内，激光将切割钢铁、读取条形码、通过玻璃光纤传输电话、并以前所未有的精度进行手术。激光的偏振特性使其非常适合全息术、材料科学和量子光学实验。
+
+梅曼1960年的红宝石闪光开启了一个时代。今天，激光无处不在——在你的DVD播放器里、在超市收银台、在眼科医生的办公室里。从那个马里布实验室发出的相干偏振光束，触及现代生活的几乎每一个方面。`
+    },
+    scientistBio: {
+      birthYear: 1927,
+      deathYear: 2007,
+      nationality: 'American',
+      portraitEmoji: '💎',
+      bioEn: 'Theodore Harold Maiman was an American physicist who built the first working laser in 1960. Despite the profound impact of his invention, he was never awarded the Nobel Prize, a controversial omission. He founded several laser companies and received numerous other awards.',
+      bioZh: '西奥多·哈罗德·梅曼是美国物理学家，于1960年建造了第一台可工作的激光器。尽管他的发明影响深远，但他从未获得诺贝尔奖，这是一个有争议的遗漏。他创立了几家激光公司，并获得了许多其他奖项。'
+    },
+    scene: {
+      location: 'Malibu, California, USA',
+      season: 'Spring',
+      mood: 'breakthrough'
+    },
+    references: [
+      { title: 'Maiman, T. H. (1960). Stimulated Optical Radiation in Ruby', url: 'https://doi.org/10.1038/187493a0' }
+    ],
+    linkTo: {
+      year: 1905,
+      trackTarget: 'optics',
+      descriptionEn: 'The laser was made possible by Einstein\'s 1917 theory of stimulated emission, based on his photon concept',
+      descriptionZh: '激光的实现得益于爱因斯坦1917年基于其光子概念提出的受激辐射理论'
+    },
+    thinkingQuestion: {
+      en: 'The laser was initially dismissed as "a solution looking for a problem." What lessons does this teach about evaluating new technologies?',
+      zh: '激光最初被认为是"一个在寻找问题的解决方案"。这给我们评估新技术什么教训？'
+    }
+  },
+  {
     year: 1971,
     titleEn: 'LCD Technology',
     titleZh: 'LCD技术',
@@ -1872,6 +2374,84 @@ The story of polarized light has become the story of modern communication. Barth
       zh: '你现在看的屏幕就使用了偏振原理。如果你通过偏振太阳镜从不同角度看手机，会发生什么？'
     },
     illustrationType: 'lcd'
+  },
+  {
+    year: 2009,
+    titleEn: 'RealD 3D Cinema',
+    titleZh: 'RealD 3D 电影',
+    descriptionEn: 'RealD 3D technology uses circular polarization to create immersive 3D movie experiences, bringing polarization science to millions of moviegoers.',
+    descriptionZh: 'RealD 3D技术使用圆偏振创造沉浸式3D电影体验，将偏振科学带给数百万电影观众。',
+    category: 'application',
+    importance: 2,
+    track: 'polarization',
+    details: {
+      en: [
+        'Uses circularly polarized light (left-handed for one eye, right-handed for other)',
+        'Circular polarization maintains 3D effect even when viewer tilts head',
+        'Previous linear polarization systems failed if viewers tilted their heads',
+        'Special silver screen preserves polarization upon reflection',
+        'Passive glasses filter each eye\'s image using circular polarizer + quarter-wave film',
+        'Avatar (2009) popularized the technology worldwide',
+        'Now installed in over 30,000 theaters globally'
+      ],
+      zh: [
+        '使用圆偏振光（一只眼睛左旋，另一只眼睛右旋）',
+        '圆偏振即使观众倾斜头部也能保持3D效果',
+        '之前的线偏振系统在观众倾斜头部时会失效',
+        '特殊的银幕能在反射时保持偏振',
+        '被动式眼镜使用圆偏振片+四分之一波片过滤每只眼睛的图像',
+        '《阿凡达》（2009）使这项技术在全球普及',
+        '现已在全球超过30,000家影院安装'
+      ]
+    },
+    story: {
+      en: `In 2009, James Cameron's "Avatar" transported audiences to a luminescent alien world — and polarization made it possible.
+
+The challenge of 3D cinema had frustrated engineers for decades. You needed to show each eye a slightly different image to create depth perception. Early systems used red-blue glasses (anaglyph), which distorted colors. Later linear polarization systems worked better but had a fatal flaw: tilt your head, and the 3D effect collapsed.
+
+RealD's breakthrough was circular polarization. Instead of filtering by angle (like linear polarizers), the system used left-handed and right-handed circular polarization for the two eyes. The genius was that circular polarization doesn't change when you rotate your head — the handedness stays the same.
+
+The projector rapidly alternates between left-circular and right-circular polarized frames. Special glasses — each lens containing a quarter-wave plate and linear polarizer tuned for opposite handedness — ensure each eye sees only its intended image.
+
+Avatar's spectacular success (the first film to gross over $2 billion) introduced millions to the magic of polarization. Audiences around the world, wearing lightweight polarizing glasses, experienced depth and immersion unlike anything before.
+
+The technology traces directly back to the 19th-century discoveries we've followed in this timeline. Fresnel's understanding of polarization, Land's sheet polarizers, and the physics of wave plates all converge in every 3D theater experience.
+
+Next time you put on those lightweight 3D glasses, remember: you're wearing 200 years of optical physics on your face.`,
+      zh: `2009年，詹姆斯·卡梅隆的《阿凡达》将观众带入了一个发光的外星世界——而偏振使这一切成为可能。
+
+3D电影的挑战困扰了工程师数十年。你需要给每只眼睛展示略有不同的图像来创造深度感。早期系统使用红蓝眼镜（互补色），这会扭曲颜色。后来的线偏振系统效果更好，但有一个致命缺陷：倾斜头部，3D效果就会崩溃。
+
+RealD的突破是圆偏振。系统不是按角度过滤（像线偏振器那样），而是为两只眼睛使用左旋和右旋圆偏振光。巧妙之处在于圆偏振在旋转头部时不会改变——旋向保持不变。
+
+投影仪在左旋和右旋偏振帧之间快速切换。特殊的眼镜——每个镜片包含一个四分之一波片和为相反旋向调谐的线偏振器——确保每只眼睛只看到其预期的图像。
+
+阿凡达的巨大成功（第一部票房超过20亿美元的电影）向数百万人介绍了偏振的魔力。世界各地的观众戴着轻便的偏振眼镜，体验到了前所未有的深度和沉浸感。
+
+这项技术直接追溯到我们在这个时间线上追踪的19世纪发现。菲涅尔对偏振的理解、兰德的薄片偏振器以及波片的物理学，都汇聚在每一次3D影院体验中。
+
+下次戴上那些轻便的3D眼镜时，记住：你脸上戴着200年的光学物理学。`
+    },
+    scientistBio: {
+      portraitEmoji: '🎬',
+      bioEn: 'RealD was founded by Michael V. Lewis and Joshua Greer in 2003. Their circular polarization 3D system became the dominant technology for theatrical 3D presentation, installed in tens of thousands of theaters worldwide.',
+      bioZh: 'RealD由迈克尔·V·刘易斯和约书亚·格里尔于2003年创立。他们的圆偏振3D系统成为影院3D放映的主导技术，安装在全球数万家影院。'
+    },
+    scene: {
+      location: 'Worldwide theaters',
+      season: 'Winter',
+      mood: 'entertainment revolution'
+    },
+    linkTo: {
+      year: 1929,
+      trackTarget: 'polarization',
+      descriptionEn: 'RealD 3D glasses evolved from Edwin Land\'s polarizer technology',
+      descriptionZh: 'RealD 3D眼镜从埃德温·兰德的偏振器技术演变而来'
+    },
+    thinkingQuestion: {
+      en: 'Why does circular polarization work better than linear polarization for 3D cinema? What happens to linear polarization when you tilt your head?',
+      zh: '为什么圆偏振比线偏振更适合3D电影？当你倾斜头部时，线偏振会发生什么？'
+    }
   },
   {
     year: 2012,
@@ -1996,6 +2576,91 @@ The same physics that Malus discovered in a Paris sunset, that Stokes formalized
       mood: 'hope'
     },
     illustrationType: 'medical'
+  },
+  {
+    year: 2016,
+    titleEn: 'LIGO Detects Gravitational Waves',
+    titleZh: 'LIGO探测到引力波',
+    descriptionEn: 'LIGO uses laser interferometry to detect gravitational waves from merging black holes — the most precise optical measurement ever made.',
+    descriptionZh: 'LIGO使用激光干涉测量法探测到来自合并黑洞的引力波——有史以来最精密的光学测量。',
+    scientistEn: 'Rainer Weiss, Kip Thorne, Barry Barish et al.',
+    scientistZh: '雷纳·韦斯、基普·索恩、巴里·巴里什等',
+    category: 'experiment',
+    importance: 1,
+    track: 'optics',
+    details: {
+      en: [
+        'Two 4-km laser interferometer arms at right angles',
+        'Detected length changes of 10⁻¹⁹ meters (less than a proton diameter)',
+        'Laser light splits, travels 4 km, recombines — interference reveals tiny length changes',
+        'Polarization stabilization essential for maintaining coherent interference',
+        'First detection: September 14, 2015 (announced February 2016)',
+        'Nobel Prize in Physics 2017 for Weiss, Thorne, and Barish',
+        'Opens new field of gravitational wave astronomy'
+      ],
+      zh: [
+        '两条4公里长的激光干涉臂呈直角',
+        '检测到10⁻¹⁹米的长度变化（比质子直径还小）',
+        '激光分束、行进4公里、再合并——干涉揭示微小的长度变化',
+        '偏振稳定对于保持相干干涉至关重要',
+        '首次探测：2015年9月14日（2016年2月公布）',
+        '2017年诺贝尔物理学奖授予韦斯、索恩和巴里什',
+        '开启引力波天文学新领域'
+      ]
+    },
+    story: {
+      en: `On September 14, 2015, at 09:50:45 UTC, a ripple in spacetime from a billion light-years away swept through Earth. Two massive black holes, spiraling together and merging in a cataclysmic event, had sent gravitational waves radiating outward at the speed of light.
+
+LIGO was listening. The Laser Interferometer Gravitational-Wave Observatory — two L-shaped facilities in Louisiana and Washington — caught the signal.
+
+The principle was beautifully simple: split a laser beam, send halves down perpendicular 4-kilometer arms, and recombine them. If a gravitational wave passed, it would stretch one arm and compress the other, changing the path length by an almost inconceivably small amount. The recombined beams would interfere differently — and that difference could be measured.
+
+Almost inconceivably small. LIGO detected a length change of about 4 × 10⁻¹⁸ meters — roughly one-thousandth the diameter of a proton. It was the most precise measurement ever made by humans.
+
+Polarization played a crucial role. The laser light had to maintain perfect polarization through kilometers of travel and multiple reflections. Any polarization drift would introduce noise and mask the signal. Sophisticated polarization control systems kept the interference stable.
+
+Einstein had predicted gravitational waves a century earlier, but thought they'd never be detected. LIGO proved him wrong about detectability, while proving him magnificently right about their existence.
+
+The discovery opened a new window on the universe. Neutron star mergers, black hole collisions, perhaps even echoes from the Big Bang — gravitational wave astronomy was born. And at its heart was the same principle Michelson had used in 1887: laser interferometry, carried to almost supernatural precision.`,
+      zh: `2015年9月14日，UTC时间09:50:45，一道来自十亿光年外的时空涟漪扫过地球。两个巨大的黑洞螺旋靠近并在一次灾变性事件中合并，向外辐射出以光速传播的引力波。
+
+LIGO在倾听。激光干涉引力波天文台——位于路易斯安那州和华盛顿州的两个L形设施——捕捉到了这个信号。
+
+原理非常简单：将激光束分成两半，沿垂直的4公里臂发送，然后重新合并。如果引力波经过，它会拉伸一个臂并压缩另一个臂，改变光程——变化量几乎小到难以想象。重新合并的光束会产生不同的干涉——这种差异可以被测量。
+
+几乎小到难以想象。LIGO检测到大约4 × 10⁻¹⁸米的长度变化——大约是质子直径的千分之一。这是人类有史以来最精确的测量。
+
+偏振起着关键作用。激光必须在数公里的传播和多次反射中保持完美的偏振。任何偏振漂移都会引入噪声并掩盖信号。复杂的偏振控制系统保持干涉稳定。
+
+爱因斯坦在一个世纪前预测了引力波，但认为它们永远不会被探测到。LIGO证明他对可探测性的判断是错误的，同时辉煌地证明了他对引力波存在的预测是正确的。
+
+这一发现打开了观察宇宙的新窗口。中子星合并、黑洞碰撞，也许甚至是大爆炸的回声——引力波天文学诞生了。而其核心是迈克尔逊在1887年使用的同一原理：激光干涉测量法，达到了近乎超自然的精度。`
+    },
+    scientistBio: {
+      birthYear: 1932,
+      nationality: 'American',
+      portraitEmoji: '🔭',
+      bioEn: 'Rainer Weiss, Kip Thorne, and Barry Barish shared the 2017 Nobel Prize in Physics for their roles in the detection of gravitational waves. Weiss invented the laser interferometric technique, Thorne contributed theoretical insights, and Barish led the project to completion.',
+      bioZh: '雷纳·韦斯、基普·索恩和巴里·巴里什因在引力波探测中的作用而分享了2017年诺贝尔物理学奖。韦斯发明了激光干涉测量技术，索恩贡献了理论见解，巴里什领导项目完成。'
+    },
+    scene: {
+      location: 'Livingston, Louisiana & Hanford, Washington, USA',
+      season: 'Autumn',
+      mood: 'cosmic discovery'
+    },
+    references: [
+      { title: 'Abbott, B. P. et al. (2016). Observation of Gravitational Waves from a Binary Black Hole Merger', url: 'https://doi.org/10.1103/PhysRevLett.116.061102' }
+    ],
+    linkTo: {
+      year: 1960,
+      trackTarget: 'optics',
+      descriptionEn: 'LIGO relies on ultra-stable lasers that trace back to Maiman\'s 1960 invention',
+      descriptionZh: 'LIGO依赖于可追溯至梅曼1960年发明的超稳定激光器'
+    },
+    thinkingQuestion: {
+      en: 'LIGO detected a change smaller than a proton. What challenges does such extreme precision pose? How did optical engineering make it possible?',
+      zh: 'LIGO检测到了比质子还小的变化。如此极端的精度带来了什么挑战？光学工程如何使之成为可能？'
+    }
   },
   {
     year: 2021,
