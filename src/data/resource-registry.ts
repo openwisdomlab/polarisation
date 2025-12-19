@@ -8,11 +8,9 @@
  */
 
 import {
-  POLARIZATION_RESOURCES,
   getResourceById,
   getResourcesByModule,
   type PolarizationResource,
-  type ResourceCategory,
 } from './resource-gallery'
 
 // ===== 资源与模块的映射 =====

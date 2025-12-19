@@ -77,10 +77,10 @@ export function ExperimentModule({
   groupId,
   moduleId,
   resourceIds,
-  videoIds,
+  videoIds: _videoIds,
   mode = 'gallery',
   title,
-  titleZh,
+  titleZh: _titleZh,
   showVideos = true,
   showRelatedModules = true,
   maxImages,
@@ -99,7 +99,7 @@ export function ExperimentModule({
   const [isExpanded, setIsExpanded] = useState(mode !== 'compact')
 
   // 解析资源数据
-  const { resources, videos, group, displayTitle, relatedModules } = useMemo(() => {
+  const { resources, videos, group: _group, displayTitle, relatedModules } = useMemo(() => {
     let resources: PolarizationResource[] = []
     let videos: VideoResource[] = []
     let group: ResourceGroup | null = null
@@ -237,7 +237,7 @@ export function ExperimentModule({
           theme === 'dark' ? 'bg-slate-700/50 text-gray-400' : 'bg-gray-100 text-gray-500'
         )}>
           {mode === 'gallery' && <Grid3X3 className="w-3 h-3" />}
-          {mode === 'sequence' && <Layers className="w-3 h-3" />}
+          {mode === 'full' && <Layers className="w-3 h-3" />}
           {mode === 'comparison' && <ArrowLeftRight className="w-3 h-3" />}
           <span className="ml-1 capitalize">{mode}</span>
         </div>
@@ -489,7 +489,7 @@ function TabButton({
 function NavButton({
   direction,
   onClick,
-  theme,
+  theme: _theme,
 }: {
   direction: 'left' | 'right'
   onClick: (e: React.MouseEvent) => void
@@ -705,11 +705,11 @@ function CompactView({
 
 function SequenceView({
   resources,
-  videos,
+  videos: _videos,
   isZh,
   theme,
   displayTitle,
-  showVideos,
+  showVideos: _showVideos,
   className,
 }: {
   resources: PolarizationResource[]
@@ -721,7 +721,7 @@ function SequenceView({
   className?: string
 }) {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(false)
+  const [_isPlaying, _setIsPlaying] = useState(false)
 
   return (
     <motion.div
