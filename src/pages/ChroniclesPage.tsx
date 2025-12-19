@@ -840,7 +840,7 @@ interface TimelineEvent {
     zh: string
   }
   // 实验配图 - 经典实验的可视化
-  illustrationType?: 'prism' | 'double-slit' | 'calcite' | 'reflection' | 'polarizer' | 'lcd' | 'mantis' | 'wave' | 'birefringence' | 'nicol' | 'faraday' | 'chirality' | 'rayleigh' | 'poincare' | 'photoelectric' | 'jones' | 'snell' | 'lightspeed' | 'opticalactivity' | 'transverse' | 'stokes' | 'mueller' | 'medical' | 'metasurface' | 'quantum'
+  illustrationType?: 'prism' | 'double-slit' | 'calcite' | 'reflection' | 'polarizer' | 'lcd' | 'mantis' | 'wave' | 'birefringence' | 'nicol' | 'faraday' | 'chirality' | 'rayleigh' | 'poincare' | 'photoelectric' | 'jones' | 'snell' | 'lightspeed' | 'opticalactivity' | 'transverse' | 'stokes' | 'mueller' | 'medical' | 'metasurface' | 'quantum' | 'chromaticpol'
   // 双轨连接 - 跨轨道因果关系
   linkTo?: {
     year: number
@@ -1490,6 +1490,92 @@ tan(θB) = n₂/n₁
     illustrationType: 'reflection'
   },
   {
+    year: 1811,
+    titleEn: 'Chromatic Polarization',
+    titleZh: '色偏振现象',
+    descriptionEn: 'François Arago discovers that thin crystalline plates between crossed polarizers display vivid interference colors — revealing the wave nature of polarized light.',
+    descriptionZh: '阿拉戈发现薄晶体片置于正交偏振片之间会显示绚丽的干涉颜色——揭示了偏振光的波动本质。',
+    scientistEn: 'François Arago',
+    scientistZh: '弗朗索瓦·阿拉戈',
+    category: 'discovery',
+    importance: 1,
+    track: 'polarization',
+    details: {
+      en: [
+        'Thin mica or quartz plates between crossed polarizers show vivid colors',
+        'Different thicknesses produce different colors due to phase retardation',
+        'Colors arise from interference between ordinary and extraordinary rays',
+        'Discovered during collaboration with Biot on polarization studies',
+        'Foundation for stress analysis and crystallography',
+        'Classic experiment: rotating the analyzer reveals color changes'
+      ],
+      zh: [
+        '薄云母片或石英片置于正交偏振片之间显示绚丽颜色',
+        '不同厚度因相位延迟产生不同颜色',
+        '颜色源于寻常光和非常光的干涉',
+        '在与毕奥合作研究偏振时发现',
+        '应力分析和晶体学的基础',
+        '经典实验：转动检偏器可观察颜色变化'
+      ]
+    },
+    story: {
+      en: `In 1811, in the laboratories of the Paris Observatory, a young astronomer named François Arago was conducting experiments with polarized light. Following Malus's recent discovery, Arago was systematically studying how various materials affected polarization.
+
+One evening, he placed a thin sheet of mica between two tourmaline crystals (natural polarizers) arranged at right angles. What he saw made him gasp in wonder: brilliant colors — blues, yellows, purples — dancing across the crystal like a stained glass window illuminated by candlelight.
+
+Arago carefully rotated the analyzing crystal. The colors shifted, transformed, reversed. Where there had been red, now appeared green. Where yellow glowed, violet emerged. The thinner the mica, the longer the wavelengths of color; thicker sheets produced shorter wavelength hues.
+
+"The colors arise from the interference of polarized rays," Arago realized. The mica was splitting light into two components (ordinary and extraordinary rays) that traveled at slightly different speeds. When they recombined at the analyzer, some wavelengths reinforced while others cancelled — producing pure spectral colors.
+
+This "chromatic polarization" became a powerful tool. Engineers would later use it to visualize stress in glass and plastic (photoelasticity). Mineralogists used it to identify crystals. The beautiful colors Arago discovered in his candlelit laboratory became the foundation of an entire field of optical analysis.
+
+Today, if you've ever seen the rainbow patterns in a stressed plastic ruler viewed through polarized sunglasses, you've witnessed Arago's discovery.`,
+      zh: `1811年，在巴黎天文台的实验室里，一位名叫弗朗索瓦·阿拉戈的年轻天文学家正在进行偏振光实验。在马吕斯最近发现的启发下，阿拉戈系统地研究各种材料如何影响偏振。
+
+一天晚上，他将一片薄云母片放在两块呈直角排列的电气石晶体（天然偏振器）之间。他看到的景象令他惊叹不已：绚丽的颜色——蓝色、黄色、紫色——在晶体上跃动，宛如烛光照亮的彩色玻璃窗。
+
+阿拉戈小心地转动检偏晶体。颜色变换、转化、逆转。原来是红色的地方变成了绿色。黄色发光的地方出现了紫色。云母越薄，颜色的波长越长；较厚的薄片产生较短波长的色调。
+
+"这些颜色源于偏振光线的干涉，"阿拉戈意识到。云母将光分成两个分量（寻常光和非常光），它们以略有不同的速度传播。当它们在检偏器处重新组合时，某些波长加强而另一些相消——产生纯净的光谱色彩。
+
+这种"色偏振"成为一种强大的工具。工程师后来用它来可视化玻璃和塑料中的应力（光弹性法）。矿物学家用它来鉴定晶体。阿拉戈在烛光实验室中发现的美丽颜色，成为整个光学分析领域的基础。
+
+今天，如果你曾透过偏振太阳镜看到受力塑料尺中的彩虹图案，你就见证了阿拉戈的发现。`
+    },
+    scientistBio: {
+      birthYear: 1786,
+      deathYear: 1853,
+      nationality: 'French',
+      portraitEmoji: '🌈',
+      bioEn: 'François Arago was a French mathematician, physicist, astronomer, and politician. He served as Director of the Paris Observatory and was briefly Prime Minister of France. He championed the wave theory of light, verified Fresnel\'s predictions, and made fundamental contributions to electromagnetism. His work on chromatic polarization laid the foundation for photoelasticity.',
+      bioZh: '弗朗索瓦·阿拉戈是法国数学家、物理学家、天文学家和政治家。他曾任巴黎天文台台长，并短暂担任法国总理。他支持光的波动理论，验证了菲涅尔的预测，并对电磁学做出了根本性贡献。他在色偏振方面的工作奠定了光弹性法的基础。'
+    },
+    scene: {
+      location: 'Paris Observatory, France',
+      season: 'Autumn',
+      mood: 'wonder'
+    },
+    references: [
+      { title: 'Arago, F. (1811). Mémoire sur une modification remarquable qu\'éprouvent les rayons lumineux' },
+      { title: 'Buchwald, J. Z. (1989). The Rise of the Wave Theory of Light' }
+    ],
+    historicalNote: {
+      en: 'Note: Arago\'s chromatic polarization experiment is distinct from Newton\'s prism experiment. Newton separated white light by refraction; Arago revealed colors through interference of polarized light components.',
+      zh: '注：阿拉戈的色偏振实验与牛顿的棱镜实验不同。牛顿通过折射分离白光；阿拉戈则通过偏振光分量的干涉揭示颜色。'
+    },
+    thinkingQuestion: {
+      en: 'When you look at a piece of stressed plastic through polarized sunglasses, you see rainbow patterns. How are these colors related to Arago\'s discovery? What do they tell us about the plastic?',
+      zh: '当你透过偏振太阳镜观察受力的塑料时，会看到彩虹图案。这些颜色与阿拉戈的发现有什么关系？它们告诉我们关于塑料的什么信息？'
+    },
+    linkTo: {
+      year: 1817,
+      trackTarget: 'optics',
+      descriptionEn: 'Arago\'s chromatic polarization provided key evidence for Fresnel\'s transverse wave theory',
+      descriptionZh: '阿拉戈的色偏振为菲涅尔的横波理论提供了关键证据'
+    },
+    illustrationType: 'chromaticpol'
+  },
+  {
     year: 1815,
     titleEn: 'Discovery of Optical Activity',
     titleZh: '旋光性的发现',
@@ -1503,38 +1589,52 @@ tan(θB) = n₂/n₁
     details: {
       en: [
         'Observed that polarized light passing through quartz or sugar solutions has its plane rotated',
-        'Rotation angle is proportional to path length and concentration',
+        'Rotation angle is proportional to path length and concentration: α = [α] × l × c',
         'Distinguished from birefringence: rotation occurs without beam splitting',
+        'Invented the polarimeter: Nicol prisms + sample tube + graduated scale',
+        'Discovered both dextrorotatory (+) and levorotatory (-) substances',
+        'Classic experiment: turpentine oil shows left-handed rotation, sugar shows right-handed',
         'This "natural optical activity" is related to molecular asymmetry (chirality)',
-        'Laid the foundation for Pasteur\'s later discovery of molecular chirality'
+        'Laid the foundation for Pasteur\'s later discovery of molecular chirality (1848)'
       ],
       zh: [
         '观察到偏振光通过石英或糖溶液时振动平面发生旋转',
-        '旋转角度与光程长度和浓度成正比',
+        '旋转角度与光程长度和浓度成正比：α = [α] × l × c',
         '不同于双折射：旋转时不发生光束分裂',
+        '发明了旋光仪：尼科尔棱镜 + 样品管 + 刻度盘',
+        '发现了右旋（+）和左旋（-）两类物质',
+        '经典实验：松节油呈左旋，糖呈右旋',
         '这种"自然旋光"与分子不对称性（手性）有关',
-        '为巴斯德后来发现分子手性奠定了基础'
+        '为巴斯德后来发现分子手性奠定了基础（1848）'
       ]
     },
     story: {
       en: `In 1815, in the laboratories of the École Polytechnique in Paris, Jean-Baptiste Biot was studying quartz crystals when he noticed something puzzling. Polarized light passing through certain quartz specimens emerged with its polarization plane twisted — not split into two beams like in calcite, but smoothly rotated.
 
-Even more surprising, the same effect occurred in sugar solutions. The sweeter the solution, the greater the rotation. Biot realized he had discovered a fundamentally different way that matter could interact with polarized light.
+The discovery came from systematic experimentation. Biot carefully cut quartz plates of different thicknesses and measured the rotation angle for each. He found a precise relationship: the angle was exactly proportional to the thickness. This was no random effect — it was a fundamental property of the crystal.
 
-He called it "rotary polarization" or "optical activity." Some substances rotated the light clockwise (dextrorotatory), others counterclockwise (levorotatory). The phenomenon seemed to be connected to the very structure of molecules themselves.
+Even more surprising, the same effect occurred in sugar solutions. The sweeter the solution, the greater the rotation. Biot dissolved various concentrations of sugar in water, placed them in glass tubes, and measured the rotation. He derived what would become known as Biot's Law: α = [α] × l × c (rotation equals specific rotation times path length times concentration).
 
-Biot could not explain why this happened — that would require understanding molecular structure at a level not yet achieved. But he had opened a door that would lead, thirty years later, to one of the most profound discoveries in chemistry: molecular chirality.
+He called it "rotary polarization" or "optical activity." Some substances rotated the light clockwise when viewed from the detector (dextrorotatory, labeled +), others counterclockwise (levorotatory, labeled -). Quartz crystals came in both left-handed and right-handed forms. Turpentine oil rotated light to the left; cane sugar to the right.
 
-Today, measuring optical rotation remains a standard technique in chemistry and pharmaceutical industries. Every time a chemist verifies the purity of a sugar or the correct "handedness" of a drug molecule, they use the principle Biot discovered.`,
+To make precise measurements, Biot developed the polarimeter — placing the sample between two Nicol prisms, one fixed and one rotatable with a graduated scale. This instrument, refined over the years, would become standard equipment in every chemistry laboratory.
+
+Biot could not explain why this happened — that would require understanding molecular structure at a level not yet achieved. But he had opened a door that would lead, thirty years later, to one of the most profound discoveries in chemistry. In 1848, a young Louis Pasteur, using Biot's polarimeter, would discover that tartaric acid crystals came in mirror-image forms — the birth of stereochemistry.
+
+Today, measuring optical rotation remains a standard technique in chemistry and pharmaceutical industries. Every time a chemist verifies the purity of a sugar or the correct "handedness" of a drug molecule, they use the principle and instruments Biot pioneered.`,
       zh: `1815年，在巴黎综合理工学院的实验室里，让-巴蒂斯特·毕奥研究石英晶体时注意到一个令人困惑的现象。偏振光通过某些石英样品后，其偏振平面发生了扭转——不是像方解石那样分成两束，而是平滑地旋转。
 
-更令人惊讶的是，糖溶液中也出现了同样的效果。溶液越甜，旋转角度越大。毕奥意识到他发现了物质与偏振光相互作用的一种根本不同的方式。
+这一发现源于系统的实验。毕奥仔细切割不同厚度的石英片，测量每片的旋转角度。他发现了一个精确的关系：角度与厚度严格成正比。这不是随机效应——而是晶体的基本性质。
 
-他称之为"旋转偏振"或"旋光性"。有些物质使光顺时针旋转（右旋），有些则逆时针旋转（左旋）。这种现象似乎与分子本身的结构有关。
+更令人惊讶的是，糖溶液中也出现了同样的效果。溶液越甜，旋转角度越大。毕奥将不同浓度的糖溶解在水中，装入玻璃管，测量旋转角度。他推导出后来被称为"毕奥定律"的公式：α = [α] × l × c（旋转角度等于比旋光度乘以光程乘以浓度）。
 
-毕奥无法解释为什么会发生这种情况——那需要对分子结构有更深入的理解。但他打开了一扇门，三十年后将引出化学史上最深刻的发现之一：分子手性。
+他称之为"旋转偏振"或"旋光性"。有些物质从检测器方向看使光顺时针旋转（右旋，标记为+），有些则逆时针旋转（左旋，标记为-）。石英晶体有左旋和右旋两种形态。松节油使光左旋；蔗糖使光右旋。
 
-今天，测量旋光度仍然是化学和制药行业的标准技术。每当化学家验证糖的纯度或药物分子的正确"手性"时，他们都在使用毕奥发现的原理。`
+为了进行精确测量，毕奥开发了旋光仪——将样品置于两个尼科尔棱镜之间，一个固定，一个可旋转并带有刻度盘。这种仪器经过多年改进，成为每个化学实验室的标准设备。
+
+毕奥无法解释为什么会发生这种情况——那需要对分子结构有更深入的理解。但他打开了一扇门，三十年后将引出化学史上最深刻的发现之一。1848年，年轻的路易·巴斯德使用毕奥的旋光仪，发现酒石酸晶体存在镜像形态——立体化学由此诞生。
+
+今天，测量旋光度仍然是化学和制药行业的标准技术。每当化学家验证糖的纯度或药物分子的正确"手性"时，他们都在使用毕奥开创的原理和仪器。`
     },
     scientistBio: {
       birthYear: 1774,
@@ -1549,13 +1649,24 @@ Today, measuring optical rotation remains a standard technique in chemistry and 
       season: 'Spring',
       mood: 'discovery'
     },
+    references: [
+      { title: 'Biot, J. B. (1815). Mémoire sur la polarisation circulaire', url: 'https://gallica.bnf.fr/ark:/12148/bpt6k6556665z' },
+      { title: 'Biot, J. B. (1817). Mémoire sur les rotations que certaines substances impriment aux axes de polarisation des rayons lumineux' },
+      { title: 'Lowry, T. M. (1935). Optical Rotatory Power' }
+    ],
     historicalNote: {
-      en: 'Note: Optical activity (rotation of polarization plane) is distinct from birefringence (splitting light into two beams). Both involve polarization but through different mechanisms.',
-      zh: '注：旋光性（偏振面旋转）与双折射（将光分成两束）是不同的现象。两者都涉及偏振，但机制不同。'
+      en: 'Note: Optical activity (rotation of polarization plane) is distinct from birefringence (splitting light into two beams). Both involve polarization but through different mechanisms. Biot\'s polarimeter became the standard instrument for measuring optical rotation.',
+      zh: '注：旋光性（偏振面旋转）与双折射（将光分成两束）是不同的现象。两者都涉及偏振，但机制不同。毕奥的旋光仪成为测量旋光度的标准仪器。'
     },
     thinkingQuestion: {
       en: 'Sugar solutions rotate polarized light. Does this mean sugar molecules have a special shape? What does "handedness" mean for a molecule?',
       zh: '糖溶液能旋转偏振光。这是否意味着糖分子有特殊的形状？分子的"手性"是什么意思？'
+    },
+    linkTo: {
+      year: 1848,
+      trackTarget: 'polarization',
+      descriptionEn: 'Biot\'s polarimeter enabled Pasteur\'s discovery of molecular chirality in tartaric acid crystals',
+      descriptionZh: '毕奥的旋光仪使巴斯德得以发现酒石酸晶体的分子手性'
     },
     illustrationType: 'opticalactivity'
   },
@@ -1877,42 +1988,58 @@ Pasteur later said this moment changed his life. "The universe is asymmetric," h
     details: {
       en: [
         'Four parameters (S₀, S₁, S₂, S₃) completely describe any polarization state',
-        'Can represent partially polarized and unpolarized light',
-        'Enables mathematical treatment of polarization measurement',
-        'Foundation for modern polarimetry'
+        'S₀: total intensity; S₁: horizontal vs vertical; S₂: +45° vs -45°; S₃: right vs left circular',
+        'Can represent partially polarized and unpolarized light (degree of polarization = √(S₁²+S₂²+S₃²)/S₀)',
+        'Classic measurement: 6 intensity measurements with different polarizer/waveplate combinations',
+        'Published in "On the Composition and Resolution of Streams of Polarized Light from Different Sources" (1852)',
+        'Foundation for Poincaré sphere (1892) and Mueller calculus (1943)',
+        'Enables mathematical treatment of polarization in real-world conditions',
+        'Used in astronomy, remote sensing, medical imaging, and telecommunications'
       ],
       zh: [
         '四个参数（S₀, S₁, S₂, S₃）完整描述任何偏振态',
-        '可以表示部分偏振和非偏振光',
-        '使偏振测量的数学处理成为可能',
-        '现代偏振测量学的基础'
+        'S₀：总强度；S₁：水平vs垂直；S₂：+45°vs-45°；S₃：右旋vs左旋',
+        '可以表示部分偏振和非偏振光（偏振度 = √(S₁²+S₂²+S₃²)/S₀）',
+        '经典测量：用不同偏振片/波片组合进行6次强度测量',
+        '发表于《不同来源偏振光束的组成与分解》（1852）',
+        '庞加莱球（1892）和穆勒矩阵（1943）的基础',
+        '使真实条件下偏振的数学处理成为可能',
+        '应用于天文学、遥感、医学成像和通信'
       ]
     },
     story: {
       en: `Cambridge, 1852. George Gabriel Stokes, the Lucasian Professor of Mathematics (Newton's former chair), faced a puzzle that had frustrated physicists for decades: how do you describe light that isn't perfectly polarized?
 
+The problem had practical urgency. Astronomers studying starlight needed to characterize its polarization. Geologists examining crystals encountered complex polarization states. But the existing mathematics — elegant for perfect polarization — broke down for real-world light that was only partially polarized.
+
 Real light — from the sun, from candles, from lamps — was messy. Some of it was polarized, some wasn't, some was somewhere in between. And polarization could be linear, circular, or elliptical. How could mathematics capture this complexity?
 
-Stokes's genius was to step back from the physics and ask a simpler question: what can we actually measure? He realized that with just four measurements — using polarizers at different angles and a quarter-wave plate — you could completely characterize any beam of light.
+Stokes's genius was to step back from the physics and ask a simpler question: what can we actually measure? He devised a systematic experiment: measure intensity through a polarizer at 0°, 90°, 45°, and 135°. Then add a quarter-wave plate and measure twice more for circular polarization. From these six measurements, four independent parameters emerged.
 
 He called them S₀, S₁, S₂, and S₃. Four numbers. Four simple measurements. Together, they could describe perfect polarization, partial polarization, complete chaos, or anything in between.
 
-S₀ gave the total intensity. S₁ described horizontal versus vertical preference. S₂ captured diagonal tendencies. And S₃ revealed the handedness of circular polarization.
+S₀ gave the total intensity. S₁ described horizontal versus vertical preference. S₂ captured diagonal tendencies. And S₃ revealed the handedness of circular polarization. The ratio √(S₁²+S₂²+S₃²)/S₀ gave the degree of polarization — from 0 (unpolarized) to 1 (fully polarized).
 
-The beauty of Stokes's approach was its practicality. You didn't need to know the electromagnetic theory. You didn't need to track phases and amplitudes. You simply made measurements and plugged in numbers.
+The beauty of Stokes's approach was its practicality. You didn't need to know the electromagnetic theory. You didn't need to track phases and amplitudes. You simply made measurements and plugged in numbers. The parameters were observable quantities, not theoretical abstractions.
+
+Forty years later, Poincaré would map these parameters onto a sphere, giving them geometric intuition. Ninety years later, Mueller would build matrix calculus upon them. But it all began with Stokes's simple insight: describe light by what you can measure.
 
 Today, "Stokes polarimetry" is used everywhere — from analyzing starlight to medical imaging, from studying insect vision to designing LCD screens. Stokes gave us a language to speak about polarization that works in the real world, where light is never perfectly behaved.`,
       zh: `1852年，剑桥。乔治·加布里埃尔·斯托克斯，卢卡斯数学教授（牛顿曾坐过的讲席），面对一个困扰物理学家数十年的难题：如何描述不完全偏振的光？
 
+这个问题有着实际的迫切性。研究星光的天文学家需要表征其偏振状态。检查晶体的地质学家遇到了复杂的偏振态。但现有的数学——对于完美偏振很优雅——对于现实世界中只是部分偏振的光却失效了。
+
 真实的光——来自太阳、蜡烛、灯火——总是杂乱无章的。有些是偏振的，有些不是，有些介于两者之间。而且偏振可以是线偏振、圆偏振或椭圆偏振。数学如何能捕捉这种复杂性？
 
-斯托克斯的天才之处在于他退后一步，问了一个更简单的问题：我们实际上能测量什么？他意识到，只需四次测量——使用不同角度的偏振器和一个四分之一波片——就能完全表征任何光束。
+斯托克斯的天才之处在于他退后一步，问了一个更简单的问题：我们实际上能测量什么？他设计了一个系统的实验：在0°、90°、45°和135°角度分别通过偏振器测量强度，然后加入四分之一波片再测量两次以获取圆偏振信息。从这六次测量中，四个独立参数浮现出来。
 
-他称它们为S₀、S₁、S₂和S₃。四个数字。四次简单的测量。它们可以描述完美偏振、部分偏振、完全混沌，或介于两者之间的任何状态。
+他称它们为S₀、S₁、S₂和S₃。四个数字。六次简单的测量。它们可以描述完美偏振、部分偏振、完全混沌，或介于两者之间的任何状态。
 
-S₀给出总强度。S₁描述水平与垂直的倾向。S₂捕捉对角线方向的特征。S₃揭示圆偏振的旋向。
+S₀给出总强度。S₁描述水平与垂直的倾向。S₂捕捉对角线方向的特征。S₃揭示圆偏振的旋向。比值√(S₁²+S₂²+S₃²)/S₀给出偏振度——从0（非偏振）到1（完全偏振）。
 
-斯托克斯方法的美妙之处在于它的实用性。你不需要了解电磁理论。你不需要追踪相位和振幅。你只需进行测量，代入数字即可。
+斯托克斯方法的美妙之处在于它的实用性。你不需要了解电磁理论。你不需要追踪相位和振幅。你只需进行测量，代入数字即可。这些参数是可观测量，而非理论抽象。
+
+四十年后，庞加莱将这些参数映射到球面上，赋予它们几何直觉。九十年后，穆勒将在其上建立矩阵演算。但这一切都始于斯托克斯的简单洞见：用你能测量的东西来描述光。
 
 今天，"斯托克斯偏振测量法"无处不在——从分析星光到医学成像，从研究昆虫视觉到设计液晶屏幕。斯托克斯给了我们一种在现实世界中谈论偏振的语言——在那里，光永远不会完美地表现。`
     },
@@ -1928,6 +2055,21 @@ S₀给出总强度。S₁描述水平与垂直的倾向。S₂捕捉对角线�
       location: 'Cambridge, England',
       season: 'Spring',
       mood: 'mathematical elegance'
+    },
+    references: [
+      { title: 'Stokes, G. G. (1852). On the Composition and Resolution of Streams of Polarized Light from Different Sources', url: 'https://doi.org/10.1017/S0305004100027079' },
+      { title: 'Chandrasekhar, S. (1960). Radiative Transfer (Chapter on Polarization)' },
+      { title: 'Collett, E. (1993). Polarized Light: Fundamentals and Applications' }
+    ],
+    linkTo: {
+      year: 1892,
+      trackTarget: 'polarization',
+      descriptionEn: 'Poincaré would later map Stokes parameters geometrically onto a sphere',
+      descriptionZh: '庞加莱后来将斯托克斯参数几何地映射到球面上'
+    },
+    thinkingQuestion: {
+      en: 'Why does Stokes use four parameters when there are only three independent quantities (besides intensity) needed to describe polarization? What constraint links them?',
+      zh: '斯托克斯为什么用四个参数，而描述偏振（除强度外）只需要三个独立量？是什么约束将它们联系在一起？'
     },
     illustrationType: 'stokes'
   },
@@ -2316,56 +2458,75 @@ The Jones calculus has one limitation: it only works for completely polarized li
     track: 'polarization',
     details: {
       en: [
-        'Uses 4-element Stokes vectors to describe any polarization state',
-        'Optical elements represented by 4×4 Mueller matrices',
-        'Can handle partially polarized and unpolarized light',
-        'Accounts for depolarization effects in real materials',
-        'Essential for polarimetric imaging and remote sensing'
+        'Uses 4-element Stokes vectors S = [S₀, S₁, S₂, S₃]ᵀ to describe any polarization state',
+        'Optical elements represented by 4×4 Mueller matrices: S_out = M × S_in',
+        'Can handle partially polarized and unpolarized light (unlike Jones calculus)',
+        'Accounts for depolarization effects: M has 16 elements, not all independent',
+        'Lu-Chipman decomposition (1996): M = MΔ × MR × MD (depolarizer × retarder × diattentuator)',
+        'Classic experiment: measure with polarimeter at multiple orientations to construct M',
+        'Essential for polarimetric imaging, remote sensing, and biomedical optics',
+        'Developed during WWII for optical instrumentation at MIT'
       ],
       zh: [
-        '用4元斯托克斯矢量描述任何偏振态',
-        '光学元件用4×4穆勒矩阵表示',
-        '可以处理部分偏振和非偏振光',
-        '考虑了真实材料中的退偏效应',
-        '对偏振成像和遥感至关重要'
+        '用4元斯托克斯矢量 S = [S₀, S₁, S₂, S₃]ᵀ 描述任何偏振态',
+        '光学元件用4×4穆勒矩阵表示：S_out = M × S_in',
+        '可以处理部分偏振和非偏振光（琼斯演算不能）',
+        '考虑了退偏效应：M有16个元素，并非全部独立',
+        'Lu-Chipman分解（1996）：M = MΔ × MR × MD（退偏器×延迟器×二向衰减器）',
+        '经典实验：用偏振计在多个方向测量以构建M矩阵',
+        '对偏振成像、遥感和生物医学光学至关重要',
+        '二战期间在MIT为光学仪器开发'
       ]
     },
     story: {
-      en: `Around 1943, physicist Hans Mueller at MIT developed a powerful generalization of polarization mathematics. While Jones calculus worked beautifully for perfectly polarized light, real light in real environments is often only partially polarized. Mueller calculus could handle it all.
+      en: `In 1943, at the height of World War II, physicist Hans Mueller at MIT was working on optical instrumentation when he faced a fundamental limitation: Jones calculus, though elegant, could only describe perfectly polarized light. Real optical systems — with scattering, rough surfaces, and partial polarization — demanded something more.
 
-The key insight was to work directly with Stokes parameters — the four measurable quantities Stokes had defined in 1852. Mueller represented these as a 4-element vector and optical elements as 4×4 matrices.
+Mueller's insight was to return to Stokes's century-old parameters. Where Jones used 2×2 complex matrices acting on 2-element electric field vectors, Mueller used 4×4 real matrices acting on 4-element Stokes vectors. The mathematics was larger, but the physical meaning was clearer.
 
-This larger framework could describe things Jones calculus couldn't: scattering that randomizes polarization, surfaces that partially depolarize reflected light, and the complex interactions of light with biological tissue or rough surfaces.
+The key insight was to work directly with Stokes parameters — the four measurable quantities Stokes had defined in 1852. Mueller represented these as a 4-element column vector [S₀, S₁, S₂, S₃]ᵀ and optical elements as 4×4 matrices. The output Stokes vector was simply the matrix multiplied by the input vector.
 
-Mueller calculus found its natural home in polarimetric imaging. When analyzing satellite images of Earth's atmosphere, studying cancer tissue under a polarization microscope, or characterizing optical coatings, Mueller matrices provide the complete picture.
+This larger framework could describe things Jones calculus couldn't: scattering that randomizes polarization, surfaces that partially depolarize reflected light, and the complex interactions of light with biological tissue or rough surfaces. The 16 elements of a Mueller matrix captured the complete polarimetric behavior of any optical element.
 
-The relationship between Jones and Mueller calculus is deep: for completely polarized light, you can convert between them. But Mueller can go places Jones cannot — into the messy, partially polarized world where most real measurements happen.
+For decades, Mueller's work remained in technical reports and specialized applications. But in the 1990s, it found new life. In 1996, Shih-Yau Lu and Russell Chipman developed the polar decomposition of Mueller matrices — breaking any M matrix into three physically meaningful components: a diattentuator (polarization-dependent absorption), a retarder (phase shift), and a depolarizer.
 
-Today, Mueller matrix decomposition is a standard technique in medical imaging, helping doctors distinguish healthy tissue from cancerous growth by their different depolarization properties.`,
-      zh: `大约1943年，麻省理工学院的物理学家汉斯·穆勒发展出了偏振数学的强大推广。虽然琼斯演算对完全偏振光效果很好，但真实环境中的真实光往往只是部分偏振的。穆勒矩阵可以处理这一切。
+This decomposition revolutionized biomedical imaging. Cancerous tissue, it turned out, had distinctively different Mueller matrices than healthy tissue — particularly in the depolarization component. Collagen fibers in healthy skin maintain polarization; disrupted collagen in tumors scrambles it.
 
-关键的洞见是直接使用斯托克斯参数——斯托克斯在1852年定义的四个可测量量。穆勒将它们表示为4元矢量，将光学元件表示为4×4矩阵。
+Today, Mueller matrix polarimetry is a powerful diagnostic tool. From satellite remote sensing of atmospheric aerosols to non-invasive cancer detection, Mueller's wartime mathematics has become essential to modern optical science.`,
+      zh: `1943年，二战最激烈的时期，麻省理工学院的物理学家汉斯·穆勒在研究光学仪器时面临一个根本性的限制：琼斯演算虽然优雅，但只能描述完全偏振光。真实的光学系统——有散射、粗糙表面和部分偏振——需要更强大的工具。
 
-这个更大的框架可以描述琼斯演算无法描述的事物：使偏振随机化的散射、部分退偏反射光的表面，以及光与生物组织或粗糙表面的复杂相互作用。
+穆勒的洞见是回归斯托克斯一个世纪前的参数。琼斯使用2×2复矩阵作用于2元电场矢量，而穆勒使用4×4实矩阵作用于4元斯托克斯矢量。数学更大了，但物理意义更清晰了。
 
-穆勒矩阵在偏振成像中找到了自然的归宿。在分析地球大气的卫星图像、用偏振显微镜研究癌症组织、或表征光学涂层时，穆勒矩阵提供了完整的图景。
+关键的洞见是直接使用斯托克斯参数——斯托克斯在1852年定义的四个可测量量。穆勒将它们表示为4元列矢量 [S₀, S₁, S₂, S₃]ᵀ，将光学元件表示为4×4矩阵。输出斯托克斯矢量就是矩阵乘以输入矢量。
 
-琼斯演算和穆勒矩阵之间的关系很深：对于完全偏振光，你可以在它们之间转换。但穆勒矩阵可以到达琼斯演算无法到达的地方——进入大多数真实测量发生的杂乱的、部分偏振的世界。
+这个更大的框架可以描述琼斯演算无法描述的事物：使偏振随机化的散射、部分退偏反射光的表面，以及光与生物组织或粗糙表面的复杂相互作用。穆勒矩阵的16个元素捕捉了任何光学元件的完整偏振行为。
 
-今天，穆勒矩阵分解是医学成像中的标准技术，帮助医生通过不同的退偏特性区分健康组织和癌变组织。`
+几十年来，穆勒的工作只存在于技术报告和专业应用中。但在1990年代，它获得了新生。1996年，卢士尧和Russell Chipman发展了穆勒矩阵的极分解——将任何M矩阵分解为三个有物理意义的分量：二向衰减器（偏振相关吸收）、延迟器（相位偏移）和退偏器。
+
+这种分解彻底改变了生物医学成像。人们发现，癌组织的穆勒矩阵与健康组织有明显不同——特别是在退偏分量上。健康皮肤中的胶原纤维保持偏振；肿瘤中被破坏的胶原则使之散乱。
+
+今天，穆勒矩阵偏振测量是一种强大的诊断工具。从大气气溶胶的卫星遥感到无创癌症检测，穆勒的战时数学已成为现代光学科学不可或缺的一部分。`
     },
     scientistBio: {
       birthYear: 1900,
       deathYear: 1965,
       nationality: 'American',
       portraitEmoji: '📊',
-      bioEn: 'Hans Mueller was an American physicist at MIT who developed the Mueller calculus for polarization optics. His work provided the mathematical foundation for analyzing partially polarized light, essential for modern polarimetric imaging.',
-      bioZh: '汉斯·穆勒是麻省理工学院的美国物理学家，发展了偏振光学的穆勒矩阵。他的工作为分析部分偏振光提供了数学基础，这对现代偏振成像至关重要。'
+      bioEn: 'Hans Mueller was an American physicist at MIT who developed the Mueller calculus for polarization optics during World War II. His work, though initially confined to technical reports, provided the mathematical foundation for analyzing partially polarized light and became essential for modern polarimetric imaging. The Mueller matrix formalism is now used worldwide in remote sensing, biomedical optics, and materials characterization.',
+      bioZh: '汉斯·穆勒是麻省理工学院的美国物理学家，在二战期间发展了偏振光学的穆勒矩阵。他的工作虽然最初只限于技术报告，但为分析部分偏振光提供了数学基础，并成为现代偏振成像不可或缺的工具。穆勒矩阵形式体系现在在世界范围内用于遥感、生物医学光学和材料表征。'
     },
     scene: {
       location: 'MIT, Cambridge, USA',
       season: 'Winter',
-      mood: 'completeness'
+      mood: 'wartime innovation'
+    },
+    references: [
+      { title: 'Mueller, H. (1948). The Foundation of Optics. Journal of the Optical Society of America, 38, 661' },
+      { title: 'Lu, S. Y., & Chipman, R. A. (1996). Interpretation of Mueller matrices based on polar decomposition', url: 'https://doi.org/10.1364/JOSAA.13.001106' },
+      { title: 'Goldstein, D. H. (2011). Polarized Light (3rd ed.). CRC Press' }
+    ],
+    historicalNote: {
+      en: 'Note: Mueller calculus was developed during WWII but remained in technical reports for decades. The Lu-Chipman polar decomposition (1996) brought it into mainstream biomedical imaging by providing physical interpretation of the 16 matrix elements.',
+      zh: '注：穆勒矩阵在二战期间发展，但数十年来只存在于技术报告中。Lu-Chipman极分解（1996）通过为16个矩阵元素提供物理解释，将其带入主流生物医学成像领域。'
     },
     linkTo: {
       year: 2018,
