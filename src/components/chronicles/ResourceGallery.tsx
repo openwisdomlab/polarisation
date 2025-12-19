@@ -429,10 +429,11 @@ export function ResourceGallery({ resources, isZh, theme, compact = false }: Res
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.2 }}
                     >
-                      {/* 主图 - 使用 aspect-ratio 自适应填充 */}
+                      {/* 主图 - 自适应原始比例 */}
                       <motion.div
                         className={cn(
-                          'relative rounded-lg overflow-hidden mb-2 cursor-pointer group aspect-video',
+                          'relative rounded-lg overflow-hidden mb-2 cursor-pointer group',
+                          'flex items-center justify-center',
                           theme === 'dark' ? 'bg-slate-800' : 'bg-gray-100'
                         )}
                         onClick={(e) => {
@@ -446,7 +447,7 @@ export function ResourceGallery({ resources, isZh, theme, compact = false }: Res
                           key={selectedImage}
                           src={allImages[selectedImage].url}
                           alt={allImages[selectedImage].caption || ''}
-                          className="w-full h-full object-cover"
+                          className="max-w-full max-h-[50vh] w-auto h-auto object-contain"
                           initial={{ opacity: 0, scale: 1.05 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ duration: 0.3 }}
@@ -569,15 +570,15 @@ export function ResourceGallery({ resources, isZh, theme, compact = false }: Res
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.2 }}
                     >
-                      {/* 视频播放器 - 使用 aspect-video 自适应 */}
+                      {/* 视频播放器 - 自适应原始比例 */}
                       <div className={cn(
-                        'relative rounded-lg overflow-hidden aspect-video group',
+                        'relative rounded-lg overflow-hidden group flex items-center justify-center',
                         theme === 'dark' ? 'bg-slate-800' : 'bg-gray-900'
                       )}>
                         <video
                           key={videoUrl}
                           src={videoUrl}
-                          className="w-full h-full object-cover"
+                          className="max-w-full max-h-[50vh] w-auto h-auto"
                           controls
                           preload="metadata"
                           onClick={(e) => e.stopPropagation()}
@@ -840,16 +841,16 @@ export function ResourceGallery({ resources, isZh, theme, compact = false }: Res
         {/* 图片画廊 */}
         {(activeTab === 'images' || !hasVideos) && allImages.length > 0 && (
           <div>
-            {/* 主图展示 - 使用 aspect-video 自适应 */}
+            {/* 主图展示 - 自适应原始比例 */}
             <div className={cn(
-              'relative rounded-xl overflow-hidden mb-4 aspect-video',
+              'relative rounded-xl overflow-hidden mb-4 flex items-center justify-center min-h-[200px]',
               theme === 'dark' ? 'bg-slate-800' : 'bg-white shadow-md'
             )}>
               <motion.img
                 key={selectedImage}
                 src={allImages[selectedImage].url}
                 alt={allImages[selectedImage].caption || ''}
-                className="w-full h-full object-cover"
+                className="max-w-full max-h-[60vh] w-auto h-auto object-contain"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
@@ -923,15 +924,15 @@ export function ResourceGallery({ resources, isZh, theme, compact = false }: Res
         {/* 视频播放 - 支持多视频 */}
         {activeTab === 'video' && hasVideos && (
           <div>
-            {/* 视频播放器 - 使用 aspect-video 自适应 */}
+            {/* 视频播放器 - 自适应原始比例 */}
             <div className={cn(
-              'relative rounded-xl overflow-hidden aspect-video group',
+              'relative rounded-xl overflow-hidden group flex items-center justify-center min-h-[200px]',
               theme === 'dark' ? 'bg-slate-800' : 'bg-gray-900'
             )}>
               <video
                 key={videoUrl}
                 src={videoUrl}
-                className="w-full h-full object-cover"
+                className="max-w-full max-h-[60vh] w-auto h-auto"
                 controls
                 preload="metadata"
               />
