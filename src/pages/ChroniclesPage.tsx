@@ -16,7 +16,7 @@ import { Tabs, Badge, PersistentHeader } from '@/components/shared'
 import {
   Clock, User, Lightbulb, BookOpen, X, MapPin, Calendar,
   FlaskConical, Star, ChevronDown, ChevronUp, ChevronLeft, ChevronRight,
-  Sun, Sparkles, HelpCircle, Zap, Image, Film, Play, Pause,
+  Sun, Sparkles, HelpCircle, Zap, Image, Film,
   Camera, Beaker, ArrowRight
 } from 'lucide-react'
 import {
@@ -1624,7 +1624,7 @@ Today, if you've ever seen the rainbow patterns in a stressed plastic ruler view
         }
       ],
       featuredVideo: {
-        url: '/videos/chromatic-polarization/透明胶条阵列-正交偏振系统-旋转检偏器.mp4',
+        url: '/videos/chromatic-polarization/实验-透明胶条（重叠阵列）-正交偏振系统-旋转偏振片视频.mp4',
         title: 'Rotating analyzer reveals changing interference colors',
         titleZh: '旋转检偏器揭示不断变化的干涉色'
       },
@@ -3632,9 +3632,7 @@ interface ResourceGalleryProps {
 function ResourceGallery({ resources, isZh, theme, compact = false }: ResourceGalleryProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [selectedImage, setSelectedImage] = useState<number>(0)
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
   const [activeTab, setActiveTab] = useState<'images' | 'video'>('images')
-  const videoRef = React.useRef<HTMLVideoElement>(null)
 
   if (!resources) return null
 
@@ -3689,17 +3687,6 @@ function ResourceGallery({ resources, isZh, theme, compact = false }: ResourceGa
   const hasContent = allImages.length > 0 || videoUrl
 
   if (!hasContent) return null
-
-  const toggleVideo = () => {
-    if (videoRef.current) {
-      if (isVideoPlaying) {
-        videoRef.current.pause()
-      } else {
-        videoRef.current.play()
-      }
-      setIsVideoPlaying(!isVideoPlaying)
-    }
-  }
 
   // 紧凑模式 - 用于时间线卡片展开时的内嵌展示
   if (compact) {
@@ -3811,19 +3798,19 @@ function ResourceGallery({ resources, isZh, theme, compact = false }: ResourceGa
                     {/* 主图 */}
                     <div className={cn(
                       'relative rounded-lg overflow-hidden mb-2',
-                      theme === 'dark' ? 'bg-black/30' : 'bg-white'
+                      theme === 'dark' ? 'bg-black/50' : 'bg-gray-100'
                     )}>
                       <img
                         src={allImages[selectedImage].url}
                         alt={allImages[selectedImage].caption || ''}
-                        className="w-full h-32 object-cover"
+                        className="w-full h-48 object-contain"
                       />
                       {allImages[selectedImage].caption && (
                         <div className={cn(
-                          'absolute bottom-0 left-0 right-0 px-2 py-1 text-xs',
+                          'absolute bottom-0 left-0 right-0 px-2 py-1.5 text-xs',
                           theme === 'dark'
-                            ? 'bg-black/70 text-gray-200'
-                            : 'bg-white/90 text-gray-700'
+                            ? 'bg-gradient-to-t from-black/90 via-black/70 to-transparent text-gray-200'
+                            : 'bg-gradient-to-t from-white/95 via-white/80 to-transparent text-gray-700'
                         )}>
                           {allImages[selectedImage].caption}
                         </div>
@@ -3867,35 +3854,22 @@ function ResourceGallery({ resources, isZh, theme, compact = false }: ResourceGa
                 {activeTab === 'video' && videoUrl && (
                   <div className={cn(
                     'relative rounded-lg overflow-hidden',
-                    theme === 'dark' ? 'bg-black/30' : 'bg-black'
+                    theme === 'dark' ? 'bg-black/50' : 'bg-black'
                   )}>
                     <video
-                      ref={videoRef}
                       src={videoUrl}
-                      className="w-full h-32 object-cover"
-                      onEnded={() => setIsVideoPlaying(false)}
+                      className="w-full h-48 object-contain bg-black"
+                      controls
+                      preload="metadata"
                     />
-                    <button
-                      onClick={toggleVideo}
-                      className={cn(
-                        'absolute inset-0 flex items-center justify-center',
-                        isVideoPlaying ? 'opacity-0 hover:opacity-100' : '',
-                        'transition-opacity bg-black/30'
-                      )}
-                    >
-                      <div className="p-3 rounded-full bg-white/20 backdrop-blur-sm">
-                        {isVideoPlaying ? (
-                          <Pause className="w-6 h-6 text-white" />
-                        ) : (
-                          <Play className="w-6 h-6 text-white" />
-                        )}
-                      </div>
-                    </button>
                     {videoTitle && (
                       <div className={cn(
-                        'absolute bottom-0 left-0 right-0 px-2 py-1 text-xs',
-                        'bg-black/70 text-gray-200'
+                        'px-2 py-1.5 text-xs',
+                        theme === 'dark'
+                          ? 'bg-slate-800/90 text-gray-200'
+                          : 'bg-gray-100 text-gray-700'
                       )}>
+                        <Film className="w-3 h-3 inline mr-1.5 text-purple-400" />
                         {videoTitle}
                       </div>
                     )}
@@ -4082,13 +4056,10 @@ function ResourceGallery({ resources, isZh, theme, compact = false }: ResourceGa
             theme === 'dark' ? 'bg-black' : 'bg-black'
           )}>
             <video
-              ref={videoRef}
               src={videoUrl}
               className="w-full h-64 object-contain bg-black"
               controls
-              onPlay={() => setIsVideoPlaying(true)}
-              onPause={() => setIsVideoPlaying(false)}
-              onEnded={() => setIsVideoPlaying(false)}
+              preload="metadata"
             />
             {videoTitle && (
               <div className={cn(
@@ -4446,6 +4417,17 @@ function DualTrackCard({ event, eventIndex, isExpanded, onToggle, onReadStory, o
             <Badge color={category.color} className="text-xs">
               {isZh ? category.zh : category.en}
             </Badge>
+            {event.experimentalResources && (
+              <span className={cn(
+                'inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs font-medium',
+                theme === 'dark'
+                  ? 'bg-purple-500/20 text-purple-300'
+                  : 'bg-purple-100 text-purple-600'
+              )} title={isZh ? '含实验资源' : 'Has experiment resources'}>
+                <Camera className="w-3 h-3" />
+                <Film className="w-3 h-3" />
+              </span>
+            )}
             {event.importance === 1 && (
               <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
             )}
@@ -5156,6 +5138,17 @@ export function ChroniclesPage() {
                         <Badge color={CATEGORY_LABELS[event.category].color}>
                           {isZh ? CATEGORY_LABELS[event.category].zh : CATEGORY_LABELS[event.category].en}
                         </Badge>
+                        {event.experimentalResources && (
+                          <span className={cn(
+                            'inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs font-medium',
+                            theme === 'dark'
+                              ? 'bg-purple-500/20 text-purple-300'
+                              : 'bg-purple-100 text-purple-600'
+                          )} title={isZh ? '含实验资源' : 'Has experiment resources'}>
+                            <Camera className="w-3 h-3" />
+                            <Film className="w-3 h-3" />
+                          </span>
+                        )}
                         <span className={cn(
                           'text-xs font-mono',
                           theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
