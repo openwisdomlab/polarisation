@@ -7,7 +7,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence, useSpring, useTransform } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { Image, Film, ChevronLeft, ChevronRight, ChevronDown, Camera, Beaker, Play, X, Sparkles, Maximize2 } from 'lucide-react'
+import { Image, Film, ChevronLeft, ChevronRight, Camera, Beaker, Play, X, Sparkles, Maximize2 } from 'lucide-react'
 import { getResourceById, type PolarizationResource } from '@/data/resource-gallery'
 import type { TimelineEvent } from '@/data/timeline-events'
 
