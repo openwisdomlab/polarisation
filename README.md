@@ -19,11 +19,11 @@ A comprehensive educational platform that transforms the invisible world of pola
 
 **6 Creative Modules:**
 
-- **Chronicles of Light** - Journey through the history of polarization discoveries
+- **Chronicles of Light** - Interactive timeline with 30+ historical events, mobile-responsive design, and direct links to demos
 - **Optical Design Studio** - Device library (80+ components) + interactive light path designer
-- **Polarization Demo Gallery** - 19 interactive physics demonstrations across 6 units
+- **Polarization Demo Gallery** - 19 interactive physics demonstrations with difficulty scaling and direct manipulation
 - **PolarQuest Game Hub** - 2D puzzles, 3D voxel games, card battles, and escape rooms
-- **Creative Workshop** - Polarization art, photography, and DIY experiments
+- **Creative Workshop** - Polarization art with analyzer rotation, photography, and DIY experiments
 - **Virtual Lab Group** - Research tasks, applications database, and calculation tools
 
 **Core Capabilities:**
@@ -203,6 +203,7 @@ The 2D game offers a simplified, more accessible puzzle experience using SVG-bas
 
 - **Click** - Select unlocked component
 - **Arrow Keys** - Rotate selected component
+- **M** - Toggle physics mode (classic scalar / advanced Jones calculus)
 - **Eye Button** - Toggle polarization color display
 - **Reset** - Restore level to initial state
 
@@ -333,11 +334,11 @@ MIT License
 
 **6大创意模块：**
 
-- **光的编年史** - 穿越偏振发现的历史之旅
+- **光的编年史** - 30+历史事件的交互式时间线，移动端响应设计，可直接跳转演示
 - **光学设计室** - 器件图鉴（80+组件）+ 交互式光路设计器
-- **偏振演示馆** - 6个单元共19个交互式物理演示
+- **偏振演示馆** - 19个交互式物理演示，支持难度分级和直接操控
 - **偏振光探秘游戏中心** - 2D解谜、3D体素游戏、卡牌对战、密室逃脱
-- **偏振造物局** - 偏振艺术、摄影与DIY实验
+- **偏振造物局** - 带检偏器旋转的偏振艺术、摄影与DIY实验
 - **虚拟课题组：光研社** - 研究任务、应用数据库和计算工具
 
 **核心能力：**
@@ -517,6 +518,7 @@ npm run preview  # 预览生产构建
 
 - **点击** - 选择未锁定的组件
 - **方向键** - 旋转选中的组件
+- **M** - 切换物理模式（经典标量 / 高级Jones矩阵）
 - **眼睛按钮** - 切换偏振颜色显示
 - **重置** - 恢复关卡初始状态
 
