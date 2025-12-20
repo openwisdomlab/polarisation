@@ -83,6 +83,177 @@
       "subtitle": "Coming Soon",
       "description": "Open science data platform: polarization experimental data, spectral data, user-contributed datasets—coming soon, stay tuned.",
       "cta": "Coming Soon"
+    },
+    "courseEntry": "Course",
+    "courseBanner": {
+      "badge": "New Course",
+      "title": "A New World Under Polarized Light",
+      "description": "Shenzhen 01 Academy Innovation Challenge Camp course - A gamified education and scientific practice platform for polarization optics with progressive experiments, historical stories, and frontier research."
+    }
+  },
+  "course": {
+    "title": "A New World Under Polarized Light",
+    "badge": "Shenzhen 01 Academy PSRT Course",
+    "description": "This is the Shenzhen 01 Academy Innovation Challenge Camp PSRT course, providing a gamified education and scientific practice platform for polarization optics. The content ranges from early Iceland spar experiments to current full-polarization scattering and microscopy imaging, covering high school, undergraduate, graduate levels and various practical applications. The fundamental techniques involve optics, information science and metrology, with applications spanning oceanography, biomedicine, materials science, industrial inspection, and autonomous driving.",
+    "startLearning": "Start Learning",
+    "viewHistory": "View History",
+    "curriculum": "Course Curriculum",
+    "unit": "Unit",
+    "sections": "Topics",
+    "learningObjectives": "Learning Objectives",
+    "demo": "Demo",
+    "game": "Game",
+    "experiment": "Experiment",
+    "tool": "Tool",
+    "stats": {
+      "units": "{{count}} Units",
+      "games": "Puzzle Games",
+      "experiments": "Interactive Experiments",
+      "community": "Research Community"
+    },
+    "units": {
+      "unit1": {
+        "title": "Polarization States: Modulation & Measurement",
+        "subtitle": "Transverse Waves, Birefringence, Devices & Malus's Law",
+        "description": "Starting from the Iceland spar double-image experiment, learn about light polarization, refractive index ellipsoid, polarization devices (polarizers/analyzers/waveplates), and their modulation of polarization states, leading to Malus's Law and polarization measurement.",
+        "s1": {
+          "title": "Basic Knowledge",
+          "desc": "Introduction to transverse wave concepts and light refraction"
+        },
+        "s2": {
+          "title": "Iceland Spar Experiment & Birefringence",
+          "desc": "From the Iceland spar double-image experiment, learn about light polarization, refractive indices for different polarizations, and the refractive index ellipsoid"
+        },
+        "s3": {
+          "title": "Polarization Devices & Measurement",
+          "desc": "Introduction to polarizers, analyzers, waveplates, and their modulation of polarization states; Malus's Law and polarization measurement"
+        }
+      },
+      "unit2": {
+        "title": "Polarization in Interface Reflection",
+        "subtitle": "Fresnel Equations & Brewster's Angle",
+        "description": "Learn about polarization characteristics of interface reflection, quantitative formulas for perpendicular and parallel polarization components (Fresnel equations), their relationship with incident angle and refractive indices; understand Brewster's angle where parallel polarization reflection is zero, and its applications."
+      },
+      "unit3": {
+        "title": "Polarization in Transparent Media",
+        "subtitle": "Chromatic Polarization & Optical Rotation",
+        "description": "Learn about polarizer-analyzer experimental systems, birefringence modulation of linearly polarized light and quantitative calculations; understand the origin of optical activity and the quantitative formula for polarization angle rotation during propagation.",
+        "s1": {
+          "title": "Chromatic Polarization",
+          "desc": "Introduction to polarizer-analyzer systems, sources of birefringence, modulation of linearly polarized light by birefringence, and quantitative calculation formulas"
+        },
+        "s2": {
+          "title": "Optical Rotation",
+          "desc": "Introduction to the origin of optical activity, quantitative formulas for polarization angle rotation during light propagation"
+        }
+      },
+      "unit4": {
+        "title": "Polarization in Turbid Media",
+        "subtitle": "Spectral & Polarization Characteristics of Particle Scattering",
+        "description": "Learn about single particle light scattering, Mie scattering model, relationship between scattering intensity distribution and particle size; explain the mechanisms behind blue sky, red sunset and white clouds; introduction to Monte Carlo simulation of light scattering.",
+        "s1": {
+          "title": "Spectral Characteristics of Particle Scattering",
+          "desc": "Single particle scattering, Mie scattering model, spatial and spectral distribution of scattering intensity vs particle size; explaining blue sky, red sunset and white clouds"
+        },
+        "s2": {
+          "title": "Polarization Characteristics of Particle Scattering",
+          "desc": "Spatial distribution of single-particle monochromatic light scattering intensity and polarization; relationship with particle size, shape and refractive index; Monte Carlo simulation"
+        }
+      },
+      "unit5": {
+        "title": "Full-Polarization Optical Techniques",
+        "subtitle": "Stokes Vectors, Mueller Matrices & Polarization Imaging",
+        "description": "Learn about characterization methods for light and media polarization properties (Stokes vectors and Mueller matrices), and frontier applications of full-polarization scattering and microscopy imaging in particle detection, biomedicine, and industrial inspection.",
+        "s1": {
+          "title": "Characterizing Polarization Properties",
+          "desc": "Stokes vectors and Mueller matrices; Mueller matrices of common polarization devices; Mueller matrices of suspended particles through MC simulation"
+        },
+        "s2": {
+          "title": "Full-Polarization Scattering for Particle Detection",
+          "desc": "Basic structure, working principles and typical data of polarization fluorometers; analysis methods and applications for particle polarization scattering data"
+        },
+        "s3": {
+          "title": "Full-Polarization Microscopy Imaging",
+          "desc": "Basic structure, working principles and typical data of Mueller microscopes; polarization basis functions; classification and feature extraction of Mueller image pixels"
+        },
+        "s4": {
+          "title": "Full-Polarization Imaging",
+          "desc": "Basic structure, working principles and typical data of Mueller cameras; feature extraction methods for Mueller image data; atmospheric and underwater applications"
+        }
+      }
+    },
+    "objectives": {
+      "unit1": {
+        "1": "Understand transverse wave concepts and the nature of light polarization",
+        "2": "Master Iceland spar birefringence and the refractive index ellipsoid",
+        "3": "Understand working principles of polarizers, analyzers and waveplates",
+        "4": "Master Malus's Law and perform polarization state measurements"
+      },
+      "unit2": {
+        "1": "Understand polarization characteristics of interface reflection",
+        "2": "Master Fresnel equations and their applications",
+        "3": "Understand the physical meaning and applications of Brewster's angle"
+      },
+      "unit3": {
+        "1": "Understand birefringence modulation of linearly polarized light",
+        "2": "Learn the mechanisms behind chromatic polarization phenomena",
+        "3": "Understand optical activity and its applications"
+      },
+      "unit4": {
+        "1": "Understand Mie scattering model and particle light scattering",
+        "2": "Explain the formation of blue sky, red sunset and white clouds",
+        "3": "Learn Monte Carlo simulation methods for light scattering"
+      },
+      "unit5": {
+        "1": "Master Stokes vector and Mueller matrix characterization methods",
+        "2": "Understand full-polarization scattering in particle detection",
+        "3": "Learn full-polarization microscopy imaging techniques",
+        "4": "Understand atmospheric and underwater full-polarization imaging applications"
+      }
+    },
+    "attachments": {
+      "unit1PPT": "Unit 1 Slides",
+      "unit1Guide": "Polarization Basics Guide",
+      "icelandSpar": "Iceland Spar Wikipedia",
+      "unit2PPT": "Unit 2 Slides",
+      "fresnelWiki": "Fresnel Equations Wikipedia",
+      "brewsterWiki": "Brewster's Angle Wikipedia",
+      "unit3PPT": "Unit 3 Slides",
+      "stressAnalysis": "Stress Analysis Guide",
+      "unit4PPT": "Unit 4 Slides",
+      "mieTheory": "Mie Scattering Theory",
+      "unit5PPT": "Unit 5 Slides",
+      "muellerGuide": "Mueller Matrix Guide",
+      "researchPapers": "Recommended Papers"
+    },
+    "resources": {
+      "title": "Learning Resources",
+      "references": {
+        "title": "References",
+        "description": "Academic and Wikipedia resources for deeper learning",
+        "link1": "Polarization (waves)",
+        "link2": "Malus's Law",
+        "link3": "Birefringence"
+      },
+      "tutorials": {
+        "title": "Interactive Tutorials",
+        "description": "Hands-on demos and design tools",
+        "link1": "Demo Gallery",
+        "link2": "Optical Design Studio",
+        "link3": "Historical Stories"
+      },
+      "community": {
+        "title": "Community",
+        "description": "Join the research community and share your work",
+        "link1": "Research Community",
+        "link2": "Creative Gallery"
+      }
+    },
+    "cta": {
+      "title": "Ready to Explore?",
+      "description": "Continue your journey through the fascinating world of polarized light",
+      "playGames": "Play Games",
+      "joinResearch": "Join Research"
     }
   },
   "calc": {
