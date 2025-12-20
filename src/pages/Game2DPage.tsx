@@ -400,6 +400,70 @@ const LEVELS: Level2D[] = [
       { id: 's5', type: 'sensor', x: 30, y: 95, angle: 0, requiredIntensity: 45, requiredPolarization: 0, locked: true },
     ],
   },
+  // === ICELAND SPAR SPECIAL LEVEL ===
+  {
+    id: 16,
+    name: 'Iceland Spar Discovery',
+    nameZh: '冰洲石奇遇',
+    description: 'Discover the magic of calcite: one light beam becomes two! Use Iceland spar birefringence to split and recombine light.',
+    descriptionZh: '发现方解石的魔力：一束光变成两束！利用冰洲石的双折射分光并重新组合光束。',
+    hint: 'Iceland spar splits light into o-ray (0°) and e-ray (90°). Use mirrors to guide both beams.',
+    hintZh: '冰洲石将光分成寻常光(0°)和非常光(90°)。用镜子引导两束光。',
+    difficulty: 'medium',
+    gridSize: { width: 100, height: 100 },
+    openEnded: true,
+    components: [
+      // Single emitter with 45° polarization - will split equally
+      { id: 'e1', type: 'emitter', x: 10, y: 50, angle: 0, polarizationAngle: 45, direction: 'right', locked: true },
+      // Iceland spar (calcite) splitter - birefringent crystal
+      { id: 'sp1', type: 'splitter', x: 40, y: 50, angle: 0, locked: true },
+      // Mirrors to redirect the split beams
+      { id: 'm1', type: 'mirror', x: 40, y: 25, angle: 135, locked: false },
+      { id: 'm2', type: 'mirror', x: 70, y: 50, angle: 45, locked: false },
+      // Polarizers to verify polarization states
+      { id: 'p1', type: 'polarizer', x: 65, y: 25, angle: 0, polarizationAngle: 90, locked: false },
+      { id: 'p2', type: 'polarizer', x: 70, y: 75, angle: 0, polarizationAngle: 0, locked: false },
+      // Two sensors - one for each polarization
+      { id: 's1', type: 'sensor', x: 90, y: 25, angle: 0, requiredIntensity: 35, requiredPolarization: 90, locked: true },
+      { id: 's2', type: 'sensor', x: 70, y: 90, angle: 0, requiredIntensity: 35, requiredPolarization: 0, locked: true },
+    ],
+  },
+  {
+    id: 17,
+    name: 'Double Image Mystery',
+    nameZh: '双像之谜',
+    description: 'Ancient Vikings used Iceland spar for navigation. Create two images like they saw!',
+    descriptionZh: '古代维京人用冰洲石导航。创造出他们所见的双像！',
+    hint: 'Split the light, then use rotators to change one beam\'s polarization before recombining',
+    hintZh: '分光后，使用旋光器改变其中一束光的偏振方向，然后重新组合',
+    difficulty: 'hard',
+    gridSize: { width: 100, height: 100 },
+    openEnded: true,
+    components: [
+      // Two parallel emitters to simulate viewing through calcite
+      { id: 'e1', type: 'emitter', x: 5, y: 30, angle: 0, polarizationAngle: 0, direction: 'right', locked: true },
+      { id: 'e2', type: 'emitter', x: 5, y: 70, angle: 0, polarizationAngle: 90, direction: 'right', locked: true },
+      // Iceland spar crystals
+      { id: 'sp1', type: 'splitter', x: 30, y: 30, angle: 0, locked: true },
+      { id: 'sp2', type: 'splitter', x: 30, y: 70, angle: 0, locked: true },
+      // Rotators to manipulate polarization
+      { id: 'r1', type: 'rotator', x: 55, y: 30, angle: 0, rotationAmount: 45, locked: false },
+      { id: 'r2', type: 'rotator', x: 30, y: 50, angle: 0, rotationAmount: 45, locked: false },
+      // Mirrors for path control
+      { id: 'm1', type: 'mirror', x: 55, y: 10, angle: 45, locked: false },
+      { id: 'm2', type: 'mirror', x: 75, y: 30, angle: 45, locked: false },
+      { id: 'm3', type: 'mirror', x: 55, y: 70, angle: 135, locked: false },
+      { id: 'm4', type: 'mirror', x: 55, y: 90, angle: 45, locked: false },
+      // Polarizers
+      { id: 'p1', type: 'polarizer', x: 75, y: 10, angle: 0, polarizationAngle: 45, locked: false },
+      { id: 'p2', type: 'polarizer', x: 75, y: 90, angle: 0, polarizationAngle: 45, locked: false },
+      // Four sensors representing the "double image"
+      { id: 's1', type: 'sensor', x: 90, y: 10, angle: 0, requiredIntensity: 30, locked: true },
+      { id: 's2', type: 'sensor', x: 90, y: 30, angle: 0, requiredIntensity: 30, locked: true },
+      { id: 's3', type: 'sensor', x: 90, y: 70, angle: 0, requiredIntensity: 30, locked: true },
+      { id: 's4', type: 'sensor', x: 90, y: 90, angle: 0, requiredIntensity: 30, locked: true },
+    ],
+  },
 ]
 
 // Game mode type

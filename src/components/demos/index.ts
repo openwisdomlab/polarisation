@@ -33,9 +33,11 @@ export * from './unit3/AnisotropyDemo'
 // Unit 4: 浑浊介质偏振特征
 export * from './unit4/MieScatteringDemo'
 export * from './unit4/RayleighScatteringDemo'
+export * from './unit4/MonteCarloScatteringDemo'
 
 // Unit 5: 全偏振技术
 export * from './unit5/StokesVectorDemo'
 export * from './unit5/MuellerMatrixDemo'
 export * from './unit5/JonesMatrixDemo'
 export * from './unit5/PolarizationCalculatorDemo'
+export * from './unit5/PolarimetricMicroscopyDemo'
