@@ -180,6 +180,30 @@
           "title": "Full-Polarization Imaging",
           "desc": "Basic structure, working principles and typical data of Mueller cameras; feature extraction methods for Mueller image data; atmospheric and underwater applications"
         }
+      },
+      "basics": {
+        "title": "Optical Basics",
+        "description": "Fundamental concepts of light and waves"
+      },
+      "1": {
+        "title": "Polarization Modulation & Measurement",
+        "description": "Understanding polarization states and their manipulation"
+      },
+      "2": {
+        "title": "Interface Reflection Polarization",
+        "description": "How polarization changes at material interfaces"
+      },
+      "3": {
+        "title": "Transparent Media Polarization",
+        "description": "Polarization effects in transparent materials"
+      },
+      "4": {
+        "title": "Turbid Media Polarization",
+        "description": "Light scattering and polarization in turbid media"
+      },
+      "5": {
+        "title": "Full Polarimetry",
+        "description": "Complete mathematical description of polarization"
       }
     },
     "objectives": {
@@ -293,6 +317,43 @@
       "industry": "Industrial",
       "autonomous": "Autonomous",
       "atmosphere": "Atmospheric"
+    },
+    "search": {
+      "placeholder": "Search demos...",
+      "results": "{{count}} result(s) found",
+      "noResults": "No matching demos found",
+      "moreMatches": "more matches",
+      "section": {
+        "title": "Title",
+        "description": "Description"
+      }
+    },
+    "interactionGuide": "Interaction Guide",
+    "dragToRotate": "Drag to rotate 3D view",
+    "scrollToZoom": "Scroll to zoom",
+    "slidersAdjust": "Use sliders to adjust parameters",
+    "cards": {
+      "lifeScene": "Real-World Connection",
+      "physics": "Physical Principle",
+      "experiment": "Experimental Application",
+      "frontier": "Frontier Application",
+      "diy": "Try It Yourself"
+    },
+    "difficulty": {
+      "label": "Difficulty Level",
+      "foundation": "Foundation",
+      "application": "Application",
+      "research": "Research",
+      "foundationDesc": "PSRT: Discover light's mysteries in simple terms - no formulas needed!",
+      "applicationDesc": "ESRT: Hands-on experiments with key formulas and concepts",
+      "researchDesc": "ORIC/SURF: Rigorous academic treatment with research perspective",
+      "formulaHidden": "Want formulas? Switch to Application or Research mode"
+    },
+    "questions": {
+      "title": "Think Before You Explore",
+      "leading": "Core Question",
+      "guided": "Guided Questions",
+      "openEnded": "Open-ended Questions"
     }
   },
   "calc": {
@@ -590,72 +651,6 @@
           "Birefringence is used in many optical instruments"
         ]
       }
-    }
-  },
-  "course": {
-    "title": "Polarization Physics Course",
-    "search": {
-      "placeholder": "Search demos...",
-      "results": "{{count}} result(s) found",
-      "noResults": "No matching demos found",
-      "moreMatches": "more matches",
-      "section": {
-        "title": "Title",
-        "description": "Description"
-      }
-    },
-    "interactionGuide": "Interaction Guide",
-    "dragToRotate": "Drag to rotate 3D view",
-    "scrollToZoom": "Scroll to zoom",
-    "slidersAdjust": "Use sliders to adjust parameters",
-    "units": {
-      "basics": {
-        "title": "Optical Basics",
-        "description": "Fundamental concepts of light and waves"
-      },
-      "1": {
-        "title": "Polarization Modulation & Measurement",
-        "description": "Understanding polarization states and their manipulation"
-      },
-      "2": {
-        "title": "Interface Reflection Polarization",
-        "description": "How polarization changes at material interfaces"
-      },
-      "3": {
-        "title": "Transparent Media Polarization",
-        "description": "Polarization effects in transparent materials"
-      },
-      "4": {
-        "title": "Turbid Media Polarization",
-        "description": "Light scattering and polarization in turbid media"
-      },
-      "5": {
-        "title": "Full Polarimetry",
-        "description": "Complete mathematical description of polarization"
-      }
-    },
-    "cards": {
-      "lifeScene": "Real-World Connection",
-      "physics": "Physical Principle",
-      "experiment": "Experimental Application",
-      "frontier": "Frontier Application",
-      "diy": "Try It Yourself"
-    },
-    "difficulty": {
-      "label": "Difficulty Level",
-      "foundation": "Foundation",
-      "application": "Application",
-      "research": "Research",
-      "foundationDesc": "PSRT: Discover light's mysteries in simple terms - no formulas needed!",
-      "applicationDesc": "ESRT: Hands-on experiments with key formulas and concepts",
-      "researchDesc": "ORIC/SURF: Rigorous academic treatment with research perspective",
-      "formulaHidden": "Want formulas? Switch to Application or Research mode"
-    },
-    "questions": {
-      "title": "Think Before You Explore",
-      "leading": "Core Question",
-      "guided": "Guided Questions",
-      "openEnded": "Open-ended Questions"
     }
   },
   "demos": {
@@ -1889,6 +1884,89 @@
         "observation": "You've created an atmospheric model! Blue scatters sideways (daytime sky), while red passes through (sunset effect). The longer the path, the redder it gets."
       }
     },
+    "monteCarloScattering": {
+      "title": "Monte Carlo Scattering Simulation",
+      "description": "Simulate photon random walk and multiple scattering transport in turbid media",
+      "questions": {
+        "leading": "How does light retain partial information after hundreds of scattering events in turbid media?",
+        "leading_foundation": "What happens to light inside milk or clouds? How does it find its way out?",
+        "leading_research": "How does the Monte Carlo method approximate solutions to the radiative transfer equation through random sampling? How do phase functions and optical properties affect simulation accuracy?",
+        "guided": [
+          "What determines how often photons scatter in a medium?",
+          "What effect does multiple scattering have on light polarization?"
+        ],
+        "guided_foundation": [
+          "What happens when a photon gets 'lost' inside a cloud?",
+          "Why is turbid water harder to see through than clear water?"
+        ],
+        "guided_research": [
+          "Explain the physical meaning of the Henyey-Greenstein phase function and the role of parameter g",
+          "How can Monte Carlo simulations be optimized to reduce variance and improve computational efficiency?"
+        ],
+        "openEnded": [
+          "How can Monte Carlo simulation help understand light transport in biological tissue?",
+          "How is multiple scattering applied in medical imaging or remote sensing?"
+        ],
+        "openEnded_foundation": [
+          "What challenges do doctors face when using light to see through skin?",
+          "Why is underwater photography so difficult?"
+        ],
+        "openEnded_research": [
+          "Design a Monte Carlo model for skin optical coherence tomography",
+          "Analyze the theoretical basis of polarization gating in underwater imaging"
+        ]
+      },
+      "physics": {
+        "principle": "Photons undergo multiple scattering in turbid media, with each event changing direction and polarization",
+        "principle_foundation": "Imagine light as a small ball bouncing around in a room full of obstacles. It hits many 'walls', changing direction each time, eventually finding an exit or getting trapped.",
+        "principle_research": "The Radiative Transfer Equation (RTE) describes the propagation of specific intensity in media. Monte Carlo methods trace random walks of many photons to statistically obtain intensity distributions. Optical properties are fully determined by absorption coefficient μa, scattering coefficient μs, and phase function p(θ).",
+        "formula": "Mean Free Path MFP = 1/(μa + μs)",
+        "details": [
+          "Photon step lengths follow exponential distribution",
+          "Scattering direction determined by phase function",
+          "Multiple scattering causes depolarization"
+        ]
+      },
+      "experiment": {
+        "title": "Multiple Scattering Observation",
+        "example": "Milk dilution experiment",
+        "details": [
+          "Vary milk concentration to observe transmittance changes",
+          "Compare light penetration in diluted vs concentrated milk",
+          "Observe depolarization of polarized light"
+        ]
+      },
+      "frontier": {
+        "title": "Biomedical Optics",
+        "example": "Optical Coherence Tomography (OCT)",
+        "details": [
+          "Simulate light propagation in skin tissue",
+          "Optimize illumination and detection schemes for medical imaging",
+          "Polarization gating improves imaging depth and contrast"
+        ]
+      },
+      "lifeScene": {
+        "title": "Light's Journey Through Clouds",
+        "imageAlt": "Sunlight passing through clouds, showing multiple scattering among water droplets",
+        "hook": "When sunlight enters a cloud, it might scatter hundreds of times before emerging - that's why even thin clouds can completely block the sun!"
+      },
+      "diy": {
+        "title": "Turbid Media Light Transport Experiment",
+        "materials": [
+          "Transparent container",
+          "Milk or starch",
+          "Laser pointer or strong flashlight",
+          "Polarizing filters (optional)"
+        ],
+        "steps": [
+          "Fill container with clear water, observe laser penetration",
+          "Gradually add milk or starch, stir well",
+          "Watch how the laser beam goes from sharp to diffuse",
+          "If you have polarizers, observe polarization changes in transmitted light"
+        ],
+        "observation": "As concentration increases, light has more difficulty traveling straight through and scatters in all directions. This is multiple scattering - light has been 'kicked' so many times it forgets its original direction!"
+      }
+    },
     "stokes": {
       "title": "Stokes Vector",
       "description": "Four parameters to completely describe light's polarization state",
@@ -2284,6 +2362,116 @@
       "cascadeDesc": "For cascaded optical elements, multiply matrices in reverse order (last element first)",
       "muellerJones": "Mueller vs Jones",
       "tips": "Tips"
+    },
+    "polarimetricMicroscopy": {
+      "title": "Full Polarimetric Microscopy",
+      "description": "Mueller matrix imaging microscopy for comprehensive sample characterization",
+      "sampleType": "Sample Type",
+      "fiber": "Biological Fiber",
+      "crystal": "Crystal Structure",
+      "tissue": "Biological Tissue",
+      "stress": "Stress Distribution",
+      "fiberDesc": "Collagen fibers and muscle tissue showing linear birefringence",
+      "crystalDesc": "Crystalline materials with strong anisotropic properties",
+      "tissueDesc": "Complex biological tissue with multiple polarization effects",
+      "stressDesc": "Transparent materials under mechanical stress",
+      "illumination": "Illumination Mode",
+      "inputPolarization": "Input Polarization",
+      "horizontal": "Horizontal (0°)",
+      "vertical": "Vertical (90°)",
+      "diagonal": "Diagonal (45°)",
+      "circular": "Circular",
+      "unpolarized": "Unpolarized",
+      "muellerMatrix": "Sample Mueller Matrix",
+      "polarizationParams": "Polarization Parameters",
+      "retardance": "Retardance",
+      "diattenuation": "Diattenuation",
+      "depolarization": "Depolarization",
+      "orientation": "Orientation",
+      "outputIntensity": "Output Intensity",
+      "outputPolarization": "Output Polarization State",
+      "imageContrast": "Image Contrast Mode",
+      "intensity": "Intensity",
+      "questions": {
+        "foundation": [
+          "Why do biological fibers appear bright under polarized light?",
+          "What causes different colors in stress patterns?"
+        ],
+        "application": [
+          "How does the Mueller matrix characterize sample properties?",
+          "What information does each polarization parameter provide?"
+        ],
+        "research": [
+          "How can we decompose Mueller matrices to extract physical parameters?",
+          "What are the advantages of full Stokes imaging over partial polarimetry?"
+        ]
+      },
+      "physics": {
+        "principle": "Mueller matrix microscopy measures complete polarization transfer function",
+        "details": [
+          "16 Mueller matrix elements fully characterize polarization response",
+          "Retardance reveals birefringent structures and molecular organization",
+          "Diattenuation indicates absorption anisotropy",
+          "Depolarization index measures scattering and disorder"
+        ],
+        "formulas": [
+          "S_out = M · S_in",
+          "M = M_depol · M_R · M_D (Lu-Chipman decomposition)",
+          "Retardance: δ = cos⁻¹[(tr(M_R)-1)/2]",
+          "Depolarization: Δ = 1 - |tr(M)|/3"
+        ]
+      },
+      "experiment": {
+        "objective": "Compare polarization signatures of different sample types",
+        "steps": [
+          "Select a sample type to observe its Mueller matrix",
+          "Change input polarization states and observe output changes",
+          "Compare retardance, diattenuation, and depolarization values",
+          "Understand how each parameter relates to sample structure"
+        ],
+        "keyObservations": [
+          "Fibers show high retardance due to molecular alignment",
+          "Crystals exhibit strong diattenuation from absorption anisotropy",
+          "Tissues have higher depolarization from multiple scattering"
+        ]
+      },
+      "frontier": {
+        "applications": [
+          "Cancer diagnosis through collagen fiber organization",
+          "Ophthalmology: retinal nerve fiber layer analysis",
+          "Material science: stress and strain mapping",
+          "Semiconductor inspection: crystal defect detection"
+        ],
+        "research": [
+          "Real-time Mueller matrix endoscopy for minimally invasive diagnosis",
+          "Machine learning classification of tissue pathology from Mueller images",
+          "Quantum-enhanced polarimetric sensing beyond classical limits"
+        ]
+      },
+      "lifeScene": {
+        "title": "Seeing the Invisible Structure",
+        "hook": "How can doctors see cancer cells without cutting you open? Polarized light microscopy reveals hidden structures that normal microscopes miss!",
+        "facts": [
+          "Cancer changes how cells organize their fibers - polarimetry can detect this",
+          "Eye doctors use polarimetry to check your retinal nerve health",
+          "Engineers use polarized light to find invisible stress in glass and plastic"
+        ]
+      },
+      "diy": {
+        "title": "Build Your Own Polarization Viewer",
+        "materials": [
+          "Two polarizing films (from old LCD screens or 3D glasses)",
+          "Clear plastic items (rulers, protractors, tape)",
+          "White light source (phone flashlight)"
+        ],
+        "steps": [
+          "Place one polarizer in front of your light source",
+          "Put a clear plastic item between the polarizers",
+          "Rotate the second polarizer and watch colors appear!",
+          "Squeeze or bend plastic to see stress patterns change"
+        ],
+        "explanation": "Stressed plastic becomes birefringent - it changes polarization differently for different colors, creating rainbow patterns between crossed polarizers."
+      }
     }
   },
   "basics": {

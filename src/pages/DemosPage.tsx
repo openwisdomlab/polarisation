@@ -25,10 +25,12 @@ import { OpticalRotationDemo } from '@/components/demos/unit3/OpticalRotationDem
 import { AnisotropyDemo } from '@/components/demos/unit3/AnisotropyDemo'
 import { MieScatteringDemo } from '@/components/demos/unit4/MieScatteringDemo'
 import { RayleighScatteringDemo } from '@/components/demos/unit4/RayleighScatteringDemo'
+import { MonteCarloScatteringDemo } from '@/components/demos/unit4/MonteCarloScatteringDemo'
 import { StokesVectorDemo } from '@/components/demos/unit5/StokesVectorDemo'
 import { MuellerMatrixDemo } from '@/components/demos/unit5/MuellerMatrixDemo'
 import { JonesMatrixDemo } from '@/components/demos/unit5/JonesMatrixDemo'
 import { PolarizationCalculatorDemo } from '@/components/demos/unit5/PolarizationCalculatorDemo'
+import { PolarimetricMicroscopyDemo } from '@/components/demos/unit5/PolarimetricMicroscopyDemo'
 
 // Optical Basics demos
 import { LightWaveDemo } from '@/components/demos/basics/LightWaveDemo'
@@ -1403,6 +1405,15 @@ const DEMOS: DemoItem[] = [
     visualType: '2D',
     difficulty: 'foundation', // 蓝天白云的自然现象解释
   },
+  {
+    id: 'monte-carlo-scattering',
+    titleKey: 'demos.monteCarloScattering.title',
+    unit: 4,
+    component: MonteCarloScatteringDemo,
+    descriptionKey: 'demos.monteCarloScattering.description',
+    visualType: '2D',
+    difficulty: 'research', // 蒙特卡洛模拟方法
+  },
   // Unit 5
   {
     id: 'stokes',
@@ -1439,6 +1450,15 @@ const DEMOS: DemoItem[] = [
     descriptionKey: 'demos.calculator.description',
     visualType: '2D',
     difficulty: 'application', // 综合计算工具
+  },
+  {
+    id: 'polarimetric-microscopy',
+    titleKey: 'demos.polarimetricMicroscopy.title',
+    unit: 5,
+    component: PolarimetricMicroscopyDemo,
+    descriptionKey: 'demos.polarimetricMicroscopy.description',
+    visualType: '2D',
+    difficulty: 'research', // Mueller矩阵显微成像
   },
 ]
 

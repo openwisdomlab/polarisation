@@ -180,6 +180,30 @@
           "title": "全偏振成像",
           "desc": "全偏振（Mueller）相机的基本结构、工作原理和典型数据；Mueller图像数据的特征提取方法；大气和水下应用案例"
         }
+      },
+      "basics": {
+        "title": "光学基础",
+        "description": "光和波的基本概念"
+      },
+      "1": {
+        "title": "偏振态调制与测量",
+        "description": "理解偏振态及其操控"
+      },
+      "2": {
+        "title": "界面反射偏振特征",
+        "description": "偏振在材料界面的变化"
+      },
+      "3": {
+        "title": "透明介质的偏振",
+        "description": "透明材料中的偏振效应"
+      },
+      "4": {
+        "title": "浑浊介质的偏振",
+        "description": "浑浊介质中的光散射与偏振"
+      },
+      "5": {
+        "title": "全偏振技术",
+        "description": "偏振的完整数学描述"
       }
     },
     "objectives": {
@@ -293,6 +317,43 @@
       "industry": "工业检测",
       "autonomous": "自动驾驶",
       "atmosphere": "大气遥感"
+    },
+    "search": {
+      "placeholder": "搜索演示...",
+      "results": "找到 {{count}} 个结果",
+      "noResults": "没有找到匹配的演示",
+      "moreMatches": "更多匹配",
+      "section": {
+        "title": "标题",
+        "description": "描述"
+      }
+    },
+    "interactionGuide": "交互说明",
+    "dragToRotate": "拖拽旋转3D视图",
+    "scrollToZoom": "滚轮缩放画面",
+    "slidersAdjust": "滑块调整参数",
+    "cards": {
+      "lifeScene": "生活中的偏振",
+      "physics": "物理原理",
+      "experiment": "实验应用",
+      "frontier": "前沿应用",
+      "diy": "动手试试"
+    },
+    "difficulty": {
+      "label": "课程难度层级",
+      "foundation": "基础层",
+      "application": "应用层",
+      "research": "研究层",
+      "foundationDesc": "PSRT问题驱动:用最简单的方式理解光的奥秘，不需要公式！",
+      "applicationDesc": "ESRT轮转训练:动手实验，结合关键公式和概念深入理解",
+      "researchDesc": "ORIC/SURF自主研究:严谨的学术表述，前沿研究视角",
+      "formulaHidden": "想看公式？切换到「应用层」或「研究层」模式"
+    },
+    "questions": {
+      "title": "探索前的思考",
+      "leading": "核心问题",
+      "guided": "引导问题",
+      "openEnded": "开放性问题"
     }
   },
   "calc": {
@@ -590,72 +651,6 @@
           "双折射用于许多光学仪器"
         ]
       }
-    }
-  },
-  "course": {
-    "title": "偏振光物理课程",
-    "search": {
-      "placeholder": "搜索演示...",
-      "results": "找到 {{count}} 个结果",
-      "noResults": "没有找到匹配的演示",
-      "moreMatches": "更多匹配",
-      "section": {
-        "title": "标题",
-        "description": "描述"
-      }
-    },
-    "interactionGuide": "交互说明",
-    "dragToRotate": "拖拽旋转3D视图",
-    "scrollToZoom": "滚轮缩放画面",
-    "slidersAdjust": "滑块调整参数",
-    "units": {
-      "basics": {
-        "title": "光学基础",
-        "description": "光和波的基本概念"
-      },
-      "1": {
-        "title": "偏振态调制与测量",
-        "description": "理解偏振态及其操控"
-      },
-      "2": {
-        "title": "界面反射偏振特征",
-        "description": "偏振在材料界面的变化"
-      },
-      "3": {
-        "title": "透明介质的偏振",
-        "description": "透明材料中的偏振效应"
-      },
-      "4": {
-        "title": "浑浊介质的偏振",
-        "description": "浑浊介质中的光散射与偏振"
-      },
-      "5": {
-        "title": "全偏振技术",
-        "description": "偏振的完整数学描述"
-      }
-    },
-    "cards": {
-      "lifeScene": "生活中的偏振",
-      "physics": "物理原理",
-      "experiment": "实验应用",
-      "frontier": "前沿应用",
-      "diy": "动手试试"
-    },
-    "difficulty": {
-      "label": "课程难度层级",
-      "foundation": "基础层",
-      "application": "应用层",
-      "research": "研究层",
-      "foundationDesc": "PSRT问题驱动:用最简单的方式理解光的奥秘，不需要公式！",
-      "applicationDesc": "ESRT轮转训练:动手实验，结合关键公式和概念深入理解",
-      "researchDesc": "ORIC/SURF自主研究:严谨的学术表述，前沿研究视角",
-      "formulaHidden": "想看公式？切换到「应用层」或「研究层」模式"
-    },
-    "questions": {
-      "title": "探索前的思考",
-      "leading": "核心问题",
-      "guided": "引导问题",
-      "openEnded": "开放性问题"
     }
   },
   "demos": {
@@ -1889,6 +1884,89 @@
         "observation": "你创建了一个大气模型！蓝光向侧面散射（白天的天空），而红光穿透（日落效应）。路径越长，颜色越红。"
       }
     },
+    "monteCarloScattering": {
+      "title": "蒙特卡洛散射模拟",
+      "description": "光子在浑浊介质中的随机行走与多次散射传输模拟",
+      "questions": {
+        "leading": "光在浑浊介质中经历数百次散射后，如何保持部分信息到达探测器？",
+        "leading_foundation": "光在牛奶或云层里会发生什么？它怎么能「走」出来？",
+        "leading_research": "蒙特卡洛方法如何通过随机采样逼近辐射传输方程的解？相函数和光学特性参数如何影响模拟精度？",
+        "guided": [
+          "什么决定了光子在介质中散射的频率？",
+          "多次散射对光的偏振有什么影响？"
+        ],
+        "guided_foundation": [
+          "光子在云里「迷路」会怎样？",
+          "为什么浑浊的水比清水更难看穿？"
+        ],
+        "guided_research": [
+          "解释Henyey-Greenstein相函数的物理意义及其参数g的作用",
+          "如何优化蒙特卡洛模拟以减少方差并提高计算效率？"
+        ],
+        "openEnded": [
+          "蒙特卡洛模拟如何帮助理解生物组织中的光传播？",
+          "多次散射如何应用于医学成像或远程传感？"
+        ],
+        "openEnded_foundation": [
+          "医生用光看透皮肤时会遇到什么问题？",
+          "水下摄影为什么那么困难？"
+        ],
+        "openEnded_research": [
+          "设计用于皮肤光学断层扫描的蒙特卡洛模型",
+          "分析水下成像中偏振门控技术的理论基础"
+        ]
+      },
+      "physics": {
+        "principle": "光子在浑浊介质中经历多次散射，每次散射改变方向和偏振状态",
+        "principle_foundation": "想象光是一个小球，在充满障碍物的房间里弹来弹去。它会碰到很多「墙」，每次都会改变方向，最终可能找到出口，也可能被困住。",
+        "principle_research": "辐射传输方程(RTE)描述了比强度在介质中的传播。蒙特卡洛方法通过追踪大量光子的随机行走，统计得到比强度分布。光学特性由吸收系数μa、散射系数μs和相函数p(θ)完全确定。",
+        "formula": "平均自由程 MFP = 1/(μa + μs)",
+        "details": [
+          "光子步长服从指数分布",
+          "散射方向由相函数决定",
+          "多次散射导致偏振退极化"
+        ]
+      },
+      "experiment": {
+        "title": "多次散射观测",
+        "example": "牛奶稀释实验",
+        "details": [
+          "改变牛奶浓度观察透射率变化",
+          "比较稀释和浓缩牛奶的光穿透",
+          "观察偏振光的退极化效应"
+        ]
+      },
+      "frontier": {
+        "title": "生物医学光学",
+        "example": "光学相干断层扫描(OCT)",
+        "details": [
+          "模拟光在皮肤组织中的传播",
+          "优化医学成像的光照和探测方案",
+          "偏振门控提高成像深度和对比度"
+        ]
+      },
+      "lifeScene": {
+        "title": "云中的光之旅",
+        "imageAlt": "阳光穿过云层，展示光在云滴中的多次散射",
+        "hook": "当阳光进入云层，它可能经历数百次散射才能出来——这就是为什么云虽然薄，却能完全挡住太阳！"
+      },
+      "diy": {
+        "title": "浑浊介质光传输实验",
+        "materials": [
+          "透明容器",
+          "牛奶或淀粉",
+          "激光笔或强手电",
+          "偏振片（可选）"
+        ],
+        "steps": [
+          "在容器中加入清水，观察激光穿透情况",
+          "逐渐加入牛奶或淀粉，搅拌均匀",
+          "观察激光光束如何从清晰变得弥散",
+          "如果有偏振片，观察透射光的偏振变化"
+        ],
+        "observation": "随着浓度增加，光越来越难直线穿透，而是四散开来。这就是多次散射——光被「踢」了太多次，记不住原来的方向了！"
+      }
+    },
     "stokes": {
       "title": "斯托克斯矢量",
       "description": "用四个参数完整描述光的偏振状态",
@@ -2498,6 +2576,89 @@
           "尝试实现特定目标（如圆偏振转线偏振）"
         ],
         "observation": "通过反复尝试，你会发现元件顺序和角度对结果影响巨大！这就是偏振光学设计的精髓。"
+      }
+    },
+    "polarimetricMicroscopy": {
+      "title": "全偏振显微成像",
+      "description": "Mueller矩阵显微镜实现样品偏振特性的完整表征",
+      "questions": {
+        "leading": "如何通过16次测量获得样品的完整偏振信息？Mueller矩阵能告诉我们什么？",
+        "leading_foundation": "显微镜能「看见」光的振动吗？什么样的显微镜能看到更多细节？",
+        "leading_research": "Mueller矩阵分解如何提取样品的双折射、二向衰减和退偏振等独立物理参数？",
+        "guided": [
+          "Mueller矩阵的16个元素分别代表什么物理意义？",
+          "如何从Mueller矩阵提取双折射和退偏振信息？"
+        ],
+        "guided_foundation": [
+          "为什么普通显微镜看不到胶原纤维的方向？",
+          "偏振显微镜比普通显微镜「强」在哪里？"
+        ],
+        "guided_research": [
+          "解释Lu-Chipman分解将Mueller矩阵分解为双向衰减、延迟和退偏振三个分量的物理基础",
+          "如何设计PSG和PSA实现最优Mueller矩阵测量？"
+        ],
+        "openEnded": [
+          "Mueller矩阵成像如何帮助医生识别肿瘤边界？",
+          "偏振显微镜在材料科学中有哪些应用？"
+        ],
+        "openEnded_foundation": [
+          "医生怎么用光来区分正常细胞和癌细胞？",
+          "材料工程师怎么检查塑料里的应力？"
+        ],
+        "openEnded_research": [
+          "设计一个用于活体组织成像的反射式Mueller显微镜方案",
+          "分析偏振基底函数方法在Mueller图像特征提取中的优势"
+        ]
+      },
+      "physics": {
+        "principle": "通过系统测量入射和出射光的偏振态，重建样品的完整4×4 Mueller矩阵",
+        "principle_foundation": "想象用四种不同颜色的手电筒照样品，然后用特殊眼镜看出射光的颜色变化。把这些变化记录下来，就能知道样品的「偏振指纹」！",
+        "principle_research": "Mueller显微镜通过偏振态发生器(PSG)产生至少4种线性独立的入射偏振态，偏振态分析器(PSA)分析至少4种出射偏振态，共16次测量重建样品Mueller矩阵。测量矩阵的条件数决定了系统的噪声放大因子。",
+        "formula": "M = W⁻¹ · I · A⁻¹",
+        "details": [
+          "PSG产生4种已知偏振态照明样品",
+          "PSA分析出射光的偏振态",
+          "16次测量重建完整Mueller矩阵"
+        ]
+      },
+      "experiment": {
+        "title": "偏振显微观察",
+        "example": "生物组织切片成像",
+        "details": [
+          "制备薄切片样品",
+          "交叉偏振观察双折射",
+          "旋转样品观察消光位置"
+        ]
+      },
+      "frontier": {
+        "title": "生物医学诊断",
+        "example": "癌症早期诊断辅助",
+        "details": [
+          "肿瘤边界的偏振特征识别",
+          "胶原纤维取向定量分析",
+          "组织病理学无标记成像"
+        ]
+      },
+      "lifeScene": {
+        "title": "偏振显微镜下的微观世界",
+        "imageAlt": "偏振显微镜下的生物组织图像，显示彩色双折射图案",
+        "hook": "在偏振显微镜下，原本透明的组织变成了彩虹般绚丽的图案——每种颜色都在诉说着组织结构的秘密！"
+      },
+      "diy": {
+        "title": "简易偏振显微镜",
+        "materials": [
+          "普通光学显微镜",
+          "两片偏振片",
+          "透明胶带或薄塑料片",
+          "载玻片"
+        ],
+        "steps": [
+          "将一片偏振片放在光源和载物台之间作为起偏器",
+          "将另一片偏振片放在目镜上方作为检偏器",
+          "调整两片偏振片正交（视野最暗）",
+          "放入透明胶带样品，观察彩色条纹！"
+        ],
+        "observation": "透明胶带在正交偏振片之间呈现彩色条纹，这是因为胶带的双折射导致不同波长的光有不同的相位延迟。旋转样品可以看到颜色变化！"
       }
     }
   },
