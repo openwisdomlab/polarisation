@@ -309,18 +309,18 @@ const blueSkyWhiteCloudExperiment: ClassicExperiment = {
 
 1. ✅ 更新COURSE.md补充详细的课程内容描述
 2. ✅ 完善课程单元翻译内容
-3. ⬜ 在CoursePage添加课程教学环节说明
-4. ⬜ 补充课程应用领域展示
+3. ✅ 在CoursePage添加课程教学环节说明 (TeachingMethodsSection)
+4. ✅ 补充课程应用领域展示 (ApplicationsSection)
 
 ### 中优先级 (短期实施)
 
-5. ⬜ 新增蒙特卡洛散射模拟Demo
-6. ⬜ 新增冰洲石分光游戏关卡
+5. ✅ 新增蒙特卡洛散射模拟Demo (MonteCarloScatteringDemo.tsx)
+6. ✅ 新增冰洲石分光游戏关卡 (Game2D Levels 16, 17)
 7. ⬜ 光学设计室添加经典实验预设
 
 ### 低优先级 (长期规划)
 
-8. ⬜ 全偏振显微成像Demo
+8. ✅ 全偏振显微成像Demo (PolarimetricMicroscopyDemo.tsx)
 9. ⬜ 全偏振相机Demo
 10. ⬜ 偏振荧光仪Demo
 11. ⬜ 课程附件资源系统
