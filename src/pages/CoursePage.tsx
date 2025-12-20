@@ -861,6 +861,142 @@ function ResourcesSection({ theme }: { theme: 'dark' | 'light' }) {
   )
 }
 
+// Home experiments section - family-friendly experiments from curriculum
+function HomeExperimentsSection({ theme }: { theme: 'dark' | 'light' }) {
+  const { t } = useTranslation()
+
+  const experiments = [
+    {
+      id: 'sugar-rainbow',
+      titleKey: 'course.homeExperiments.sugarRainbow.title',
+      descriptionKey: 'course.homeExperiments.sugarRainbow.description',
+      materialsKeys: [
+        'course.homeExperiments.sugarRainbow.materials.0',
+        'course.homeExperiments.sugarRainbow.materials.1',
+        'course.homeExperiments.sugarRainbow.materials.2',
+      ],
+      icon: '🌈',
+      color: '#EC4899', // pink
+      unit: 3,
+      demoLink: '/demos/optical-rotation',
+    },
+    {
+      id: 'screen-polarizer',
+      titleKey: 'course.homeExperiments.screenPolarizer.title',
+      descriptionKey: 'course.homeExperiments.screenPolarizer.description',
+      materialsKeys: [
+        'course.homeExperiments.screenPolarizer.materials.0',
+        'course.homeExperiments.screenPolarizer.materials.1',
+      ],
+      icon: '📱',
+      color: '#3B82F6', // blue
+      unit: 1,
+      demoLink: '/demos/malus',
+    },
+    {
+      id: 'tape-art',
+      titleKey: 'course.homeExperiments.tapeArt.title',
+      descriptionKey: 'course.homeExperiments.tapeArt.description',
+      materialsKeys: [
+        'course.homeExperiments.tapeArt.materials.0',
+        'course.homeExperiments.tapeArt.materials.1',
+        'course.homeExperiments.tapeArt.materials.2',
+      ],
+      icon: '🎨',
+      color: '#8B5CF6', // purple
+      unit: 3,
+      demoLink: '/demos/chromatic',
+    },
+  ]
+
+  return (
+    <div className="mb-12">
+      <div className="flex items-center gap-3 mb-6">
+        <h2 className={`text-2xl font-bold ${
+          theme === 'dark' ? 'text-white' : 'text-gray-900'
+        }`}>
+          {t('course.homeExperiments.title')}
+        </h2>
+        <span className={`text-xs px-2 py-1 rounded-full ${
+          theme === 'dark' ? 'bg-pink-500/20 text-pink-400' : 'bg-pink-100 text-pink-700'
+        }`}>
+          {t('course.homeExperiments.badge')}
+        </span>
+      </div>
+
+      <p className={`text-sm mb-6 max-w-3xl ${
+        theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+      }`}>
+        {t('course.homeExperiments.description')}
+      </p>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {experiments.map((exp) => (
+          <div
+            key={exp.id}
+            className={`rounded-xl p-5 border transition-all duration-300 hover:-translate-y-1 ${
+              theme === 'dark'
+                ? 'bg-slate-800/50 border-slate-700 hover:border-slate-500'
+                : 'bg-white border-gray-200 hover:border-gray-300'
+            }`}
+          >
+            <div className="flex items-start gap-3 mb-3">
+              <div
+                className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-xl"
+                style={{ backgroundColor: `${exp.color}15` }}
+              >
+                {exp.icon}
+              </div>
+              <div>
+                <h3 className={`font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                  {t(exp.titleKey)}
+                </h3>
+                <span className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                  {t('course.unit')} {exp.unit}
+                </span>
+              </div>
+            </div>
+
+            <p className={`text-sm mb-3 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+              {t(exp.descriptionKey)}
+            </p>
+
+            <div className="mb-3">
+              <span className={`text-xs font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                {t('course.homeExperiments.materials')}:
+              </span>
+              <div className="flex flex-wrap gap-1 mt-1">
+                {exp.materialsKeys.map((key, i) => (
+                  <span
+                    key={i}
+                    className={`text-xs px-2 py-0.5 rounded-full ${
+                      theme === 'dark' ? 'bg-slate-700 text-gray-300' : 'bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    {t(key)}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <Link
+              to={exp.demoLink}
+              className={`text-xs px-3 py-1.5 rounded-full inline-flex items-center gap-1.5 transition-all hover:scale-105 ${
+                theme === 'dark'
+                  ? 'bg-cyan-900/30 text-cyan-400 hover:bg-cyan-900/50'
+                  : 'bg-cyan-50 text-cyan-700 hover:bg-cyan-100'
+              }`}
+            >
+              <FlaskConical className="w-3 h-3" />
+              {t('course.homeExperiments.learnMore')}
+            </Link>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // Inquiry-based exploration section - research questions that drive learning
 function InquiryExplorationSection({ theme }: { theme: 'dark' | 'light' }) {
   const { t } = useTranslation()
@@ -896,6 +1032,22 @@ function InquiryExplorationSection({ theme }: { theme: 'dark' | 'light' }) {
       icon: '🌅',
       color: '#F59E0B', // amber
       demoLink: '/demos/rayleigh',
+      gameLink: null,
+    },
+    {
+      question: t('course.inquiry.q5'),
+      unitLink: 'unit3',
+      icon: '🍬',
+      color: '#10B981', // emerald
+      demoLink: '/demos/optical-rotation',
+      gameLink: null,
+    },
+    {
+      question: t('course.inquiry.q6'),
+      unitLink: 'unit3',
+      icon: '📦',
+      color: '#F472B6', // pink
+      demoLink: '/demos/chromatic',
       gameLink: null,
     },
   ]
@@ -1022,6 +1174,9 @@ export function CoursePage() {
 
         {/* Inquiry-based Exploration - Problem-driven learning */}
         <InquiryExplorationSection theme={theme} />
+
+        {/* Home Experiments - Family-friendly experiments */}
+        <HomeExperimentsSection theme={theme} />
 
         {/* PSRT Teaching Methods */}
         <TeachingMethodsSection theme={theme} />
