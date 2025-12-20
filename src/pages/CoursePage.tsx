@@ -28,7 +28,6 @@ import {
   Target,
   Users,
   Telescope,
-  Atom,
   Zap
 } from 'lucide-react'
 
@@ -686,8 +685,7 @@ function ResourcesSection({ theme }: { theme: 'dark' | 'light' }) {
 export function CoursePage() {
   const { t } = useTranslation()
   const { theme } = useTheme()
-  const [searchParams] = useSearchParams()
-  const unitId = searchParams.get('unit')
+  const [_searchParams] = useSearchParams()
 
   return (
     <div className={`min-h-screen ${
