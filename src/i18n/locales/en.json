@@ -306,7 +306,42 @@
       "q1": "What exactly is polarization? Why can't we see it with naked eyes?",
       "q2": "Why does Iceland spar create two images? What makes crystals split light?",
       "q3": "Why do polarized sunglasses reduce glare? What's special about reflected light?",
-      "q4": "Why is the sky blue and sunsets orange? How does light scatter?"
+      "q4": "Why is the sky blue and sunsets orange? How does light scatter?",
+      "q5": "Why does sugar water rotate polarized light? What's the difference between left-handed and right-handed sugars?",
+      "q6": "Why does transparent tape show colors under polarized light? What about bubble wrap?"
+    },
+    "homeExperiments": {
+      "title": "Home Experiments",
+      "badge": "Try It!",
+      "description": "No special equipment needed - experience the magic of polarized light with household materials! Each experiment is tested, safe, and fun.",
+      "materials": "Materials",
+      "learnMore": "Learn Why",
+      "sugarRainbow": {
+        "title": "Sugar Rainbow",
+        "description": "View sugar water through a polarizer - rotating it reveals beautiful rainbow colors!",
+        "materials": {
+          "0": "Computer screen (white background)",
+          "1": "Glass + concentrated sugar water",
+          "2": "Polarizer or 3D glasses"
+        }
+      },
+      "screenPolarizer": {
+        "title": "Screen Detector",
+        "description": "Use a polarizer to detect which screens emit polarized light. Watch brightness change as you rotate!",
+        "materials": {
+          "0": "Polarizer or polarized sunglasses",
+          "1": "Various screens (phone, laptop, TV)"
+        }
+      },
+      "tapeArt": {
+        "title": "Tape Polarization Art",
+        "description": "Stick transparent tape patterns on glass and view under polarized light for stunning colors!",
+        "materials": {
+          "0": "Transparent glass plate",
+          "1": "Transparent tape",
+          "2": "Two polarizers or LCD screen + polarizer"
+        }
+      }
     },
     "methods": {
       "title": "Research-Based Learning Model",
