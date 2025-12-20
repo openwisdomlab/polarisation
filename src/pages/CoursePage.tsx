@@ -76,9 +76,9 @@ const COURSE_UNITS: CourseUnit[] = [
       { id: '1.3', titleKey: 'course.units.unit1.s3.title', descriptionKey: 'course.units.unit1.s3.desc' },
     ],
     resources: {
-      demos: ['light-wave', 'polarization-intro', 'polarization-types', 'birefringence', 'malus-law'],
+      demos: ['light-wave', 'polarization-intro', 'polarization-types', 'birefringence', 'malus'],
       tools: ['/optical-studio?tab=devices'],
-      games: ['/games/2d?level=0', '/games/2d?level=1'],
+      games: ['/games/2d?level=0', '/games/2d?level=1', '/games/2d?level=16', '/games/2d?level=17'],
     },
     attachments: [
       { type: 'ppt', titleKey: 'course.attachments.unit1PPT' },
@@ -102,7 +102,7 @@ const COURSE_UNITS: CourseUnit[] = [
     color: '#6366F1', // indigo
     status: 'available',
     resources: {
-      demos: ['fresnel-equations', 'brewster-angle'],
+      demos: ['fresnel', 'brewster'],
       experiments: ['/optical-studio?tab=experiments'],
     },
     attachments: [
@@ -130,7 +130,7 @@ const COURSE_UNITS: CourseUnit[] = [
       { id: '3.2', titleKey: 'course.units.unit3.s2.title', descriptionKey: 'course.units.unit3.s2.desc' },
     ],
     resources: {
-      demos: ['anisotropy-stress', 'chromatic-polarization', 'optical-rotation', 'waveplate'],
+      demos: ['anisotropy', 'chromatic', 'optical-rotation', 'waveplate'],
       experiments: ['/experiments/diy'],
       games: ['/games/2d?level=3'],
     },
@@ -158,7 +158,7 @@ const COURSE_UNITS: CourseUnit[] = [
       { id: '4.2', titleKey: 'course.units.unit4.s2.title', descriptionKey: 'course.units.unit4.s2.desc' },
     ],
     resources: {
-      demos: ['rayleigh-scattering', 'mie-scattering'],
+      demos: ['rayleigh', 'mie-scattering', 'monte-carlo-scattering'],
     },
     attachments: [
       { type: 'ppt', titleKey: 'course.attachments.unit4PPT' },
@@ -186,7 +186,7 @@ const COURSE_UNITS: CourseUnit[] = [
       { id: '5.4', titleKey: 'course.units.unit5.s4.title', descriptionKey: 'course.units.unit5.s4.desc' },
     ],
     resources: {
-      demos: ['stokes-vector', 'mueller-matrix'],
+      demos: ['stokes', 'mueller', 'jones', 'polarimetric-microscopy'],
       tools: ['/calc/stokes', '/calc/mueller', '/calc/poincare', '/lab?tab=tasks'],
     },
     attachments: [
