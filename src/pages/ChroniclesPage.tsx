@@ -31,10 +31,12 @@ import {
   DualTrackCard,
   StoryModal,
   CenturyNavigator,
-  CourseNavigator
+  CourseNavigator,
+  ChroniclesPSRTView
 } from '@/components/chronicles'
 
 const TABS = [
+  { id: 'psrt', label: 'P-SRT Course', labelZh: 'P-SRT课程', icon: <BookOpen className="w-4 h-4" /> },
   { id: 'timeline', label: 'Timeline', labelZh: '时间线', icon: <Clock className="w-4 h-4" /> },
   { id: 'scientists', label: 'Scientists', labelZh: '科学家', icon: <User className="w-4 h-4" /> },
   { id: 'experiments', label: 'Key Experiments', labelZh: '关键实验', icon: <FlaskConical className="w-4 h-4" /> },
@@ -45,7 +47,7 @@ export function ChroniclesPage() {
   const { i18n } = useTranslation()
   const { isMobile, isTablet } = useIsMobile()
   const isZh = i18n.language === 'zh'
-  const [activeTab, setActiveTab] = useState('timeline')
+  const [activeTab, setActiveTab] = useState('psrt')
   const [expandedEvent, setExpandedEvent] = useState<number | null>(null)
   const [filter, setFilter] = useState<string>('')
   const [trackFilter, setTrackFilter] = useState<'all' | 'optics' | 'polarization'>('all')
@@ -240,6 +242,10 @@ export function ChroniclesPage() {
         </div>
 
         {/* Content */}
+        {activeTab === 'psrt' && (
+          <ChroniclesPSRTView theme={theme} />
+        )}
+
         {activeTab === 'timeline' && (
           <>
             {/* Track filters */}
