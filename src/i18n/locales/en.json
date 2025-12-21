@@ -10,7 +10,8 @@
     "language": "Language",
     "english": "English",
     "chinese": "Chinese",
-    "comingSoon": "Coming Soon"
+    "comingSoon": "Coming Soon",
+    "close": "Close"
   },
   "discovery": {
     "newDiscovery": "Discovery!",
@@ -389,6 +390,42 @@
       "inProgress": "In Progress",
       "locked": "Locked",
       "available": "Available"
+    },
+    "mystery": {
+      "progress": "Progress",
+      "explore": "Explore Mystery",
+      "review": "Review",
+      "demo": "Demo",
+      "play": "Play",
+      "rewards": "Rewards to Unlock",
+      "minutes": "min",
+      "demos": "demos",
+      "games": "games",
+      "unlockHint": "Complete prerequisites to unlock"
+    },
+    "quest": {
+      "title": "Quest",
+      "coreQuestion": "Core Mystery",
+      "completed": "Quest Complete!",
+      "continue": "Continue Quest",
+      "allComplete": "Quest Complete!",
+      "rewardsEarned": "You've earned all the rewards!"
+    },
+    "worldMap": {
+      "title": "World Map",
+      "badge": "Adventure",
+      "available": "Available",
+      "hint": "Click on a node to explore"
+    },
+    "collection": {
+      "title": "Insight Collection",
+      "description": "Collect optical devices by completing demos and quizzes",
+      "collected": "Collected",
+      "all": "All",
+      "howToUnlock": "How to unlock",
+      "completeDemo": "Complete demo",
+      "passQuiz": "Pass the quiz with 80%+",
+      "streak": "Learning streak"
     },
     "search": {
       "placeholder": "Search demos...",

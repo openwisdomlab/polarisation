@@ -10,7 +10,8 @@
     "language": "语言",
     "english": "英文",
     "chinese": "中文",
-    "comingSoon": "待更新"
+    "comingSoon": "待更新",
+    "close": "关闭"
   },
   "discovery": {
     "newDiscovery": "新发现!",
@@ -389,6 +390,42 @@
       "inProgress": "进行中",
       "locked": "未解锁",
       "available": "可学习"
+    },
+    "mystery": {
+      "progress": "进度",
+      "explore": "探索谜题",
+      "review": "回顾",
+      "demo": "演示",
+      "play": "游戏",
+      "rewards": "待解锁奖励",
+      "minutes": "分钟",
+      "demos": "个演示",
+      "games": "个游戏",
+      "unlockHint": "完成前置任务后解锁"
+    },
+    "quest": {
+      "title": "探究任务",
+      "coreQuestion": "核心谜题",
+      "completed": "任务完成！",
+      "continue": "继续探究",
+      "allComplete": "全部完成！",
+      "rewardsEarned": "你已获得所有奖励！"
+    },
+    "worldMap": {
+      "title": "探索地图",
+      "badge": "冒险模式",
+      "available": "可探索",
+      "hint": "点击节点开始探索"
+    },
+    "collection": {
+      "title": "灵感收集册",
+      "description": "完成演示和测验，收集光学道具",
+      "collected": "已收集",
+      "all": "全部",
+      "howToUnlock": "解锁方式",
+      "completeDemo": "完成演示",
+      "passQuiz": "测验得分80%以上",
+      "streak": "连续学习"
     },
     "search": {
       "placeholder": "搜索演示...",
