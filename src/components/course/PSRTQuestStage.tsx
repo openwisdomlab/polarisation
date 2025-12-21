@@ -8,23 +8,20 @@
  * T (Theory) = Level Clear (通关) - 总结理论，获得徽章
  */
 
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   Eye,
   Scroll,
   FlaskConical,
   Award,
-  ChevronRight,
   CheckCircle,
   Lock,
   Play,
-  BookOpen,
   Gamepad2,
   Lightbulb,
-  Sparkles,
   Star,
   Clock,
   ArrowRight
@@ -124,7 +121,6 @@ interface PSRTQuestStageProps {
 function StageCard({
   stageData,
   stageConfig,
-  questColor,
   theme,
   isActive,
   stageIndex,
@@ -132,7 +128,6 @@ function StageCard({
 }: {
   stageData: StageData
   stageConfig: typeof STAGE_CONFIG[PSRTStage]
-  questColor: string
   theme: 'dark' | 'light'
   isActive: boolean
   stageIndex: number
@@ -140,7 +135,6 @@ function StageCard({
 }) {
   const { i18n } = useTranslation()
   const lang = i18n.language === 'zh' ? 'zh' : 'en'
-  const [isHovered, setIsHovered] = useState(false)
 
   const isClickable = stageData.status !== 'locked'
 
@@ -156,8 +150,6 @@ function StageCard({
         boxShadow: isActive ? `0 0 20px ${stageConfig.color}30` : undefined,
         opacity: stageData.status === 'locked' ? 0.5 : 1,
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       whileHover={isClickable ? { scale: 1.02 } : {}}
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
@@ -285,8 +277,6 @@ function StageCard({
 export function PSRTQuestStage({
   quest,
   theme,
-  onStageComplete,
-  onQuestComplete
 }: PSRTQuestStageProps) {
   const { t, i18n } = useTranslation()
   const lang = i18n.language === 'zh' ? 'zh' : 'en'
@@ -433,7 +423,6 @@ export function PSRTQuestStage({
                 key={stageData.stage}
                 stageData={stageData}
                 stageConfig={STAGE_CONFIG[stageData.stage]}
-                questColor={quest.color}
                 theme={theme}
                 isActive={index === activeStageIndex}
                 stageIndex={index}

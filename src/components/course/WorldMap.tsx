@@ -21,11 +21,7 @@ import {
   Telescope,
   BookOpen,
   Lock,
-  Star,
   ChevronRight,
-  Play,
-  Gem,
-  MapPin,
 } from 'lucide-react'
 
 interface WorldNode {
@@ -441,7 +437,6 @@ export function WorldMap({
   theme,
   completedDemos,
   onNodeClick,
-  variant = 'default',
 }: WorldMapProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
