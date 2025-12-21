@@ -1,14 +1,16 @@
 /**
- * DemoNavigator - 光学演示馆导航组件
+ * DemoNavigator - 光学演示馆导航组件 (Enhanced Version)
  *
  * 设计原则：
  * 1. 以光学演示馆的内容结构作为导航逻辑
  * 2. 按单元组织演示项目 (Unit 0-5)
  * 3. 点击演示项目可以筛选关联的时间线事件
  * 4. 提供直达演示页面的链接
+ * 5. 显示每个演示关联的历史事件年份
+ * 6. 鼠标悬停时显示事件预览
  */
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -29,10 +31,18 @@ import {
   Waves,
   ExternalLink,
   Filter,
-  X
+  X,
+  Clock,
+  Sun,
+  Star,
+  MapPin
 } from 'lucide-react'
 
 import type { LucideIcon } from 'lucide-react'
+
+// Import centralized mapping data
+import { getEventMappingsByDemo, COURSE_DEMOS } from '@/data/course-event-mapping'
+import { TIMELINE_EVENTS } from '@/data/timeline-events'
 
 // Demo data structure matching DemosPage
 interface DemoItem {
@@ -43,6 +53,17 @@ interface DemoItem {
   visualType: '2D' | '3D'
   difficulty: 'foundation' | 'application' | 'research'
   relatedEvents?: { year: number; track: 'optics' | 'polarization' }[]
+}
+
+// Extended event info for preview
+interface RelatedEventInfo {
+  year: number
+  track: 'optics' | 'polarization'
+  titleEn: string
+  titleZh: string
+  relevance: 'primary' | 'secondary'
+  scientistEn?: string
+  scientistZh?: string
 }
 
 // Unit configuration
@@ -63,46 +84,74 @@ const UNITS: UnitConfig[] = [
   { id: 5, titleEn: 'Full Polarimetry', titleZh: '全偏振', icon: Telescope, color: '#0ea5e9' },
 ]
 
-// Demo list - simplified version matching DemosPage structure
-const DEMOS: DemoItem[] = [
-  // Unit 0 - Optical Basics
-  { id: 'light-wave', titleKey: 'basics.demos.lightWave.title', unit: 0, descriptionKey: 'basics.demos.lightWave.description', visualType: '2D', difficulty: 'foundation' },
-  { id: 'polarization-intro', titleKey: 'basics.demos.polarizationIntro.title', unit: 0, descriptionKey: 'basics.demos.polarizationIntro.description', visualType: '2D', difficulty: 'foundation' },
-  { id: 'polarization-types', titleKey: 'basics.demos.polarizationTypes.title', unit: 0, descriptionKey: 'basics.demos.polarizationTypes.description', visualType: '2D', difficulty: 'application' },
-  { id: 'optical-bench', titleKey: 'basics.demos.opticalBench.title', unit: 0, descriptionKey: 'basics.demos.opticalBench.description', visualType: '2D', difficulty: 'application' },
-  // Unit 1
-  { id: 'polarization-state', titleKey: 'demos.polarizationState.title', unit: 1, descriptionKey: 'demos.polarizationState.description', visualType: '3D', difficulty: 'foundation' },
-  { id: 'malus', titleKey: 'demos.malus.title', unit: 1, descriptionKey: 'demos.malus.description', visualType: '2D', difficulty: 'application',
-    relatedEvents: [{ year: 1808, track: 'polarization' }, { year: 1809, track: 'polarization' }] },
-  { id: 'birefringence', titleKey: 'demos.birefringence.title', unit: 1, descriptionKey: 'demos.birefringence.description', visualType: '3D', difficulty: 'application',
-    relatedEvents: [{ year: 1669, track: 'polarization' }] },
-  { id: 'waveplate', titleKey: 'demos.waveplate.title', unit: 1, descriptionKey: 'demos.waveplate.description', visualType: '3D', difficulty: 'research' },
-  // Unit 2
-  { id: 'fresnel', titleKey: 'demos.fresnel.title', unit: 2, descriptionKey: 'demos.fresnel.description', visualType: '2D', difficulty: 'research',
-    relatedEvents: [{ year: 1823, track: 'polarization' }] },
-  { id: 'brewster', titleKey: 'demos.brewster.title', unit: 2, descriptionKey: 'demos.brewster.description', visualType: '2D', difficulty: 'application',
-    relatedEvents: [{ year: 1815, track: 'polarization' }] },
-  // Unit 3
-  { id: 'anisotropy', titleKey: 'demos.anisotropy.title', unit: 3, descriptionKey: 'demos.anisotropy.description', visualType: '2D', difficulty: 'foundation' },
-  { id: 'chromatic', titleKey: 'demos.chromatic.title', unit: 3, descriptionKey: 'demos.chromatic.description', visualType: '2D', difficulty: 'application' },
-  { id: 'optical-rotation', titleKey: 'demos.opticalRotation.title', unit: 3, descriptionKey: 'demos.opticalRotation.description', visualType: '2D', difficulty: 'application',
-    relatedEvents: [{ year: 1811, track: 'polarization' }, { year: 1848, track: 'polarization' }] },
-  // Unit 4
-  { id: 'rayleigh', titleKey: 'demos.rayleigh.title', unit: 4, descriptionKey: 'demos.rayleigh.description', visualType: '2D', difficulty: 'foundation',
-    relatedEvents: [{ year: 1871, track: 'optics' }] },
-  { id: 'mie-scattering', titleKey: 'demos.mieScattering.title', unit: 4, descriptionKey: 'demos.mieScattering.description', visualType: '2D', difficulty: 'research',
-    relatedEvents: [{ year: 1908, track: 'optics' }] },
-  { id: 'monte-carlo-scattering', titleKey: 'demos.monteCarloScattering.title', unit: 4, descriptionKey: 'demos.monteCarloScattering.description', visualType: '2D', difficulty: 'research' },
-  // Unit 5
-  { id: 'stokes', titleKey: 'demos.stokes.title', unit: 5, descriptionKey: 'demos.stokes.description', visualType: '3D', difficulty: 'research',
-    relatedEvents: [{ year: 1852, track: 'polarization' }] },
-  { id: 'mueller', titleKey: 'demos.mueller.title', unit: 5, descriptionKey: 'demos.mueller.description', visualType: '2D', difficulty: 'research',
-    relatedEvents: [{ year: 1943, track: 'polarization' }] },
-  { id: 'jones', titleKey: 'demos.jones.title', unit: 5, descriptionKey: 'demos.jones.description', visualType: '2D', difficulty: 'research',
-    relatedEvents: [{ year: 1941, track: 'polarization' }] },
-  { id: 'calculator', titleKey: 'demos.calculator.title', unit: 5, descriptionKey: 'demos.calculator.description', visualType: '2D', difficulty: 'application' },
-  { id: 'polarimetric-microscopy', titleKey: 'demos.polarimetricMicroscopy.title', unit: 5, descriptionKey: 'demos.polarimetricMicroscopy.description', visualType: '2D', difficulty: 'research' },
-]
+/**
+ * Get detailed related events for a demo using centralized mapping
+ */
+function getRelatedEventsForDemo(demoId: string): RelatedEventInfo[] {
+  const mappings = getEventMappingsByDemo(demoId)
+  const results: RelatedEventInfo[] = []
+
+  for (const mapping of mappings) {
+    const event = TIMELINE_EVENTS.find(
+      e => e.year === mapping.eventYear && e.track === mapping.eventTrack
+    )
+    if (event) {
+      results.push({
+        year: event.year,
+        track: event.track,
+        titleEn: event.titleEn,
+        titleZh: event.titleZh,
+        relevance: mapping.relevance,
+        scientistEn: event.scientistEn,
+        scientistZh: event.scientistZh
+      })
+    }
+  }
+
+  return results.sort((a, b) => a.year - b.year)
+}
+
+/**
+ * Build demo list dynamically from centralized data
+ * This ensures consistency with COURSE_EVENT_MAPPINGS
+ */
+function buildDemoList(): DemoItem[] {
+  return COURSE_DEMOS.map(demo => {
+    const mappings = getEventMappingsByDemo(demo.id)
+    const relatedEvents = mappings.map(m => ({
+      year: m.eventYear,
+      track: m.eventTrack
+    }))
+
+    // Map to titleKey format
+    const titleKey = demo.unit === 0
+      ? `basics.demos.${demo.id.replace(/-/g, '')}.title`
+      : `demos.${demo.id.replace(/-([a-z])/g, (_, c) => c.toUpperCase())}.title`
+
+    const descriptionKey = demo.unit === 0
+      ? `basics.demos.${demo.id.replace(/-/g, '')}.description`
+      : `demos.${demo.id.replace(/-([a-z])/g, (_, c) => c.toUpperCase())}.description`
+
+    return {
+      id: demo.id,
+      titleKey,
+      unit: demo.unit,
+      descriptionKey,
+      visualType: getVisualType(demo.id),
+      difficulty: demo.difficulty,
+      relatedEvents: relatedEvents.length > 0 ? relatedEvents : undefined
+    }
+  })
+}
+
+// Helper to determine visual type
+function getVisualType(demoId: string): '2D' | '3D' {
+  const demos3D = ['polarization-state', 'birefringence', 'waveplate', 'stokes']
+  return demos3D.includes(demoId) ? '3D' : '2D'
+}
+
+// Demo list - built from centralized data
+const DEMOS: DemoItem[] = buildDemoList()
 
 // Difficulty configuration
 const DIFFICULTY_CONFIG = {
@@ -124,19 +173,26 @@ export function DemoNavigator({
   selectedDemos,
   onFilterChange,
   highlightedDemos,
-  onEventClick: _onEventClick  // Reserved for future event navigation
+  onEventClick
 }: DemoNavigatorProps) {
   const { theme } = useTheme()
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const isZh = i18n.language === 'zh'
 
-  // Suppress unused variable warning
-  void _onEventClick
-
   // State management
   const [isExpanded, setIsExpanded] = useState(false)  // Mobile expand/collapse
   const [expandedUnits, setExpandedUnits] = useState<Set<number>>(new Set([0, 1]))  // Expanded units
+  const [hoveredDemo, setHoveredDemo] = useState<string | null>(null)  // Demo with preview visible
+
+  // Cache related events for all demos
+  const demoRelatedEvents = useMemo(() => {
+    const cache = new Map<string, RelatedEventInfo[]>()
+    DEMOS.forEach(demo => {
+      cache.set(demo.id, getRelatedEventsForDemo(demo.id))
+    })
+    return cache
+  }, [])
 
   // Selected demos count
   const hasFilter = selectedDemos.length > 0
@@ -354,91 +410,246 @@ export function DemoNavigator({
                           const isSelected = selectedDemos.includes(demo.id)
                           const isHighlighted = isDemoHighlighted(demo.id)
                           const diffConfig = DIFFICULTY_CONFIG[demo.difficulty]
-                          const hasEvents = demo.relatedEvents && demo.relatedEvents.length > 0
+                          const relatedEvents = demoRelatedEvents.get(demo.id) || []
+                          const hasEvents = relatedEvents.length > 0
+                          const isHovered = hoveredDemo === demo.id
+                          const primaryEvents = relatedEvents.filter(e => e.relevance === 'primary')
 
                           return (
                             <div
                               key={demo.id}
-                              className={cn(
-                                'group flex items-center gap-1.5 px-1.5 py-1.5 rounded text-[11px] transition-all cursor-pointer',
-                                isHighlighted
-                                  ? theme === 'dark'
-                                    ? 'bg-cyan-900/40 text-cyan-300 ring-1 ring-cyan-500/50'
-                                    : 'bg-cyan-50 text-cyan-700 ring-1 ring-cyan-300'
-                                  : isSelected
-                                    ? theme === 'dark'
-                                      ? 'bg-indigo-900/30 text-indigo-300'
-                                      : 'bg-indigo-50 text-indigo-700'
-                                    : theme === 'dark'
-                                      ? 'hover:bg-slate-700/50 text-gray-400'
-                                      : 'hover:bg-gray-100 text-gray-600'
-                              )}
-                              onClick={(e) => {
-                                if (hasEvents) {
-                                  toggleDemoFilter(demo.id, e)
-                                }
-                              }}
+                              className="relative"
+                              onMouseEnter={() => setHoveredDemo(demo.id)}
+                              onMouseLeave={() => setHoveredDemo(null)}
                             >
-                              {/* Difficulty badge */}
-                              <span
-                                className="flex-shrink-0 text-[9px] px-1 py-0.5 rounded"
-                                style={{
-                                  backgroundColor: `${diffConfig.color}20`,
-                                }}
-                                title={demo.difficulty}
-                              >
-                                {diffConfig.emoji}
-                              </span>
-
-                              {/* Demo title */}
-                              <span className="flex-1 truncate">
-                                {t(demo.titleKey)}
-                              </span>
-
-                              {/* Visual type badge */}
-                              <span className={cn(
-                                'flex-shrink-0 px-1 py-0.5 rounded text-[8px] font-medium',
-                                demo.visualType === '3D'
-                                  ? theme === 'dark'
-                                    ? 'bg-purple-500/20 text-purple-300'
-                                    : 'bg-purple-100 text-purple-600'
-                                  : theme === 'dark'
-                                    ? 'bg-cyan-500/20 text-cyan-300'
-                                    : 'bg-cyan-100 text-cyan-600'
-                              )}>
-                                {demo.visualType}
-                              </span>
-
-                              {/* Related events indicator */}
-                              {hasEvents && (
-                                <button
-                                  onClick={(e) => toggleDemoFilter(demo.id, e)}
-                                  className={cn(
-                                    'flex-shrink-0 p-0.5 rounded transition-all',
-                                    isSelected
-                                      ? theme === 'dark'
-                                        ? 'text-indigo-400 bg-indigo-500/20'
-                                        : 'text-indigo-600 bg-indigo-100'
-                                      : 'opacity-0 group-hover:opacity-100',
-                                    theme === 'dark' ? 'hover:bg-slate-600' : 'hover:bg-gray-200'
-                                  )}
-                                  title={isZh ? '筛选相关事件' : 'Filter related events'}
-                                >
-                                  <Filter className="w-3 h-3" />
-                                </button>
-                              )}
-
-                              {/* Go to demo button */}
-                              <button
-                                onClick={(e) => goToDemo(demo.id, e)}
+                              {/* Main demo item */}
+                              <div
                                 className={cn(
-                                  'flex-shrink-0 p-0.5 rounded transition-all opacity-0 group-hover:opacity-100',
-                                  theme === 'dark' ? 'hover:bg-slate-600 text-gray-400' : 'hover:bg-gray-200 text-gray-500'
+                                  'group flex flex-col gap-1 px-1.5 py-1.5 rounded text-[11px] transition-all cursor-pointer',
+                                  isHighlighted
+                                    ? theme === 'dark'
+                                      ? 'bg-cyan-900/40 text-cyan-300 ring-1 ring-cyan-500/50'
+                                      : 'bg-cyan-50 text-cyan-700 ring-1 ring-cyan-300'
+                                    : isSelected
+                                      ? theme === 'dark'
+                                        ? 'bg-indigo-900/30 text-indigo-300'
+                                        : 'bg-indigo-50 text-indigo-700'
+                                      : theme === 'dark'
+                                        ? 'hover:bg-slate-700/50 text-gray-400'
+                                        : 'hover:bg-gray-100 text-gray-600'
                                 )}
-                                title={isZh ? '前往演示' : 'Go to demo'}
+                                onClick={(e) => {
+                                  if (hasEvents) {
+                                    toggleDemoFilter(demo.id, e)
+                                  }
+                                }}
                               >
-                                <ExternalLink className="w-3 h-3" />
-                              </button>
+                                {/* Top row: badges and title */}
+                                <div className="flex items-center gap-1.5">
+                                  {/* Difficulty badge */}
+                                  <span
+                                    className="flex-shrink-0 text-[9px] px-1 py-0.5 rounded"
+                                    style={{
+                                      backgroundColor: `${diffConfig.color}20`,
+                                    }}
+                                    title={demo.difficulty}
+                                  >
+                                    {diffConfig.emoji}
+                                  </span>
+
+                                  {/* Demo title */}
+                                  <span className="flex-1 truncate font-medium">
+                                    {t(demo.titleKey)}
+                                  </span>
+
+                                  {/* Visual type badge */}
+                                  <span className={cn(
+                                    'flex-shrink-0 px-1 py-0.5 rounded text-[8px] font-medium',
+                                    demo.visualType === '3D'
+                                      ? theme === 'dark'
+                                        ? 'bg-purple-500/20 text-purple-300'
+                                        : 'bg-purple-100 text-purple-600'
+                                      : theme === 'dark'
+                                        ? 'bg-cyan-500/20 text-cyan-300'
+                                        : 'bg-cyan-100 text-cyan-600'
+                                  )}>
+                                    {demo.visualType}
+                                  </span>
+
+                                  {/* Event count badge */}
+                                  {hasEvents && (
+                                    <span className={cn(
+                                      'flex-shrink-0 flex items-center gap-0.5 px-1 py-0.5 rounded text-[9px] font-medium',
+                                      isSelected
+                                        ? theme === 'dark'
+                                          ? 'bg-indigo-500/30 text-indigo-300'
+                                          : 'bg-indigo-100 text-indigo-600'
+                                        : theme === 'dark'
+                                          ? 'bg-amber-500/20 text-amber-400'
+                                          : 'bg-amber-100 text-amber-700'
+                                    )}>
+                                      <Clock className="w-2.5 h-2.5" />
+                                      {relatedEvents.length}
+                                    </span>
+                                  )}
+
+                                  {/* Go to demo button */}
+                                  <button
+                                    onClick={(e) => goToDemo(demo.id, e)}
+                                    className={cn(
+                                      'flex-shrink-0 p-0.5 rounded transition-all opacity-0 group-hover:opacity-100',
+                                      theme === 'dark' ? 'hover:bg-slate-600 text-gray-400' : 'hover:bg-gray-200 text-gray-500'
+                                    )}
+                                    title={isZh ? '前往演示' : 'Go to demo'}
+                                  >
+                                    <ExternalLink className="w-3 h-3" />
+                                  </button>
+                                </div>
+
+                                {/* Bottom row: related event years (always visible for demos with events) */}
+                                {hasEvents && (
+                                  <div className="flex flex-wrap items-center gap-1 mt-0.5 pl-5">
+                                    {primaryEvents.slice(0, 3).map((event) => (
+                                      <button
+                                        key={`${event.year}-${event.track}`}
+                                        onClick={(e) => {
+                                          e.stopPropagation()
+                                          if (onEventClick) {
+                                            onEventClick(event.year, event.track)
+                                          }
+                                        }}
+                                        className={cn(
+                                          'inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[9px] font-mono transition-all',
+                                          event.track === 'optics'
+                                            ? theme === 'dark'
+                                              ? 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30'
+                                              : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                                            : theme === 'dark'
+                                              ? 'bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30'
+                                              : 'bg-cyan-100 text-cyan-700 hover:bg-cyan-200'
+                                        )}
+                                        title={isZh ? `跳转到 ${event.year} 年 - ${event.titleZh}` : `Jump to ${event.year} - ${event.titleEn}`}
+                                      >
+                                        {event.track === 'optics' ? (
+                                          <Sun className="w-2 h-2" />
+                                        ) : (
+                                          <Sparkles className="w-2 h-2" />
+                                        )}
+                                        {event.year}
+                                        {event.relevance === 'primary' && (
+                                          <Star className="w-2 h-2 fill-current" />
+                                        )}
+                                      </button>
+                                    ))}
+                                    {relatedEvents.length > 3 && (
+                                      <span className={cn(
+                                        'text-[9px]',
+                                        theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                                      )}>
+                                        +{relatedEvents.length - 3}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Event preview popover */}
+                              <AnimatePresence>
+                                {isHovered && hasEvents && (
+                                  <motion.div
+                                    initial={{ opacity: 0, x: -10, scale: 0.95 }}
+                                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                                    exit={{ opacity: 0, x: -10, scale: 0.95 }}
+                                    transition={{ duration: 0.15 }}
+                                    className={cn(
+                                      'absolute left-full top-0 ml-2 z-50 w-56 p-2 rounded-lg shadow-lg border',
+                                      theme === 'dark'
+                                        ? 'bg-slate-800 border-slate-700'
+                                        : 'bg-white border-gray-200'
+                                    )}
+                                  >
+                                    <div className="flex items-center gap-1.5 mb-2">
+                                      <Clock className={cn(
+                                        'w-3.5 h-3.5',
+                                        theme === 'dark' ? 'text-amber-400' : 'text-amber-600'
+                                      )} />
+                                      <span className={cn(
+                                        'text-[10px] font-semibold',
+                                        theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                                      )}>
+                                        {isZh ? '相关历史事件' : 'Related Historical Events'}
+                                      </span>
+                                    </div>
+                                    <div className="space-y-1.5 max-h-48 overflow-y-auto">
+                                      {relatedEvents.map((event) => (
+                                        <button
+                                          key={`${event.year}-${event.track}`}
+                                          onClick={(e) => {
+                                            e.stopPropagation()
+                                            if (onEventClick) {
+                                              onEventClick(event.year, event.track)
+                                            }
+                                          }}
+                                          className={cn(
+                                            'w-full text-left p-1.5 rounded transition-all',
+                                            theme === 'dark'
+                                              ? 'hover:bg-slate-700'
+                                              : 'hover:bg-gray-100'
+                                          )}
+                                        >
+                                          <div className="flex items-center gap-1.5">
+                                            {/* Year badge */}
+                                            <span className={cn(
+                                              'flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold',
+                                              event.track === 'optics'
+                                                ? theme === 'dark'
+                                                  ? 'bg-amber-500/20 text-amber-400'
+                                                  : 'bg-amber-100 text-amber-700'
+                                                : theme === 'dark'
+                                                  ? 'bg-cyan-500/20 text-cyan-400'
+                                                  : 'bg-cyan-100 text-cyan-700'
+                                            )}>
+                                              {event.track === 'optics' ? (
+                                                <Sun className="w-2.5 h-2.5" />
+                                              ) : (
+                                                <Sparkles className="w-2.5 h-2.5" />
+                                              )}
+                                              {event.year}
+                                            </span>
+                                            {event.relevance === 'primary' && (
+                                              <Star className="w-2.5 h-2.5 text-amber-400 fill-amber-400" />
+                                            )}
+                                          </div>
+                                          <div className={cn(
+                                            'text-[10px] mt-0.5 line-clamp-1',
+                                            theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                                          )}>
+                                            {isZh ? event.titleZh : event.titleEn}
+                                          </div>
+                                          {event.scientistEn && (
+                                            <div className={cn(
+                                              'text-[9px] flex items-center gap-0.5',
+                                              theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                                            )}>
+                                              <MapPin className="w-2 h-2" />
+                                              {isZh ? event.scientistZh : event.scientistEn}
+                                            </div>
+                                          )}
+                                        </button>
+                                      ))}
+                                    </div>
+                                    {/* Jump to first primary event hint */}
+                                    {primaryEvents.length > 0 && onEventClick && (
+                                      <div className={cn(
+                                        'mt-2 pt-1.5 border-t text-[9px] text-center',
+                                        theme === 'dark' ? 'border-slate-700 text-gray-500' : 'border-gray-200 text-gray-400'
+                                      )}>
+                                        {isZh ? '点击年份跳转时间线' : 'Click year to jump to timeline'}
+                                      </div>
+                                    )}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
                             </div>
                           )
                         })}
