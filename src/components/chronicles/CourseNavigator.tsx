@@ -25,10 +25,25 @@ import {
   FlaskConical,
   Gamepad2,
   ChevronDown,
-  GraduationCap
+  GraduationCap,
+  History,
+  Calendar
 } from 'lucide-react'
 
-// Course unit data matching CoursePage structure
+// Import timeline events for finding event indices
+import { TIMELINE_EVENTS } from '@/data/timeline-events'
+
+// Timeline event reference for linking courses to historical discoveries
+interface TimelineEventRef {
+  year: number
+  titleEn: string
+  titleZh: string
+  track: 'optics' | 'polarization'
+  scientist?: string
+  scientistZh?: string
+}
+
+// Course unit data matching CoursePage structure with timeline links
 const COURSE_UNITS = [
   {
     id: 'unit1',
@@ -36,6 +51,13 @@ const COURSE_UNITS = [
     color: '#C9A227', // amber
     demos: ['light-wave', 'polarization-intro', 'polarization-types', 'birefringence', 'malus'],
     games: ['/game2d?level=0', '/game2d?level=1'],
+    // 关联时间线事件: 偏振发现与马吕斯定律
+    timelineEvents: [
+      { year: 1808, titleEn: 'Discovery of Polarization', titleZh: '反射偏振的发现', track: 'polarization' as const, scientist: 'Malus', scientistZh: '马吕斯' },
+      { year: 1809, titleEn: "Malus's Law", titleZh: '马吕斯定律', track: 'polarization' as const, scientist: 'Malus', scientistZh: '马吕斯' },
+      { year: 1669, titleEn: 'Double Refraction', titleZh: '双折射发现', track: 'polarization' as const, scientist: 'Bartholin', scientistZh: '巴托林' },
+      { year: 1817, titleEn: 'Transverse Wave Theory', titleZh: '菲涅尔横波理论', track: 'optics' as const, scientist: 'Fresnel', scientistZh: '菲涅尔' },
+    ] as TimelineEventRef[],
   },
   {
     id: 'unit2',
@@ -43,6 +65,12 @@ const COURSE_UNITS = [
     color: '#6366F1', // indigo
     demos: ['fresnel', 'brewster'],
     games: [],
+    // 关联时间线事件: 界面反射与布儒斯特角
+    timelineEvents: [
+      { year: 1812, titleEn: "Brewster's Angle", titleZh: '布儒斯特角', track: 'polarization' as const, scientist: 'Brewster', scientistZh: '布儒斯特' },
+      { year: 1621, titleEn: "Snell's Law", titleZh: '斯涅尔折射定律', track: 'optics' as const, scientist: 'Snell', scientistZh: '斯涅尔' },
+      { year: 1817, titleEn: 'Fresnel Equations', titleZh: '菲涅尔方程', track: 'optics' as const, scientist: 'Fresnel', scientistZh: '菲涅尔' },
+    ] as TimelineEventRef[],
   },
   {
     id: 'unit3',
@@ -50,6 +78,12 @@ const COURSE_UNITS = [
     color: '#0891B2', // cyan
     demos: ['anisotropy', 'chromatic', 'optical-rotation', 'waveplate'],
     games: ['/game2d?level=3'],
+    // 关联时间线事件: 透明介质中的偏振
+    timelineEvents: [
+      { year: 1811, titleEn: 'Chromatic Polarization', titleZh: '色偏振现象', track: 'polarization' as const, scientist: 'Arago', scientistZh: '阿拉戈' },
+      { year: 1812, titleEn: 'Optical Activity', titleZh: '旋光性发现', track: 'polarization' as const, scientist: 'Biot', scientistZh: '毕奥' },
+      { year: 1845, titleEn: 'Faraday Rotation', titleZh: '法拉第旋光效应', track: 'polarization' as const, scientist: 'Faraday', scientistZh: '法拉第' },
+    ] as TimelineEventRef[],
   },
   {
     id: 'unit4',
@@ -57,6 +91,10 @@ const COURSE_UNITS = [
     color: '#F59E0B', // orange
     demos: ['rayleigh', 'mie-scattering', 'monte-carlo-scattering'],
     games: [],
+    // 关联时间线事件: 散射与天空偏振
+    timelineEvents: [
+      { year: 1871, titleEn: 'Rayleigh Scattering', titleZh: '瑞利散射', track: 'polarization' as const, scientist: 'Rayleigh', scientistZh: '瑞利' },
+    ] as TimelineEventRef[],
   },
   {
     id: 'unit5',
@@ -64,6 +102,13 @@ const COURSE_UNITS = [
     color: '#8B5CF6', // violet
     demos: ['stokes', 'mueller', 'jones', 'polarimetric-microscopy'],
     games: [],
+    // 关联时间线事件: 偏振测量理论
+    timelineEvents: [
+      { year: 1852, titleEn: 'Stokes Parameters', titleZh: '斯托克斯参数', track: 'polarization' as const, scientist: 'Stokes', scientistZh: '斯托克斯' },
+      { year: 1892, titleEn: 'Poincaré Sphere', titleZh: '庞加莱球', track: 'polarization' as const, scientist: 'Poincaré', scientistZh: '庞加莱' },
+      { year: 1941, titleEn: 'Jones Calculus', titleZh: '琼斯矢量', track: 'polarization' as const, scientist: 'Jones', scientistZh: '琼斯' },
+      { year: 1943, titleEn: 'Mueller Calculus', titleZh: '穆勒矩阵', track: 'polarization' as const, scientist: 'Mueller', scientistZh: '穆勒' },
+    ] as TimelineEventRef[],
   },
 ]
 
@@ -128,6 +173,36 @@ export function CourseNavigator({ className }: CourseNavigatorProps) {
     const unit = COURSE_UNITS.find(u => u.id === unitId)
     if (unit && unit.games.length > 0) {
       navigate(unit.games[0])
+    }
+  }
+
+  // Navigate to a specific timeline event by year and track
+  const scrollToTimelineEvent = (year: number, track: 'optics' | 'polarization') => {
+    // Sort events by year to find the correct index
+    const allEventsSorted = [...TIMELINE_EVENTS].sort((a, b) => a.year - b.year)
+    const targetIndex = allEventsSorted.findIndex(
+      e => e.year === year && e.track === track
+    )
+
+    if (targetIndex !== -1) {
+      // First try to scroll to the year marker
+      const yearElement = document.getElementById(`timeline-year-${year}`)
+      if (yearElement) {
+        yearElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+
+      // Then try to highlight the specific event card
+      setTimeout(() => {
+        const targetElement = document.querySelector(`[data-event-index="${targetIndex}"]`)
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          // Add a brief highlight animation
+          targetElement.classList.add('ring-2', 'ring-amber-400', 'ring-offset-2')
+          setTimeout(() => {
+            targetElement.classList.remove('ring-2', 'ring-amber-400', 'ring-offset-2')
+          }, 2000)
+        }
+      }, 100)
     }
   }
 
@@ -283,8 +358,8 @@ export function CourseNavigator({ className }: CourseNavigatorProps) {
                     exit={{ opacity: 0, x: 10 }}
                     transition={{ duration: 0.15 }}
                     className={cn(
-                      'absolute left-full ml-3 top-0 w-64 p-3 rounded-lg shadow-xl z-50',
-                      'pointer-events-none',
+                      'absolute left-full ml-3 top-0 w-72 p-3 rounded-lg shadow-xl z-50',
+                      'pointer-events-auto',
                       theme === 'dark'
                         ? 'bg-slate-900 border border-slate-700'
                         : 'bg-white border border-gray-200'
@@ -333,6 +408,63 @@ export function CourseNavigator({ className }: CourseNavigatorProps) {
                         </span>
                       )}
                     </div>
+
+                    {/* Timeline events - 关联历史事件 */}
+                    {unit.timelineEvents && unit.timelineEvents.length > 0 && (
+                      <div className="mt-3 pt-2 border-t border-dashed border-gray-600/30">
+                        <div className="flex items-center gap-1.5 mb-2">
+                          <History className={cn(
+                            'w-3 h-3',
+                            theme === 'dark' ? 'text-amber-400' : 'text-amber-600'
+                          )} />
+                          <span className={cn(
+                            'text-xs font-medium',
+                            theme === 'dark' ? 'text-amber-400' : 'text-amber-600'
+                          )}>
+                            {isZh ? '关联历史事件' : 'Related Historical Events'}
+                          </span>
+                        </div>
+                        <div className="space-y-1.5 max-h-32 overflow-y-auto">
+                          {unit.timelineEvents.slice(0, 4).map((event, eventIdx) => (
+                            <button
+                              key={eventIdx}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                scrollToTimelineEvent(event.year, event.track)
+                              }}
+                              className={cn(
+                                'w-full flex items-center gap-2 px-2 py-1 rounded text-left transition-colors',
+                                'hover:bg-amber-500/10 group/event',
+                                theme === 'dark'
+                                  ? 'text-gray-300 hover:text-amber-300'
+                                  : 'text-gray-600 hover:text-amber-700'
+                              )}
+                            >
+                              <span className={cn(
+                                'flex-shrink-0 w-10 text-[10px] font-mono px-1 py-0.5 rounded',
+                                event.track === 'polarization'
+                                  ? theme === 'dark' ? 'bg-cyan-900/50 text-cyan-300' : 'bg-cyan-100 text-cyan-700'
+                                  : theme === 'dark' ? 'bg-amber-900/50 text-amber-300' : 'bg-amber-100 text-amber-700'
+                              )}>
+                                {event.year}
+                              </span>
+                              <span className="flex-1 text-[11px] leading-tight truncate">
+                                {isZh ? event.titleZh : event.titleEn}
+                              </span>
+                              <Calendar className="w-3 h-3 opacity-0 group-hover/event:opacity-100 transition-opacity" />
+                            </button>
+                          ))}
+                        </div>
+                        {unit.timelineEvents.length > 4 && (
+                          <p className={cn(
+                            'text-[10px] text-center mt-1',
+                            theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                          )}>
+                            +{unit.timelineEvents.length - 4} {isZh ? '更多事件' : 'more events'}
+                          </p>
+                        )}
+                      </div>
+                    )}
 
                     {/* Progress bar */}
                     <div className="mt-2">
@@ -425,6 +557,34 @@ export function CourseNavigator({ className }: CourseNavigatorProps) {
                         >
                           <Gamepad2 className="w-3.5 h-3.5 text-pink-500" />
                           <span>{isZh ? '开始游戏' : 'Play Game'}</span>
+                        </motion.button>
+                      )}
+
+                      {/* View History - scroll to first timeline event */}
+                      {unit.timelineEvents && unit.timelineEvents.length > 0 && (
+                        <motion.button
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: hasGames ? 0.2 : 0.15 }}
+                          onClick={() => {
+                            const firstEvent = unit.timelineEvents[0]
+                            scrollToTimelineEvent(firstEvent.year, firstEvent.track)
+                          }}
+                          className={cn(
+                            'flex items-center gap-2 px-2 py-1.5 rounded-md text-xs w-full transition-colors',
+                            theme === 'dark'
+                              ? 'hover:bg-slate-700 text-gray-300'
+                              : 'hover:bg-gray-100 text-gray-600'
+                          )}
+                        >
+                          <History className="w-3.5 h-3.5 text-amber-500" />
+                          <span>{isZh ? '查看历史' : 'View History'}</span>
+                          <span className={cn(
+                            'ml-auto text-[10px] font-mono',
+                            theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                          )}>
+                            {unit.timelineEvents[0].year}
+                          </span>
                         </motion.button>
                       )}
                     </div>
