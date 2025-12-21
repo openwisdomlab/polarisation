@@ -3237,4 +3237,290 @@ And yet the mystery remained. Why does light have polarization at all? What fund
     },
     illustrationType: 'quantum'
   },
+  // ===== 新增历史事件 (新科学家) =====
+  {
+    year: 1609,
+    titleEn: 'Galileo\'s Telescope Revolution',
+    titleZh: '伽利略的望远镜革命',
+    descriptionEn: 'Galileo Galilei improves the refracting telescope and turns it toward the heavens, beginning modern observational astronomy.',
+    descriptionZh: '伽利略·伽利莱改进折射望远镜并将其指向天空，开启了现代观测天文学。',
+    scientistEn: 'Galileo Galilei',
+    scientistZh: '伽利略·伽利莱',
+    category: 'experiment',
+    importance: 1,
+    track: 'optics',
+    details: {
+      en: [
+        'Improved Dutch telescope design to 20x magnification',
+        'Discovered Jupiter\'s moons, Saturn\'s rings, lunar craters',
+        'Observed phases of Venus proving heliocentric model',
+        'Laid foundation for lens-based optical instruments'
+      ],
+      zh: [
+        '将荷兰望远镜设计改进至20倍放大',
+        '发现木星卫星、土星光环、月球环形山',
+        '观察金星相位证明日心说',
+        '为透镜光学仪器奠定基础'
+      ]
+    },
+    scientistBio: {
+      birthYear: 1564,
+      deathYear: 1642,
+      nationality: 'Italian',
+      portraitEmoji: '🔭',
+      bioEn: 'Galileo Galilei is called the "father of modern science." His telescope observations transformed our understanding of the universe.',
+      bioZh: '伽利略·伽利莱被称为"现代科学之父"。他的望远镜观测改变了我们对宇宙的理解。'
+    },
+    scene: {
+      location: 'Padua and Venice, Italy',
+      season: 'Summer',
+      mood: 'revolutionary discovery'
+    }
+  },
+  {
+    year: 1662,
+    titleEn: 'Fermat\'s Principle of Least Time',
+    titleZh: '费马最短时间原理',
+    descriptionEn: 'Pierre de Fermat derives refraction law from the principle that light takes the path of least time.',
+    descriptionZh: '皮埃尔·德·费马从光走最短时间路径的原理推导出折射定律。',
+    scientistEn: 'Pierre de Fermat',
+    scientistZh: '皮埃尔·德·费马',
+    category: 'theory',
+    importance: 1,
+    track: 'optics',
+    details: {
+      en: [
+        'Light chooses the path of least time, not shortest distance',
+        'Mathematically derived Snell\'s law from first principles',
+        'Introduced variational thinking to physics',
+        'Precursor to principle of least action in mechanics'
+      ],
+      zh: [
+        '光选择时间最短的路径，而非距离最短',
+        '从第一原理数学推导斯涅尔定律',
+        '将变分思想引入物理学',
+        '力学中最小作用量原理的先驱'
+      ]
+    },
+    scientistBio: {
+      birthYear: 1607,
+      deathYear: 1665,
+      nationality: 'French',
+      portraitEmoji: '📐',
+      bioEn: 'Pierre de Fermat was a lawyer and amateur mathematician whose contributions to optics, number theory, and probability were foundational.',
+      bioZh: '皮埃尔·德·费马是一位律师兼业余数学家，他对光学、数论和概率论的贡献是奠基性的。'
+    },
+    scene: {
+      location: 'Toulouse, France',
+      season: 'Autumn',
+      mood: 'mathematical elegance'
+    }
+  },
+  {
+    year: 1814,
+    titleEn: 'Fraunhofer Lines: The Sun\'s Fingerprint',
+    titleZh: '夫琅和费线：太阳的指纹',
+    descriptionEn: 'Joseph von Fraunhofer maps hundreds of dark lines in the solar spectrum, founding spectroscopy.',
+    descriptionZh: '约瑟夫·冯·夫琅和费绘制了太阳光谱中数百条暗线，创立了光谱学。',
+    scientistEn: 'Joseph von Fraunhofer',
+    scientistZh: '约瑟夫·冯·夫琅和费',
+    category: 'discovery',
+    importance: 1,
+    track: 'optics',
+    details: {
+      en: [
+        'Mapped 574 dark lines in the solar spectrum',
+        'Labeled major lines with letters (A, B, C... still used today)',
+        'Invented the diffraction grating for precise spectral analysis',
+        'Founded spectroscopy — identifying elements by spectral signatures'
+      ],
+      zh: [
+        '绘制了太阳光谱中574条暗线',
+        '用字母标记主要线条（A、B、C...至今仍在使用）',
+        '发明了用于精确光谱分析的衍射光栅',
+        '创立了光谱学——通过光谱特征识别元素'
+      ]
+    },
+    scientistBio: {
+      birthYear: 1787,
+      deathYear: 1826,
+      nationality: 'German',
+      portraitEmoji: '🌈',
+      bioEn: 'Joseph von Fraunhofer rose from poverty to become the foremost optical instrument maker of his era.',
+      bioZh: '约瑟夫·冯·夫琅和费从贫困中崛起，成为他那个时代最杰出的光学仪器制造商。'
+    },
+    scene: {
+      location: 'Munich, Bavaria',
+      season: 'Summer',
+      mood: 'precision and discovery'
+    }
+  },
+  {
+    year: 1881,
+    titleEn: 'Michelson Interferometer',
+    titleZh: '迈克尔逊干涉仪',
+    descriptionEn: 'Albert Michelson invents the interferometer, enabling the most precise optical measurements ever made.',
+    descriptionZh: '阿尔伯特·迈克尔逊发明干涉仪，实现了有史以来最精确的光学测量。',
+    scientistEn: 'Albert Michelson',
+    scientistZh: '阿尔伯特·迈克尔逊',
+    category: 'experiment',
+    importance: 1,
+    track: 'optics',
+    details: {
+      en: [
+        'Split light beam, sent along perpendicular paths, recombined',
+        'Interference fringes sensitive to tiny path differences',
+        'Enabled sub-wavelength precision in length measurement',
+        'Led to 1887 Michelson-Morley experiment disproving ether'
+      ],
+      zh: [
+        '分裂光束，沿垂直路径发送，然后重新组合',
+        '干涉条纹对微小路径差异敏感',
+        '实现了亚波长精度的长度测量',
+        '导致1887年迈克尔逊-莫雷实验否定以太'
+      ]
+    },
+    scientistBio: {
+      birthYear: 1852,
+      deathYear: 1931,
+      nationality: 'American',
+      portraitEmoji: '🎯',
+      bioEn: 'Albert Michelson was the first American to win a Nobel Prize in science (1907) for his optical precision instruments.',
+      bioZh: '阿尔伯特·迈克尔逊是第一位获得诺贝尔科学奖的美国人（1907年），表彰他的光学精密仪器。'
+    },
+    scene: {
+      location: 'Berlin and Cleveland',
+      season: 'Spring',
+      mood: 'precision and patience'
+    }
+  },
+  {
+    year: 1887,
+    titleEn: 'Hertz Proves Maxwell\'s Waves',
+    titleZh: '赫兹证明麦克斯韦的波动',
+    descriptionEn: 'Heinrich Hertz generates and detects electromagnetic waves, confirming light is an electromagnetic phenomenon.',
+    descriptionZh: '海因里希·赫兹产生并探测电磁波，证实光是电磁现象。',
+    scientistEn: 'Heinrich Hertz',
+    scientistZh: '海因里希·赫兹',
+    category: 'experiment',
+    importance: 1,
+    track: 'optics',
+    details: {
+      en: [
+        'Generated radio waves using a spark-gap transmitter',
+        'Detected waves with a loop antenna receiver',
+        'Demonstrated reflection, refraction, and polarization of radio waves',
+        'Proved Maxwell\'s electromagnetic theory experimentally'
+      ],
+      zh: [
+        '使用火花隙发射器产生无线电波',
+        '用环形天线接收器探测波动',
+        '演示了无线电波的反射、折射和偏振',
+        '实验证明了麦克斯韦电磁理论'
+      ]
+    },
+    scientistBio: {
+      birthYear: 1857,
+      deathYear: 1894,
+      nationality: 'German',
+      portraitEmoji: '📻',
+      bioEn: 'Heinrich Hertz\'s experiments opened the door to modern telecommunications. The unit of frequency (Hz) is named in his honor.',
+      bioZh: '海因里希·赫兹的实验开启了现代电信的大门。频率单位（赫兹）以他的名字命名。'
+    },
+    scene: {
+      location: 'Karlsruhe, Germany',
+      season: 'Winter',
+      mood: 'triumphant verification'
+    },
+    linkTo: {
+      year: 1865,
+      trackTarget: 'optics',
+      descriptionEn: 'Hertz experimentally confirmed Maxwell\'s 1865 electromagnetic wave theory',
+      descriptionZh: '赫兹实验证实了麦克斯韦1865年的电磁波理论'
+    }
+  },
+  {
+    year: 1932,
+    titleEn: 'Land\'s Polaroid: Light for Everyone',
+    titleZh: '兰德的宝丽来：让光为人人所用',
+    descriptionEn: 'Edwin Land invents large-sheet polarizing filters, making polarized light technology accessible for everyday use.',
+    descriptionZh: '埃德温·兰德发明大面积偏振滤光片，使偏振光技术可用于日常生活。',
+    scientistEn: 'Edwin Land',
+    scientistZh: '埃德温·兰德',
+    category: 'application',
+    importance: 2,
+    track: 'polarization',
+    details: {
+      en: [
+        'Created sheet polarizers using aligned microscopic crystals',
+        'Made polarized sunglasses commercially viable',
+        'Developed anti-glare display technology',
+        'Founded Polaroid Corporation'
+      ],
+      zh: [
+        '使用排列的微观晶体制造薄片偏振器',
+        '使偏振太阳镜商业化',
+        '开发防眩光显示技术',
+        '创立宝丽来公司'
+      ]
+    },
+    scientistBio: {
+      birthYear: 1909,
+      deathYear: 1991,
+      nationality: 'American',
+      portraitEmoji: '📷',
+      bioEn: 'Edwin Land held over 500 patents, second only to Edison. He transformed both polarization optics and photography.',
+      bioZh: '埃德温·兰德拥有500多项专利，仅次于爱迪生。他改变了偏振光学和摄影两个领域。'
+    },
+    scene: {
+      location: 'Cambridge, Massachusetts',
+      season: 'Winter',
+      mood: 'entrepreneurial vision'
+    },
+    linkTo: {
+      year: 1828,
+      trackTarget: 'polarization',
+      descriptionEn: 'Land revolutionized polarizer technology building on Nicol\'s prism',
+      descriptionZh: '兰德在尼科尔棱镜基础上革新了偏振技术'
+    }
+  },
+  {
+    year: 1947,
+    titleEn: 'Gabor Invents Holography',
+    titleZh: '盖博发明全息术',
+    descriptionEn: 'Dennis Gabor conceives holography — recording both amplitude and phase of light for 3D imaging.',
+    descriptionZh: '丹尼斯·盖博构想出全息术——同时记录光波振幅和相位实现三维成像。',
+    scientistEn: 'Dennis Gabor',
+    scientistZh: '丹尼斯·盖博',
+    category: 'theory',
+    importance: 2,
+    track: 'optics',
+    details: {
+      en: [
+        'Proposed recording interference pattern of object and reference beams',
+        'Reconstruction creates 3D image with parallax',
+        'Originally developed to improve electron microscopes',
+        'Full potential realized after invention of lasers in 1960s'
+      ],
+      zh: [
+        '提出记录物光束和参考光束的干涉图样',
+        '重建产生具有视差的3D图像',
+        '最初为改进电子显微镜而开发',
+        '在1960年代激光发明后才充分发挥潜力'
+      ]
+    },
+    scientistBio: {
+      birthYear: 1900,
+      deathYear: 1979,
+      nationality: 'Hungarian-British',
+      portraitEmoji: '💿',
+      bioEn: 'Dennis Gabor received the 1971 Nobel Prize for inventing holography. His theoretical invention had to wait decades for laser technology.',
+      bioZh: '丹尼斯·盖博因发明全息术获得1971年诺贝尔奖。他的理论发明等待了数十年才有激光技术使其实用。'
+    },
+    scene: {
+      location: 'Rugby, England',
+      season: 'Autumn',
+      mood: 'theoretical breakthrough'
+    }
+  },
 ]

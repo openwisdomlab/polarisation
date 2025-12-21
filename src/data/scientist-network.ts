@@ -270,6 +270,157 @@ export const SCIENTISTS: Scientist[] = [
     },
     eventYears: [1828]
   },
+  // === 新增科学家 ===
+  {
+    id: 'galileo',
+    nameEn: 'Galileo Galilei',
+    nameZh: '伽利略·伽利莱',
+    birthYear: 1564,
+    deathYear: 1642,
+    nationality: 'Italian',
+    emoji: '🔭',
+    fields: ['optics'],
+    keyContributions: {
+      en: ['Improved telescope (1609)', 'Astronomical observations', 'Scientific method pioneer'],
+      zh: ['改进望远镜 (1609)', '天文观测', '科学方法先驱']
+    },
+    eventYears: [1609]
+  },
+  {
+    id: 'hooke',
+    nameEn: 'Robert Hooke',
+    nameZh: '罗伯特·胡克',
+    birthYear: 1635,
+    deathYear: 1703,
+    nationality: 'English',
+    emoji: '🔩',
+    fields: ['optics', 'wave'],
+    keyContributions: {
+      en: ['Micrographia (1665)', 'Wave theory supporter', 'Newton\'s rings observation'],
+      zh: ['《显微图谱》(1665)', '波动说支持者', '牛顿环观察']
+    },
+    eventYears: [1665]
+  },
+  {
+    id: 'romer',
+    nameEn: 'Ole Rømer',
+    nameZh: '奥勒·罗默',
+    birthYear: 1644,
+    deathYear: 1710,
+    nationality: 'Danish',
+    emoji: '⏱️',
+    fields: ['optics'],
+    keyContributions: {
+      en: ['First measurement of speed of light (1676)', 'Observed Jupiter\'s moons'],
+      zh: ['首次测量光速 (1676)', '观测木星卫星']
+    },
+    eventYears: [1676]
+  },
+  {
+    id: 'fermat',
+    nameEn: 'Pierre de Fermat',
+    nameZh: '皮埃尔·德·费马',
+    birthYear: 1607,
+    deathYear: 1665,
+    nationality: 'French',
+    emoji: '📐',
+    fields: ['optics'],
+    keyContributions: {
+      en: ['Fermat\'s principle of least time (1662)', 'Derived Snell\'s law from variational principle'],
+      zh: ['费马最短时间原理 (1662)', '从变分原理推导斯涅尔定律']
+    },
+    eventYears: [1662]
+  },
+  {
+    id: 'fraunhofer',
+    nameEn: 'Joseph von Fraunhofer',
+    nameZh: '约瑟夫·冯·夫琅和费',
+    birthYear: 1787,
+    deathYear: 1826,
+    nationality: 'German',
+    emoji: '🌈',
+    fields: ['optics'],
+    keyContributions: {
+      en: ['Fraunhofer lines (1814)', 'Diffraction grating', 'Precision optical instruments'],
+      zh: ['夫琅和费线 (1814)', '衍射光栅', '精密光学仪器']
+    },
+    eventYears: [1814]
+  },
+  {
+    id: 'faraday',
+    nameEn: 'Michael Faraday',
+    nameZh: '迈克尔·法拉第',
+    birthYear: 1791,
+    deathYear: 1867,
+    nationality: 'English',
+    emoji: '🧲',
+    fields: ['optics', 'polarization'],
+    keyContributions: {
+      en: ['Faraday effect (1845)', 'Magneto-optical rotation', 'Electromagnetic induction'],
+      zh: ['法拉第效应 (1845)', '磁光旋转', '电磁感应']
+    },
+    eventYears: [1845]
+  },
+  {
+    id: 'hertz',
+    nameEn: 'Heinrich Hertz',
+    nameZh: '海因里希·赫兹',
+    birthYear: 1857,
+    deathYear: 1894,
+    nationality: 'German',
+    emoji: '📻',
+    fields: ['optics', 'wave'],
+    keyContributions: {
+      en: ['Experimental proof of EM waves (1887)', 'Photoelectric effect observation', 'Hertzian waves'],
+      zh: ['电磁波实验证明 (1887)', '光电效应观察', '赫兹波']
+    },
+    eventYears: [1887]
+  },
+  {
+    id: 'michelson',
+    nameEn: 'Albert Michelson',
+    nameZh: '阿尔伯特·迈克尔逊',
+    birthYear: 1852,
+    deathYear: 1931,
+    nationality: 'American',
+    emoji: '🎯',
+    fields: ['optics'],
+    keyContributions: {
+      en: ['Michelson interferometer (1881)', 'Precision speed of light measurement', 'Nobel Prize 1907'],
+      zh: ['迈克尔逊干涉仪 (1881)', '精确光速测量', '1907年诺贝尔奖']
+    },
+    eventYears: [1881, 1887]
+  },
+  {
+    id: 'land',
+    nameEn: 'Edwin Land',
+    nameZh: '埃德温·兰德',
+    birthYear: 1909,
+    deathYear: 1991,
+    nationality: 'American',
+    emoji: '📷',
+    fields: ['polarization'],
+    keyContributions: {
+      en: ['Polaroid filters (1932)', 'Instant photography', 'Modern polarizer technology'],
+      zh: ['宝丽来滤光片 (1932)', '即时摄影', '现代偏振技术']
+    },
+    eventYears: [1932]
+  },
+  {
+    id: 'gabor',
+    nameEn: 'Dennis Gabor',
+    nameZh: '丹尼斯·盖博',
+    birthYear: 1900,
+    deathYear: 1979,
+    nationality: 'Hungarian-British',
+    emoji: '💿',
+    fields: ['optics', 'wave'],
+    keyContributions: {
+      en: ['Holography invention (1947)', 'Nobel Prize 1971', 'Coherent light imaging'],
+      zh: ['全息术发明 (1947)', '1971年诺贝尔奖', '相干光成像']
+    },
+    eventYears: [1947]
+  },
 ]
 
 // 科学家关系数据
@@ -408,6 +559,133 @@ export const SCIENTIST_RELATIONS: ScientistRelation[] = [
     descriptionEn: 'Snell\'s refraction law was foundation for Newton\'s optical studies',
     descriptionZh: '斯涅尔折射定律是牛顿光学研究的基础',
     year: 1665
+  },
+  // === 新增关系 ===
+  // 伽利略影响光学发展
+  {
+    from: 'galileo',
+    to: 'newton',
+    type: 'influenced',
+    descriptionEn: 'Galileo\'s telescope innovations inspired Newton\'s optical research',
+    descriptionZh: '伽利略的望远镜创新启发了牛顿的光学研究',
+    year: 1665
+  },
+  // 胡克与牛顿的竞争
+  {
+    from: 'hooke',
+    to: 'newton',
+    type: 'rival',
+    descriptionEn: 'Hooke and Newton had famous disputes over optics and gravity',
+    descriptionZh: '胡克与牛顿在光学和引力问题上有著名的争论',
+    year: 1672
+  },
+  // 胡克支持惠更斯的波动说
+  {
+    from: 'hooke',
+    to: 'huygens',
+    type: 'collaborator',
+    descriptionEn: 'Hooke supported Huygens\' wave theory of light',
+    descriptionZh: '胡克支持惠更斯的光波动说',
+    year: 1678
+  },
+  // 罗默影响惠更斯
+  {
+    from: 'romer',
+    to: 'huygens',
+    type: 'influenced',
+    descriptionEn: 'Rømer\'s light speed measurement supported wave theory',
+    descriptionZh: '罗默的光速测量支持了波动说',
+    year: 1676
+  },
+  // 费马影响斯涅尔定律的理论基础
+  {
+    from: 'fermat',
+    to: 'snell',
+    type: 'built-upon',
+    descriptionEn: 'Fermat derived Snell\'s law from least time principle',
+    descriptionZh: '费马从最短时间原理推导出斯涅尔定律',
+    year: 1662
+  },
+  // 夫琅和费与菲涅尔同时代
+  {
+    from: 'fraunhofer',
+    to: 'fresnel',
+    type: 'contemporary',
+    descriptionEn: 'Fraunhofer and Fresnel were contemporaries advancing optics',
+    descriptionZh: '夫琅和费与菲涅尔同时代推进光学发展',
+    year: 1818
+  },
+  // 法拉第影响麦克斯韦
+  {
+    from: 'faraday',
+    to: 'maxwell',
+    type: 'influenced',
+    descriptionEn: 'Faraday\'s field concept inspired Maxwell\'s equations',
+    descriptionZh: '法拉第的场概念启发了麦克斯韦方程组',
+    year: 1865
+  },
+  // 法拉第发展偏振
+  {
+    from: 'fresnel',
+    to: 'faraday',
+    type: 'influenced',
+    descriptionEn: 'Fresnel\'s polarization work enabled Faraday\'s magneto-optical discovery',
+    descriptionZh: '菲涅尔的偏振研究为法拉第的磁光发现奠定基础',
+    year: 1845
+  },
+  // 赫兹验证麦克斯韦
+  {
+    from: 'maxwell',
+    to: 'hertz',
+    type: 'influenced',
+    descriptionEn: 'Hertz experimentally confirmed Maxwell\'s electromagnetic wave theory',
+    descriptionZh: '赫兹实验证实了麦克斯韦的电磁波理论',
+    year: 1887
+  },
+  // 迈克尔逊与赫兹同时代
+  {
+    from: 'michelson',
+    to: 'hertz',
+    type: 'contemporary',
+    descriptionEn: 'Michelson and Hertz made groundbreaking optical experiments in the same era',
+    descriptionZh: '迈克尔逊和赫兹在同时代进行了开创性的光学实验',
+    year: 1887
+  },
+  // 迈克尔逊发展干涉技术
+  {
+    from: 'young',
+    to: 'michelson',
+    type: 'built-upon',
+    descriptionEn: 'Michelson perfected interferometry based on Young\'s interference principle',
+    descriptionZh: '迈克尔逊在杨的干涉原理基础上完善了干涉技术',
+    year: 1881
+  },
+  // 兰德发展偏振应用
+  {
+    from: 'nicol',
+    to: 'land',
+    type: 'built-upon',
+    descriptionEn: 'Land revolutionized polarizer technology building on Nicol\'s prism',
+    descriptionZh: '兰德在尼科尔棱镜基础上革新了偏振技术',
+    year: 1932
+  },
+  // 盖博发展全息术
+  {
+    from: 'gabor',
+    to: 'land',
+    type: 'contemporary',
+    descriptionEn: 'Gabor and Land both pioneered modern optical technologies in the 20th century',
+    descriptionZh: '盖博和兰德都是20世纪现代光学技术的先驱',
+    year: 1947
+  },
+  // 盖博基于干涉
+  {
+    from: 'young',
+    to: 'gabor',
+    type: 'built-upon',
+    descriptionEn: 'Gabor\'s holography is based on wave interference principles',
+    descriptionZh: '盖博的全息术基于波干涉原理',
+    year: 1947
   },
 ]
 

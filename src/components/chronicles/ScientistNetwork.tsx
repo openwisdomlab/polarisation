@@ -6,7 +6,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
-import { User, X, ChevronRight } from 'lucide-react'
+import { User, X, ChevronRight, Network, List, Globe, Calendar } from 'lucide-react'
 import {
   SCIENTISTS,
   SCIENTIST_RELATIONS,
@@ -16,35 +16,59 @@ import {
   type RelationType
 } from '@/data/scientist-network'
 
+type ViewMode = 'network' | 'list'
+
 interface ScientistNetworkProps {
   theme: 'dark' | 'light'
   onNavigateToEvent?: (year: number, track: 'optics' | 'polarization') => void
   externalSelectedScientist?: string | null
 }
 
-// 预计算节点位置
+// 预计算节点位置 - 按时代和领域布局
+// x: 左侧(15-40)=光学, 中间(40-60)=混合, 右侧(60-85)=偏振
+// y: 按时代从上到下 (1500s→1900s)
 const NODE_POSITIONS: Record<string, { x: number; y: number }> = {
-  snell: { x: 20, y: 8 },
-  bartholin: { x: 70, y: 12 },
-  huygens: { x: 45, y: 18 },
-  newton: { x: 25, y: 22 },
-  young: { x: 35, y: 38 },
-  malus: { x: 65, y: 42 },
+  // 1500s-1600s 早期
+  galileo: { x: 15, y: 6 },
+  snell: { x: 30, y: 8 },
+  fermat: { x: 45, y: 10 },
+  bartholin: { x: 72, y: 12 },
+
+  // 1600s-1700s
+  huygens: { x: 50, y: 18 },
+  hooke: { x: 35, y: 20 },
+  romer: { x: 20, y: 22 },
+  newton: { x: 28, y: 28 },
+
+  // 1700s-1800s 早期
+  young: { x: 32, y: 40 },
+  malus: { x: 68, y: 42 },
+  fraunhofer: { x: 18, y: 48 },
   arago: { x: 50, y: 48 },
-  brewster: { x: 80, y: 45 },
+  brewster: { x: 82, y: 45 },
   biot: { x: 75, y: 52 },
-  fresnel: { x: 40, y: 55 },
-  nicol: { x: 85, y: 58 },
-  stokes: { x: 55, y: 68 },
-  maxwell: { x: 30, y: 72 },
-  jones: { x: 65, y: 82 },
-  mueller: { x: 78, y: 85 },
+  fresnel: { x: 42, y: 55 },
+  nicol: { x: 88, y: 58 },
+
+  // 1800s 中后期
+  faraday: { x: 55, y: 62 },
+  stokes: { x: 70, y: 68 },
+  maxwell: { x: 28, y: 72 },
+  michelson: { x: 18, y: 78 },
+  hertz: { x: 38, y: 80 },
+
+  // 1900s
+  jones: { x: 68, y: 88 },
+  mueller: { x: 80, y: 90 },
+  gabor: { x: 25, y: 92 },
+  land: { x: 55, y: 94 },
 }
 
 export function ScientistNetwork({ theme, onNavigateToEvent, externalSelectedScientist }: ScientistNetworkProps) {
   const { i18n } = useTranslation()
   const isZh = i18n.language === 'zh'
 
+  const [viewMode, setViewMode] = useState<ViewMode>('network')
   const [selectedScientist, setSelectedScientist] = useState<string | null>(null)
 
   // Sync with external selection from ExplorationMode
@@ -56,6 +80,11 @@ export function ScientistNetwork({ theme, onNavigateToEvent, externalSelectedSci
   const [hoveredScientist, setHoveredScientist] = useState<string | null>(null)
   const [hoveredRelation, setHoveredRelation] = useState<ScientistRelation | null>(null)
   const [filterType, setFilterType] = useState<RelationType | 'all'>('all')
+
+  // 按出生年份排序的科学家列表
+  const sortedScientists = useMemo(() => {
+    return [...SCIENTISTS].sort((a, b) => a.birthYear - b.birthYear)
+  }, [])
 
   // 获取选中科学家的关系
   const selectedRelations = useMemo(() => {
@@ -100,26 +129,72 @@ export function ScientistNetwork({ theme, onNavigateToEvent, externalSelectedSci
     )}>
       {/* Header */}
       <div className={cn(
-        'p-4 border-b flex items-center justify-between',
+        'p-4 border-b flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4',
         theme === 'dark' ? 'border-slate-700' : 'border-gray-200'
       )}>
-        <div>
-          <h3 className={cn(
-            'text-lg font-bold flex items-center gap-2',
-            theme === 'dark' ? 'text-white' : 'text-gray-900'
+        <div className="flex items-center gap-4">
+          <div>
+            <h3 className={cn(
+              'text-lg font-bold flex items-center gap-2',
+              theme === 'dark' ? 'text-white' : 'text-gray-900'
+            )}>
+              <span>{viewMode === 'network' ? '🕸️' : '📋'}</span>
+              {isZh
+                ? (viewMode === 'network' ? '科学家关系网络' : '科学家名录')
+                : (viewMode === 'network' ? 'Scientist Network' : 'Scientist Directory')}
+            </h3>
+            <p className={cn(
+              'text-sm mt-1',
+              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+            )}>
+              {viewMode === 'network'
+                ? (isZh ? '点击节点查看科学家详情和关系' : 'Click nodes to explore scientists and their relationships')
+                : (isZh ? `共 ${SCIENTISTS.length} 位光学先驱，按时间排序` : `${SCIENTISTS.length} optical pioneers, sorted by era`)}
+            </p>
+          </div>
+
+          {/* View mode toggle */}
+          <div className={cn(
+            'flex rounded-lg overflow-hidden border',
+            theme === 'dark' ? 'border-slate-600' : 'border-gray-300'
           )}>
-            <span>🕸️</span>
-            {isZh ? '科学家关系网络' : 'Scientist Relationship Network'}
-          </h3>
-          <p className={cn(
-            'text-sm mt-1',
-            theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-          )}>
-            {isZh ? '点击节点查看科学家详情和关系' : 'Click nodes to explore scientists and their relationships'}
-          </p>
+            <button
+              onClick={() => setViewMode('network')}
+              className={cn(
+                'px-3 py-1.5 flex items-center gap-1.5 text-sm font-medium transition-colors',
+                viewMode === 'network'
+                  ? theme === 'dark'
+                    ? 'bg-cyan-600 text-white'
+                    : 'bg-cyan-500 text-white'
+                  : theme === 'dark'
+                    ? 'text-gray-400 hover:bg-slate-700'
+                    : 'text-gray-600 hover:bg-gray-100'
+              )}
+            >
+              <Network className="w-4 h-4" />
+              <span className="hidden sm:inline">{isZh ? '网络' : 'Network'}</span>
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={cn(
+                'px-3 py-1.5 flex items-center gap-1.5 text-sm font-medium transition-colors',
+                viewMode === 'list'
+                  ? theme === 'dark'
+                    ? 'bg-cyan-600 text-white'
+                    : 'bg-cyan-500 text-white'
+                  : theme === 'dark'
+                    ? 'text-gray-400 hover:bg-slate-700'
+                    : 'text-gray-600 hover:bg-gray-100'
+              )}
+            >
+              <List className="w-4 h-4" />
+              <span className="hidden sm:inline">{isZh ? '列表' : 'List'}</span>
+            </button>
+          </div>
         </div>
 
-        {/* Relation type filter */}
+        {/* Relation type filter (only show in network view) */}
+        {viewMode === 'network' && (
         <div className="flex items-center gap-1 flex-wrap">
           <button
             onClick={() => setFilterType('all')}
@@ -159,8 +234,138 @@ export function ScientistNetwork({ theme, onNavigateToEvent, externalSelectedSci
             )
           })}
         </div>
+        )}
       </div>
 
+      {/* List View */}
+      {viewMode === 'list' && (
+        <div className="p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {sortedScientists.map((scientist) => {
+              const relations = getScientistRelations(scientist.id)
+              const isPolarization = scientist.fields.includes('polarization')
+
+              return (
+                <div
+                  key={scientist.id}
+                  onClick={() => handleSelectScientist(scientist.id)}
+                  className={cn(
+                    'p-4 rounded-xl border cursor-pointer transition-all hover:shadow-lg',
+                    selectedScientist === scientist.id
+                      ? theme === 'dark'
+                        ? 'bg-cyan-900/30 border-cyan-500'
+                        : 'bg-cyan-50 border-cyan-400'
+                      : theme === 'dark'
+                        ? 'bg-slate-800/50 border-slate-700 hover:border-slate-500'
+                        : 'bg-white border-gray-200 hover:border-gray-400'
+                  )}
+                >
+                  {/* Scientist header */}
+                  <div className="flex items-start gap-3 mb-3">
+                    <span className="text-3xl">{scientist.emoji}</span>
+                    <div className="flex-1 min-w-0">
+                      <h4 className={cn(
+                        'font-bold truncate',
+                        theme === 'dark' ? 'text-white' : 'text-gray-900'
+                      )}>
+                        {isZh ? scientist.nameZh : scientist.nameEn}
+                      </h4>
+                      <div className={cn(
+                        'flex items-center gap-2 text-sm',
+                        theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                      )}>
+                        <Calendar className="w-3 h-3" />
+                        <span>{scientist.birthYear}{scientist.deathYear ? `-${scientist.deathYear}` : ''}</span>
+                      </div>
+                      <div className={cn(
+                        'flex items-center gap-2 text-sm',
+                        theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                      )}>
+                        <Globe className="w-3 h-3" />
+                        <span>{scientist.nationality}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Field badges */}
+                  <div className="flex gap-1 flex-wrap mb-3">
+                    {scientist.fields.map(field => (
+                      <span
+                        key={field}
+                        className={cn(
+                          'px-2 py-0.5 rounded-full text-xs font-medium',
+                          field === 'polarization'
+                            ? 'bg-cyan-500/20 text-cyan-400'
+                            : field === 'wave'
+                            ? 'bg-green-500/20 text-green-400'
+                            : field === 'quantum'
+                            ? 'bg-purple-500/20 text-purple-400'
+                            : 'bg-amber-500/20 text-amber-400'
+                        )}
+                      >
+                        {field === 'polarization' ? (isZh ? '偏振' : 'Polarization') :
+                         field === 'wave' ? (isZh ? '波动' : 'Wave') :
+                         field === 'quantum' ? (isZh ? '量子' : 'Quantum') :
+                         (isZh ? '光学' : 'Optics')}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Key contributions */}
+                  <ul className="space-y-1 mb-3">
+                    {(isZh ? scientist.keyContributions.zh : scientist.keyContributions.en).slice(0, 2).map((contribution, idx) => (
+                      <li
+                        key={idx}
+                        className={cn(
+                          'text-xs flex items-start gap-1.5',
+                          theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                        )}
+                      >
+                        <span className={cn(
+                          'mt-0.5',
+                          isPolarization ? 'text-cyan-400' : 'text-amber-400'
+                        )}>•</span>
+                        <span className="line-clamp-1">{contribution}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Related events and relations count */}
+                  <div className="flex items-center justify-between text-xs">
+                    <div className={cn(
+                      'flex items-center gap-1',
+                      theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                    )}>
+                      <Network className="w-3 h-3" />
+                      <span>{relations.length} {isZh ? '个关系' : 'relations'}</span>
+                    </div>
+                    {scientist.eventYears.length > 0 && onNavigateToEvent && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onNavigateToEvent(scientist.eventYears[0], isPolarization ? 'polarization' : 'optics')
+                        }}
+                        className={cn(
+                          'flex items-center gap-1 transition-colors',
+                          theme === 'dark'
+                            ? 'text-cyan-400 hover:text-cyan-300'
+                            : 'text-cyan-600 hover:text-cyan-500'
+                        )}
+                      >
+                        {scientist.eventYears[0]}
+                        <ChevronRight className="w-3 h-3" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Network View */}
+      {viewMode === 'network' && (
       <div className="flex flex-col lg:flex-row">
         {/* Network Visualization */}
         <div className="flex-1 p-4">
@@ -200,16 +405,19 @@ export function ScientistNetwork({ theme, onNavigateToEvent, externalSelectedSci
             </defs>
 
             {/* Era labels */}
-            <text x="3" y="15" className="text-[2.5px]" fill={theme === 'dark' ? '#64748b' : '#94a3b8'}>
+            <text x="3" y="10" className="text-[2.5px]" fill={theme === 'dark' ? '#64748b' : '#94a3b8'}>
+              1500s
+            </text>
+            <text x="3" y="25" className="text-[2.5px]" fill={theme === 'dark' ? '#64748b' : '#94a3b8'}>
               1600s
             </text>
-            <text x="3" y="35" className="text-[2.5px]" fill={theme === 'dark' ? '#64748b' : '#94a3b8'}>
+            <text x="3" y="45" className="text-[2.5px]" fill={theme === 'dark' ? '#64748b' : '#94a3b8'}>
               1700s
             </text>
-            <text x="3" y="60" className="text-[2.5px]" fill={theme === 'dark' ? '#64748b' : '#94a3b8'}>
+            <text x="3" y="65" className="text-[2.5px]" fill={theme === 'dark' ? '#64748b' : '#94a3b8'}>
               1800s
             </text>
-            <text x="3" y="82" className="text-[2.5px]" fill={theme === 'dark' ? '#64748b' : '#94a3b8'}>
+            <text x="3" y="90" className="text-[2.5px]" fill={theme === 'dark' ? '#64748b' : '#94a3b8'}>
               1900s
             </text>
 
@@ -517,9 +725,10 @@ export function ScientistNetwork({ theme, onNavigateToEvent, externalSelectedSci
           )}
         </div>
       </div>
+      )}
 
-      {/* Relation tooltip */}
-      {hoveredRelation && (
+      {/* Relation tooltip (only in network view) */}
+      {viewMode === 'network' && hoveredRelation && (
         <div className={cn(
           'fixed z-50 px-3 py-2 rounded-lg shadow-lg text-sm max-w-xs pointer-events-none',
           theme === 'dark' ? 'bg-slate-800 text-white' : 'bg-white text-gray-900'
