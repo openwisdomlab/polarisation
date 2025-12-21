@@ -14,18 +14,14 @@ import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   HelpCircle,
-  Lightbulb,
   Lock,
   CheckCircle,
   Sparkles,
   ChevronRight,
   Play,
-  BookOpen,
   FlaskConical,
   Gamepad2,
   Award,
-  Eye,
-  Scroll
 } from 'lucide-react'
 
 // 谜题卡片的数据类型
@@ -77,7 +73,6 @@ interface MysteryCardProps {
   onStartQuest?: (mysteryId: string) => void
   isExpanded?: boolean
   onToggleExpand?: () => void
-  showDetailedView?: boolean
 }
 
 // 难度标签颜色和图标
@@ -93,7 +88,6 @@ export function MysteryCard({
   onStartQuest,
   isExpanded = false,
   onToggleExpand,
-  showDetailedView = false,
 }: MysteryCardProps) {
   const { t, i18n } = useTranslation()
   const lang = i18n.language === 'zh' ? 'zh' : 'en'

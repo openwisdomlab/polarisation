@@ -16,16 +16,9 @@ import {
   Gem,
   Star,
   Lock,
-  Sparkles,
-  ChevronRight,
-  Lightbulb,
   FlaskConical,
   Gamepad2,
-  BookOpen,
   Trophy,
-  Zap,
-  Target,
-  Eye,
 } from 'lucide-react'
 
 // 光学道具类型
