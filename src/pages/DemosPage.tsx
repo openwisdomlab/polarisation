@@ -1090,14 +1090,14 @@ interface SearchMatch {
 // 搜索结果分区标签映射
 const getSectionLabel = (section: SearchSection, t: (key: string) => string): string => {
   const labels: Record<SearchSection, string> = {
-    title: t('course.search.section.title') || '标题',
-    description: t('course.search.section.description') || '描述',
-    physics: t('course.cards.physics') || '物理原理',
-    lifeScene: t('course.cards.lifeScene') || '生活中的偏振',
-    experiment: t('course.cards.experiment') || '实验应用',
-    frontier: t('course.cards.frontier') || '前沿应用',
-    diy: t('course.cards.diy') || '动手试试',
-    questions: t('course.questions.title') || '探索前的思考'
+    title: t('gallery.search.section.title') || '标题',
+    description: t('gallery.search.section.description') || '描述',
+    physics: t('gallery.cards.physics') || '物理原理',
+    lifeScene: t('gallery.cards.lifeScene') || '生活中的偏振',
+    experiment: t('gallery.cards.experiment') || '实验应用',
+    frontier: t('gallery.cards.frontier') || '前沿应用',
+    diy: t('gallery.cards.diy') || '动手试试',
+    questions: t('gallery.questions.title') || '探索前的思考'
   }
   return labels[section]
 }
@@ -1231,10 +1231,10 @@ function DifficultySelector({
                   : config.color === 'green' ? '#86efac' : config.color === 'cyan' ? '#67e8f9' : '#c4b5fd',
                 borderWidth: '1px',
               } : {}}
-              title={t(`course.difficulty.${level}Desc`)}
+              title={t(`gallery.difficulty.${level}Desc`)}
             >
               <span className="text-base">{config.icon}</span>
-              <span className="hidden sm:inline">{t(`course.difficulty.${level}`)}</span>
+              <span className="hidden sm:inline">{t(`gallery.difficulty.${level}`)}</span>
               {/* 活动指示器 */}
               {isActive && (
                 <span className={cn(
@@ -1253,7 +1253,7 @@ function DifficultySelector({
           'animate-in fade-in slide-in-from-top-1 duration-200',
           theme === 'dark' ? 'bg-slate-700 text-gray-200' : 'bg-gray-800 text-white'
         )}>
-          {t(`course.difficulty.${hoveredLevel}Desc`)}
+          {t(`gallery.difficulty.${hoveredLevel}Desc`)}
           <div className={cn(
             'absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45',
             theme === 'dark' ? 'bg-slate-700' : 'bg-gray-800'
@@ -2076,7 +2076,7 @@ export function DemosPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t('course.search.placeholder')}
+                placeholder={t('gallery.search.placeholder')}
                 className={cn(
                   'w-full pl-9 pr-8 py-2 text-sm rounded-lg border transition-all duration-200',
                   'focus:outline-none focus:ring-2',
@@ -2104,7 +2104,7 @@ export function DemosPage() {
                 'text-xs mt-2',
                 theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
               )}>
-                {t('course.search.results', { count: filteredDemos.length })}
+                {t('gallery.search.results', { count: filteredDemos.length })}
               </p>
             )}
           </div>
@@ -2219,7 +2219,7 @@ export function DemosPage() {
                                       'text-[10px]',
                                       theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
                                     )}>
-                                      +{demoMatches.matches.length - 3} {t('course.search.moreMatches') || '更多匹配'}
+                                      +{demoMatches.matches.length - 3} {t('gallery.search.moreMatches') || '更多匹配'}
                                     </span>
                                   )}
                                 </div>
@@ -2257,7 +2257,7 @@ export function DemosPage() {
                     theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'
                   )}
                 >
-                  {t('course.interactionGuide')}
+                  {t('gallery.interactionGuide')}
                 </h4>
                 <ul
                   className={cn(
@@ -2267,15 +2267,15 @@ export function DemosPage() {
                 >
                   <li className="flex items-center gap-2">
                     <span className={theme === 'dark' ? 'text-cyan-400' : 'text-cyan-500'}>◎</span>
-                    {t('course.dragToRotate')}
+                    {t('gallery.dragToRotate')}
                   </li>
                   <li className="flex items-center gap-2">
                     <span className={theme === 'dark' ? 'text-cyan-400' : 'text-cyan-500'}>◎</span>
-                    {t('course.scrollToZoom')}
+                    {t('gallery.scrollToZoom')}
                   </li>
                   <li className="flex items-center gap-2">
                     <span className={theme === 'dark' ? 'text-cyan-400' : 'text-cyan-500'}>◎</span>
-                    {t('course.slidersAdjust')}
+                    {t('gallery.slidersAdjust')}
                   </li>
                 </ul>
               </div>
@@ -2316,7 +2316,7 @@ export function DemosPage() {
                     'text-sm font-medium',
                     theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                   )}>
-                    {t('course.difficulty.label') || '难度等级'}
+                    {t('gallery.difficulty.label') || '难度等级'}
                   </span>
                 </div>
                 <DifficultySelector
@@ -2395,7 +2395,7 @@ export function DemosPage() {
                     'text-lg font-bold',
                     theme === 'dark' ? 'text-amber-400' : 'text-amber-700'
                   )}>
-                    {t('course.questions.title')}
+                    {t('gallery.questions.title')}
                   </h3>
                 </div>
                 {/* Leading Question - Main engaging question */}
@@ -2439,7 +2439,7 @@ export function DemosPage() {
                           'text-sm font-semibold',
                           theme === 'dark' ? 'text-cyan-400' : 'text-cyan-700'
                         )}>
-                          {t('course.questions.guided')}
+                          {t('gallery.questions.guided')}
                         </span>
                       </div>
                       <ul className="space-y-2">
@@ -2472,7 +2472,7 @@ export function DemosPage() {
                           'text-sm font-semibold',
                           theme === 'dark' ? 'text-purple-400' : 'text-purple-700'
                         )}>
-                          {t('course.questions.openEnded')}
+                          {t('gallery.questions.openEnded')}
                         </span>
                       </div>
                       <ul className="space-y-2">
@@ -2519,7 +2519,7 @@ export function DemosPage() {
                 {/* Life Scene card - full width, at top */}
                 {demoInfo.lifeScene && (
                   <CollapsibleCard
-                    title={t('course.cards.lifeScene')}
+                    title={t('gallery.cards.lifeScene')}
                     icon={<LifeSceneIcon />}
                     color="orange"
                     isExpanded={expandedCards.lifeScene}
@@ -2601,7 +2601,7 @@ export function DemosPage() {
                 )}>
                 {/* Physics principle */}
                 <CollapsibleCard
-                  title={t('course.cards.physics')}
+                  title={t('gallery.cards.physics')}
                   icon={<PhysicsIcon />}
                   color="cyan"
                   isExpanded={expandedCards.physics}
@@ -2662,7 +2662,7 @@ export function DemosPage() {
                         'text-xs italic mt-2',
                         theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
                       )}>
-                        {t('course.difficulty.formulaHidden')}
+                        {t('gallery.difficulty.formulaHidden')}
                       </p>
                     )}
                   </div>
@@ -2670,7 +2670,7 @@ export function DemosPage() {
 
                 {/* Experimental application */}
                 <CollapsibleCard
-                  title={t('course.cards.experiment')}
+                  title={t('gallery.cards.experiment')}
                   icon={<ExperimentIcon />}
                   color="green"
                   isExpanded={expandedCards.experiment}
@@ -2721,7 +2721,7 @@ export function DemosPage() {
 
                 {/* Frontier application */}
                 <CollapsibleCard
-                  title={t('course.cards.frontier')}
+                  title={t('gallery.cards.frontier')}
                   icon={<FrontierIcon />}
                   color="purple"
                   isExpanded={expandedCards.frontier}
@@ -2774,7 +2774,7 @@ export function DemosPage() {
                 {/* DIY card - full width, at bottom */}
                 {demoInfo.diy && (
                   <CollapsibleCard
-                    title={t('course.cards.diy')}
+                    title={t('gallery.cards.diy')}
                     icon={<DIYIcon />}
                     color="yellow"
                     isExpanded={expandedCards.diy}
