@@ -14,13 +14,13 @@ import { useIsMobile } from '@/hooks/useIsMobile'
 import { cn } from '@/lib/utils'
 import { Tabs, Badge, PersistentHeader } from '@/components/shared'
 import {
-  Clock, User, MapPin, Calendar,
-  FlaskConical, BookOpen,
+  Clock, User, MapPin,
+  FlaskConical, BookOpen, Compass,
   Sun, Sparkles, Camera, Film
 } from 'lucide-react'
 
 // Data imports
-import { TIMELINE_EVENTS, type TimelineEvent } from '@/data/timeline-events'
+import { TIMELINE_EVENTS } from '@/data/timeline-events'
 import { CATEGORY_LABELS } from '@/data/chronicles-constants'
 import { PSRT_CURRICULUM, getSectionsForEvent } from '@/data/psrt-curriculum'
 
@@ -33,13 +33,16 @@ import {
   DemoNavigator,
   ChapterSelector,
   ChroniclesPSRTView,
+  ScientistNetwork,
+  ExplorationMode,
   DEMO_ITEMS
 } from '@/components/chronicles'
 
 const TABS = [
   { id: 'timeline', label: 'Timeline', labelZh: '时间线', icon: <Clock className="w-4 h-4" /> },
   { id: 'psrt', label: 'P-SRT Course', labelZh: 'P-SRT课程', icon: <BookOpen className="w-4 h-4" /> },
-  { id: 'scientists', label: 'Scientists', labelZh: '科学家', icon: <User className="w-4 h-4" /> },
+  { id: 'scientists', label: 'Scientists', labelZh: '科学家网络', icon: <User className="w-4 h-4" /> },
+  { id: 'exploration', label: 'Exploration', labelZh: '探索模式', icon: <Compass className="w-4 h-4" /> },
   { id: 'experiments', label: 'Key Experiments', labelZh: '关键实验', icon: <FlaskConical className="w-4 h-4" /> },
 ]
 
@@ -57,6 +60,7 @@ export function ChroniclesPage() {
   const [highlightedSections, setHighlightedSections] = useState<Set<string>>(new Set()) // 事件点击高亮的课程章节 (reserved for future use)
   const [selectedDemos, setSelectedDemos] = useState<string[]>([]) // 演示筛选状态
   const [highlightedDemos, setHighlightedDemos] = useState<Set<string>>(new Set()) // 事件点击高亮的演示
+  const [selectedScientistFromExploration, setSelectedScientistFromExploration] = useState<string | null>(null) // 从探索模式选中的科学家
 
   // Suppress unused variable warning (highlightedSections is set but not yet used after removing CourseNavigator)
   void highlightedSections
@@ -197,15 +201,13 @@ export function ChroniclesPage() {
     }, 5000)
   }, [])
 
-  // Get unique scientists from events
-  const scientists = TIMELINE_EVENTS.filter(e => e.scientistBio?.bioEn).reduce((acc, event) => {
-    const key = event.scientistEn || ''
-    if (key && !acc.find(s => s.scientistEn === key)) {
-      acc.push(event)
-    }
-    return acc
-  }, [] as TimelineEvent[])
+  // 处理从探索模式选择科学家，并切换到科学家网络标签页
+  const handleSelectScientistFromExploration = useCallback((scientistId: string) => {
+    setSelectedScientistFromExploration(scientistId)
+    setActiveTab('scientists')
+  }, [])
 
+  
   // Story modal navigation
   const handleOpenStory = (index: number) => {
     setStoryModalEvent(index)
@@ -717,90 +719,25 @@ export function ChroniclesPage() {
         )}
 
         {activeTab === 'scientists' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {scientists.map((event) => (
-              <div
-                key={event.scientistEn}
-                className={cn(
-                  'rounded-xl border p-5 transition-all hover:shadow-lg',
-                  theme === 'dark'
-                    ? 'bg-slate-800/50 border-slate-700 hover:border-amber-500/50'
-                    : 'bg-white border-gray-200 hover:border-amber-400'
-                )}
-              >
-                <div className="flex items-start gap-4">
-                  {/* Portrait Emoji */}
-                  <div className={cn(
-                    'flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center text-3xl',
-                    theme === 'dark' ? 'bg-slate-700' : 'bg-amber-100'
-                  )}>
-                    {event.scientistBio?.portraitEmoji || '👤'}
-                  </div>
+          <ScientistNetwork
+            theme={theme}
+            onNavigateToEvent={(year, track) => {
+              setActiveTab('timeline')
+              handleEventClickFromNav(year, track)
+            }}
+            externalSelectedScientist={selectedScientistFromExploration}
+          />
+        )}
 
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className={cn(
-                      'font-bold text-lg mb-1',
-                      theme === 'dark' ? 'text-white' : 'text-gray-900'
-                    )}>
-                      {isZh ? event.scientistZh : event.scientistEn}
-                    </h3>
-
-                    {/* Lifespan & Nationality */}
-                    <div className={cn(
-                      'flex flex-wrap items-center gap-2 mb-2 text-xs',
-                      theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                    )}>
-                      {event.scientistBio?.birthYear && event.scientistBio?.deathYear && (
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          {event.scientistBio.birthYear} - {event.scientistBio.deathYear}
-                        </span>
-                      )}
-                      {event.scientistBio?.nationality && (
-                        <span className="flex items-center gap-1">
-                          <MapPin className="w-3 h-3" />
-                          {event.scientistBio.nationality}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Key Discovery */}
-                    <Badge color={CATEGORY_LABELS[event.category].color} className="mb-2">
-                      {event.year}: {isZh ? event.titleZh : event.titleEn}
-                    </Badge>
-
-                    {/* Bio */}
-                    <p className={cn(
-                      'text-sm line-clamp-3',
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                    )}>
-                      {isZh ? event.scientistBio?.bioZh : event.scientistBio?.bioEn}
-                    </p>
-
-                    {/* Read Story Link */}
-                    {event.story && (
-                      <button
-                        onClick={() => {
-                          const idx = TIMELINE_EVENTS.findIndex(e => e.scientistEn === event.scientistEn)
-                          if (idx >= 0) handleOpenStory(idx)
-                        }}
-                        className={cn(
-                          'mt-3 flex items-center gap-1 text-sm font-medium transition-colors',
-                          theme === 'dark'
-                            ? 'text-amber-400 hover:text-amber-300'
-                            : 'text-amber-600 hover:text-amber-700'
-                        )}
-                      >
-                        <BookOpen className="w-4 h-4" />
-                        {isZh ? '阅读故事' : 'Read Story'}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+        {activeTab === 'exploration' && (
+          <ExplorationMode
+            theme={theme}
+            onNavigateToEvent={(year, track) => {
+              setActiveTab('timeline')
+              handleEventClickFromNav(year, track)
+            }}
+            onSelectScientist={handleSelectScientistFromExploration}
+          />
         )}
 
         {activeTab === 'experiments' && (

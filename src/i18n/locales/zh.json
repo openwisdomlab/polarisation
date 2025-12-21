@@ -428,6 +428,45 @@
       "openEnded": "开放性问题"
     }
   },
+  "gallery": {
+    "search": {
+      "placeholder": "搜索演示...",
+      "results": "找到 {{count}} 个结果",
+      "noResults": "没有找到匹配的演示",
+      "moreMatches": "更多匹配",
+      "section": {
+        "title": "标题",
+        "description": "描述"
+      }
+    },
+    "interactionGuide": "交互说明",
+    "dragToRotate": "拖拽旋转3D视图",
+    "scrollToZoom": "滚轮缩放画面",
+    "slidersAdjust": "滑块调整参数",
+    "cards": {
+      "lifeScene": "生活中的偏振",
+      "physics": "物理原理",
+      "experiment": "实验应用",
+      "frontier": "前沿应用",
+      "diy": "动手试试"
+    },
+    "difficulty": {
+      "label": "演示难度",
+      "foundation": "基础层",
+      "application": "应用层",
+      "research": "研究层",
+      "foundationDesc": "PSRT问题驱动:用最简单的方式理解光的奥秘，不需要公式！",
+      "applicationDesc": "ESRT轮转训练:动手实验，结合关键公式和概念深入理解",
+      "researchDesc": "ORIC/SURF自主研究:严谨的学术表述，前沿研究视角",
+      "formulaHidden": "想看公式？切换到「应用层」或「研究层」模式"
+    },
+    "questions": {
+      "title": "探索前的思考",
+      "leading": "核心问题",
+      "guided": "引导问题",
+      "openEnded": "开放性问题"
+    }
+  },
   "quiz": {
     "title": "知识检验",
     "question": "第 {{current}}/{{total}} 题",

@@ -428,6 +428,45 @@
       "openEnded": "Open-ended Questions"
     }
   },
+  "gallery": {
+    "search": {
+      "placeholder": "Search demos...",
+      "results": "{{count}} result(s) found",
+      "noResults": "No matching demos found",
+      "moreMatches": "more matches",
+      "section": {
+        "title": "Title",
+        "description": "Description"
+      }
+    },
+    "interactionGuide": "Interaction Guide",
+    "dragToRotate": "Drag to rotate 3D view",
+    "scrollToZoom": "Scroll to zoom",
+    "slidersAdjust": "Use sliders to adjust parameters",
+    "cards": {
+      "lifeScene": "Real-World Connection",
+      "physics": "Physical Principle",
+      "experiment": "Experimental Application",
+      "frontier": "Frontier Application",
+      "diy": "Try It Yourself"
+    },
+    "difficulty": {
+      "label": "Difficulty Level",
+      "foundation": "Foundation",
+      "application": "Application",
+      "research": "Research",
+      "foundationDesc": "PSRT: Discover light's mysteries in simple terms - no formulas needed!",
+      "applicationDesc": "ESRT: Hands-on experiments with key formulas and concepts",
+      "researchDesc": "ORIC/SURF: Rigorous academic treatment with research perspective",
+      "formulaHidden": "Want formulas? Switch to Application or Research mode"
+    },
+    "questions": {
+      "title": "Think Before You Explore",
+      "leading": "Core Question",
+      "guided": "Guided Questions",
+      "openEnded": "Open-ended Questions"
+    }
+  },
   "quiz": {
     "title": "Knowledge Check",
     "question": "Question {{current}}/{{total}}",

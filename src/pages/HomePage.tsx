@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
@@ -770,6 +770,212 @@ function PolarizationBackground({ theme }: { theme: 'dark' | 'light' }) {
   )
 }
 
+// Spectrum colors for prism dispersion effect (visible light spectrum)
+const SPECTRUM_COLORS = [
+  '#ff0000', // Red (longer wavelength)
+  '#ff8800', // Orange
+  '#ffff00', // Yellow
+  '#00ff00', // Green
+  '#00ffff', // Cyan
+  '#0088ff', // Blue
+  '#8800ff', // Violet (shorter wavelength)
+]
+
+// Course Card with Prism Dispersion Effect
+interface CourseCardProps {
+  theme: 'dark' | 'light'
+  children: React.ReactNode
+  to: string
+}
+
+function CourseCardWithPrism({ theme, children, to }: CourseCardProps) {
+  const [isHovered, setIsHovered] = useState(false)
+  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 })
+  const cardRef = useRef<HTMLAnchorElement>(null)
+
+  // Generate animated ray paths
+  const rays = useMemo(() => {
+    return SPECTRUM_COLORS.map((color, i) => ({
+      color,
+      angle: -15 + i * 5, // Spread from -15 to +15 degrees
+      delay: i * 0.05,
+    }))
+  }, [])
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (cardRef.current) {
+      const rect = cardRef.current.getBoundingClientRect()
+      const x = (e.clientX - rect.left) / rect.width
+      const y = (e.clientY - rect.top) / rect.height
+      setMousePos({ x, y })
+    }
+  }
+
+  return (
+    <Link
+      ref={cardRef}
+      to={to}
+      className={`group block relative overflow-hidden rounded-xl p-5 transition-all duration-300 hover:-translate-y-0.5 ${
+        theme === 'dark'
+          ? 'bg-gradient-to-r from-slate-800/90 via-slate-900/90 to-slate-800/90 border border-blue-500/20 hover:border-blue-500/40'
+          : 'bg-gradient-to-r from-blue-50/90 via-indigo-50/90 to-blue-50/90 border border-blue-200 hover:border-blue-300'
+      }`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onMouseMove={handleMouseMove}
+    >
+      {/* Prism SVG Animation */}
+      <div
+        className="absolute inset-0 pointer-events-none overflow-hidden"
+        style={{ opacity: isHovered ? 1 : 0, transition: 'opacity 0.4s ease' }}
+      >
+        <svg
+          viewBox="0 0 800 120"
+          className="absolute inset-0 w-full h-full"
+          preserveAspectRatio="xMinYMid slice"
+        >
+          <defs>
+            {/* Gradient for incident light beam */}
+            <linearGradient id="incidentBeam" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="white" stopOpacity="0" />
+              <stop offset="50%" stopColor="white" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="white" stopOpacity="0.9" />
+            </linearGradient>
+            {/* Prism fill gradient */}
+            <linearGradient id="prismFill" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={theme === 'dark' ? '#60a5fa' : '#3b82f6'} stopOpacity="0.3" />
+              <stop offset="100%" stopColor={theme === 'dark' ? '#818cf8' : '#6366f1'} stopOpacity="0.4" />
+            </linearGradient>
+            {/* Glow filter for rays */}
+            <filter id="rayGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Incident white light beam */}
+          <line
+            x1="0"
+            y1="60"
+            x2="120"
+            y2="60"
+            stroke="url(#incidentBeam)"
+            strokeWidth="3"
+            style={{
+              strokeDasharray: '120',
+              strokeDashoffset: isHovered ? '0' : '120',
+              transition: 'stroke-dashoffset 0.6s ease',
+            }}
+          />
+
+          {/* Prism triangle */}
+          <polygon
+            points="100,30 130,90 70,90"
+            fill="url(#prismFill)"
+            stroke={theme === 'dark' ? '#60a5fa' : '#3b82f6'}
+            strokeWidth="1.5"
+            style={{
+              transform: isHovered ? 'scale(1)' : 'scale(0.8)',
+              transformOrigin: '100px 60px',
+              transition: 'transform 0.4s ease',
+              opacity: isHovered ? 1 : 0.5,
+            }}
+          />
+
+          {/* Dispersed spectrum rays */}
+          {rays.map((ray, i) => {
+            const startX = 130
+            const startY = 60
+            const endX = 800
+            const radians = (ray.angle * Math.PI) / 180
+            const endY = startY + Math.tan(radians) * (endX - startX)
+
+            return (
+              <line
+                key={i}
+                x1={startX}
+                y1={startY}
+                x2={endX}
+                y2={endY}
+                stroke={ray.color}
+                strokeWidth="2.5"
+                filter="url(#rayGlow)"
+                style={{
+                  strokeDasharray: '700',
+                  strokeDashoffset: isHovered ? '0' : '700',
+                  transition: `stroke-dashoffset 0.8s ease ${ray.delay}s`,
+                  opacity: isHovered ? 0.7 : 0,
+                }}
+              />
+            )
+          })}
+
+          {/* Sparkle particles along rays */}
+          {isHovered && rays.map((ray, i) => {
+            const positions = [0.3, 0.5, 0.7]
+            return positions.map((pos, j) => {
+              const startX = 130
+              const startY = 60
+              const radians = (ray.angle * Math.PI) / 180
+              const x = startX + (800 - startX) * pos
+              const y = startY + Math.tan(radians) * (x - startX)
+              return (
+                <circle
+                  key={`${i}-${j}`}
+                  cx={x}
+                  cy={y}
+                  r="2"
+                  fill={ray.color}
+                  style={{
+                    opacity: 0,
+                    animation: isHovered ? `sparkle 2s ease-in-out ${ray.delay + j * 0.2}s infinite` : 'none',
+                  }}
+                />
+              )
+            })
+          })}
+        </svg>
+      </div>
+
+      {/* Rainbow gradient overlay following mouse */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: isHovered
+            ? `radial-gradient(circle at ${mousePos.x * 100}% ${mousePos.y * 100}%,
+                rgba(255, 100, 100, 0.1) 0%,
+                rgba(255, 200, 100, 0.08) 20%,
+                rgba(100, 255, 100, 0.06) 40%,
+                rgba(100, 200, 255, 0.04) 60%,
+                transparent 80%)`
+            : 'none',
+          opacity: isHovered ? 1 : 0,
+          transition: 'opacity 0.4s ease',
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10">
+        {children}
+      </div>
+
+      {/* Edge highlight on hover */}
+      <div
+        className="absolute inset-0 rounded-xl pointer-events-none"
+        style={{
+          boxShadow: isHovered
+            ? 'inset 0 0 20px rgba(100, 200, 255, 0.15), inset 0 0 40px rgba(150, 100, 255, 0.1)'
+            : 'none',
+          transition: 'box-shadow 0.4s ease',
+        }}
+      />
+    </Link>
+  )
+}
+
 export function HomePage() {
   const { t } = useTranslation()
   const { theme } = useTheme()
@@ -913,15 +1119,8 @@ export function HomePage() {
 
         {/* Course List */}
         <div className="space-y-3">
-          {/* Course 1 - Main Course */}
-          <Link
-            to="/course"
-            className={`group block relative overflow-hidden rounded-xl p-5 transition-all duration-300 hover:-translate-y-0.5 ${
-              theme === 'dark'
-                ? 'bg-gradient-to-r from-slate-800/90 via-slate-900/90 to-slate-800/90 border border-blue-500/20 hover:border-blue-500/40'
-                : 'bg-gradient-to-r from-blue-50/90 via-indigo-50/90 to-blue-50/90 border border-blue-200 hover:border-blue-300'
-            }`}
-          >
+          {/* Course 1 - Main Course with Prism Dispersion Effect */}
+          <CourseCardWithPrism theme={theme} to="/course">
             <div className="flex items-center gap-4">
               {/* Course Icon */}
               <div className={`flex-shrink-0 p-3 rounded-xl transition-transform group-hover:scale-105 ${
@@ -965,7 +1164,7 @@ export function HomePage() {
                 </svg>
               </div>
             </div>
-          </Link>
+          </CourseCardWithPrism>
 
           {/* Course 2 - Coming Soon */}
           <div
