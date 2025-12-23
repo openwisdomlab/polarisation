@@ -17,4 +17,5 @@ export { DemoNavigator, DEMOS as DEMO_ITEMS, UNITS as DEMO_UNITS } from './DemoN
 export type { DemoItem, UnitConfig } from './DemoNavigator'
 export { ChapterSelector } from './ChapterSelector'
 export { ScientistNetwork } from './ScientistNetwork'
+export { ConceptNetwork } from './ConceptNetwork'
 export { ExplorationMode } from './ExplorationMode'
