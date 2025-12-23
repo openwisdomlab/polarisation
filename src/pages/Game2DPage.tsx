@@ -29,6 +29,8 @@ import {
   Keyboard,
   Atom,
   FlaskConical,
+  Undo2,
+  Redo2,
 } from 'lucide-react'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -486,6 +488,10 @@ export function Game2DPage() {
   const [showPolarization, setShowPolarization] = useState(true)
   const [showMobileInfo, setShowMobileInfo] = useState(false)
 
+  // Undo/Redo history state
+  const [history, setHistory] = useState<Record<string, Partial<OpticalComponent>>[]>([])
+  const [historyIndex, setHistoryIndex] = useState(-1)
+
   // NEW: Game mode toggle (classic vs advanced Jones physics)
   const [gameMode, setGameMode] = useState<GameMode>('advanced')
   const [showAdvancedLevels, setShowAdvancedLevels] = useState(false)
@@ -512,6 +518,9 @@ export function Game2DPage() {
     setIsComplete(false)
     setSelectedComponent(null)
     setShowHint(false)
+    // Reset undo/redo history for new level
+    setHistory([initialStates])
+    setHistoryIndex(0)
   }, [currentLevelIndex, currentAdvancedIndex, showAdvancedLevels, currentLevel.components])
 
   // Use appropriate light tracer based on game mode
@@ -575,13 +584,22 @@ export function Game2DPage() {
         }
       }
 
-      return {
+      const newStates = {
         ...prev,
         [id]: {
           ...current,
           [property]: newValue,
         },
       }
+
+      // Push to history for undo/redo (truncate any future history if we're not at the end)
+      setHistory((prevHistory) => {
+        const truncatedHistory = prevHistory.slice(0, historyIndex + 1)
+        return [...truncatedHistory, newStates]
+      })
+      setHistoryIndex((prevIndex) => prevIndex + 1)
+
+      return newStates
     })
     setIsComplete(false)
   }
@@ -597,13 +615,61 @@ export function Game2DPage() {
     })
     setComponentStates(initialStates)
     setIsComplete(false)
-  }, [currentLevel.components])
+    // Push reset state to history
+    setHistory((prev) => {
+      const truncatedHistory = prev.slice(0, historyIndex + 1)
+      return [...truncatedHistory, initialStates]
+    })
+    setHistoryIndex((prev) => prev + 1)
+  }, [currentLevel.components, historyIndex])
+
+  // Undo handler
+  const handleUndo = useCallback(() => {
+    if (historyIndex > 0) {
+      const newIndex = historyIndex - 1
+      setHistoryIndex(newIndex)
+      setComponentStates(history[newIndex])
+      setIsComplete(false)
+    }
+  }, [history, historyIndex])
+
+  // Redo handler
+  const handleRedo = useCallback(() => {
+    if (historyIndex < history.length - 1) {
+      const newIndex = historyIndex + 1
+      setHistoryIndex(newIndex)
+      setComponentStates(history[newIndex])
+      setIsComplete(false)
+    }
+  }, [history, historyIndex])
+
+  // Check if undo/redo is available
+  const canUndo = historyIndex > 0
+  const canRedo = historyIndex < history.length - 1
 
   // Global keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ignore if typing in an input
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return
+      }
+
+      // Handle Ctrl/Cmd + key combinations
+      const isMod = e.ctrlKey || e.metaKey
+
+      // Undo: Ctrl/Cmd + Z (without Shift)
+      if (isMod && e.key.toLowerCase() === 'z' && !e.shiftKey) {
+        e.preventDefault()
+        handleUndo()
+        return
+      }
+
+      // Redo: Ctrl/Cmd + Shift + Z OR Ctrl/Cmd + Y
+      if ((isMod && e.shiftKey && e.key.toLowerCase() === 'z') ||
+          (isMod && e.key.toLowerCase() === 'y')) {
+        e.preventDefault()
+        handleRedo()
         return
       }
 
@@ -666,7 +732,7 @@ export function Game2DPage() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [currentLevelIndex, currentAdvancedIndex, showAdvancedLevels, currentLevel.hint, handleReset])
+  }, [currentLevelIndex, currentAdvancedIndex, showAdvancedLevels, currentLevel.hint, handleReset, handleUndo, handleRedo])
 
   const goToNextLevel = () => {
     if (showAdvancedLevels) {
@@ -1136,6 +1202,39 @@ export function Game2DPage() {
               )
             })()}
 
+            {/* Undo button */}
+            <button
+              onClick={handleUndo}
+              disabled={!canUndo}
+              className={cn(
+                'flex items-center gap-2 rounded-lg transition-colors',
+                isCompact ? 'px-3 py-1.5 text-sm' : 'px-4 py-2',
+                !canUndo && 'opacity-40 cursor-not-allowed',
+                isDark
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:hover:bg-slate-800'
+                  : 'bg-slate-200 hover:bg-slate-300 text-slate-700 disabled:hover:bg-slate-200'
+              )}
+              title={isZh ? '撤销 (Ctrl+Z)' : 'Undo (Ctrl+Z)'}
+            >
+              <Undo2 className={cn(isCompact ? "w-3 h-3" : "w-4 h-4")} />
+            </button>
+            {/* Redo button */}
+            <button
+              onClick={handleRedo}
+              disabled={!canRedo}
+              className={cn(
+                'flex items-center gap-2 rounded-lg transition-colors',
+                isCompact ? 'px-3 py-1.5 text-sm' : 'px-4 py-2',
+                !canRedo && 'opacity-40 cursor-not-allowed',
+                isDark
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:hover:bg-slate-800'
+                  : 'bg-slate-200 hover:bg-slate-300 text-slate-700 disabled:hover:bg-slate-200'
+              )}
+              title={isZh ? '重做 (Ctrl+Shift+Z)' : 'Redo (Ctrl+Shift+Z)'}
+            >
+              <Redo2 className={cn(isCompact ? "w-3 h-3" : "w-4 h-4")} />
+            </button>
+            {/* Reset button */}
             <button
               onClick={handleReset}
               className={cn(
@@ -1312,6 +1411,14 @@ export function Game2DPage() {
                 <div className="flex justify-between">
                   <span>← →</span>
                   <span>{isZh ? '旋转选中元件' : 'Rotate component'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Ctrl+Z</span>
+                  <span>{isZh ? '撤销' : 'Undo'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Ctrl+⇧+Z</span>
+                  <span>{isZh ? '重做' : 'Redo'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>R</span>
