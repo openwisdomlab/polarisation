@@ -9,7 +9,7 @@
  * - Wavelength-to-color conversion
  * - Difficulty-aware content display
  */
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Waves, BarChart3 } from 'lucide-react'
