@@ -173,7 +173,7 @@ interface Props {
 }
 
 export function PolarizationTypesUnifiedDemo({ difficultyLevel = 'application' }: Props) {
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
   const isZh = i18n.language === 'zh'
   const config = useDifficultyConfig(difficultyLevel)
 

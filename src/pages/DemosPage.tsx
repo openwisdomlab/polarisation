@@ -33,13 +33,9 @@ import { PolarizationCalculatorDemo } from '@/components/demos/unit5/Polarizatio
 import { PolarimetricMicroscopyDemo } from '@/components/demos/unit5/PolarimetricMicroscopyDemo'
 
 // Optical Basics demos
-import { LightWaveDemo } from '@/components/demos/basics/LightWaveDemo'
 import { LIFE_SCENE_ILLUSTRATIONS } from '@/components/demos/LifeSceneIllustrations'
 import { PolarizationIntroDemo } from '@/components/demos/basics/PolarizationIntroDemo'
-import { PolarizationTypesDemo } from '@/components/demos/basics/PolarizationTypesDemo'
 import { InteractiveOpticalBenchDemo } from '@/components/demos/basics/InteractiveOpticalBenchDemo'
-import { ElectromagneticSpectrumDemo } from '@/components/demos/basics/ElectromagneticSpectrumDemo'
-import { ThreePolarizersDemo } from '@/components/demos/basics/ThreePolarizersDemo'
 // Unified demos (merged versions)
 // Note: MalusLawGraphDemo removed - functionality integrated into unit1/MalusLawDemo
 import { ElectromagneticWaveDemo } from '@/components/demos/basics/ElectromagneticWaveDemo'
