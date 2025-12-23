@@ -9,14 +9,14 @@
  * 4. 创作工坊 - Creative workshop and tutorials
  */
 
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 import { Badge, Tabs, PersistentHeader } from '@/components/shared'
-import { PolarizationArt, ArtGallery } from '@/components/shared/PolarizationArt'
-import type { PolarizationArtParams } from '@/data/types'
+import { PolarizationArt, ArtGallery, MATERIAL_PRESETS } from '@/components/shared/PolarizationArt'
+import type { PolarizationArtParams, CrystalAxisMode } from '@/data/types'
 import { ExperimentTools, EXPERIMENT_TOOLS, CulturalShowcase } from '@/components/experiments'
 import {
   Beaker, Clock, DollarSign, AlertTriangle, ChevronRight,
@@ -24,7 +24,7 @@ import {
   ShoppingBag, Eye, GraduationCap,
   Palette, ImageIcon, Sparkles, Package, Heart,
   Scissors, Brush, Layers, Wrench, BookOpen, Film,
-  Wand2, Download, RefreshCw
+  Wand2, Download, RefreshCw, Play, Pause, Image, FileVideo
 } from 'lucide-react'
 
 // Tab type definition
@@ -646,23 +646,123 @@ const COLOR_PRESETS = [
   { name: 'Fire', colors: ['#ff6b6b', '#feca57', '#ff9ff3'] },
 ]
 
+// Crystal axis modes for interference patterns
+const CRYSTAL_AXIS_MODES: { value: CrystalAxisMode; labelEn: string; labelZh: string; icon: string }[] = [
+  { value: 'random', labelEn: 'Organic', labelZh: '自然有机', icon: '🌿' },
+  { value: 'uniaxial', labelEn: 'Uniaxial', labelZh: '单轴晶体', icon: '✚' },
+  { value: 'biaxial', labelEn: 'Biaxial', labelZh: '双轴晶体', icon: '👁️‍🗨️' },
+]
+
 function ArtGenerator() {
   const { theme } = useTheme()
   const { i18n } = useTranslation()
   const isZh = i18n.language === 'zh'
 
+  // Basic state
   const [artType, setArtType] = useState<PolarizationArtParams['type']>('interference')
   const [complexity, setComplexity] = useState(6)
   const [colorPresetIdx, setColorPresetIdx] = useState(0)
   const [seed, setSeed] = useState(Math.floor(Math.random() * 100000))
   const [analyzerAngle, setAnalyzerAngle] = useState(90)
 
+  // New state for enhanced features
+  const [crystalAxisMode, setCrystalAxisMode] = useState<CrystalAxisMode>('uniaxial')
+  const [materialPreset, setMaterialPreset] = useState('quartz')
+  const [isAnimating, setIsAnimating] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const [isExportingGif, setIsExportingGif] = useState(false)
+
+  // Refs for animation and canvas
+  const animationRef = useRef<number | null>(null)
+  const canvasRef = useRef<HTMLDivElement>(null)
+  const dragStartRef = useRef<{ x: number; angle: number } | null>(null)
+
   const params: PolarizationArtParams = useMemo(() => ({
     type: artType,
     colors: COLOR_PRESETS[colorPresetIdx].colors,
     complexity,
-    analyzerAngle
-  }), [artType, complexity, colorPresetIdx, analyzerAngle])
+    analyzerAngle,
+    crystalAxisMode: artType === 'interference' ? crystalAxisMode : undefined,
+    materialPreset: artType === 'interference' ? materialPreset : undefined
+  }), [artType, complexity, colorPresetIdx, analyzerAngle, crystalAxisMode, materialPreset])
+
+  // Animation loop for auto-rotation
+  useEffect(() => {
+    if (!isAnimating) {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+        animationRef.current = null
+      }
+      return
+    }
+
+    let startTime: number | null = null
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp
+      const elapsed = timestamp - startTime
+
+      // Sinusoidal oscillation between 0° and 90° over 4 seconds
+      const t = (elapsed % 4000) / 4000
+      const angle = Math.round(45 + 45 * Math.sin(t * Math.PI * 2 - Math.PI / 2))
+      setAnalyzerAngle(angle)
+
+      animationRef.current = requestAnimationFrame(animate)
+    }
+
+    animationRef.current = requestAnimationFrame(animate)
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+    }
+  }, [isAnimating])
+
+  // Canvas drag handlers for direct manipulation
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (isAnimating) return
+    setIsDragging(true)
+    dragStartRef.current = { x: e.clientX, angle: analyzerAngle }
+  }, [isAnimating, analyzerAngle])
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!isDragging || !dragStartRef.current) return
+    const dx = e.clientX - dragStartRef.current.x
+    // 2 pixels = 1 degree of rotation
+    const newAngle = Math.max(0, Math.min(90, dragStartRef.current.angle + dx / 2))
+    setAnalyzerAngle(Math.round(newAngle))
+  }, [isDragging])
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false)
+    dragStartRef.current = null
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    if (isDragging) {
+      setIsDragging(false)
+      dragStartRef.current = null
+    }
+  }, [isDragging])
+
+  // Touch handlers for mobile
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (isAnimating) return
+    setIsDragging(true)
+    dragStartRef.current = { x: e.touches[0].clientX, angle: analyzerAngle }
+  }, [isAnimating, analyzerAngle])
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!isDragging || !dragStartRef.current) return
+    const dx = e.touches[0].clientX - dragStartRef.current.x
+    const newAngle = Math.max(0, Math.min(90, dragStartRef.current.angle + dx / 2))
+    setAnalyzerAngle(Math.round(newAngle))
+  }, [isDragging])
+
+  const handleTouchEnd = useCallback(() => {
+    setIsDragging(false)
+    dragStartRef.current = null
+  }, [])
 
   const regenerate = useCallback(() => {
     setSeed(Math.floor(Math.random() * 100000))
@@ -681,25 +781,178 @@ function ArtGenerator() {
     URL.revokeObjectURL(url)
   }, [seed])
 
+  // PNG export using canvas
+  const downloadPNG = useCallback(() => {
+    const svg = document.getElementById('generated-art-svg')
+    if (!svg) return
+
+    const svgData = new XMLSerializer().serializeToString(svg)
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' })
+    const url = URL.createObjectURL(svgBlob)
+
+    const img = new window.Image()
+    img.onload = () => {
+      // High resolution: 2048x2048
+      const canvas = document.createElement('canvas')
+      canvas.width = 2048
+      canvas.height = 2048
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
+
+      // Draw background
+      ctx.fillStyle = '#1a1a2e'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+      canvas.toBlob((blob) => {
+        if (!blob) return
+        const pngUrl = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = pngUrl
+        a.download = `polarization-art-${seed}-2048x2048.png`
+        a.click()
+        URL.revokeObjectURL(pngUrl)
+        URL.revokeObjectURL(url)
+      }, 'image/png')
+    }
+    img.src = url
+  }, [seed])
+
+  // Animated GIF export (simple frame capture approach)
+  const exportAnimatedGif = useCallback(async () => {
+    setIsExportingGif(true)
+
+    try {
+      // Capture frames by rendering SVG at different angles
+      const frames: string[] = []
+      const frameCount = 36 // 36 frames for smooth 90° rotation
+      const originalAngle = analyzerAngle
+
+      for (let i = 0; i < frameCount; i++) {
+        const angle = Math.round((i / frameCount) * 90)
+        setAnalyzerAngle(angle)
+        await new Promise(resolve => setTimeout(resolve, 50)) // Wait for render
+
+        const svg = document.getElementById('generated-art-svg')
+        if (svg) {
+          const svgData = new XMLSerializer().serializeToString(svg)
+          frames.push(svgData)
+        }
+      }
+
+      // Restore original angle
+      setAnalyzerAngle(originalAngle)
+
+      // Create a simple animated preview (download as multi-frame data)
+      // Note: Full GIF encoding would require a library like gif.js
+      // For now, we'll create a JSON with frame data that can be processed
+      const blob = new Blob([JSON.stringify({
+        frames: frames.length,
+        seed,
+        description: 'Polarization Art Animation Frames - Convert to GIF using external tools',
+        data: frames
+      })], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `polarization-art-${seed}-animation.json`
+      a.click()
+      URL.revokeObjectURL(url)
+
+      // Alternative: Download as PNG sequence in a zip-like format message
+      alert(isZh
+        ? '已导出动画帧数据！您可以使用在线工具（如 ezgif.com）将PNG序列转换为GIF。'
+        : 'Animation frame data exported! Use online tools (like ezgif.com) to convert PNG sequences to GIF.')
+    } catch (error) {
+      console.error('GIF export error:', error)
+    } finally {
+      setIsExportingGif(false)
+    }
+  }, [seed, analyzerAngle, isZh])
+
   return (
     <div className="grid lg:grid-cols-2 gap-6">
-      {/* Preview Panel */}
-      <div className={cn(
-        'aspect-square rounded-xl overflow-hidden border-2',
-        theme === 'dark' ? 'border-pink-500/30 bg-slate-900' : 'border-pink-400/50 bg-gray-50'
-      )}>
-        <PolarizationArt
-          params={params}
-          seed={seed}
-          width={600}
-          height={600}
-          className="w-full h-full"
-        />
-        {/* Hidden SVG for download */}
-        <div className="hidden">
-          <svg id="generated-art-svg" viewBox="0 0 600 600">
-            <PolarizationArt params={params} seed={seed} width={600} height={600} />
-          </svg>
+      {/* Preview Panel with Interactive Canvas */}
+      <div className="space-y-3">
+        <div
+          ref={canvasRef}
+          className={cn(
+            'aspect-square rounded-xl overflow-hidden border-2 relative select-none',
+            theme === 'dark' ? 'border-pink-500/30 bg-slate-900' : 'border-pink-400/50 bg-gray-50',
+            isDragging ? 'cursor-grabbing' : 'cursor-grab',
+            isAnimating && 'cursor-default'
+          )}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseLeave}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <PolarizationArt
+            params={params}
+            seed={seed}
+            width={600}
+            height={600}
+            className="w-full h-full pointer-events-none"
+          />
+
+          {/* Drag hint overlay */}
+          {!isAnimating && (
+            <div className={cn(
+              'absolute bottom-3 left-1/2 transform -translate-x-1/2 px-3 py-1 rounded-full text-xs',
+              'bg-black/50 text-white backdrop-blur-sm transition-opacity',
+              isDragging ? 'opacity-100' : 'opacity-60'
+            )}>
+              {isDragging
+                ? `${isZh ? '检偏器' : 'Analyzer'}: ${analyzerAngle}°`
+                : (isZh ? '← 拖拽旋转检偏器 →' : '← Drag to rotate analyzer →')}
+            </div>
+          )}
+
+          {/* Animation indicator */}
+          {isAnimating && (
+            <div className="absolute top-3 right-3 flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/80 text-white text-xs">
+              <span className="animate-pulse">●</span>
+              {isZh ? '动画中' : 'Animating'}
+            </div>
+          )}
+
+          {/* Hidden SVG for download */}
+          <div className="hidden">
+            <svg id="generated-art-svg" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+              <rect width="600" height="600" fill="#1a1a2e" />
+              <PolarizationArt params={params} seed={seed} width={600} height={600} />
+            </svg>
+          </div>
+        </div>
+
+        {/* Animation Control */}
+        <div className="flex justify-center">
+          <button
+            onClick={() => setIsAnimating(!isAnimating)}
+            className={cn(
+              'flex items-center gap-2 px-6 py-2 rounded-full font-medium transition-all',
+              isAnimating
+                ? 'bg-pink-500 text-white'
+                : theme === 'dark'
+                  ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            )}
+          >
+            {isAnimating ? (
+              <>
+                <Pause className="w-4 h-4" />
+                {isZh ? '暂停动画' : 'Pause Animation'}
+              </>
+            ) : (
+              <>
+                <Play className="w-4 h-4" />
+                {isZh ? '播放动画' : 'Animate'}
+              </>
+            )}
+          </button>
         </div>
       </div>
 
@@ -732,6 +985,87 @@ function ArtGenerator() {
             ))}
           </div>
         </div>
+
+        {/* Crystal Axis Mode (only for interference type) */}
+        {artType === 'interference' && (
+          <div>
+            <label className={cn(
+              'block text-sm font-medium mb-2',
+              theme === 'dark' ? 'text-white' : 'text-gray-900'
+            )}>
+              {isZh ? '晶轴模式' : 'Crystal Axis Mode'}
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {CRYSTAL_AXIS_MODES.map(mode => (
+                <button
+                  key={mode.value}
+                  onClick={() => setCrystalAxisMode(mode.value)}
+                  className={cn(
+                    'px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-1',
+                    crystalAxisMode === mode.value
+                      ? 'bg-pink-500 text-white'
+                      : theme === 'dark'
+                        ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  )}
+                >
+                  <span>{mode.icon}</span>
+                  <span>{isZh ? mode.labelZh : mode.labelEn}</span>
+                </button>
+              ))}
+            </div>
+            <p className={cn(
+              'text-xs mt-1',
+              theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+            )}>
+              {crystalAxisMode === 'uniaxial'
+                ? (isZh ? '单轴晶体：黑十字等色环（石英、方解石）' : 'Uniaxial: Black cross isogyre (Quartz, Calcite)')
+                : crystalAxisMode === 'biaxial'
+                  ? (isZh ? '双轴晶体：双光轴干涉图（云母、石膏）' : 'Biaxial: Two optical axes pattern (Mica, Gypsum)')
+                  : (isZh ? '有机风格：自然不规则波纹' : 'Organic style: Natural irregular waviness')}
+            </p>
+          </div>
+        )}
+
+        {/* Material Preset (only for interference type) */}
+        {artType === 'interference' && (
+          <div>
+            <label className={cn(
+              'block text-sm font-medium mb-2',
+              theme === 'dark' ? 'text-white' : 'text-gray-900'
+            )}>
+              {isZh ? '材料预设' : 'Material Preset'}
+            </label>
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+              {MATERIAL_PRESETS.map(material => (
+                <button
+                  key={material.id}
+                  onClick={() => setMaterialPreset(material.id)}
+                  className={cn(
+                    'px-2 py-2 rounded-lg text-xs font-medium transition-all',
+                    materialPreset === material.id
+                      ? 'bg-pink-500 text-white'
+                      : theme === 'dark'
+                        ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  )}
+                >
+                  <div className="text-center">
+                    {isZh ? material.nameZh : material.name}
+                  </div>
+                  <div className={cn(
+                    'text-[10px] mt-0.5',
+                    materialPreset === material.id
+                      ? 'text-pink-200'
+                      : theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                  )}>
+                    Δn={material.birefringence}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Complexity Slider */}
         <div>
@@ -832,26 +1166,95 @@ function ArtGenerator() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3">
-          <button
-            onClick={regenerate}
-            className={cn(
-              'flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-colors',
-              theme === 'dark'
-                ? 'bg-slate-700 text-white hover:bg-slate-600'
-                : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-            )}
-          >
-            <RefreshCw className="w-4 h-4" />
-            {isZh ? '重新生成' : 'Regenerate'}
-          </button>
-          <button
-            onClick={downloadSVG}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:from-pink-600 hover:to-rose-600 transition-colors"
-          >
-            <Download className="w-4 h-4" />
-            {isZh ? '下载 SVG' : 'Download SVG'}
-          </button>
+        <div className="space-y-3">
+          {/* Primary actions */}
+          <div className="flex gap-3">
+            <button
+              onClick={regenerate}
+              className={cn(
+                'flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-colors',
+                theme === 'dark'
+                  ? 'bg-slate-700 text-white hover:bg-slate-600'
+                  : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+              )}
+            >
+              <RefreshCw className="w-4 h-4" />
+              {isZh ? '重新生成' : 'Regenerate'}
+            </button>
+            <button
+              onClick={downloadSVG}
+              className={cn(
+                'flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-colors',
+                theme === 'dark'
+                  ? 'bg-slate-700 text-white hover:bg-slate-600'
+                  : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+              )}
+            >
+              <Download className="w-4 h-4" />
+              SVG
+            </button>
+          </div>
+
+          {/* Export options */}
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              onClick={downloadPNG}
+              className={cn(
+                'flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg font-medium text-sm transition-colors',
+                'bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600'
+              )}
+            >
+              <Image className="w-4 h-4" />
+              PNG 2K
+            </button>
+            <button
+              onClick={exportAnimatedGif}
+              disabled={isExportingGif}
+              className={cn(
+                'flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg font-medium text-sm transition-colors',
+                'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600',
+                isExportingGif && 'opacity-50 cursor-not-allowed'
+              )}
+            >
+              <FileVideo className="w-4 h-4" />
+              {isExportingGif
+                ? (isZh ? '导出中...' : 'Exporting...')
+                : (isZh ? '动画帧' : 'Animation')}
+            </button>
+            <button
+              onClick={() => {
+                // Copy current settings as shareable link concept
+                const shareData = {
+                  type: artType,
+                  mode: crystalAxisMode,
+                  material: materialPreset,
+                  complexity,
+                  seed
+                }
+                navigator.clipboard.writeText(JSON.stringify(shareData))
+                alert(isZh ? '参数已复制到剪贴板!' : 'Settings copied to clipboard!')
+              }}
+              className={cn(
+                'flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg font-medium text-sm transition-colors',
+                theme === 'dark'
+                  ? 'bg-slate-700 text-white hover:bg-slate-600'
+                  : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+              )}
+            >
+              <Sparkles className="w-4 h-4" />
+              {isZh ? '分享' : 'Share'}
+            </button>
+          </div>
+
+          {/* Export hints */}
+          <p className={cn(
+            'text-xs text-center',
+            theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+          )}>
+            {isZh
+              ? 'PNG 2K: 2048×2048 高清壁纸 | 动画帧: 可转换为GIF'
+              : 'PNG 2K: 2048×2048 HD wallpaper | Animation: Convert to GIF'}
+          </p>
         </div>
 
         {/* Info Box */}
