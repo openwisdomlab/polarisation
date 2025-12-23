@@ -11,7 +11,57 @@
  */
 
 import { useMemo } from 'react'
-import type { PolarizationArtParams } from '@/data/types'
+import type { PolarizationArtParams, MaterialPreset, CrystalAxisMode } from '@/data/types'
+
+// =============================================================================
+// Material Presets - Different birefringent materials
+// =============================================================================
+export const MATERIAL_PRESETS: MaterialPreset[] = [
+  {
+    id: 'quartz',
+    name: 'Quartz',
+    nameZh: '石英',
+    birefringence: 0.009,
+    opdPerRing: 120, // nm
+    color: undefined // No characteristic color
+  },
+  {
+    id: 'mica',
+    name: 'Mica',
+    nameZh: '云母',
+    birefringence: 0.036,
+    opdPerRing: 80, // Thinner, more rings
+    color: '#f5e6d3' // Slight warm tint
+  },
+  {
+    id: 'calcite',
+    name: 'Calcite',
+    nameZh: '方解石',
+    birefringence: 0.172,
+    opdPerRing: 200, // Higher birefringence = sparser rings
+    color: '#e8f4f8' // Slight cool tint
+  },
+  {
+    id: 'gypsum',
+    name: 'Gypsum',
+    nameZh: '石膏',
+    birefringence: 0.010,
+    opdPerRing: 100,
+    color: '#fff8f0'
+  },
+  {
+    id: 'aragonite',
+    name: 'Aragonite',
+    nameZh: '霰石',
+    birefringence: 0.155,
+    opdPerRing: 180,
+    color: '#f8f8ff'
+  }
+]
+
+export function getMaterialPreset(id: string): MaterialPreset {
+  return MATERIAL_PRESETS.find(m => m.id === id) || MATERIAL_PRESETS[0]
+}
 
 // Seeded random number generator for consistent results
 function seededRandom(seed: number) {
@@ -132,11 +182,18 @@ export function PolarizationArt({
 }: PolarizationArtProps) {
   const elements = useMemo(() => {
     const random = seededRandom(seed)
-    const { type, colors, complexity, analyzerAngle = 90 } = params
+    const {
+      type,
+      colors,
+      complexity,
+      analyzerAngle = 90,
+      crystalAxisMode = 'random',
+      materialPreset
+    } = params
 
     switch (type) {
       case 'interference':
-        return generateInterference(random, colors, complexity, width, height, analyzerAngle)
+        return generateInterference(random, colors, complexity, width, height, analyzerAngle, crystalAxisMode, materialPreset)
       case 'birefringence':
         return generateBirefringence(random, colors, complexity, width, height, analyzerAngle)
       case 'stress':
@@ -210,6 +267,11 @@ function generateWavyPath(
  *
  * Physics: OPD = thickness × birefringence × (ne - no)
  * The color depends on interference of o-ray and e-ray after passing through analyzer
+ *
+ * Crystal Axis Modes:
+ * - random: Organic wavy rings (artistic)
+ * - uniaxial: Classic conoscopic figure with isogyre black cross and concentric rings
+ * - biaxial: Two optical axes with hyperbolic isogyres
  */
 function generateInterference(
   random: () => number,
@@ -217,71 +279,239 @@ function generateInterference(
   complexity: number,
   width: number,
   height: number,
-  analyzerAngle: number = 90
+  analyzerAngle: number = 90,
+  crystalAxisMode: CrystalAxisMode = 'random',
+  materialPresetId?: string
 ) {
-  const cx = width / 2 + (random() - 0.5) * 20
-  const cy = height / 2 + (random() - 0.5) * 20
+  const cx = width / 2
+  const cy = height / 2
   const maxRadius = Math.max(width, height) * 0.7
 
-  // Use Michel-Levy colors based on optical path difference
-  // Each ring represents increasing OPD as if viewing a quartz wedge
-  const ringCount = Math.floor(complexity * 5)
-  const opdPerRing = 120 // nm per ring (typical for quartz wedge)
+  // Get material properties
+  const material = materialPresetId ? getMaterialPreset(materialPresetId) : MATERIAL_PRESETS[0]
+  const opdPerRing = material.opdPerRing
 
-  // Complexity now controls waviness instead of just ring count
-  // Higher complexity = more organic/irregular shapes
-  const waviness = (maxRadius / ringCount) * (complexity / 10) * 0.8
-  const frequency = 3 + Math.floor(complexity / 3) // Wave frequency
+  // Use Michel-Levy colors based on optical path difference
+  const ringCount = Math.floor(complexity * 5)
+
+  // Complexity controls waviness for random mode
+  const waviness = crystalAxisMode === 'random'
+    ? (maxRadius / ringCount) * (complexity / 10) * 0.8
+    : 0
+  const frequency = 3 + Math.floor(complexity / 3)
 
   const rings = []
 
-  // Generate interference rings with proper colors and organic waviness
-  for (let i = 0; i < ringCount; i++) {
-    const radius = (maxRadius / ringCount) * (i + 1)
-    const opd = i * opdPerRing + random() * 30 // Add slight randomness
-    const color = getInterferenceColor(opd, analyzerAngle)
-    const strokeWidth = (maxRadius / ringCount) * 1.2
-
-    // Use wavy path for organic look (waviness increases with radius and complexity)
-    const ringWaviness = waviness * (0.3 + (i / ringCount) * 0.7)
-    const ringFreq = frequency + (random() - 0.5) * 2
-    const pathSeed = random() * 10
-
-    const path = generateWavyPath(cx, cy, radius, ringWaviness, ringFreq, random, pathSeed)
-
+  // Add material tint background if present
+  if (material.color) {
     rings.push(
-      <path
-        key={i}
-        d={path}
-        fill="none"
-        stroke={color}
-        strokeWidth={strokeWidth}
-        opacity={0.8}
-        strokeLinejoin="round"
+      <rect
+        key="material-tint"
+        x={0} y={0}
+        width={width} height={height}
+        fill={material.color}
+        opacity={0.15}
       />
     )
   }
 
-  // Add isogyre cross pattern (dark cross seen in conoscopic figure)
-  // This appears when viewing uniaxial crystal along optic axis
-  // Cross visibility depends on analyzer angle (most visible at 90°)
-  if (complexity > 5) {
-    const crossOpacity = 0.4 * (analyzerAngle / 90)
+  // Generate interference rings based on crystal axis mode
+  if (crystalAxisMode === 'uniaxial') {
+    // Uniaxial crystal: perfect concentric rings with black cross (isogyre)
+    // Classic conoscopic interference figure
+    for (let i = 0; i < ringCount; i++) {
+      const radius = (maxRadius / ringCount) * (i + 1)
+      const opd = i * opdPerRing
+      const color = getInterferenceColor(opd, analyzerAngle)
+      const strokeWidth = (maxRadius / ringCount) * 0.9
+
+      rings.push(
+        <circle
+          key={`ring-${i}`}
+          cx={cx}
+          cy={cy}
+          r={radius}
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          opacity={0.85}
+        />
+      )
+    }
+
+    // Add isogyre black cross (characteristic of uniaxial crystal viewed along optic axis)
+    // The cross visibility depends on analyzer angle
+    const crossOpacity = 0.6 * (analyzerAngle / 90)
+    const crossWidth = maxRadius * 0.04 + complexity * 0.5
     rings.push(
       <g key="isogyre" opacity={crossOpacity}>
-        <line x1={cx - maxRadius} y1={cy} x2={cx + maxRadius} y2={cy}
-          stroke="#000" strokeWidth={maxRadius * 0.03} />
-        <line x1={cx} y1={cy - maxRadius} x2={cx} y2={cy + maxRadius}
-          stroke="#000" strokeWidth={maxRadius * 0.03} />
+        {/* Horizontal arm */}
+        <rect
+          x={cx - maxRadius}
+          y={cy - crossWidth / 2}
+          width={maxRadius * 2}
+          height={crossWidth}
+          fill="#000"
+        />
+        {/* Vertical arm */}
+        <rect
+          x={cx - crossWidth / 2}
+          y={cy - maxRadius}
+          width={crossWidth}
+          height={maxRadius * 2}
+          fill="#000"
+        />
       </g>
     )
+
+    // Add melatope (center point where optical axis intersects)
+    rings.push(
+      <circle
+        key="melatope"
+        cx={cx}
+        cy={cy}
+        r={3}
+        fill="#fff"
+        stroke="#000"
+        strokeWidth={1}
+        opacity={0.8}
+      />
+    )
+
+  } else if (crystalAxisMode === 'biaxial') {
+    // Biaxial crystal: two optical axes with hyperbolic isogyres
+    // Creates a "double eye" pattern
+    const axisSpacing = maxRadius * 0.4 // Distance between optical axes
+    const axis1x = cx - axisSpacing
+    const axis2x = cx + axisSpacing
+
+    // Generate rings around each optical axis
+    for (let i = 0; i < ringCount; i++) {
+      const baseRadius = (maxRadius / ringCount) * (i + 1) * 0.6
+      const opd = i * opdPerRing
+
+      // Left axis rings (oval-shaped)
+      for (let axisIdx = 0; axisIdx < 2; axisIdx++) {
+        const axisCx = axisIdx === 0 ? axis1x : axis2x
+        const color = getInterferenceColor(opd + axisIdx * 30, analyzerAngle)
+        const strokeWidth = (maxRadius / ringCount) * 0.7
+
+        // Draw elliptical rings that get more circular closer to axis
+        const scaleY = 0.7 + (i / ringCount) * 0.3
+        rings.push(
+          <ellipse
+            key={`ring-${axisIdx}-${i}`}
+            cx={axisCx}
+            cy={cy}
+            rx={baseRadius}
+            ry={baseRadius * scaleY}
+            fill="none"
+            stroke={color}
+            strokeWidth={strokeWidth}
+            opacity={0.8}
+          />
+        )
+      }
+    }
+
+    // Draw hyperbolic isogyres (curved dark bands connecting axes)
+    const isogyreOpacity = 0.5 * (analyzerAngle / 90)
+    // Curved isogyre paths - hyperbolas connecting the two axes
+    const controlDist = axisSpacing * 0.5
+    rings.push(
+      <g key="isogyres" opacity={isogyreOpacity}>
+        {/* Upper isogyre */}
+        <path
+          d={`M ${axis1x - maxRadius * 0.4} ${cy - maxRadius * 0.4}
+              Q ${cx} ${cy - controlDist} ${axis2x + maxRadius * 0.4} ${cy - maxRadius * 0.4}`}
+          fill="none"
+          stroke="#000"
+          strokeWidth={maxRadius * 0.025}
+        />
+        {/* Lower isogyre */}
+        <path
+          d={`M ${axis1x - maxRadius * 0.4} ${cy + maxRadius * 0.4}
+              Q ${cx} ${cy + controlDist} ${axis2x + maxRadius * 0.4} ${cy + maxRadius * 0.4}`}
+          fill="none"
+          stroke="#000"
+          strokeWidth={maxRadius * 0.025}
+        />
+        {/* Vertical connections near axes */}
+        <line x1={axis1x} y1={cy - maxRadius * 0.5} x2={axis1x} y2={cy + maxRadius * 0.5}
+          stroke="#000" strokeWidth={maxRadius * 0.02} opacity={0.6} />
+        <line x1={axis2x} y1={cy - maxRadius * 0.5} x2={axis2x} y2={cy + maxRadius * 0.5}
+          stroke="#000" strokeWidth={maxRadius * 0.02} opacity={0.6} />
+      </g>
+    )
+
+    // Add melatopes (two points where optical axes intersect)
+    rings.push(
+      <g key="melatopes">
+        <circle cx={axis1x} cy={cy} r={3} fill="#fff" stroke="#000" strokeWidth={1} opacity={0.8} />
+        <circle cx={axis2x} cy={cy} r={3} fill="#fff" stroke="#000" strokeWidth={1} opacity={0.8} />
+      </g>
+    )
+
+    // Add 2V angle indicator
+    rings.push(
+      <g key="2v-indicator" opacity={0.6}>
+        <line x1={axis1x} y1={cy} x2={axis2x} y2={cy} stroke={colors[0]} strokeWidth={1} strokeDasharray="4,4" />
+        <text x={cx} y={cy + 15} textAnchor="middle" fill={colors[0]} fontSize="9" fontFamily="monospace">
+          2V
+        </text>
+      </g>
+    )
+
+  } else {
+    // Random/organic mode: wavy rings for artistic effect
+    const centerOffset = random() * 15
+    const offsetCx = cx + (random() - 0.5) * centerOffset
+    const offsetCy = cy + (random() - 0.5) * centerOffset
+
+    for (let i = 0; i < ringCount; i++) {
+      const radius = (maxRadius / ringCount) * (i + 1)
+      const opd = i * opdPerRing + random() * 30
+      const color = getInterferenceColor(opd, analyzerAngle)
+      const strokeWidth = (maxRadius / ringCount) * 1.2
+
+      const ringWaviness = waviness * (0.3 + (i / ringCount) * 0.7)
+      const ringFreq = frequency + (random() - 0.5) * 2
+      const pathSeed = random() * 10
+
+      const path = generateWavyPath(offsetCx, offsetCy, radius, ringWaviness, ringFreq, random, pathSeed)
+
+      rings.push(
+        <path
+          key={i}
+          d={path}
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          opacity={0.8}
+          strokeLinejoin="round"
+        />
+      )
+    }
+
+    // Add soft isogyre for high complexity
+    if (complexity > 5) {
+      const crossOpacity = 0.35 * (analyzerAngle / 90)
+      rings.push(
+        <g key="isogyre" opacity={crossOpacity}>
+          <line x1={offsetCx - maxRadius} y1={offsetCy} x2={offsetCx + maxRadius} y2={offsetCy}
+            stroke="#000" strokeWidth={maxRadius * 0.025} />
+          <line x1={offsetCx} y1={offsetCy - maxRadius} x2={offsetCx} y2={offsetCy + maxRadius}
+            stroke="#000" strokeWidth={maxRadius * 0.025} />
+        </g>
+      )
+    }
   }
 
   // Add subtle polarization direction indicators at corners
   const indicatorSize = 15
   const indicators = [
-    { x: 10, y: 10, angle: 0, label: 'P' },     // Polarizer (fixed at 0°)
-    { x: width - 25, y: 10, angle: analyzerAngle, label: 'A' }, // Analyzer (variable)
+    { x: 10, y: 10, angle: 0, label: 'P' },
+    { x: width - 25, y: 10, angle: analyzerAngle, label: 'A' },
   ]
 
   indicators.forEach((ind, i) => {
@@ -299,12 +529,18 @@ function generateInterference(
     )
   })
 
-  // Add analyzer angle indicator
+  // Add material and angle info
   rings.push(
-    <text key="angle-label" x={width - 10} y={height - 10} textAnchor="end"
-      fill={colors[0]} fontSize="9" fontFamily="monospace" opacity={0.7}>
-      {analyzerAngle}°
-    </text>
+    <g key="info-labels" opacity={0.7}>
+      <text x={width - 10} y={height - 22} textAnchor="end"
+        fill={colors[0]} fontSize="9" fontFamily="monospace">
+        {material.name}
+      </text>
+      <text x={width - 10} y={height - 10} textAnchor="end"
+        fill={colors[0]} fontSize="9" fontFamily="monospace">
+        A: {analyzerAngle}°
+      </text>
+    </g>
   )
 
   const defs = null

@@ -199,12 +199,27 @@ export interface Product {
   artParams?: PolarizationArtParams
 }
 
+// Crystal axis mode for interference patterns
+export type CrystalAxisMode = 'random' | 'uniaxial' | 'biaxial'
+
+// Material presets with birefringence values
+export interface MaterialPreset {
+  id: string
+  name: string
+  nameZh: string
+  birefringence: number // Δn = ne - no
+  opdPerRing: number // Optical path difference per ring in nm
+  color?: string // Characteristic color tint
+}
+
 export interface PolarizationArtParams {
   type: 'interference' | 'birefringence' | 'stress' | 'rotation' | 'abstract'
   colors: string[]
   complexity: number // 1-10
   animated?: boolean
   analyzerAngle?: number // 0-90 degrees (0 = parallel, 90 = crossed polarizers)
+  crystalAxisMode?: CrystalAxisMode // Crystal axis mode for interference patterns
+  materialPreset?: string // Material preset ID (mica, quartz, calcite, etc.)
 }
 
 // =============================================================================
