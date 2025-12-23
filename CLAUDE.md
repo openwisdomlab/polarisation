@@ -13,13 +13,17 @@ PolarCraft is an educational voxel puzzle game based on polarized light physics.
 - **Styling**: Tailwind CSS v4
 - **Internationalization**: i18next with language detection
 - **Build Tool**: Vite
+- **Testing**: Vitest with React Testing Library
 - **Backend** (planned): NestJS + Colyseus for real-time multiplayer
 
 **Key Features:**
 - Interactive 3D voxel puzzle game with 5 tutorial levels
-- **NEW**: 2D puzzle game with 11 levels across 4 difficulty tiers (easy/medium/hard/expert)
-- Educational course platform with 15 interactive physics demos across 6 units
+- 2D puzzle game with 11 levels across 4 difficulty tiers (easy/medium/hard/expert)
+- Educational course platform with 20+ interactive physics demos across 6 units
 - **Optical Design Studio**: Polarized light art design tool with Device Library + Optical Bench
+- **Calculation Workshop**: Jones, Stokes, Mueller calculators + Poincare Sphere viewer
+- **Lab Module**: Research simulation and data analysis tools
+- **Games Hub**: Multiple game modes including card game, escape room, detective game
 - Multi-language support (English/Chinese)
 - Dark/Light theme switching
 - Three camera modes in 3D game (first-person, isometric, top-down)
@@ -32,6 +36,9 @@ npm install          # Install dependencies
 npm run dev          # Start development server (hot reload)
 npm run build        # Production build (tsc && vite build)
 npm run preview      # Preview production build
+npm run test         # Run tests with vitest
+npm run test:run     # Run tests once
+npm run test:coverage # Run tests with coverage report
 
 # Backend (in /server directory)
 cd server
@@ -67,18 +74,39 @@ polarisation/
 │   ├── core/                     # Core game logic (framework-agnostic)
 │   │   ├── types.ts              # TypeScript types, constants, interfaces
 │   │   ├── World.ts              # Voxel world, light propagation, levels
-│   │   └── LightPhysics.ts       # Polarized light physics (four axioms)
+│   │   ├── LightPhysics.ts       # Polarized light physics (four axioms)
+│   │   ├── WaveOptics.ts         # Wave optics calculations
+│   │   └── JonesCalculus.ts      # Jones vector/matrix calculations
 │   │
 │   ├── stores/                   # Zustand stores
 │   │   ├── gameStore.ts          # Game state, actions, tutorial hints
-│   │   └── opticalBenchStore.ts  # Optical Design Studio state management
+│   │   ├── opticalBenchStore.ts  # Optical Design Studio state management
+│   │   ├── labStore.ts           # Lab module state management
+│   │   └── discoveryStore.ts     # Discovery/achievement tracking
 │   │
 │   ├── pages/                    # Page components
 │   │   ├── HomePage.tsx          # Landing page with navigation
 │   │   ├── GamePage.tsx          # Full 3D game with HUD
 │   │   ├── Game2DPage.tsx        # 2D CSS/SVG-based puzzle game
+│   │   ├── GameHubPage.tsx       # Games hub with all game modes
 │   │   ├── DemosPage.tsx         # Interactive physics demos
-│   │   ├── OpticalDesignStudioPageV2.tsx  # Optical Design Studio (current)
+│   │   ├── CoursePage.tsx        # Structured course content
+│   │   ├── OpticalDesignPage.tsx # Modular optical design studio
+│   │   ├── OpticalDesignStudioPageV2.tsx  # Legacy optical studio
+│   │   ├── LabPage.tsx           # Research lab simulation
+│   │   ├── ExperimentsPage.tsx   # Creative experiments module
+│   │   ├── ApplicationsPage.tsx  # Real-world applications showcase
+│   │   ├── ChroniclesPage.tsx    # Historical chronicles
+│   │   ├── CalculationWorkshopPage.tsx   # Calculator hub
+│   │   ├── JonesCalculatorPage.tsx       # Jones matrix calculator
+│   │   ├── StokesCalculatorPage.tsx      # Stokes vector calculator
+│   │   ├── MuellerCalculatorPage.tsx     # Mueller matrix calculator
+│   │   ├── PoincareSphereViewerPage.tsx  # Poincare sphere visualization
+│   │   ├── CardGamePage.tsx      # Polarization card game
+│   │   ├── EscapeRoomPage.tsx    # Escape room puzzle game
+│   │   ├── DetectiveGamePage.tsx # Detective mystery game
+│   │   ├── HardwarePage.tsx      # Hardware components guide
+│   │   ├── MerchandisePage.tsx   # Educational merchandise
 │   │   └── index.ts              # Barrel export
 │   │
 │   ├── components/
@@ -87,7 +115,8 @@ polarisation/
 │   │   │   ├── Scene.tsx         # Main scene, controls, lighting
 │   │   │   ├── Blocks.tsx        # Block mesh rendering
 │   │   │   ├── LightBeams.tsx    # Light beam visualization
-│   │   │   └── SelectionBox.tsx  # Block selection indicator
+│   │   │   ├── SelectionBox.tsx  # Block selection indicator
+│   │   │   └── block-helpers/    # Block rendering helpers
 │   │   │
 │   │   ├── hud/                  # Game HUD components
 │   │   │   ├── BlockSelector.tsx # Block type selection
@@ -102,18 +131,47 @@ polarisation/
 │   │   │   └── CameraModeIndicator.tsx
 │   │   │
 │   │   ├── demos/                # Interactive physics demos
-│   │   │   ├── basics/           # Unit 0: Optical basics (3 demos)
+│   │   │   ├── basics/           # Unit 0: Optical basics
 │   │   │   │   ├── LightWaveDemo.tsx
+│   │   │   │   ├── ElectromagneticWaveDemo.tsx
+│   │   │   │   ├── ElectromagneticSpectrumDemo.tsx
 │   │   │   │   ├── PolarizationIntroDemo.tsx
-│   │   │   │   └── PolarizationTypesDemo.tsx
-│   │   │   ├── unit1/            # Unit 1: Polarization fundamentals (4 demos)
-│   │   │   ├── unit2/            # Unit 2: Interface reflection (2 demos)
-│   │   │   ├── unit3/            # Unit 3: Transparent media (2 demos)
-│   │   │   ├── unit4/            # Unit 4: Scattering (2 demos)
-│   │   │   ├── unit5/            # Unit 5: Full polarimetry (2 demos)
+│   │   │   │   ├── PolarizationTypesDemo.tsx
+│   │   │   │   ├── PolarizationTypesUnifiedDemo.tsx
+│   │   │   │   ├── MalusLawGraphDemo.tsx
+│   │   │   │   ├── ThreePolarizersDemo.tsx
+│   │   │   │   ├── PolarizerScenarioDemo.tsx
+│   │   │   │   ├── VirtualPolarizerLens.tsx
+│   │   │   │   └── InteractiveOpticalBenchDemo.tsx
+│   │   │   ├── unit1/            # Unit 1: Polarization fundamentals
+│   │   │   │   ├── PolarizationStateDemo.tsx
+│   │   │   │   ├── MalusLawDemo.tsx
+│   │   │   │   ├── BirefringenceDemo.tsx
+│   │   │   │   ├── WaveplateDemo.tsx
+│   │   │   │   └── AragoFresnelDemo.tsx
+│   │   │   ├── unit2/            # Unit 2: Interface reflection
+│   │   │   │   ├── FresnelDemo.tsx
+│   │   │   │   └── BrewsterDemo.tsx
+│   │   │   ├── unit3/            # Unit 3: Transparent media
+│   │   │   │   ├── ChromaticDemo.tsx
+│   │   │   │   ├── AnisotropyDemo.tsx
+│   │   │   │   ├── OpticalRotationDemo.tsx
+│   │   │   │   └── MediaGalleryPanel.tsx
+│   │   │   ├── unit4/            # Unit 4: Scattering
+│   │   │   │   ├── RayleighScatteringDemo.tsx
+│   │   │   │   ├── MieScatteringDemo.tsx
+│   │   │   │   └── MonteCarloScatteringDemo.tsx
+│   │   │   ├── unit5/            # Unit 5: Full polarimetry
+│   │   │   │   ├── StokesVectorDemo.tsx
+│   │   │   │   ├── MuellerMatrixDemo.tsx
+│   │   │   │   ├── JonesMatrixDemo.tsx
+│   │   │   │   ├── PolarizationCalculatorDemo.tsx
+│   │   │   │   └── PolarimetricMicroscopyDemo.tsx
 │   │   │   ├── DemoCanvas.tsx    # 3D demo wrapper (R3F)
 │   │   │   ├── Demo2DCanvas.tsx  # 2D demo wrapper (Canvas)
 │   │   │   ├── DemoControls.tsx  # Shared demo UI controls
+│   │   │   ├── DifficultyStrategy.tsx  # Difficulty level handling
+│   │   │   ├── LifeSceneIllustrations.tsx
 │   │   │   └── index.ts          # Barrel export
 │   │   │
 │   │   ├── optical-studio/       # Optical Design Studio components
@@ -121,17 +179,92 @@ polarisation/
 │   │   │   ├── CanvasToolbar.tsx           # Play/pause, reset, settings
 │   │   │   ├── DeviceLibrary.tsx           # Device browser with 80+ devices
 │   │   │   ├── Sidebar.tsx                 # Experiments/Free Design/Tutorials tabs
+│   │   │   ├── LeftPanel.tsx               # Left sidebar panel
+│   │   │   ├── RightPanel.tsx              # Right sidebar panel
+│   │   │   ├── StatusBar.tsx               # Status bar display
+│   │   │   ├── UnifiedToolbar.tsx          # Unified toolbar
 │   │   │   ├── ComponentPropertiesPanel.tsx # Edit component properties
+│   │   │   ├── PolarizationDevicesPanel.tsx # Polarization device browser
 │   │   │   ├── ChallengePanel.tsx          # Challenge mode UI
 │   │   │   ├── TutorialOverlay.tsx         # Step-by-step tutorials
 │   │   │   ├── FormulaDisplay.tsx          # Real-time physics formulas
 │   │   │   ├── PrinciplesPanel.tsx         # First Principles reference
 │   │   │   └── index.ts                    # Barrel export
 │   │   │
+│   │   ├── optical-design/       # Modular optical design components
+│   │   │   ├── FreeDesignModule.tsx
+│   │   │   ├── OpticalPathsModule.tsx
+│   │   │   └── DeviceGalleryModule.tsx
+│   │   │
+│   │   ├── shared/               # Shared components
+│   │   │   ├── optical/          # SVG optical component renderers
+│   │   │   │   ├── EmitterSVG.tsx
+│   │   │   │   ├── SensorSVG.tsx
+│   │   │   │   ├── PolarizerSVG.tsx
+│   │   │   │   ├── MirrorSVG.tsx
+│   │   │   │   ├── SplitterSVG.tsx
+│   │   │   │   ├── RotatorSVG.tsx
+│   │   │   │   ├── QuarterWavePlateSVG.tsx
+│   │   │   │   ├── HalfWavePlateSVG.tsx
+│   │   │   │   ├── BeamCombinerSVG.tsx
+│   │   │   │   ├── PhaseShifterSVG.tsx
+│   │   │   │   ├── OpticalIsolatorSVG.tsx
+│   │   │   │   ├── LightBeamSVG.tsx
+│   │   │   │   └── ...more
+│   │   │   ├── SEO.tsx
+│   │   │   ├── ExperimentModule.tsx
+│   │   │   ├── ModuleTabs.tsx
+│   │   │   ├── DataCard.tsx
+│   │   │   ├── SearchFilter.tsx
+│   │   │   ├── PersistentHeader.tsx
+│   │   │   ├── PolarizationArt.tsx
+│   │   │   ├── SecureVideoPlayer.tsx
+│   │   │   └── ExportUtils.tsx
+│   │   │
+│   │   ├── course/               # Course-related components
+│   │   │   ├── RelatedDemos.tsx
+│   │   │   ├── LensNavigator.tsx
+│   │   │   ├── LearningPathMap.tsx
+│   │   │   ├── PSRTQuestStage.tsx
+│   │   │   ├── DemoQuiz.tsx
+│   │   │   └── MysteryCard.tsx
+│   │   │
+│   │   ├── lab/                  # Lab module components
+│   │   │   ├── ResearchTaskModal.tsx
+│   │   │   ├── DataChart.tsx
+│   │   │   └── DataEntryTable.tsx
+│   │   │
+│   │   ├── experiments/          # Experiment components
+│   │   │   ├── MichelLevyChart.tsx
+│   │   │   ├── ExperimentTools.tsx
+│   │   │   ├── CulturalShowcase.tsx
+│   │   │   └── PolarizerSource.tsx
+│   │   │
+│   │   ├── gallery/              # Gallery/visualization components
+│   │   │   ├── StressComparator.tsx
+│   │   │   ├── ThermalStressPlayer.tsx
+│   │   │   ├── PolarizationSystemToggle.tsx
+│   │   │   ├── SugarOpticalRotator.tsx
+│   │   │   ├── ThicknessVisualizer.tsx
+│   │   │   └── DynamicStrainViewer.tsx
+│   │   │
+│   │   ├── detective/            # Detective game components
+│   │   │   └── DeductionPanel.tsx
+│   │   │
+│   │   ├── bench/                # Optical bench components
+│   │   │   └── OpticalComponents.tsx
+│   │   │
+│   │   ├── chronicles/           # Historical chronicles components
+│   │   ├── museum/               # Museum exhibit components
+│   │   ├── effects/              # Visual effects
+│   │   │   └── LightBeamEffect.tsx
+│   │   ├── icons/                # Custom icon components
+│   │   │
 │   │   └── ui/                   # Reusable UI primitives
 │   │       ├── button.tsx        # Button component
 │   │       ├── dialog.tsx        # Dialog component
 │   │       ├── tooltip.tsx       # Tooltip component
+│   │       ├── DiscoveryNotification.tsx
 │   │       └── LanguageThemeSwitcher.tsx
 │   │
 │   ├── contexts/                 # React contexts
@@ -176,10 +309,45 @@ polarisation/
 | Route | Component | Purpose |
 |-------|-----------|---------|
 | `/` | `HomePage` | Landing page with game/course navigation |
-| `/game` | `GamePage` | Full 3D voxel puzzle game with HUD |
-| `/game2d` | `Game2DPage` | 2D SVG-based puzzle game (Monument Valley-style) |
-| `/demos` | `DemosPage` | Interactive physics demos and course content |
-| `/optical-studio` | `OpticalDesignStudioPageV2` | Optical Design Studio - Device Library + Light Path Design |
+| `/games` | `GameHubPage` | Games hub with all game modes |
+| `/games/2d` | `Game2DPage` | 2D SVG-based puzzle game |
+| `/games/3d` | `GamePage` | Full 3D voxel puzzle game |
+| `/games/card` | `CardGamePage` | Polarization card game |
+| `/games/escape` | `EscapeRoomPage` | Escape room puzzle game |
+| `/games/detective` | `DetectiveGamePage` | Detective mystery game |
+| `/demos` | `DemosPage` | Interactive physics demos |
+| `/demos/:demoId` | `DemosPage` | Deep link to specific demo |
+| `/course` | `CoursePage` | Structured course content |
+| `/optical-studio` | `OpticalDesignPage` | Modular optical design studio |
+| `/lab` | `LabPage` | Research lab simulation |
+| `/experiments` | `ExperimentsPage` | Creative experiments module |
+| `/applications` | `ApplicationsPage` | Real-world applications |
+| `/chronicles` | `ChroniclesPage` | Historical chronicles |
+| `/calc` | `CalculationWorkshopPage` | Calculator hub |
+| `/calc/jones` | `JonesCalculatorPage` | Jones matrix calculator |
+| `/calc/stokes` | `StokesCalculatorPage` | Stokes vector calculator |
+| `/calc/mueller` | `MuellerCalculatorPage` | Mueller matrix calculator |
+| `/calc/poincare` | `PoincareSphereViewerPage` | Poincare sphere visualization |
+| `/hardware` | `HardwarePage` | Hardware components guide |
+| `/merchandise` | `MerchandisePage` | Educational merchandise |
+
+### Legacy Route Redirects
+
+| Old Route | Redirects To |
+|-----------|--------------|
+| `/game` | `/games/3d` |
+| `/game2d` | `/games/2d` |
+| `/cardgame` | `/games/card` |
+| `/escape` | `/games/escape` |
+| `/devices` | `/optical-studio` |
+| `/bench` | `/optical-studio` |
+| `/optics` | `/optical-studio` |
+| `/creative` | `/experiments` |
+| `/simulation` | `/lab` |
+| `/lab/poincare` | `/calc/poincare` |
+| `/lab/jones` | `/calc/jones` |
+| `/lab/stokes` | `/calc/stokes` |
+| `/lab/mueller` | `/calc/mueller` |
 
 ### Core Components
 
@@ -188,12 +356,16 @@ polarisation/
 | `src/core/types.ts` | Type definitions, direction vectors, polarization colors |
 | `src/core/World.ts` | Block storage, light propagation cellular automaton, levels |
 | `src/core/LightPhysics.ts` | Static physics methods (four optical axioms) |
+| `src/core/WaveOptics.ts` | Wave optics calculations |
+| `src/core/JonesCalculus.ts` | Jones vector/matrix calculations |
 | `src/stores/gameStore.ts` | Global game state, actions, subscriptions |
 | `src/stores/opticalBenchStore.ts` | Optical Design Studio state, light path calculation |
+| `src/stores/labStore.ts` | Lab module state management |
+| `src/stores/discoveryStore.ts` | Discovery/achievement tracking |
 | `src/components/game/Scene.tsx` | R3F scene composition, controls, lighting |
 | `src/pages/Game2DPage.tsx` | 2D puzzle game logic, SVG rendering, level definitions |
 | `src/pages/DemosPage.tsx` | Demo navigation, info cards, SVG diagrams |
-| `src/pages/OpticalDesignStudioPageV2.tsx` | Optical Design Studio main page |
+| `src/pages/OpticalDesignPage.tsx` | Modular optical design studio |
 
 ## Key Concepts
 
@@ -356,7 +528,7 @@ function MyComponent() {
 
 ## 2D Puzzle Game
 
-The 2D game (`/game2d`) offers a simplified, more accessible puzzle experience using SVG-based visuals inspired by Monument Valley and Shadowmatic aesthetics.
+The 2D game (`/games/2d`) offers a simplified, more accessible puzzle experience using SVG-based visuals inspired by Monument Valley and Shadowmatic aesthetics.
 
 ### 2D Game Features
 
@@ -544,6 +716,17 @@ const challenge: Challenge = {
 }
 ```
 
+## Calculation Workshop (计算工坊)
+
+A suite of calculators for polarization mathematics:
+
+| Calculator | Route | Purpose |
+|------------|-------|---------|
+| Jones Calculator | `/calc/jones` | Jones vector/matrix operations |
+| Stokes Calculator | `/calc/stokes` | Stokes parameter calculations |
+| Mueller Calculator | `/calc/mueller` | Mueller matrix operations |
+| Poincare Sphere | `/calc/poincare` | 3D polarization state visualization |
+
 ## Course Structure (Interactive Demos)
 
 The demos use two visualization approaches:
@@ -552,12 +735,12 @@ The demos use two visualization approaches:
 
 | Unit | Topic | Demos | Visual Type |
 |------|-------|-------|-------------|
-| 0 (Basics) | Optical Fundamentals | Light Wave, Polarization Intro, Polarization Types | 2D |
-| 1 | Light Polarization | Polarization State (3D), Malus's Law (2D), Birefringence (3D), Waveplate (3D) | Mixed |
+| 0 (Basics) | Optical Fundamentals | Light Wave, EM Wave, EM Spectrum, Polarization Intro, Polarization Types, Malus Graph, Three Polarizers, Polarizer Scenarios, Virtual Lens, Interactive Bench | Mixed |
+| 1 | Light Polarization | Polarization State (3D), Malus's Law (2D), Birefringence (3D), Waveplate (3D), Arago-Fresnel | Mixed |
 | 2 | Interface Reflection | Fresnel Equations, Brewster's Angle | 2D |
-| 3 | Transparent Media | Chromatic Polarization, Optical Rotation | 2D |
-| 4 | Turbid Media | Mie Scattering, Rayleigh Scattering | 2D |
-| 5 | Full Polarimetry | Stokes Vectors (3D), Mueller Matrices (2D) | Mixed |
+| 3 | Transparent Media | Chromatic Polarization, Anisotropy, Optical Rotation, Media Gallery | 2D |
+| 4 | Turbid Media | Rayleigh Scattering, Mie Scattering, Monte Carlo Scattering | 2D |
+| 5 | Full Polarimetry | Stokes Vectors (3D), Mueller Matrices (2D), Jones Matrices, Polarization Calculator, Polarimetric Microscopy | Mixed |
 
 ### Course Difficulty Levels
 
@@ -593,33 +776,6 @@ Each demo adapts its content based on the selected difficulty level:
   - Includes advanced concepts (Mueller matrices, Stokes vectors)
   - Maximum 4 physics details, 3 frontier applications
   - Questions emphasize exploration ("What if? How to improve?")
-
-**Demo Difficulty Distribution:**
-
-| Demo | Difficulty | Unit | Rationale |
-|------|-----------|------|-----------|
-| Light Wave | Foundation | 0 | Basic wave concepts, visual phenomena |
-| Polarization Intro | Foundation | 0 | Introduction to polarization through life scenes |
-| Polarization Types | Application | 0 | Quantitative distinction of three polarization states |
-| Interactive Optical Bench | Application | 0 | Interactive experimental design |
-| Polarization State | Foundation | 1 | 3D visualization for intuitive understanding |
-| Malus's Law | Application | 1 | Quantitative measurement with cos² formula |
-| Birefringence | Application | 1 | Calcite experiment phenomena and principles |
-| Waveplate | Research | 1 | Phase retardation theory and calculations |
-| Fresnel Equations | Research | 2 | Complex Fresnel formula derivation |
-| Brewster's Angle | Application | 2 | Brewster angle measurement experiment |
-| Anisotropy (Stress) | Foundation | 3 | Chromatic polarization in everyday stress visualization |
-| Chromatic Polarization | Application | 3 | Experimental chromatic polarization and measurement |
-| Optical Rotation | Application | 3 | Optical rotation experiment and sugar concentration |
-| Rayleigh Scattering | Foundation | 4 | Natural phenomena: blue sky and white clouds |
-| Mie Scattering | Research | 4 | Complex Mie scattering theory |
-| Stokes Vector | Research | 5 | Mathematical representation of Stokes vectors |
-| Mueller Matrix | Research | 5 | Complete characterization using Mueller matrices |
-
-**Distribution Statistics:**
-- Foundation: 5 demos (29%)
-- Application: 7 demos (41%)
-- Research: 5 demos (29%)
 
 ### Demo Controls Components
 
@@ -811,6 +967,7 @@ function MyComponent() {
 **Frontend Development:**
 - `typescript` - Type safety
 - `vite`, `@vitejs/plugin-react` - Build tool
+- `vitest`, `@testing-library/react`, `@testing-library/jest-dom` - Testing
 - `tailwindcss`, `@tailwindcss/vite` - Styling
 - `lucide-react` - Icons
 - `class-variance-authority`, `clsx`, `tailwind-merge` - Utility classes
@@ -818,6 +975,21 @@ function MyComponent() {
 **Backend:**
 - `@nestjs/*` - Server framework
 - `@colyseus/*` - Real-time multiplayer
+
+## Testing
+
+```bash
+# Run tests in watch mode
+npm run test
+
+# Run tests once
+npm run test:run
+
+# Run tests with coverage
+npm run test:coverage
+```
+
+Tests use Vitest with React Testing Library and jsdom for DOM simulation.
 
 ## Debugging
 
@@ -856,18 +1028,6 @@ npm run start:dev  # Starts on port 3001
 - API prefix: `/api`
 - WebSocket: `ws://localhost:3001`
 - CORS enabled for `localhost:5173` and `localhost:3000`
-
-## Legacy Files
-
-The following files in `src/` root are from the previous vanilla TypeScript implementation and are **no longer used**:
-- `src/main.ts` - Old game entry point (replaced by `main.tsx`)
-- `src/World.ts` - Duplicated in `src/core/World.ts`
-- `src/LightPhysics.ts` - Duplicated in `src/core/LightPhysics.ts`
-- `src/Renderer.ts` - Replaced by React Three Fiber components
-- `src/PlayerControls.ts` - Replaced by R3F controls + Zustand
-- `src/types.ts` - Duplicated in `src/core/types.ts`
-
-These files remain in the repository but can be safely removed in a future cleanup.
 
 ## Common Tasks
 
