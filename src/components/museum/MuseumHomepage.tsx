@@ -10,7 +10,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
@@ -1327,7 +1327,21 @@ function MuseumFooter() {
 // Main Museum Homepage Component
 export function MuseumHomepage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { theme } = useTheme()
+
+  // Handle scroll to exhibition halls when returning from a demo
+  useEffect(() => {
+    const state = location.state as { scrollToHalls?: boolean; fromUnit?: number } | null
+    if (state?.scrollToHalls) {
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        document.getElementById('exhibition-halls')?.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
+      // Clear the state to prevent re-scrolling on refresh
+      window.history.replaceState({}, document.title)
+    }
+  }, [location.state])
 
   const handleExplore = useCallback(() => {
     // Smooth scroll to halls section

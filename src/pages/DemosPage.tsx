@@ -9,7 +9,7 @@ import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 import { ListItem } from '@/components/demos/DemoControls'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
-import { Gamepad2, BookOpen, Box, BarChart2, Menu, X, ChevronDown, ChevronRight, Lightbulb, HelpCircle, Search, GraduationCap } from 'lucide-react'
+import { Gamepad2, BookOpen, Box, BarChart2, Menu, X, ChevronDown, ChevronRight, Lightbulb, HelpCircle, Search, GraduationCap, ArrowLeft } from 'lucide-react'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { PersistentHeader } from '@/components/shared/PersistentHeader'
 
@@ -2039,14 +2039,13 @@ export function DemosPage() {
     }
   }
 
-  // Navigate back to museum homepage (available for "Back to Overview" button)
-  const _handleShowMuseumHomepage = () => {
+  // Navigate back to museum homepage, passing current unit for scroll targeting
+  const handleShowMuseumHomepage = () => {
     setShowMuseumHomepage(true)
+    const currentUnit = currentDemo?.unit ?? null
     setActiveDemo(null)
-    navigate('/demos', { replace: true })
+    navigate('/demos', { replace: true, state: { scrollToHalls: true, fromUnit: currentUnit } })
   }
-  // Export for potential future use
-  void _handleShowMuseumHomepage
 
   const toggleCard = (card: string) => {
     const newState = !expandedCards[card]
@@ -2099,6 +2098,21 @@ export function DemosPage() {
         showSettings={false}
         rightContent={
           <div className="flex items-center gap-2 sm:gap-4">
+            {/* Back to Museum Homepage button */}
+            <button
+              onClick={handleShowMuseumHomepage}
+              className={cn(
+                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200',
+                'text-sm font-medium',
+                theme === 'dark'
+                  ? 'text-cyan-400 hover:bg-cyan-400/15 border border-cyan-400/30 hover:border-cyan-400/50'
+                  : 'text-cyan-600 hover:bg-cyan-100 border border-cyan-500/30 hover:border-cyan-500/50'
+              )}
+              title={t('museum.backToGallery', '返回演示馆')}
+            >
+              <ArrowLeft className="w-4 h-4" />
+              {!isCompact && <span>{t('museum.backToGallery', '返回演示馆')}</span>}
+            </button>
             {/* Mobile menu button */}
             {isCompact && (
               <button
