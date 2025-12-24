@@ -45,9 +45,9 @@ function GameCardVisual({ card, size = 'md', showBack = false, onClick }: GameCa
   const rarityInfo = RARITY_LABELS[card.rarity]
 
   const sizeClasses = {
-    sm: 'w-32 h-44',
-    md: 'w-48 h-64',
-    lg: 'w-64 h-88'
+    sm: 'w-28 h-40 sm:w-32 sm:h-44',
+    md: 'w-36 h-48 sm:w-48 sm:h-64',
+    lg: 'w-52 h-72 sm:w-64 sm:h-88'
   }
 
   const typeColors = {

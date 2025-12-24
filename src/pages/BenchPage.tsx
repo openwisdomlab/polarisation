@@ -9,18 +9,19 @@
  * - Link to UC2 hardware for real-world builds
  */
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
+import { useIsMobile } from '@/hooks/useIsMobile'
 import { cn } from '@/lib/utils'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
 import { Tabs, Badge } from '@/components/shared'
 import {
   Home, Play, Pause, RotateCcw,
-  ChevronRight, Trash2, Eye, EyeOff,
+  ChevronRight, ChevronLeft, Trash2, Eye, EyeOff,
   Lightbulb, Layers, HelpCircle,
-  Box, ExternalLink, Info, BookOpen
+  Box, ExternalLink, Info, BookOpen, Menu
 } from 'lucide-react'
 import {
   OpticalComponentMap,
@@ -906,9 +907,19 @@ const PAGE_TABS = [
 export function BenchPage() {
   const { i18n } = useTranslation()
   const { theme } = useTheme()
+  const { isMobile, isTablet } = useIsMobile()
   const isZh = i18n.language === 'zh'
+  const isCompact = isMobile || isTablet
 
   const [activeTab, setActiveTab] = useState<'classic' | 'free'>('classic')
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+
+  // Collapse sidebar on mobile by default
+  useEffect(() => {
+    if (isCompact) {
+      setSidebarCollapsed(true)
+    }
+  }, [isCompact])
   const [components, setComponents] = useState<BenchComponent[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [isSimulating, setIsSimulating] = useState(false)
@@ -1044,21 +1055,40 @@ export function BenchPage() {
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar - Tabs & Components */}
         <aside className={cn(
-          'w-72 border-r flex flex-col flex-shrink-0',
+          'border-r flex flex-col flex-shrink-0 transition-all duration-300',
+          sidebarCollapsed ? 'w-12' : 'w-72',
           theme === 'dark' ? 'bg-slate-900/50 border-slate-800' : 'bg-white/50 border-gray-200'
         )}>
-          {/* Tab Selector */}
-          <Tabs
-            tabs={PAGE_TABS.map(tab => ({
-              ...tab,
-              label: isZh ? tab.labelZh : tab.labelEn,
-            }))}
-            activeTab={activeTab}
-            onChange={(id: string) => setActiveTab(id as 'classic' | 'free')}
-            className="p-3"
-          />
+          {/* Tab Selector with collapse button */}
+          <div className={cn(
+            'flex items-center gap-1 p-2 border-b',
+            theme === 'dark' ? 'border-slate-800' : 'border-gray-200'
+          )}>
+            {!sidebarCollapsed && (
+              <Tabs
+                tabs={PAGE_TABS.map(tab => ({
+                  ...tab,
+                  label: isZh ? tab.labelZh : tab.labelEn,
+                }))}
+                activeTab={activeTab}
+                onChange={(id: string) => setActiveTab(id as 'classic' | 'free')}
+                className="flex-1"
+              />
+            )}
+            <button
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className={cn(
+                'p-1.5 rounded-lg transition-colors touch-target',
+                theme === 'dark' ? 'hover:bg-slate-800 text-gray-400' : 'hover:bg-gray-100 text-gray-500'
+              )}
+              title={sidebarCollapsed ? (isZh ? '展开' : 'Expand') : (isZh ? '折叠' : 'Collapse')}
+            >
+              {sidebarCollapsed ? <Menu className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+            </button>
+          </div>
 
-          {/* Content based on tab */}
+          {/* Content based on tab - hidden when collapsed */}
+          {!sidebarCollapsed && (
           <div className="flex-1 overflow-y-auto p-3">
             {activeTab === 'classic' ? (
               <div className="space-y-3">
@@ -1151,6 +1181,7 @@ export function BenchPage() {
               </div>
             )}
           </div>
+          )}
 
           {/* Link to Device Library */}
           <div className={cn(
@@ -1165,8 +1196,12 @@ export function BenchPage() {
               )}
             >
               <HelpCircle className="w-4 h-4" />
-              {isZh ? '查看器件原理详解' : 'Learn device principles'}
-              <ChevronRight className="w-4 h-4 ml-auto" />
+              {!sidebarCollapsed && (
+                <>
+                  {isZh ? '查看器件原理详解' : 'Learn device principles'}
+                  <ChevronRight className="w-4 h-4 ml-auto" />
+                </>
+              )}
             </Link>
           </div>
         </aside>
