@@ -45,7 +45,7 @@ export function GamePage() {
   }, [world, loadLevel])
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-[#0a0a15]">
+    <div className="relative w-full h-dvh min-h-screen overflow-hidden bg-[#0a0a15]">
       {/* 3D Canvas */}
       <GameCanvas />
 

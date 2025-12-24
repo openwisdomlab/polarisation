@@ -13,10 +13,11 @@
  * - UC2 hardware mapping for physical builds
  */
 
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
+import { useIsMobile } from '@/hooks/useIsMobile'
 import { cn } from '@/lib/utils'
 import { Badge, PersistentHeader } from '@/components/shared'
 import {
@@ -989,11 +990,20 @@ function ExperimentsPanel({ onLoad }: { onLoad: (exp: ClassicExperiment) => void
 export function OpticalDesignStudioPage() {
   const { i18n } = useTranslation()
   const { theme } = useTheme()
+  const { isMobile, isTablet } = useIsMobile()
   const isZh = i18n.language === 'zh'
+  const isCompact = isMobile || isTablet
 
-  // State
+  // State - sidebar collapsed by default on mobile
   const [sidebarTab, setSidebarTab] = useState<SidebarTab>('experiments')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+
+  // Collapse sidebar on mobile by default
+  useEffect(() => {
+    if (isCompact) {
+      setSidebarCollapsed(true)
+    }
+  }, [isCompact])
   const [selectedCategory, setSelectedCategory] = useState<DeviceCategory | 'all'>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
