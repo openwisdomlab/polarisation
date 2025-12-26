@@ -128,28 +128,45 @@ export function ExperimentIllustration({ type, className = '' }: { type: string;
     ),
     wave: (
       <svg viewBox="0 0 120 80" className={className}>
-        {/* E field wave */}
+        {/* Propagation axis (z-direction) */}
+        <line x1="10" y1="40" x2="110" y2="40" stroke={isDark ? '#475569' : '#cbd5e1'} strokeWidth="0.5" strokeDasharray="2,2" />
+        {/* E field wave - oscillates in vertical (y) direction */}
         <path
-          d="M 0,40 Q 15,10 30,40 Q 45,70 60,40 Q 75,10 90,40 Q 105,70 120,40"
+          d="M 10,40 Q 22,15 35,40 Q 47,65 60,40 Q 72,15 85,40 Q 97,65 110,40"
           fill="none"
           stroke="#22d3ee"
           strokeWidth="2.5"
         />
-        {/* B field wave (perpendicular) */}
-        <path
-          d="M 0,40 Q 15,55 30,40 Q 45,25 60,40 Q 75,55 90,40 Q 105,25 120,40"
-          fill="none"
-          stroke="#f472b6"
-          strokeWidth="2"
-          opacity="0.7"
-        />
+        {/* B field - perpendicular to E, shown as dots (into page) and crosses (out of page) */}
+        {/* At wave peaks (E max), B = 0; At E = 0, B is max */}
+        {/* Dots = into page (⊙), Crosses = out of page (⊗) */}
+        <circle cx="22" cy="40" r="3" fill="none" stroke="#f472b6" strokeWidth="1.5" />
+        <circle cx="22" cy="40" r="1" fill="#f472b6" />
+        <circle cx="47" cy="40" r="3" fill="none" stroke="#f472b6" strokeWidth="1.5" />
+        <line x1="44" y1="37" x2="50" y2="43" stroke="#f472b6" strokeWidth="1.5" />
+        <line x1="44" y1="43" x2="50" y2="37" stroke="#f472b6" strokeWidth="1.5" />
+        <circle cx="72" cy="40" r="3" fill="none" stroke="#f472b6" strokeWidth="1.5" />
+        <circle cx="72" cy="40" r="1" fill="#f472b6" />
+        <circle cx="97" cy="40" r="3" fill="none" stroke="#f472b6" strokeWidth="1.5" />
+        <line x1="94" y1="37" x2="100" y2="43" stroke="#f472b6" strokeWidth="1.5" />
+        <line x1="94" y1="43" x2="100" y2="37" stroke="#f472b6" strokeWidth="1.5" />
         {/* Labels */}
-        <text x="5" y="15" fill="#22d3ee" fontSize="9" fontWeight="bold">E</text>
-        <text x="5" y="65" fill="#f472b6" fontSize="9" fontWeight="bold">B</text>
+        <text x="5" y="18" fill="#22d3ee" fontSize="8" fontWeight="bold">E</text>
+        <text x="112" y="35" fill="#f472b6" fontSize="7">B⊥</text>
         {/* Propagation arrow */}
-        <line x1="50" y1="75" x2="70" y2="75" stroke={isDark ? '#94a3b8' : '#64748b'} strokeWidth="1.5" />
-        <polygon points="70,75 65,72 65,78" fill={isDark ? '#94a3b8' : '#64748b'} />
-        <text x="55" y="72" fill={isDark ? '#94a3b8' : '#64748b'} fontSize="6">k</text>
+        <line x1="45" y1="72" x2="70" y2="72" stroke={isDark ? '#94a3b8' : '#64748b'} strokeWidth="1.5" />
+        <polygon points="70,72 65,69 65,75" fill={isDark ? '#94a3b8' : '#64748b'} />
+        <text x="52" y="68" fill={isDark ? '#94a3b8' : '#64748b'} fontSize="6">k (z)</text>
+        {/* Axes indicator */}
+        <g transform="translate(105, 65)">
+          <line x1="0" y1="0" x2="0" y2="-8" stroke="#22d3ee" strokeWidth="1" />
+          <text x="-3" y="-10" fill="#22d3ee" fontSize="5">y</text>
+          <line x1="0" y1="0" x2="8" y2="0" stroke={isDark ? '#94a3b8' : '#64748b'} strokeWidth="1" />
+          <text x="9" y="3" fill={isDark ? '#94a3b8' : '#64748b'} fontSize="5">z</text>
+          <circle cx="0" cy="0" r="2" fill="none" stroke="#f472b6" strokeWidth="0.8" />
+          <circle cx="0" cy="0" r="0.8" fill="#f472b6" />
+          <text x="-8" y="3" fill="#f472b6" fontSize="5">x</text>
+        </g>
       </svg>
     ),
     lcd: (

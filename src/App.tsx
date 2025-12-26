@@ -22,6 +22,7 @@ import {
   MuellerCalculatorPage,
   DetectiveGamePage,
   CoursePage,
+  LearningHubPage,
 } from '@/pages'
 
 export function App() {
@@ -51,6 +52,7 @@ export function App() {
         <Route path="/merchandise" element={<MerchandisePage />} />
         <Route path="/chronicles" element={<ChroniclesPage />} />
         <Route path="/course" element={<CoursePage />} />
+        <Route path="/learn" element={<LearningHubPage />} />
         <Route path="/lab" element={<LabPage />} />
 
         {/* Optical Design Studio - 光学设计室 (模块化版本) */}
