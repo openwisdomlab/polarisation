@@ -14,6 +14,7 @@
 
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
+import { getStorageJSON, setStorageJSON } from '@/lib/storage'
 import {
   type Complex,
   type JonesVector,
@@ -758,11 +759,7 @@ export const useOpticalBenchStore = create<OpticalBenchState & OpticalBenchActio
         designs.push(design)
 
         // Persist to localStorage
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(designs))
-        } catch (e) {
-          logger.error('Failed to save designs:', e)
-        }
+        setStorageJSON(STORAGE_KEY, designs)
 
         return {
           savedDesigns: designs,
@@ -796,12 +793,7 @@ export const useOpticalBenchStore = create<OpticalBenchState & OpticalBenchActio
     deleteDesign: (id: string) => {
       set((prev: OpticalBenchState) => {
         const designs = prev.savedDesigns.filter((d: SavedDesign) => d.id !== id)
-
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(designs))
-        } catch (e) {
-          logger.error('Failed to delete design:', e)
-        }
+        setStorageJSON(STORAGE_KEY, designs)
 
         return {
           savedDesigns: designs,
@@ -847,14 +839,9 @@ export const useOpticalBenchStore = create<OpticalBenchState & OpticalBenchActio
     },
 
     loadSavedDesigns: () => {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEY)
-        if (stored) {
-          const designs = JSON.parse(stored) as SavedDesign[]
-          set({ savedDesigns: designs })
-        }
-      } catch (e) {
-        logger.error('Failed to load saved designs:', e)
+      const designs = getStorageJSON<SavedDesign[]>(STORAGE_KEY, [])
+      if (designs.length > 0) {
+        set({ savedDesigns: designs })
       }
     },
 

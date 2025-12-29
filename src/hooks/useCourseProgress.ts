@@ -11,7 +11,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { COURSE_DEMOS } from '@/data/course-event-mapping'
-import { logger } from '@/lib/logger'
+import { getStorageJSON, setStorageJSON } from '@/lib/storage'
 
 // Foundation-level demo IDs for achievement tracking
 const FOUNDATION_DEMO_IDS = COURSE_DEMOS
@@ -71,25 +71,13 @@ const STORAGE_KEY = 'polarcraft-course-progress'
 
 // 从 localStorage 加载进度
 const loadProgress = (): CourseProgress => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored) {
-      const parsed = JSON.parse(stored)
-      return { ...DEFAULT_PROGRESS, ...parsed }
-    }
-  } catch (e) {
-    logger.warn('Failed to load course progress:', e)
-  }
-  return DEFAULT_PROGRESS
+  const stored = getStorageJSON<Partial<CourseProgress>>(STORAGE_KEY, {})
+  return { ...DEFAULT_PROGRESS, ...stored }
 }
 
 // 保存进度到 localStorage
 const saveProgress = (progress: CourseProgress) => {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress))
-  } catch (e) {
-    logger.warn('Failed to save course progress:', e)
-  }
+  setStorageJSON(STORAGE_KEY, progress)
 }
 
 // 检查是否是连续学习日

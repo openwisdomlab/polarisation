@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
+import { getStorageItem, setStorageItem, getStorageJSON } from '@/lib/storage'
 import { PersistentHeader } from '@/components/shared'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -217,14 +218,14 @@ export default function LearningHubPage() {
 
   // Load progress from localStorage
   useEffect(() => {
-    const savedPath = localStorage.getItem('learningPath')
-    const savedModules = localStorage.getItem('discoveredModules')
+    const savedPath = getStorageItem('learningPath')
+    const savedModules = getStorageJSON<string[]>('discoveredModules', [])
     if (savedPath) {
       setSelectedPath(savedPath as LearningPath)
       setShowPathSelector(false)
     }
-    if (savedModules) {
-      setDiscoveredModules(new Set(JSON.parse(savedModules)))
+    if (savedModules.length > 0) {
+      setDiscoveredModules(new Set(savedModules))
     }
   }, [])
 
@@ -232,7 +233,7 @@ export default function LearningHubPage() {
   const selectPath = (path: LearningPath) => {
     setSelectedPath(path)
     setShowPathSelector(false)
-    localStorage.setItem('learningPath', path)
+    setStorageItem('learningPath', path)
   }
 
   const getModulesByCategory = (category: string) =>

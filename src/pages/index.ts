@@ -22,6 +22,5 @@ export { DetectiveGamePage } from './DetectiveGamePage'
 export { CoursePage } from './CoursePage'
 export { default as LearningHubPage } from './LearningHubPage'
 
-// Legacy pages - deprecated, kept for reference
-// DevicesPage, BenchPage, OpticalDesignStudioPage, OpticalDesignStudioPageV2
-// These have been consolidated into OpticalDesignPage
+// Note: Legacy pages (DevicesPage, BenchPage, OpticalDesignStudioPage, OpticalDesignStudioPageV2)
+// have been removed and consolidated into OpticalDesignPage

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { logger } from '@/lib/logger'
+import { getStorageItem, setStorageItem } from '@/lib/storage'
 
 type Theme = 'dark' | 'light'
 
@@ -14,13 +14,8 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('polarcraft-theme')
-        if (saved === 'light' || saved === 'dark') return saved
-      } catch (error) {
-        // localStorage may be unavailable in private browsing mode or if storage is full
-        logger.warn('Unable to access localStorage for theme:', error)
-      }
+      const saved = getStorageItem('polarcraft-theme')
+      if (saved === 'light' || saved === 'dark') return saved
     }
     return 'dark'
   })
@@ -62,12 +57,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       root.style.setProperty('--accent-green', '#16a34a')
     }
 
-    try {
-      localStorage.setItem('polarcraft-theme', theme)
-    } catch (error) {
-      // localStorage may be unavailable in private browsing mode or if storage quota is exceeded
-      logger.warn('Unable to save theme to localStorage:', error)
-    }
+    setStorageItem('polarcraft-theme', theme)
   }, [theme])
 
   const toggleTheme = () => {

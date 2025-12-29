@@ -8,6 +8,7 @@
 
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { getStorageJSON, setStorageJSON } from '@/lib/storage'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
@@ -76,23 +77,11 @@ const INITIAL_PROGRESS: GameProgress = {
 
 // Load/save progress from localStorage
 function loadProgress(): GameProgress {
-  try {
-    const saved = localStorage.getItem('escapeRoom_progress')
-    if (saved) {
-      return JSON.parse(saved)
-    }
-  } catch {
-    // ignore
-  }
-  return INITIAL_PROGRESS
+  return getStorageJSON<GameProgress>('escapeRoom_progress', INITIAL_PROGRESS)
 }
 
 function saveProgress(progress: GameProgress) {
-  try {
-    localStorage.setItem('escapeRoom_progress', JSON.stringify(progress))
-  } catch {
-    // ignore
-  }
+  setStorageJSON('escapeRoom_progress', progress)
 }
 
 // Story Dialog Component

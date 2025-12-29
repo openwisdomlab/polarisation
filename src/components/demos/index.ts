@@ -6,6 +6,7 @@
 export * from './DemoCanvas'
 export * from './Demo2DCanvas'
 export * from './DemoControls'
+export * from './DemoErrorBoundary'
 export * from './LifeSceneIllustrations'
 export * from './DifficultyStrategy'
 

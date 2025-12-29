@@ -2,12 +2,13 @@
  * Demos Page - Interactive physics demonstrations for 5 units + Optical Basics
  * Enhanced with i18n, theme support, and improved interactivity indicators
  */
-import { useState, useEffect, Suspense, ReactNode } from 'react'
+import { useState, useEffect, Suspense, ReactNode, memo } from 'react'
 import { Link, useSearchParams, useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 import { ListItem } from '@/components/demos/DemoControls'
+import { DemoErrorBoundary } from '@/components/demos/DemoErrorBoundary'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
 import { Gamepad2, BookOpen, Box, BarChart2, Menu, X, ChevronDown, ChevronRight, Lightbulb, HelpCircle, Search, GraduationCap, ArrowLeft } from 'lucide-react'
 import { useIsMobile } from '@/hooks/useIsMobile'
@@ -45,8 +46,8 @@ import { PolarizationTypesUnifiedDemo } from '@/components/demos/basics/Polariza
 // Museum Components
 import { GalleryHero } from '@/components/museum'
 
-// Icon components
-function PhysicsIcon() {
+// Icon components - memoized for performance
+const PhysicsIcon = memo(function PhysicsIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
       <circle cx="12" cy="12" r="3" />
@@ -54,9 +55,9 @@ function PhysicsIcon() {
       <path d="M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24" />
     </svg>
   )
-}
+})
 
-function ExperimentIcon() {
+const ExperimentIcon = memo(function ExperimentIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
       <path d="M9 3h6v8l4 9H5l4-9V3z" />
@@ -65,9 +66,9 @@ function ExperimentIcon() {
       <circle cx="14" cy="14" r="1" fill="currentColor" />
     </svg>
   )
-}
+})
 
-function FrontierIcon() {
+const FrontierIcon = memo(function FrontierIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
       <path d="M12 2L2 7l10 5 10-5-10-5z" />
@@ -75,9 +76,9 @@ function FrontierIcon() {
       <path d="M2 12l10 5 10-5" />
     </svg>
   )
-}
+})
 
-function LifeSceneIcon() {
+const LifeSceneIcon = memo(function LifeSceneIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
       <circle cx="12" cy="12" r="10" />
@@ -85,18 +86,18 @@ function LifeSceneIcon() {
       <path d="M2 12h20" />
     </svg>
   )
-}
+})
 
-function DIYIcon() {
+const DIYIcon = memo(function DIYIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
       <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
     </svg>
   )
-}
+})
 
-// SVG Diagrams
-function MalusDiagram() {
+// SVG Diagrams - memoized for performance
+const MalusDiagram = memo(function MalusDiagram() {
   return (
     <svg viewBox="0 0 200 80" className="w-full h-auto">
       <defs>
@@ -114,9 +115,9 @@ function MalusDiagram() {
       <rect x="168" y="28" width="6" height="24" fill="#64748b" rx="1" />
     </svg>
   )
-}
+})
 
-function BirefringenceDiagram() {
+const BirefringenceDiagram = memo(function BirefringenceDiagram() {
   return (
     <svg viewBox="0 0 200 80" className="w-full h-auto">
       <line x1="20" y1="40" x2="70" y2="40" stroke="#fbbf24" strokeWidth="3" />
@@ -128,9 +129,9 @@ function BirefringenceDiagram() {
       <text x="175" y="68" fill="#44ff44" fontSize="8">e</text>
     </svg>
   )
-}
+})
 
-function WaveplateDiagram() {
+const WaveplateDiagram = memo(function WaveplateDiagram() {
   return (
     <svg viewBox="0 0 200 80" className="w-full h-auto">
       <line x1="15" y1="40" x2="55" y2="40" stroke="#fbbf24" strokeWidth="2" />
@@ -141,9 +142,9 @@ function WaveplateDiagram() {
       <line x1="90" y1="40" x2="112" y2="40" stroke="#22d3ee" strokeWidth="2" strokeDasharray="3" />
     </svg>
   )
-}
+})
 
-function PolarizationStateDiagram() {
+const PolarizationStateDiagram = memo(function PolarizationStateDiagram() {
   return (
     <svg viewBox="0 0 200 80" className="w-full h-auto">
       <line x1="25" y1="25" x2="25" y2="55" stroke="#ffaa00" strokeWidth="2" />
@@ -153,9 +154,9 @@ function PolarizationStateDiagram() {
       <ellipse cx="175" cy="40" rx="18" ry="10" fill="none" stroke="#a78bfa" strokeWidth="2" transform="rotate(-30 175 40)" />
     </svg>
   )
-}
+})
 
-function FresnelDiagram() {
+const FresnelDiagram = memo(function FresnelDiagram() {
   return (
     <svg viewBox="0 0 200 80" className="w-full h-auto">
       <line x1="30" y1="50" x2="170" y2="50" stroke="#64748b" strokeWidth="2" />
@@ -164,9 +165,9 @@ function FresnelDiagram() {
       <line x1="100" y1="50" x2="140" y2="78" stroke="#44ff44" strokeWidth="2" opacity="0.7" />
     </svg>
   )
-}
+})
 
-function BrewsterDiagram() {
+const BrewsterDiagram = memo(function BrewsterDiagram() {
   return (
     <svg viewBox="0 0 200 80" className="w-full h-auto">
       <line x1="30" y1="50" x2="170" y2="50" stroke="#64748b" strokeWidth="2" />
@@ -178,9 +179,9 @@ function BrewsterDiagram() {
       <text x="108" y="38" fill="#a78bfa" fontSize="8">θB</text>
     </svg>
   )
-}
+})
 
-function ScatteringDiagram() {
+const ScatteringDiagram = memo(function ScatteringDiagram() {
   return (
     <svg viewBox="0 0 200 80" className="w-full h-auto">
       <line x1="20" y1="40" x2="70" y2="40" stroke="#fbbf24" strokeWidth="2" />
@@ -192,9 +193,9 @@ function ScatteringDiagram() {
       <line x1="100" y1="25" x2="100" y2="5" stroke="#4444ff" strokeWidth="1.5" opacity="0.8" />
     </svg>
   )
-}
+})
 
-function StokesDiagram() {
+const StokesDiagram = memo(function StokesDiagram() {
   return (
     <svg viewBox="0 0 200 80" className="w-full h-auto">
       <circle cx="100" cy="40" r="30" fill="none" stroke="#64748b" strokeWidth="1" />
@@ -207,9 +208,9 @@ function StokesDiagram() {
       <line x1="100" y1="40" x2="120" y2="30" stroke="#ffff00" strokeWidth="1.5" />
     </svg>
   )
-}
+})
 
-function MuellerDiagram() {
+const MuellerDiagram = memo(function MuellerDiagram() {
   return (
     <svg viewBox="0 0 200 80" className="w-full h-auto">
       <rect x="15" y="25" width="35" height="30" fill="#22d3ee" opacity="0.2" stroke="#22d3ee" rx="3" />
@@ -225,9 +226,9 @@ function MuellerDiagram() {
       <polygon points="138,40 133,37 133,43" fill="#64748b" />
     </svg>
   )
-}
+})
 
-function LightWaveDiagram() {
+const LightWaveDiagram = memo(function LightWaveDiagram() {
   return (
     <svg viewBox="0 0 200 80" className="w-full h-auto">
       <path d="M10,40 Q30,20 50,40 T90,40 T130,40 T170,40" fill="none" stroke="#fbbf24" strokeWidth="2" />
@@ -237,7 +238,7 @@ function LightWaveDiagram() {
       <text x="100" y="75" textAnchor="middle" fill="#94a3b8" fontSize="8">λ</text>
     </svg>
   )
-}
+})
 
 // Demo info interface
 interface DemoQuestions {
@@ -2667,9 +2668,11 @@ export function DemosPage() {
               )}
             >
               <div className="p-5 min-h-[550px]">
-                <Suspense fallback={<DemoLoading />}>
-                  {DemoComponent && <DemoComponent difficultyLevel={effectiveDifficultyLevel} />}
-                </Suspense>
+                <DemoErrorBoundary demoName={currentDemo?.titleKey ? t(currentDemo.titleKey) : undefined}>
+                  <Suspense fallback={<DemoLoading />}>
+                    {DemoComponent && <DemoComponent difficultyLevel={effectiveDifficultyLevel} />}
+                  </Suspense>
+                </DemoErrorBoundary>
               </div>
             </div>
 
