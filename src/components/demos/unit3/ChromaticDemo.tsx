@@ -92,6 +92,24 @@ function calculateTransmission(
   return Math.max(0, Math.min(1, transmission))
 }
 
+// 计算白光参考值（用于正确归一化颜色）
+// 预计算所有波长传输率为1时的RGB积分值
+function getWhiteReference(): { r: number; g: number; b: number } {
+  let totalR = 0, totalG = 0, totalB = 0
+
+  for (let wavelength = 380; wavelength <= 780; wavelength += 2) {
+    const [r, g, b] = wavelengthToRGB(wavelength)
+    totalR += r
+    totalG += g
+    totalB += b
+  }
+
+  return { r: totalR, g: totalG, b: totalB }
+}
+
+// 缓存白光参考值（避免重复计算）
+const WHITE_REFERENCE = getWhiteReference()
+
 // 计算混合颜色 - 基于Michel-Lévy色表原理
 function calculateMixedColor(
   thickness: number,
@@ -126,21 +144,30 @@ function calculateMixedColor(
     return { r: 0, g: 0, b: 0, hex: '#000000' }
   }
 
-  // 归一化到总能量，保持色彩的相对比例
-  // 这样可以正确显示干涉色
-  const scale = 200 / (780 - 380) // 基于波长范围的缩放因子
-  let r = totalR * scale
-  let g = totalG * scale
-  let b = totalB * scale
+  // 使用白光参考值进行正确归一化
+  // 将每个通道除以其白光参考值，使得全透过时为白色
+  let r = totalR / WHITE_REFERENCE.r
+  let g = totalG / WHITE_REFERENCE.g
+  let b = totalB / WHITE_REFERENCE.b
 
-  // 计算亮度并进行适当的亮度调整
+  // 计算亮度
   const luminance = 0.299 * r + 0.587 * g + 0.114 * b
 
-  // 如果太暗或太亮，进行亮度校正
-  if (luminance > 0.01 && luminance < 1.5) {
-    // 轻微增强饱和度，使颜色更鲜明
+  // 对于低透过率情况，提升亮度同时保持色调比例
+  // 这样可以在保持干涉色正确的同时提高可见度
+  if (luminance > 0.01 && luminance < 0.5) {
+    // 亮度提升因子，保持色调比例
+    const boostFactor = Math.min(0.7 / luminance, 2.0)
+    r *= boostFactor
+    g *= boostFactor
+    b *= boostFactor
+  }
+
+  // 轻微增强饱和度，使颜色更鲜明
+  const maxVal = Math.max(r, g, b)
+  if (maxVal > 0.1 && maxVal < 1.5) {
     const avgBrightness = (r + g + b) / 3
-    const saturationBoost = 1.3
+    const saturationBoost = 1.2
     r = avgBrightness + (r - avgBrightness) * saturationBoost
     g = avgBrightness + (g - avgBrightness) * saturationBoost
     b = avgBrightness + (b - avgBrightness) * saturationBoost
