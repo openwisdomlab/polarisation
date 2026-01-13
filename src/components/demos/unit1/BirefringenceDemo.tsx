@@ -49,9 +49,15 @@ function LightSource({ position }: { position: [number, number, number] }) {
 function CalciteCrystal({
   position,
   rotation,
+  opticalAxisAngle,
+  no,
+  ne,
 }: {
   position: [number, number, number]
   rotation: number
+  opticalAxisAngle: number
+  no: number
+  ne: number
 }) {
   const crystalRef = useRef<THREE.Group>(null)
 
@@ -60,6 +66,14 @@ function CalciteCrystal({
       crystalRef.current.rotation.y = (rotation * Math.PI) / 180 + Math.sin(clock.getElapsedTime() * 0.5) * 0.03
     }
   })
+
+  // 计算光轴端点（基于光轴角度）
+  const axisLength = 0.8
+  const axisRadians = (opticalAxisAngle * Math.PI) / 180
+  const axisPoints: [[number, number, number], [number, number, number]] = [
+    [-axisLength * Math.cos(axisRadians), -axisLength * Math.sin(axisRadians), 0],
+    [axisLength * Math.cos(axisRadians), axisLength * Math.sin(axisRadians), 0],
+  ]
 
   return (
     <group position={position}>
@@ -87,13 +101,28 @@ function CalciteCrystal({
         </mesh>
         {/* 光轴指示 */}
         <Line
-          points={[[-0.8, -0.8, 0], [0.8, 0.8, 0]]}
+          points={axisPoints}
           color="#fbbf24"
           lineWidth={2}
           dashed
           dashSize={0.1}
           gapSize={0.05}
         />
+        {/* 光轴方向箭头 */}
+        <group position={[axisLength * Math.cos(axisRadians), axisLength * Math.sin(axisRadians), 0]} rotation={[0, 0, axisRadians]}>
+          <mesh>
+            <coneGeometry args={[0.06, 0.12, 8]} />
+            <meshBasicMaterial color="#fbbf24" />
+          </mesh>
+        </group>
+        {/* 光轴标签 */}
+        <Text
+          position={[axisLength * 0.6 * Math.cos(axisRadians) + 0.2, axisLength * 0.6 * Math.sin(axisRadians) + 0.15, 0]}
+          fontSize={0.1}
+          color="#fbbf24"
+        >
+          光轴
+        </Text>
       </group>
       {/* 边框 */}
       <lineSegments>
@@ -104,7 +133,7 @@ function CalciteCrystal({
         方解石晶体
       </Text>
       <Text position={[0, -1.35, 0]} fontSize={0.12} color="#94a3b8">
-        no=1.6584 ne=1.4864
+        no={no.toFixed(4)} ne={ne.toFixed(4)}
       </Text>
     </group>
   )
@@ -203,10 +232,14 @@ function DetectorScreen({
   position,
   oIntensity,
   eIntensity,
+  oOffsetY = 0.5,
+  eOffsetY = -0.5,
 }: {
   position: [number, number, number]
   oIntensity: number
   eIntensity: number
+  oOffsetY?: number
+  eOffsetY?: number
 }) {
   return (
     <group position={position}>
@@ -216,7 +249,7 @@ function DetectorScreen({
         <meshStandardMaterial color="#1e293b" roughness={0.8} />
       </mesh>
       {/* o光光斑 */}
-      <mesh position={[0.06, 0.5, 0]}>
+      <mesh position={[0.06, oOffsetY, 0]}>
         <circleGeometry args={[0.15 + oIntensity * 0.15, 32]} />
         <meshStandardMaterial
           color="#ff4444"
@@ -227,7 +260,7 @@ function DetectorScreen({
         />
       </mesh>
       {/* e光光斑 */}
-      <mesh position={[0.06, -0.5, 0]}>
+      <mesh position={[0.06, eOffsetY, 0]}>
         <circleGeometry args={[0.15 + eIntensity * 0.15, 32]} />
         <meshStandardMaterial
           color="#44ff44"
@@ -238,10 +271,10 @@ function DetectorScreen({
         />
       </mesh>
       {/* 标签 */}
-      <Text position={[0.15, 0.5, 0]} fontSize={0.15} color="#ff4444">
+      <Text position={[0.15, oOffsetY, 0]} fontSize={0.15} color="#ff4444">
         o光 (0°)
       </Text>
-      <Text position={[0.15, -0.5, 0]} fontSize={0.15} color="#44ff44">
+      <Text position={[0.15, eOffsetY, 0]} fontSize={0.15} color="#44ff44">
         e光 (90°)
       </Text>
       <Text position={[0, -1.3, 0]} fontSize={0.18} color="#94a3b8">
@@ -258,19 +291,55 @@ function DetectorScreen({
  * - o光强度：I_o = I_0 × cos²θ （偏振方向垂直于主截面的分量）
  * - e光强度：I_e = I_0 × sin²θ （偏振方向在主截面内的分量）
  * - 能量守恒：I_o + I_e = I_0 × (cos²θ + sin²θ) = I_0
+ *
+ * 环境折射率影响：
+ * - 光从环境介质进入晶体时，遵循斯涅尔定律
+ * - 折射角取决于环境折射率与晶体折射率的比值
+ *
+ * 光轴方向影响：
+ * - 光轴方向决定了o光和e光的分离方向
+ * - 有效双折射率差与光轴角度相关
  */
 function BirefringenceScene({
   inputPolarization,
   animate,
+  crystalRotation,
+  envRefractiveIndex,
+  opticalAxisAngle,
+  no,
+  ne,
 }: {
   inputPolarization: number
   animate: boolean
+  crystalRotation: number
+  envRefractiveIndex: number
+  opticalAxisAngle: number
+  no: number
+  ne: number
 }) {
-  const radians = (inputPolarization * Math.PI) / 180
+  // 计算有效的偏振角度（相对于光轴方向）
+  const effectivePolarization = inputPolarization - opticalAxisAngle
+  const radians = (effectivePolarization * Math.PI) / 180
   // o光强度 = cos²θ（马吕斯定律）
   const oIntensity = Math.pow(Math.cos(radians), 2)
   // e光强度 = sin²θ（与o光互补，总和为1）
   const eIntensity = Math.pow(Math.sin(radians), 2)
+
+  // 计算折射导致的光束偏移（基于斯涅尔定律）
+  // 双折射率差（有效值，取决于光轴角度）
+  const birefringence = Math.abs(no - ne)
+  // 环境折射率对光束分离的影响因子
+  const separationFactor = birefringence / envRefractiveIndex
+
+  // o光和e光的分离角度（基于光轴方向）
+  const axisRad = (opticalAxisAngle * Math.PI) / 180
+  const baseSeparation = 0.5 * (1 + separationFactor * 2)
+
+  // o光向垂直于光轴方向偏折，e光沿光轴方向偏折
+  const oOffsetY = baseSeparation * Math.cos(axisRad)
+  const oOffsetZ = baseSeparation * Math.sin(axisRad) * 0.3
+  const eOffsetY = -baseSeparation * Math.cos(axisRad)
+  const eOffsetZ = -baseSeparation * Math.sin(axisRad) * 0.3
 
   return (
     <>
@@ -307,28 +376,45 @@ function BirefringenceScene({
       </Text>
 
       {/* 方解石晶体 */}
-      <CalciteCrystal position={[0, 0, 0]} rotation={45} />
+      <CalciteCrystal
+        position={[0, 0, 0]}
+        rotation={crystalRotation}
+        opticalAxisAngle={opticalAxisAngle}
+        no={no}
+        ne={ne}
+      />
 
-      {/* o光出射 (向上偏折) */}
+      {/* o光出射 (偏折方向取决于光轴) */}
       <LightBeam
         start={[0.8, 0.2, 0]}
-        end={[3.5, 0.5, 0]}
+        end={[3.5, oOffsetY, oOffsetZ]}
         color="#ff4444"
         intensity={oIntensity}
         animate={animate}
       />
 
-      {/* e光出射 (向下偏折) */}
+      {/* e光出射 (偏折方向取决于光轴) */}
       <LightBeam
         start={[0.8, -0.2, 0]}
-        end={[3.5, -0.5, 0]}
+        end={[3.5, eOffsetY, eOffsetZ]}
         color="#44ff44"
         intensity={eIntensity}
         animate={animate}
       />
 
       {/* 探测屏 */}
-      <DetectorScreen position={[4, 0, 0]} oIntensity={oIntensity} eIntensity={eIntensity} />
+      <DetectorScreen
+        position={[4, 0, 0]}
+        oIntensity={oIntensity}
+        eIntensity={eIntensity}
+        oOffsetY={oOffsetY}
+        eOffsetY={eOffsetY}
+      />
+
+      {/* 环境介质标识 */}
+      <Text position={[-2.5, 1.2, 0]} fontSize={0.12} color="#94a3b8">
+        环境: n={envRefractiveIndex.toFixed(2)}
+      </Text>
 
       {/* 网格和坐标 */}
       <gridHelper args={[10, 10, '#1e3a5f', '#0f172a']} position={[0, -1.5, 0]} />
@@ -404,6 +490,14 @@ function TabButton({
   )
 }
 
+// 环境介质预设
+const ENV_PRESETS = [
+  { label: '空气', labelEn: 'Air', value: 1.0 },
+  { label: '水', labelEn: 'Water', value: 1.33 },
+  { label: '玻璃', labelEn: 'Glass', value: 1.5 },
+  { label: '油浸', labelEn: 'Oil', value: 1.52 },
+]
+
 // 主演示组件
 export function BirefringenceDemo() {
   const { i18n } = useTranslation()
@@ -413,9 +507,24 @@ export function BirefringenceDemo() {
   const [inputPolarization, setInputPolarization] = useState(45)
   const [animate, setAnimate] = useState(true)
 
-  const radians = (inputPolarization * Math.PI) / 180
+  // 新增控制参数
+  const [crystalRotation, setCrystalRotation] = useState(0) // 晶体旋转角度
+  const [envRefractiveIndex, setEnvRefractiveIndex] = useState(1.0) // 环境折射率
+  const [opticalAxisAngle, setOpticalAxisAngle] = useState(45) // 光轴方向角度
+
+  // 方解石折射率（标准值，可作为常量或可调参数）
+  const no = 1.6584 // o光折射率
+  const ne = 1.4864 // e光折射率
+
+  // 计算有效偏振角度（相对于光轴）
+  const effectivePolarization = inputPolarization - opticalAxisAngle
+  const radians = (effectivePolarization * Math.PI) / 180
   const oIntensity = Math.pow(Math.cos(radians), 2)
   const eIntensity = Math.pow(Math.sin(radians), 2)
+
+  // 计算双折射率差和光束分离
+  const birefringence = Math.abs(no - ne)
+  const separationFactor = birefringence / envRefractiveIndex
 
   // 预设选项
   const presets = [
@@ -472,19 +581,27 @@ export function BirefringenceDemo() {
                 camera={{ position: [0, 2, 8], fov: 50 }}
                 gl={{ antialias: true, pixelRatio: Math.min(window.devicePixelRatio, 2) }}
               >
-                <BirefringenceScene inputPolarization={inputPolarization} animate={animate} />
+                <BirefringenceScene
+                  inputPolarization={inputPolarization}
+                  animate={animate}
+                  crystalRotation={crystalRotation}
+                  envRefractiveIndex={envRefractiveIndex}
+                  opticalAxisAngle={opticalAxisAngle}
+                  no={no}
+                  ne={ne}
+                />
               </Canvas>
             </div>
 
             {/* 控制和信息面板 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* 参数控制 */}
-              <ControlPanel title={isZh ? "参数控制" : "Parameters"}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* 入射光参数 */}
+              <ControlPanel title={isZh ? "入射光参数" : "Input Light"}>
                 <SliderControl
-                  label={isZh ? "入射光偏振角度" : "Input Polarization"}
+                  label={isZh ? "偏振角度" : "Polarization"}
                   value={inputPolarization}
                   min={0}
-                  max={90}
+                  max={180}
                   step={5}
                   unit="°"
                   onChange={setInputPolarization}
@@ -512,6 +629,66 @@ export function BirefringenceDemo() {
                 >
                   {animate ? (isZh ? '⏸ 暂停动画' : '⏸ Pause') : (isZh ? '▶ 播放动画' : '▶ Play')}
                 </motion.button>
+              </ControlPanel>
+
+              {/* 晶体控制 */}
+              <ControlPanel title={isZh ? "晶体控制" : "Crystal Control"}>
+                <SliderControl
+                  label={isZh ? "晶体旋转" : "Crystal Rotation"}
+                  value={crystalRotation}
+                  min={-180}
+                  max={180}
+                  step={5}
+                  unit="°"
+                  onChange={setCrystalRotation}
+                  color="cyan"
+                />
+                <SliderControl
+                  label={isZh ? "光轴方向" : "Optical Axis"}
+                  value={opticalAxisAngle}
+                  min={0}
+                  max={90}
+                  step={5}
+                  unit="°"
+                  onChange={setOpticalAxisAngle}
+                  color="orange"
+                />
+                <div className="text-xs text-gray-400 mt-1">
+                  <span>{isZh ? '有效偏振角 (θ): ' : 'Effective θ: '}</span>
+                  <span className="text-yellow-400 font-mono">
+                    {((inputPolarization - opticalAxisAngle + 180) % 180).toFixed(0)}°
+                  </span>
+                </div>
+              </ControlPanel>
+
+              {/* 环境介质 */}
+              <ControlPanel title={isZh ? "环境介质" : "Environment"}>
+                <SliderControl
+                  label={isZh ? "折射率 n" : "Refractive Index n"}
+                  value={envRefractiveIndex}
+                  min={1.0}
+                  max={2.0}
+                  step={0.01}
+                  unit=""
+                  onChange={setEnvRefractiveIndex}
+                  color="purple"
+                />
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {ENV_PRESETS.map((preset) => (
+                    <PresetButton
+                      key={preset.value}
+                      label={isZh ? preset.label : preset.labelEn}
+                      isActive={Math.abs(envRefractiveIndex - preset.value) < 0.01}
+                      onClick={() => setEnvRefractiveIndex(preset.value)}
+                    />
+                  ))}
+                </div>
+                <div className="text-xs text-gray-400 mt-2 space-y-1">
+                  <div className="flex justify-between">
+                    <span>{isZh ? '光束分离因子:' : 'Separation:'}</span>
+                    <span className="text-purple-400 font-mono">{separationFactor.toFixed(3)}</span>
+                  </div>
+                </div>
               </ControlPanel>
 
               {/* 分量强度 */}
@@ -544,29 +721,70 @@ export function BirefringenceDemo() {
                 </div>
                 <ValueDisplay label={isZh ? "总强度守恒" : "Total (conserved)"} value="100" unit="%" color="cyan" />
               </ControlPanel>
+            </div>
 
-              {/* 晶体参数 */}
+            {/* 晶体参数信息 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <ControlPanel title={isZh ? "方解石参数" : "Calcite Properties"}>
-                <div className="space-y-2 text-xs text-gray-400">
-                  <div className="flex justify-between">
-                    <span>{isZh ? 'o光折射率' : 'o-ray index'} (no):</span>
-                    <span className="text-cyan-400 font-mono">1.6584</span>
+                <div className="grid grid-cols-2 gap-4 text-xs text-gray-400">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>{isZh ? 'o光折射率' : 'o-ray index'} (no):</span>
+                      <span className="text-cyan-400 font-mono">{no.toFixed(4)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>{isZh ? 'e光折射率' : 'e-ray index'} (ne):</span>
+                      <span className="text-cyan-400 font-mono">{ne.toFixed(4)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>{isZh ? '双折射率差' : 'Birefringence'} (Δn):</span>
+                      <span className="text-purple-400 font-mono">{birefringence.toFixed(4)}</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span>{isZh ? 'e光折射率' : 'e-ray index'} (ne):</span>
-                    <span className="text-cyan-400 font-mono">1.4864</span>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>{isZh ? '晶体类型:' : 'Crystal Type:'}</span>
+                      <span className="text-yellow-400">{isZh ? '负单轴' : 'Negative Uniaxial'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>{isZh ? '光轴角度:' : 'Axis Angle:'}</span>
+                      <span className="text-yellow-400 font-mono">{opticalAxisAngle}°</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>{isZh ? '晶体旋转:' : 'Rotation:'}</span>
+                      <span className="text-cyan-400 font-mono">{crystalRotation}°</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span>{isZh ? '双折射率差' : 'Birefringence'} (Δn):</span>
-                    <span className="text-purple-400 font-mono">0.172</span>
-                  </div>
-                  <div className="pt-2 border-t border-slate-700">
-                    <p className="text-gray-500">
-                      {isZh
-                        ? '方解石是典型的负单轴晶体，具有显著的双折射效应。'
-                        : 'Calcite is a typical negative uniaxial crystal with significant birefringence.'}
-                    </p>
-                  </div>
+                </div>
+                <div className="pt-2 mt-2 border-t border-slate-700 text-xs text-gray-500">
+                  {isZh
+                    ? '方解石是典型的负单轴晶体 (ne < no)，具有显著的双折射效应。调整光轴方向可观察光束分离的变化。'
+                    : 'Calcite is a typical negative uniaxial crystal (ne < no) with significant birefringence. Adjust the optical axis to observe beam separation changes.'}
+                </div>
+              </ControlPanel>
+
+              <ControlPanel title={isZh ? "物理说明" : "Physics Notes"}>
+                <div className="text-xs text-gray-400 space-y-2">
+                  <p>
+                    {isZh
+                      ? '• o光（寻常光）：偏振方向垂直于主截面，遵循普通折射定律'
+                      : '• o-ray (ordinary): Polarization perpendicular to principal section, follows normal refraction'}
+                  </p>
+                  <p>
+                    {isZh
+                      ? '• e光（非寻常光）：偏振方向在主截面内，折射率随方向变化'
+                      : '• e-ray (extraordinary): Polarization in principal section, index varies with direction'}
+                  </p>
+                  <p>
+                    {isZh
+                      ? '• 环境折射率影响界面折射角，从而影响光束分离程度'
+                      : '• Environment index affects interface refraction, thus beam separation'}
+                  </p>
+                  <p>
+                    {isZh
+                      ? '• 光轴方向决定了o光和e光的分离方向'
+                      : '• Optical axis direction determines o/e ray separation direction'}
+                  </p>
                 </div>
               </ControlPanel>
             </div>
