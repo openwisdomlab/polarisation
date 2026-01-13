@@ -91,6 +91,16 @@
       "title": "A New World Under Polarized Light",
       "description": "This is a course from Shenzhen 01 Academy's Disruptive Innovation Challenge Camp, offering a gamified education and scientific practice platform for polarization optics. Content includes progressive course experiments with historical stories, polarization devices and basic optical paths, as well as fundamental theory and computational simulations. The platform also provides advanced features including gamified puzzle challenges, classroom showcase collections, and virtual research groups for participating in frontier scientific research. We invite everyone to make full use of this platform, experience 01 Academy's research-based learning approach, understand and utilize light polarization, and explore the wonderful world under polarized light."
     },
+    "dualNarrative": {
+      "title": "Dual Narrative: Optics & Polarization",
+      "subtitle": "From Historical Discoveries to Modern Applications",
+      "description": "The left thread traces pivotal discoveries in the history of optics, while the right thread focuses on the unique journey of polarized light. Let stories ignite curiosity and experiments verify intuition, understanding the mysteries of light where both narratives interweave.",
+      "line1Label": "Thread One",
+      "line1Title": "History of Optics",
+      "line2Label": "Thread Two",
+      "line2Title": "Polarization Journey",
+      "exploreChronicles": "Explore Chronicles of Light"
+    },
     "coursesSection": {
       "title": "Courses",
       "viewAll": "View All",

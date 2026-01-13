@@ -1,28 +1,24 @@
 /**
- * HomePage - PSRT Course Homepage
- * 首页 - 以五单元课程大纲为主框架
+ * HomePage - 双线叙事课程首页
+ * 首页 - 以"双线叙事：光学与偏振"为核心逻辑展开
  *
- * 架构：以PSRT课程大纲的5个单元为核心展开
- * 将"偏振演示馆"、"光学设计室"、"光的编年史"融合到每个单元中
- * 采用探索和游戏化模式，避免信息过载
+ * 架构：左线讲述光学史，右线聚焦偏振专题
+ * 首页专注于课程导航，其他内容融入编年史页面
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
 import { useTheme } from '@/contexts/ThemeContext'
 import { PolarWorldLogo } from '@/components/icons'
-import { PolarizedLightHero } from '@/components/effects'
 import { useCourseProgress } from '@/hooks'
 import { cn } from '@/lib/utils'
 import {
-  Play,
   Lightbulb,
   BookOpen,
   FlaskConical,
   ArrowRight,
-  Eye,
   ChevronDown,
   Sparkles,
   Zap,
@@ -30,13 +26,14 @@ import {
   Sun,
   Layers,
   History,
-  Gamepad2,
   Calculator,
   Compass,
   Target,
   Beaker,
   Atom,
-  Wrench,
+  GitBranch,
+  Eye,
+  Gamepad2,
 } from 'lucide-react'
 
 // ============================================================================
@@ -543,117 +540,142 @@ function UnitCard({
   )
 }
 
+
 // ============================================================================
-// 快速入口组件
+// 双线叙事 Hero 组件
 // ============================================================================
 
-function QuickAccessSection({ theme }: { theme: 'dark' | 'light' }) {
+function DualNarrativeHero({ theme }: { theme: 'dark' | 'light' }) {
   const { t } = useTranslation()
 
-  const quickLinks = [
-    { icon: <Eye className="w-5 h-5" />, labelKey: 'home.quick.demos', link: '/demos', color: '#22D3EE' },
-    { icon: <Wrench className="w-5 h-5" />, labelKey: 'home.quick.opticalStudio', link: '/optical-studio', color: '#F59E0B' },
-    { icon: <History className="w-5 h-5" />, labelKey: 'home.quick.chronicles', link: '/chronicles', color: '#C9A227' },
-    { icon: <Calculator className="w-5 h-5" />, labelKey: 'home.quick.calc', link: '/calc', color: '#8B5CF6' },
-  ]
-
   return (
-    <div className={cn(
-      'rounded-xl p-4 mb-6',
-      theme === 'dark' ? 'bg-slate-800/50' : 'bg-white/80'
-    )}>
-      <h3 className={cn(
-        'text-sm font-semibold mb-3',
-        theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-      )}>
-        {t('home.quickAccess')}
-      </h3>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {quickLinks.map((item, idx) => (
-          <Link
-            key={idx}
-            to={item.link}
-            className={cn(
-              'flex flex-col items-center gap-2 p-4 rounded-xl transition-all hover:scale-105',
-              theme === 'dark'
-                ? 'bg-slate-700/50 hover:bg-slate-700'
-                : 'bg-gray-50 hover:bg-gray-100'
-            )}
-          >
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: `${item.color}20` }}
-            >
-              <span style={{ color: item.color }}>{item.icon}</span>
-            </div>
-            <span className={cn(
-              'text-xs font-medium text-center',
-              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-            )}>
-              {t(item.labelKey)}
-            </span>
-          </Link>
-        ))}
+    <div className="relative mb-8">
+      {/* 背景光晕 */}
+      <div className="absolute inset-0 -z-10">
+        <div className={cn(
+          'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full blur-[120px]',
+          theme === 'dark'
+            ? 'bg-gradient-to-r from-cyan-500/15 via-violet-500/10 to-amber-500/15'
+            : 'bg-gradient-to-r from-cyan-400/10 via-violet-400/8 to-amber-400/10'
+        )} />
       </div>
-    </div>
-  )
-}
 
-// ============================================================================
-// 生活场景卡片
-// ============================================================================
+      <div className="text-center pt-8 pb-6">
+        {/* 课程标签 */}
+        <div className="flex items-center justify-center gap-2 mb-4">
+          <span className={cn(
+            'text-xs px-3 py-1 rounded-full font-medium',
+            theme === 'dark'
+              ? 'bg-cyan-500/20 text-cyan-400'
+              : 'bg-cyan-100 text-cyan-700'
+          )}>
+            {t('home.courseBanner.badge')}
+          </span>
+        </div>
 
-function LifeScenesSection({ theme }: { theme: 'dark' | 'light' }) {
-  const { t } = useTranslation()
+        {/* 主标题 */}
+        <h1 className={cn(
+          'text-3xl sm:text-4xl md:text-5xl font-black tracking-tight mb-4',
+          'text-transparent bg-clip-text',
+          theme === 'dark'
+            ? 'bg-gradient-to-br from-white via-cyan-200 to-violet-300'
+            : 'bg-gradient-to-br from-gray-900 via-cyan-700 to-violet-700'
+        )}>
+          {t('home.dualNarrative.title')}
+        </h1>
 
-  const scenes = [
-    { emoji: '🌅', titleKey: 'home.life.sky', descKey: 'home.life.skyDesc', link: '/demos/rayleigh', color: '#F59E0B' },
-    { emoji: '📱', titleKey: 'home.life.screen', descKey: 'home.life.screenDesc', link: '/demos/polarization-intro', color: '#3B82F6' },
-    { emoji: '🕶️', titleKey: 'home.life.sunglasses', descKey: 'home.life.sunglassesDesc', link: '/demos/malus', color: '#8B5CF6' },
-    { emoji: '🦋', titleKey: 'home.life.butterfly', descKey: 'home.life.butterflyDesc', link: '/demos/chromatic', color: '#EC4899' },
-  ]
+        {/* 副标题 - 双线叙事概念 */}
+        <p className={cn(
+          'text-lg sm:text-xl font-medium mb-3',
+          theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+        )}>
+          {t('home.dualNarrative.subtitle')}
+        </p>
 
-  return (
-    <div className={cn(
-      'rounded-xl p-4 mb-6',
-      theme === 'dark' ? 'bg-slate-800/50' : 'bg-white/80'
-    )}>
-      <h3 className={cn(
-        'text-sm font-semibold mb-3 flex items-center gap-2',
-        theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-      )}>
-        <Compass className="w-4 h-4 text-cyan-500" />
-        {t('home.lifeTitle')}
-      </h3>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        {scenes.map((scene, idx) => (
-          <Link
-            key={idx}
-            to={scene.link}
-            className={cn(
-              'group flex items-center gap-2 p-3 rounded-lg transition-all hover:scale-[1.02]',
-              theme === 'dark'
-                ? 'bg-slate-700/50 hover:bg-slate-700'
-                : 'bg-gray-50 hover:bg-gray-100'
-            )}
-          >
-            <span className="text-2xl">{scene.emoji}</span>
-            <div className="flex-1 min-w-0">
+        {/* 描述 */}
+        <p className={cn(
+          'text-sm sm:text-base max-w-2xl mx-auto mb-8',
+          theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+        )}>
+          {t('home.dualNarrative.description')}
+        </p>
+
+        {/* 双线可视化 */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mb-6">
+          {/* 左线：光学史 */}
+          <div className={cn(
+            'flex items-center gap-3 px-5 py-3 rounded-xl border',
+            theme === 'dark'
+              ? 'bg-slate-800/60 border-cyan-500/30'
+              : 'bg-white/80 border-cyan-300'
+          )}>
+            <div className="p-2 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500">
+              <History className="w-5 h-5 text-white" />
+            </div>
+            <div className="text-left">
               <p className={cn(
-                'text-xs font-medium truncate',
+                'text-xs font-medium',
+                theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'
+              )}>
+                {t('home.dualNarrative.line1Label')}
+              </p>
+              <p className={cn(
+                'text-sm font-bold',
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               )}>
-                {t(scene.titleKey)}
-              </p>
-              <p className={cn(
-                'text-[10px] truncate',
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-              )}>
-                {t(scene.descKey)}
+                {t('home.dualNarrative.line1Title')}
               </p>
             </div>
-          </Link>
-        ))}
+          </div>
+
+          {/* 连接符号 */}
+          <div className={cn(
+            'hidden sm:flex items-center',
+            theme === 'dark' ? 'text-violet-400' : 'text-violet-600'
+          )}>
+            <GitBranch className="w-6 h-6 rotate-90 sm:rotate-0" />
+          </div>
+
+          {/* 右线：偏振专题 */}
+          <div className={cn(
+            'flex items-center gap-3 px-5 py-3 rounded-xl border',
+            theme === 'dark'
+              ? 'bg-slate-800/60 border-violet-500/30'
+              : 'bg-white/80 border-violet-300'
+          )}>
+            <div className="p-2 rounded-lg bg-gradient-to-br from-violet-400 to-purple-500">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <div className="text-left">
+              <p className={cn(
+                'text-xs font-medium',
+                theme === 'dark' ? 'text-violet-400' : 'text-violet-600'
+              )}>
+                {t('home.dualNarrative.line2Label')}
+              </p>
+              <p className={cn(
+                'text-sm font-bold',
+                theme === 'dark' ? 'text-white' : 'text-gray-900'
+              )}>
+                {t('home.dualNarrative.line2Title')}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 进入编年史链接 */}
+        <Link
+          to="/chronicles"
+          className={cn(
+            'inline-flex items-center gap-2 text-sm font-medium transition-colors',
+            theme === 'dark'
+              ? 'text-gray-400 hover:text-cyan-400'
+              : 'text-gray-500 hover:text-cyan-600'
+          )}
+        >
+          {t('home.dualNarrative.exploreChronicles')}
+          <ArrowRight className="w-4 h-4" />
+        </Link>
       </div>
     </div>
   )
@@ -666,7 +688,6 @@ function LifeScenesSection({ theme }: { theme: 'dark' | 'light' }) {
 export function HomePage() {
   const { t } = useTranslation()
   const { theme } = useTheme()
-  const navigate = useNavigate()
   const { progress } = useCourseProgress()
 
   // 展开状态管理
@@ -686,11 +707,6 @@ export function HomePage() {
   const handleToggleUnit = useCallback((unitId: string) => {
     setExpandedUnitId(prev => prev === unitId ? null : unitId)
   }, [])
-
-  const handleStartLearning = useCallback(() => {
-    // 跳转到结构化课程页面
-    navigate('/course')
-  }, [navigate])
 
   return (
     <div className={cn(
@@ -718,7 +734,7 @@ export function HomePage() {
                 ? 'text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400'
                 : 'text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-violet-600'
             )}>
-              偏振光下的新世界
+              {t('home.title')}
             </span>
           </div>
           <LanguageThemeSwitcher />
@@ -727,84 +743,8 @@ export function HomePage() {
 
       {/* 主要内容 */}
       <main className="max-w-4xl mx-auto px-4 pt-20 pb-12">
-        {/* Hero 区域 */}
-        <div className="relative mb-8">
-          {/* 背景光晕 */}
-          <div className="absolute inset-0 -z-10">
-            <div className={cn(
-              'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[100px]',
-              theme === 'dark'
-                ? 'bg-gradient-to-r from-cyan-500/20 via-blue-500/15 to-violet-500/20'
-                : 'bg-gradient-to-r from-cyan-400/15 via-blue-400/10 to-violet-400/15'
-            )} />
-          </div>
-
-          {/* 标题 */}
-          <div className="text-center pt-6 pb-4">
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <span className={cn(
-                'text-xs px-3 py-1 rounded-full font-medium',
-                theme === 'dark'
-                  ? 'bg-cyan-500/20 text-cyan-400'
-                  : 'bg-cyan-100 text-cyan-700'
-              )}>
-                {t('home.courseBanner.badge')}
-              </span>
-            </div>
-
-            <h1 className={cn(
-              'text-4xl sm:text-5xl font-black tracking-tight mb-4',
-              'text-transparent bg-clip-text',
-              theme === 'dark'
-                ? 'bg-gradient-to-br from-white via-cyan-200 to-violet-300'
-                : 'bg-gradient-to-br from-gray-900 via-cyan-700 to-violet-700'
-            )}>
-              {t('home.title')}
-            </h1>
-
-            <p className={cn(
-              'text-base sm:text-lg max-w-2xl mx-auto mb-6',
-              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-            )}>
-              {t('home.courseBanner.description')}
-            </p>
-
-            {/* CTA 按钮 */}
-            <div className="flex flex-wrap justify-center gap-3">
-              <button
-                onClick={handleStartLearning}
-                className={cn(
-                  'group px-6 py-3 rounded-full font-bold flex items-center gap-2',
-                  'bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white',
-                  'hover:scale-105 transition-all duration-300',
-                  'shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40'
-                )}
-              >
-                <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                {t('home.startLearning')}
-              </button>
-              <Link
-                to="/games"
-                className={cn(
-                  'px-6 py-3 rounded-full font-bold flex items-center gap-2',
-                  'border-2 transition-all duration-300 hover:scale-105',
-                  theme === 'dark'
-                    ? 'border-slate-600 text-gray-300 hover:border-slate-500 hover:bg-slate-800/50'
-                    : 'border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50'
-                )}
-              >
-                <Gamepad2 className="w-5 h-5" />
-                {t('home.explore')}
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* 快速入口 */}
-        <QuickAccessSection theme={theme} />
-
-        {/* 生活场景 */}
-        <LifeScenesSection theme={theme} />
+        {/* 双线叙事 Hero */}
+        <DualNarrativeHero theme={theme} />
 
         {/* 课程大纲 - 5个单元 */}
         <div className="mb-8">
@@ -842,38 +782,9 @@ export function HomePage() {
           </div>
         </div>
 
-        {/* 偏振光效果展示 - 放在页面底部作为视觉收尾 */}
-        <div className="mt-8 mb-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-full bg-gradient-to-br from-violet-400 to-pink-500">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <h2 className={cn(
-              'text-lg font-bold',
-              theme === 'dark' ? 'text-white' : 'text-gray-900'
-            )}>
-              {t('home.visualShowcase.title')}
-            </h2>
-          </div>
-          <div className={cn(
-            'rounded-2xl overflow-hidden',
-            theme === 'dark' ? 'bg-slate-800/50' : 'bg-white/80'
-          )}>
-            <PolarizedLightHero height={200} className="shadow-xl" />
-            <div className="p-4">
-              <p className={cn(
-                'text-sm text-center',
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-              )}>
-                {t('home.visualShowcase.description')}
-              </p>
-            </div>
-          </div>
-        </div>
-
         {/* 页脚 */}
         <footer className={cn(
-          'mt-8 text-center text-xs',
+          'mt-12 text-center text-xs',
           theme === 'dark' ? 'text-gray-600' : 'text-gray-500'
         )}>
           <p className="opacity-60">© 2025 深圳零一学院 · {t('home.title')}</p>
