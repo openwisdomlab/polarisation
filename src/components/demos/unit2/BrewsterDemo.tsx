@@ -434,15 +434,15 @@ function BrewsterDiagram({
         {labels.naturalLight}
       </text>
 
-      {/* 反射光 */}
+      {/* 反射光 - 使用Rs而非平均值，因为在布儒斯特角时反射光为纯s偏振 */}
       <motion.line
         x1={cx}
         y1={cy}
         x2={reflectEnd.x}
         y2={reflectEnd.y}
         stroke={isAtBrewster ? '#22d3ee' : '#94a3b8'}
-        strokeWidth={Math.max(1, 4 * (result.Rs + result.Rp) / 2)}
-        strokeOpacity={Math.max(0.3, (result.Rs + result.Rp) / 2)}
+        strokeWidth={Math.max(2, 4 * result.Rs)}
+        strokeOpacity={Math.max(0.5, result.Rs)}
         filter={isAtBrewster ? 'url(#glowCyan)' : undefined}
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
@@ -464,6 +464,30 @@ function BrewsterDiagram({
       >
         {isAtBrewster ? labels.fullSPol : labels.partialPol}
       </text>
+
+      {/* 布儒斯特角时的Rs/Rp标注 - 显示s偏振仍有反射，p偏振为零 */}
+      {isAtBrewster && (
+        <g>
+          <text
+            x={reflectEnd.x + 15}
+            y={reflectEnd.y + 8}
+            fill="#22d3ee"
+            fontSize="11"
+            fontWeight="500"
+          >
+            Rs = {(result.Rs * 100).toFixed(0)}%
+          </text>
+          <text
+            x={reflectEnd.x + 15}
+            y={reflectEnd.y + 22}
+            fill="#f472b6"
+            fontSize="11"
+            fontWeight="500"
+          >
+            Rp = 0
+          </text>
+        </g>
+      )}
 
       {/* 折射光 */}
       {!result.totalReflection && (
