@@ -126,12 +126,19 @@ function MieScatteringDiagram({
   const lightColor = wavelengthToRGB(wavelength)
 
   // 计算散射模式
+  // 米氏散射关于入射方向(前向-后向轴)对称
+  // 角度0°=前向, 90°=上方, 180°=后向, 270°=下方
+  // 物理散射角: 0-180°表示前向到后向, 下半部分应镜像上半部分
   const scatterAngles = useMemo(() => {
     const angles: { angle: number; intensity: number }[] = []
     for (let a = 0; a < 360; a += 5) {
+      // 将SVG显示角度映射到物理散射角 (0-180°)
+      // a=0°→θ=0°(前向), a=90°→θ=90°, a=180°→θ=180°(后向)
+      // a=270°→θ=90°(与a=90°对称), a=360°→θ=0°
+      const physicalAngle = a <= 180 ? a : 360 - a
       angles.push({
         angle: a,
-        intensity: miePhaseFunction(a, sizeParameter),
+        intensity: miePhaseFunction(physicalAngle, sizeParameter),
       })
     }
     return angles
