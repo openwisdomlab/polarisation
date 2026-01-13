@@ -111,6 +111,7 @@ function getWhiteReference(): { r: number; g: number; b: number } {
 }
 
 // 计算混合颜色 - 基于Michel-Lévy色表原理
+// 改进的颜色计算：使用CIE色彩空间和更好的饱和度处理
 function calculateMixedColor(
   thickness: number,
   birefringence: number,
@@ -145,22 +146,48 @@ function calculateMixedColor(
   let b = totalB / whiteRef.b
 
   // 计算总透过率（平均亮度相对于白光）
-  const avgTransmission = (r + g + b) / 3
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
 
-  if (avgTransmission < 0.001) {
+  if (luminance < 0.001) {
     return { r: 0, g: 0, b: 0, hex: '#000000' }
   }
 
-  // 对于低透过率情况，适当提升亮度以便观察颜色
-  // 但保持色相不变
+  // 增强色彩饱和度以更好显示干涉色
+  // 计算与灰色的偏差作为饱和度指标
+  const avgColor = (r + g + b) / 3
+  if (avgColor > 0.01) {
+    // 增强饱和度：将颜色分量向远离平均值的方向推
+    const saturationBoost = 1.8 // 饱和度增强系数
+    r = avgColor + (r - avgColor) * saturationBoost
+    g = avgColor + (g - avgColor) * saturationBoost
+    b = avgColor + (b - avgColor) * saturationBoost
+  }
+
+  // 亮度调整：保持合适的可见度但不过度提亮
   const maxChannel = Math.max(r, g, b)
-  if (maxChannel > 0.01 && maxChannel < 0.7) {
-    // 将最亮通道提升到0.85，保持色彩比例
-    const scale = 0.85 / maxChannel
+
+  // 对于较暗的颜色，适度提亮以便观察
+  // 但保持较低透过率时的暗色调（如一级黑/灰）
+  if (maxChannel > 0.01 && maxChannel < 0.5) {
+    // 根据原始亮度调整提亮程度
+    const targetMax = 0.5 + luminance * 0.4
+    const scale = targetMax / maxChannel
+    r *= scale
+    g *= scale
+    b *= scale
+  } else if (maxChannel > 1.0) {
+    // 防止过曝
+    const scale = 1.0 / maxChannel
     r *= scale
     g *= scale
     b *= scale
   }
+
+  // 应用gamma校正以获得更自然的颜色感知
+  const gamma = 1.0 / 2.2
+  r = Math.pow(Math.max(0, r), gamma)
+  g = Math.pow(Math.max(0, g), gamma)
+  b = Math.pow(Math.max(0, b), gamma)
 
   // 限制在有效范围内
   r = Math.max(0, Math.min(1, r))
@@ -463,8 +490,10 @@ function ColorDisplayPanel({
 
 // 主演示组件
 export function ChromaticDemo() {
-  const [thickness, setThickness] = useState(0.1)
-  const [birefringence, setBirefringence] = useState(0.01)
+  // 默认值设置为能显示明显干涉色的参数
+  // OPD = 0.05mm × 0.04 × 1000 = 2000nm ≈ 3.6λ (云母)
+  const [thickness, setThickness] = useState(0.05)
+  const [birefringence, setBirefringence] = useState(0.04)
   const [polarizerAngle, setPolarizerAngle] = useState(0)
   const [analyzerAngle, setAnalyzerAngle] = useState(90)
 
