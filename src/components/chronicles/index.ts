@@ -19,3 +19,6 @@ export { ChapterSelector } from './ChapterSelector'
 export { ScientistNetwork } from './ScientistNetwork'
 export { ConceptNetwork } from './ConceptNetwork'
 export { ExplorationMode } from './ExplorationMode'
+
+// Progressive Exploration Components - 渐进式探索组件
+export * from './exploration'

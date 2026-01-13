@@ -26,6 +26,9 @@ const DetectiveGamePage = lazy(() => import('@/pages/DetectiveGamePage'))
 const CoursePage = lazy(() => import('@/pages/CoursePage'))
 const LearningHubPage = lazy(() => import('@/pages/LearningHubPage'))
 
+// Light Explorer - 渐进式探索光学编年史
+const LightExplorerPage = lazy(() => import('@/pages/LightExplorerPage'))
+
 // Exploration Pages - 问题驱动的探索系统
 const ExplorePage = lazy(() => import('@/pages/ExplorePage'))
 const ExplorationNodePage = lazy(() => import('@/pages/ExplorationNodePage'))
@@ -77,7 +80,13 @@ export function App() {
         <Route path="/demos/:demoId" element={<DemosPage />} />
         <Route path="/hardware" element={<HardwarePage />} />
         <Route path="/merchandise" element={<MerchandisePage />} />
-        <Route path="/chronicles" element={<ChroniclesPage />} />
+
+        {/* Chronicles - 光的编年史 */}
+        {/* 新版渐进式探索入口 (默认) */}
+        <Route path="/chronicles" element={<LightExplorerPage />} />
+        {/* 完整版编年史 (高级用户) */}
+        <Route path="/chronicles/full" element={<ChroniclesPage />} />
+
         <Route path="/course" element={<CoursePage />} />
         <Route path="/learn" element={<LearningHubPage />} />
         <Route path="/lab" element={<LabPage />} />

@@ -21,6 +21,7 @@ export { MuellerCalculatorPage } from './MuellerCalculatorPage'
 export { DetectiveGamePage } from './DetectiveGamePage'
 export { CoursePage } from './CoursePage'
 export { default as LearningHubPage } from './LearningHubPage'
+export { default as LightExplorerPage } from './LightExplorerPage'
 
 // Exploration pages - 问题驱动的探索系统
 export { default as ExplorePage } from './ExplorePage'
