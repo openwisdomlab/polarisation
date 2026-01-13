@@ -230,6 +230,123 @@
       "screenPolarizer": "屏幕+偏振片",
       "screenPolarizerDesc": "在屏幕前旋转偏振片"
     },
+    "keyExperiment": "核心实验",
+    "resType": {
+      "demo": "演示",
+      "experiment": "实验",
+      "history": "历史",
+      "game": "游戏",
+      "tool": "工具"
+    },
+    "res": {
+      "lightWave": "光波演示",
+      "polarIntro": "偏振入门",
+      "birefringence": "双折射",
+      "calciteHistory": "冰洲石的发现",
+      "malus": "马吕斯定律",
+      "malusExp": "马吕斯实验",
+      "malusHistory": "马吕斯的故事",
+      "gameLevel0": "入门关卡",
+      "fresnel": "菲涅尔公式",
+      "brewster": "布儒斯特角",
+      "brewsterExp": "反射偏振实验",
+      "chromatic": "色偏振",
+      "anisotropy": "应力双折射",
+      "stressExp": "色偏振实验",
+      "opticalRotation": "旋光现象",
+      "sugarExp": "糖水彩虹实验",
+      "rayleigh": "瑞利散射",
+      "mie": "米氏散射",
+      "monteCarlo": "蒙特卡洛模拟",
+      "stokes": "Stokes矢量",
+      "mueller": "Mueller矩阵",
+      "stokesCalc": "Stokes计算器",
+      "muellerCalc": "Mueller计算器",
+      "jones": "Jones矩阵",
+      "jonesCalc": "Jones计算器",
+      "poincare": "庞加莱球",
+      "microscopy": "偏振显微镜"
+    },
+    "units": {
+      "unit1": {
+        "title": "光的偏振态及其调制和测量",
+        "subtitle": "从冰洲石到马吕斯定律",
+        "description": "从1669年巴多林发现冰洲石双像开始，探索光的偏振性质、偏振器件和偏振态测量的基础知识。",
+        "keyExp": "冰洲石双折射实验",
+        "s1": {
+          "title": "光的基本特征",
+          "desc": "横波概念和光的折射"
+        },
+        "s2": {
+          "title": "冰洲石与双折射",
+          "desc": "o光、e光与折射率椭球"
+        },
+        "s3": {
+          "title": "偏振器件与马吕斯定律",
+          "desc": "起偏/检偏器件和偏振态测量"
+        }
+      },
+      "unit2": {
+        "title": "界面反射的偏振特征",
+        "subtitle": "菲涅尔公式与布儒斯特角",
+        "description": "学习界面反射时s偏振和p偏振的不同行为，理解菲涅尔公式和布儒斯特角的物理意义与应用。",
+        "keyExp": "布儒斯特角测量实验",
+        "s1": {
+          "title": "菲涅尔公式",
+          "desc": "垂直和平行入射面反射光的定量计算"
+        },
+        "s2": {
+          "title": "布儒斯特角",
+          "desc": "平行入射面光反射为零的特殊角度"
+        }
+      },
+      "unit3": {
+        "title": "透明介质的偏振特征",
+        "subtitle": "色偏振与旋光效应",
+        "description": "探索透明介质的双折射和旋光性，理解应力分析、糖浓度测量等实际应用背后的物理原理。",
+        "keyExp": "色偏振与应力分析实验",
+        "s1": {
+          "title": "色偏振",
+          "desc": "双折射对线偏振光的调制及颜色产生"
+        },
+        "s2": {
+          "title": "旋光",
+          "desc": "糖分子手性与偏振面旋转"
+        }
+      },
+      "unit4": {
+        "title": "浑浊介质的偏振特征",
+        "subtitle": "从蓝天到白云的散射偏振",
+        "description": "了解颗粒物散射的光谱和偏振特征，解释蓝天、红霞、白云等自然现象，学习蒙特卡洛光子模拟。",
+        "keyExp": "纳米微球模拟蓝天实验",
+        "s1": {
+          "title": "颗粒物散射的光谱特征",
+          "desc": "瑞利散射与米氏散射"
+        },
+        "s2": {
+          "title": "颗粒物散射的偏振特征",
+          "desc": "散射角度与偏振度的关系"
+        }
+      },
+      "unit5": {
+        "title": "全偏振光学技术",
+        "subtitle": "Stokes、Mueller与前沿应用",
+        "description": "学习完整描述偏振态和偏振变换的数学工具，了解全偏振成像在海洋、生医、材料等领域的前沿应用。",
+        "keyExp": "Mueller矩阵成像演示",
+        "s1": {
+          "title": "偏振态的完整表征",
+          "desc": "Stokes矢量与Mueller矩阵"
+        },
+        "s2": {
+          "title": "Jones矩阵与庞加莱球",
+          "desc": "相干光偏振态的几何表示"
+        },
+        "s3": {
+          "title": "全偏振成像技术",
+          "desc": "偏振显微镜与Mueller成像"
+        }
+      }
+    },
     "courseOutline": {
       "title": "课程大纲",
       "badge": "PSRT课程",

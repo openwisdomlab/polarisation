@@ -230,6 +230,123 @@
       "screenPolarizer": "Screen + Polarizer",
       "screenPolarizerDesc": "Rotate a polarizer over screen"
     },
+    "keyExperiment": "Key Experiment",
+    "resType": {
+      "demo": "Demo",
+      "experiment": "Exp",
+      "history": "History",
+      "game": "Game",
+      "tool": "Tool"
+    },
+    "res": {
+      "lightWave": "Light Wave",
+      "polarIntro": "Polarization Intro",
+      "birefringence": "Birefringence",
+      "calciteHistory": "Discovery of Calcite",
+      "malus": "Malus's Law",
+      "malusExp": "Malus Experiment",
+      "malusHistory": "Malus's Story",
+      "gameLevel0": "Tutorial Level",
+      "fresnel": "Fresnel Equations",
+      "brewster": "Brewster's Angle",
+      "brewsterExp": "Reflection Experiment",
+      "chromatic": "Chromatic Polarization",
+      "anisotropy": "Stress Birefringence",
+      "stressExp": "Stress Analysis",
+      "opticalRotation": "Optical Rotation",
+      "sugarExp": "Sugar Rainbow",
+      "rayleigh": "Rayleigh Scattering",
+      "mie": "Mie Scattering",
+      "monteCarlo": "Monte Carlo",
+      "stokes": "Stokes Vector",
+      "mueller": "Mueller Matrix",
+      "stokesCalc": "Stokes Calculator",
+      "muellerCalc": "Mueller Calculator",
+      "jones": "Jones Matrix",
+      "jonesCalc": "Jones Calculator",
+      "poincare": "Poincare Sphere",
+      "microscopy": "Polarimetric Microscopy"
+    },
+    "units": {
+      "unit1": {
+        "title": "Polarization States & Measurement",
+        "subtitle": "From Calcite to Malus's Law",
+        "description": "Starting from Bartholin's discovery of calcite double images in 1669, explore the basics of light polarization, polarizing devices, and polarization measurement.",
+        "keyExp": "Calcite Birefringence",
+        "s1": {
+          "title": "Light Fundamentals",
+          "desc": "Transverse waves and refraction"
+        },
+        "s2": {
+          "title": "Calcite & Birefringence",
+          "desc": "o-ray, e-ray and index ellipsoid"
+        },
+        "s3": {
+          "title": "Polarizers & Malus's Law",
+          "desc": "Polarizing devices and measurement"
+        }
+      },
+      "unit2": {
+        "title": "Interface Reflection Polarization",
+        "subtitle": "Fresnel Equations & Brewster's Angle",
+        "description": "Learn how s-polarized and p-polarized light behave differently at interfaces, understand Fresnel equations and Brewster's angle.",
+        "keyExp": "Brewster Angle Measurement",
+        "s1": {
+          "title": "Fresnel Equations",
+          "desc": "Quantitative reflection calculation"
+        },
+        "s2": {
+          "title": "Brewster's Angle",
+          "desc": "Zero p-polarized reflection"
+        }
+      },
+      "unit3": {
+        "title": "Transparent Media Polarization",
+        "subtitle": "Chromatic Polarization & Optical Rotation",
+        "description": "Explore birefringence and optical rotation in transparent media, understand stress analysis and concentration measurement applications.",
+        "keyExp": "Chromatic Polarization & Stress",
+        "s1": {
+          "title": "Chromatic Polarization",
+          "desc": "Birefringence modulation and colors"
+        },
+        "s2": {
+          "title": "Optical Rotation",
+          "desc": "Molecular chirality and rotation"
+        }
+      },
+      "unit4": {
+        "title": "Turbid Media Polarization",
+        "subtitle": "Scattering from Blue Sky to White Clouds",
+        "description": "Understand spectral and polarization features of particle scattering, explain natural phenomena like blue sky and red sunset, learn Monte Carlo simulation.",
+        "keyExp": "Simulating Blue Sky",
+        "s1": {
+          "title": "Scattering Spectral Features",
+          "desc": "Rayleigh and Mie scattering"
+        },
+        "s2": {
+          "title": "Scattering Polarization Features",
+          "desc": "Angle vs polarization degree"
+        }
+      },
+      "unit5": {
+        "title": "Full Polarimetric Techniques",
+        "subtitle": "Stokes, Mueller & Frontier Applications",
+        "description": "Learn complete mathematical tools for polarization description, explore full polarimetric imaging in ocean, biomedical, and materials applications.",
+        "keyExp": "Mueller Matrix Imaging",
+        "s1": {
+          "title": "Complete Polarization Description",
+          "desc": "Stokes vector and Mueller matrix"
+        },
+        "s2": {
+          "title": "Jones Matrix & Poincare Sphere",
+          "desc": "Geometric representation"
+        },
+        "s3": {
+          "title": "Full Polarimetric Imaging",
+          "desc": "Polarimetric microscopy & imaging"
+        }
+      }
+    },
     "courseOutline": {
       "title": "Course Outline",
       "badge": "PSRT Course",
