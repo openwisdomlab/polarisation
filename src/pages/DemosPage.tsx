@@ -1779,6 +1779,8 @@ export function DemosPage() {
   }, [urlDemoId, searchParams, activeDemo, navigate])
 
   // Tab-based deep linking - allows /demos/chromatic?tab=experiment
+  // P0 改动：默认所有卡片折叠，减少信息过载
+  // 学习者可根据需要点击展开感兴趣的内容
   const getInitialExpandedCards = (): Record<string, boolean> => {
     const tabParam = searchParams.get('tab')
     const validTabs = ['lifeScene', 'physics', 'experiment', 'frontier', 'diy']
@@ -1791,8 +1793,10 @@ export function DemosPage() {
         diy: tabParam === 'diy',
       }
     }
+    // 信息减负策略：默认所有卡片折叠
+    // 让学习者专注于演示本身，需要时再展开详细信息
     return {
-      lifeScene: true,  // Life scene card expanded by default
+      lifeScene: false,
       physics: false,
       experiment: false,
       frontier: false,
