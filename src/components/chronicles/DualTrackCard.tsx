@@ -10,14 +10,13 @@ import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 import {
   ChevronDown, ChevronUp, BookOpen,
-  ArrowRight, Lightbulb, Star, Camera, Film, HelpCircle,
+  ArrowRight, Lightbulb, Star, HelpCircle,
   Play, FlaskConical, GraduationCap
 } from 'lucide-react'
 import { Badge } from '@/components/shared'
 import { CATEGORY_LABELS, ILLUSTRATION_TO_DEMO_MAP, ILLUSTRATION_TO_BENCH_MAP } from '@/data/chronicles-constants'
 import type { TimelineEvent } from '@/data/timeline-events'
 import { ExperimentIllustration } from './ExperimentIllustration'
-import { ResourceGallery } from './ResourceGallery'
 import { getDemosByEvent, UNIT_INFO } from '@/data/course-event-mapping'
 
 export interface DualTrackCardProps {
@@ -78,17 +77,6 @@ export function DualTrackCard({ event, eventIndex, isExpanded, onToggle, onReadS
             <Badge color={category.color} className="text-xs">
               {isZh ? category.zh : category.en}
             </Badge>
-            {event.experimentalResources && (
-              <span className={cn(
-                'inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs font-medium',
-                theme === 'dark'
-                  ? 'bg-purple-500/20 text-purple-300'
-                  : 'bg-purple-100 text-purple-600'
-              )} title={isZh ? '含实验资源' : 'Has experiment resources'}>
-                <Camera className="w-3 h-3" />
-                <Film className="w-3 h-3" />
-              </span>
-            )}
             {event.importance === 1 && (
               <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
             )}
@@ -216,15 +204,6 @@ export function DualTrackCard({ event, eventIndex, isExpanded, onToggle, onReadS
             </div>
           )}
 
-          {/* Compact Resource Gallery - 紧凑资源画廊 */}
-          {event.experimentalResources && (
-            <ResourceGallery
-              resources={event.experimentalResources}
-              isZh={isZh}
-              theme={theme}
-              compact
-            />
-          )}
 
           {/* 关联课程模块 */}
           {relatedDemos.length > 0 && (

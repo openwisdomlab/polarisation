@@ -34,11 +34,9 @@ import {
   Calculator,
   Compass,
   Target,
-  Beaker,
   Atom,
   Eye,
   Clock,
-  Palette,
   Users,
 } from 'lucide-react'
 
@@ -79,6 +77,10 @@ interface CourseUnit {
   titleKey: string
   subtitleKey: string
   descriptionKey: string
+  coreQuestion?: string // P-SRT 核心问题
+  coreQuestionEn?: string
+  scenario?: string // 情景导入
+  scenarioEn?: string
   icon: React.ReactNode
   color: string
   gradient: string
@@ -90,7 +92,7 @@ interface CourseUnit {
   }
 }
 
-// 5个单元课程数据
+// 5个单元课程数据 - P-SRT 风格
 const COURSE_UNITS: CourseUnit[] = [
   {
     // 第一单元：光的偏振态及其调制和测量
@@ -99,6 +101,10 @@ const COURSE_UNITS: CourseUnit[] = [
     titleKey: 'home.units.unit1.title',
     subtitleKey: 'home.units.unit1.subtitle',
     descriptionKey: 'home.units.unit1.description',
+    coreQuestion: '透过冰洲石看字，为什么会看到两个像？',
+    coreQuestionEn: 'Why do we see double images through Iceland spar?',
+    scenario: '1669年，巴多林意外发现冰洲石的奇异现象，开启了偏振光学的大门...',
+    scenarioEn: 'In 1669, Bartholin discovered the strange phenomenon of Iceland spar...',
     icon: <Lightbulb className="w-5 h-5" />,
     color: '#22D3EE',
     gradient: 'from-cyan-500 to-blue-500',
@@ -144,6 +150,10 @@ const COURSE_UNITS: CourseUnit[] = [
     titleKey: 'home.units.unit2.title',
     subtitleKey: 'home.units.unit2.subtitle',
     descriptionKey: 'home.units.unit2.description',
+    coreQuestion: '为什么偏振太阳镜能减少路面的刺眼反光？',
+    coreQuestionEn: 'Why can polarized sunglasses reduce glare from road surfaces?',
+    scenario: '马吕斯用冰洲石观察卢森堡宫玻璃窗反射的落日，发现旋转晶体时，两个太阳像变成一个...',
+    scenarioEn: 'Malus observed the sunset reflected from palace windows through Iceland spar...',
     icon: <Zap className="w-5 h-5" />,
     color: '#A78BFA',
     gradient: 'from-violet-500 to-purple-500',
@@ -178,6 +188,10 @@ const COURSE_UNITS: CourseUnit[] = [
     titleKey: 'home.units.unit3.title',
     subtitleKey: 'home.units.unit3.subtitle',
     descriptionKey: 'home.units.unit3.description',
+    coreQuestion: '玻璃幕墙边角为什么会出现彩色图案？糖水为什么能让偏振光旋转？',
+    coreQuestionEn: 'Why do colorful patterns appear at glass curtain wall corners? Why does sugar water rotate polarized light?',
+    scenario: '透过偏振片观察塑料袋、保鲜膜，你会发现意想不到的彩虹色...',
+    scenarioEn: 'Look at plastic bags through a polarizer and discover unexpected rainbow colors...',
     icon: <Layers className="w-5 h-5" />,
     color: '#F59E0B',
     gradient: 'from-amber-500 to-orange-500',
@@ -202,7 +216,6 @@ const COURSE_UNITS: CourseUnit[] = [
         descKey: 'home.units.unit3.s2.desc',
         resources: [
           { type: 'demo', id: 'optical-rotation', titleKey: 'home.res.opticalRotation', link: '/demos/optical-rotation', icon: <Compass className="w-4 h-4" /> },
-          { type: 'experiment', id: 'sugar-exp', titleKey: 'home.res.sugarExp', link: '/experiments?exp=sugar', icon: <Beaker className="w-4 h-4" /> },
         ],
       },
     ],
@@ -214,6 +227,10 @@ const COURSE_UNITS: CourseUnit[] = [
     titleKey: 'home.units.unit4.title',
     subtitleKey: 'home.units.unit4.subtitle',
     descriptionKey: 'home.units.unit4.description',
+    coreQuestion: '天空为什么是蓝色的？夕阳为什么是红色的？云为什么是白色的？',
+    coreQuestionEn: 'Why is the sky blue? Why are sunsets red? Why are clouds white?',
+    scenario: '仰望蓝天，你其实在看偏振光——只是肉眼察觉不到...',
+    scenarioEn: 'Looking up at the blue sky, you are actually seeing polarized light...',
     icon: <Sun className="w-5 h-5" />,
     color: '#EC4899',
     gradient: 'from-pink-500 to-rose-500',
@@ -249,6 +266,10 @@ const COURSE_UNITS: CourseUnit[] = [
     titleKey: 'home.units.unit5.title',
     subtitleKey: 'home.units.unit5.subtitle',
     descriptionKey: 'home.units.unit5.description',
+    coreQuestion: '如何完整描述光的偏振状态？如何用偏振揭示物质的微观结构？',
+    coreQuestionEn: 'How to fully describe polarization states? How to reveal microstructure with polarization?',
+    scenario: '从Stokes矢量到Mueller矩阵，偏振测量成为探索物质世界的强大工具...',
+    scenarioEn: 'From Stokes vectors to Mueller matrices, polarimetry becomes a powerful tool...',
     icon: <Microscope className="w-5 h-5" />,
     color: '#8B5CF6',
     gradient: 'from-violet-600 to-indigo-600',
@@ -374,7 +395,8 @@ function UnitCard({
   onToggle: () => void
   completedDemos: string[]
 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const isZh = i18n.language === 'zh'
 
   // 计算进度
   const allResources = unit.sections.flatMap(s => s.resources.filter(r => r.type === 'demo'))
@@ -466,9 +488,41 @@ function UnitCard({
           'px-4 pb-4 border-t',
           theme === 'dark' ? 'border-slate-700/50' : 'border-gray-100'
         )}>
+          {/* P-SRT 核心问题 */}
+          {unit.coreQuestion && (
+            <div className={cn(
+              'mt-3 p-3 rounded-xl border-l-4',
+              theme === 'dark'
+                ? 'bg-cyan-900/20 border-cyan-500'
+                : 'bg-cyan-50 border-cyan-500'
+            )}>
+              <div className="flex items-start gap-2">
+                <span className="text-lg">🤔</span>
+                <div>
+                  <p className={cn(
+                    'text-sm font-medium italic',
+                    theme === 'dark' ? 'text-cyan-300' : 'text-cyan-700'
+                  )}>
+                    {isZh ? unit.coreQuestion : unit.coreQuestionEn}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 情景导入 */}
+          {unit.scenario && (
+            <p className={cn(
+              'text-sm mt-3 mb-3 italic',
+              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+            )}>
+              {isZh ? unit.scenario : unit.scenarioEn}
+            </p>
+          )}
+
           {/* 单元描述 */}
           <p className={cn(
-            'text-sm mt-3 mb-4',
+            'text-sm mb-4',
             theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
           )}>
             {t(unit.descriptionKey)}
@@ -626,15 +680,6 @@ interface QuickNavItem {
 
 const QUICK_NAV_ITEMS: QuickNavItem[] = [
   {
-    id: 'demos',
-    titleKey: 'home.quick.demos',
-    descKey: 'home.formulaLab.subtitle',
-    icon: <Eye className="w-5 h-5" />,
-    link: '/demos',
-    color: '#22D3EE',
-    gradient: 'from-cyan-500 to-blue-500',
-  },
-  {
     id: 'calc',
     titleKey: 'home.quick.calc',
     descKey: 'home.formulaLab.subtitle',
@@ -642,15 +687,6 @@ const QUICK_NAV_ITEMS: QuickNavItem[] = [
     link: '/calc',
     color: '#8B5CF6',
     gradient: 'from-violet-500 to-purple-500',
-  },
-  {
-    id: 'experiments',
-    titleKey: 'home.quick.experiments',
-    descKey: 'home.creativeLab.subtitle',
-    icon: <Palette className="w-5 h-5" />,
-    link: '/experiments',
-    color: '#10B981',
-    gradient: 'from-emerald-500 to-teal-500',
   },
   {
     id: 'lab',
@@ -661,10 +697,89 @@ const QUICK_NAV_ITEMS: QuickNavItem[] = [
     color: '#6366F1',
     gradient: 'from-indigo-500 to-blue-500',
   },
+  // Note: 偏振造物局 (experiments) is hidden - module not ready
 ]
+
+// 偏振演示馆 - 核心入口组件
+function DemoGalleryHero({ theme }: { theme: 'dark' | 'light' }) {
+  const { i18n } = useTranslation()
+  const isZh = i18n.language === 'zh'
+
+  return (
+    <div className="mb-8">
+      <Link
+        to="/demos"
+        className={cn(
+          'group block relative overflow-hidden rounded-2xl border-2 p-6 transition-all hover:scale-[1.01]',
+          theme === 'dark'
+            ? 'bg-gradient-to-br from-cyan-900/30 via-slate-800/80 to-blue-900/30 border-cyan-500/30 hover:border-cyan-400/50'
+            : 'bg-gradient-to-br from-cyan-50 via-white to-blue-50 border-cyan-200 hover:border-cyan-400'
+        )}
+      >
+        {/* 背景装饰 */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className={cn(
+            'absolute -top-1/2 -right-1/4 w-96 h-96 rounded-full blur-3xl',
+            theme === 'dark' ? 'bg-cyan-500/10' : 'bg-cyan-300/20'
+          )} />
+          <div className={cn(
+            'absolute -bottom-1/2 -left-1/4 w-96 h-96 rounded-full blur-3xl',
+            theme === 'dark' ? 'bg-blue-500/10' : 'bg-blue-300/20'
+          )} />
+        </div>
+
+        <div className="relative flex items-center gap-6">
+          {/* 图标 */}
+          <div className={cn(
+            'flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center',
+            'bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25'
+          )}>
+            <Eye className="w-8 h-8 text-white" />
+          </div>
+
+          {/* 内容 */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h2 className={cn(
+                'text-xl font-bold',
+                theme === 'dark' ? 'text-white' : 'text-gray-900'
+              )}>
+                {isZh ? '偏振演示馆' : 'Polarization Demo Gallery'}
+              </h2>
+              <span className={cn(
+                'text-xs px-2 py-0.5 rounded-full font-medium',
+                theme === 'dark'
+                  ? 'bg-cyan-500/20 text-cyan-400'
+                  : 'bg-cyan-100 text-cyan-700'
+              )}>
+                {isZh ? '核心模块' : 'Core Module'}
+              </span>
+            </div>
+            <p className={cn(
+              'text-sm',
+              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+            )}>
+              {isZh
+                ? '20+ 交互式演示，探索偏振光的奇妙世界。从基础概念到前沿应用，边玩边学。'
+                : '20+ interactive demos to explore the fascinating world of polarized light. Learn by doing, from basics to cutting-edge applications.'}
+            </p>
+          </div>
+
+          {/* 箭头 */}
+          <ArrowRight className={cn(
+            'w-6 h-6 flex-shrink-0 transition-transform group-hover:translate-x-2',
+            theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'
+          )} />
+        </div>
+      </Link>
+    </div>
+  )
+}
 
 function QuickNavigation({ theme }: { theme: 'dark' | 'light' }) {
   const { t } = useTranslation()
+  const { i18n } = useTranslation()
+  const isZh = i18n.language === 'zh'
 
   return (
     <div className="mb-8">
@@ -676,11 +791,11 @@ function QuickNavigation({ theme }: { theme: 'dark' | 'light' }) {
           'text-lg font-bold',
           theme === 'dark' ? 'text-white' : 'text-gray-900'
         )}>
-          {t('home.quickAccess')}
+          {isZh ? '学习工具' : 'Learning Tools'}
         </h2>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         {QUICK_NAV_ITEMS.map((item) => (
           <Link
             key={item.id}
@@ -1175,7 +1290,10 @@ export function HomePage() {
         {/* 知识棱镜 - 光学全景图 */}
         <OpticalOverviewDiagram />
 
-        {/* 快捷导航 */}
+        {/* 偏振演示馆 - 核心入口 */}
+        <DemoGalleryHero theme={theme} />
+
+        {/* 学习工具 */}
         <QuickNavigation theme={theme} />
 
         {/* 历史时间线 (可折叠) */}
@@ -1222,7 +1340,7 @@ export function HomePage() {
           'mt-12 text-center text-xs',
           theme === 'dark' ? 'text-gray-600' : 'text-gray-500'
         )}>
-          <p className="opacity-60">© 2025 深圳零一学院 · {t('home.chronicles.title')}</p>
+          <p className="opacity-60">© 2025 开放智慧实验室 Open Wisdom Lab</p>
         </footer>
       </main>
     </div>
