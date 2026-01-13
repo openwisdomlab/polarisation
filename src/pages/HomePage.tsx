@@ -37,11 +37,9 @@ import {
   Beaker,
   Atom,
   Eye,
-  Gamepad2,
   Clock,
   Palette,
   Users,
-  Wrench,
 } from 'lucide-react'
 
 // Chronicles components
@@ -134,9 +132,7 @@ const COURSE_UNITS: CourseUnit[] = [
         descKey: 'home.units.unit1.s3.desc',
         resources: [
           { type: 'demo', id: 'malus', titleKey: 'home.res.malus', link: '/demos/malus', icon: <Target className="w-4 h-4" /> },
-          { type: 'experiment', id: 'malus-exp', titleKey: 'home.res.malusExp', link: '/optical-studio?exp=malus', icon: <FlaskConical className="w-4 h-4" /> },
           { type: 'history', id: 'malus-history', titleKey: 'home.res.malusHistory', link: '/chronicles?topic=malus', icon: <History className="w-4 h-4" /> },
-          { type: 'game', id: 'game-level0', titleKey: 'home.res.gameLevel0', link: '/games/2d?level=0', icon: <Gamepad2 className="w-4 h-4" /> },
         ],
       },
     ],
@@ -171,7 +167,6 @@ const COURSE_UNITS: CourseUnit[] = [
         descKey: 'home.units.unit2.s2.desc',
         resources: [
           { type: 'demo', id: 'brewster', titleKey: 'home.res.brewster', link: '/demos/brewster', icon: <Zap className="w-4 h-4" /> },
-          { type: 'experiment', id: 'brewster-exp', titleKey: 'home.res.brewsterExp', link: '/optical-studio?exp=brewster', icon: <FlaskConical className="w-4 h-4" /> },
         ],
       },
     ],
@@ -199,7 +194,6 @@ const COURSE_UNITS: CourseUnit[] = [
         resources: [
           { type: 'demo', id: 'chromatic', titleKey: 'home.res.chromatic', link: '/demos/chromatic', icon: <Sparkles className="w-4 h-4" /> },
           { type: 'demo', id: 'anisotropy', titleKey: 'home.res.anisotropy', link: '/demos/anisotropy', icon: <Layers className="w-4 h-4" /> },
-          { type: 'experiment', id: 'stress-exp', titleKey: 'home.res.stressExp', link: '/optical-studio?exp=stress', icon: <FlaskConical className="w-4 h-4" /> },
         ],
       },
       {
@@ -593,9 +587,9 @@ function CourseBannerHero({ theme }: { theme: 'dark' | 'light' }) {
           </span>
         </div>
 
-        {/* 主标题 - 光的编年史 */}
+        {/* 主标题 - 偏振光下的新世界 */}
         <h1 className={cn(
-          'text-3xl sm:text-4xl md:text-5xl font-black tracking-tight mb-4',
+          'text-3xl sm:text-4xl md:text-5xl font-black tracking-tight mb-6',
           'text-transparent bg-clip-text',
           theme === 'dark'
             ? 'bg-gradient-to-br from-white via-cyan-200 to-violet-300'
@@ -604,37 +598,13 @@ function CourseBannerHero({ theme }: { theme: 'dark' | 'light' }) {
           {t('home.chronicles.title')}
         </h1>
 
-        {/* 副标题 */}
-        <p className={cn(
-          'text-lg sm:text-xl font-medium mb-3',
-          theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-        )}>
-          {t('home.dualNarrative.subtitle')}
-        </p>
-
         {/* 课程描述 */}
         <p className={cn(
-          'text-sm sm:text-base max-w-3xl mx-auto mb-6 leading-relaxed',
+          'text-sm sm:text-base max-w-4xl mx-auto leading-relaxed',
           theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
         )}>
           {t('home.courseBanner.description')}
         </p>
-
-        {/* 双轨图例 */}
-        <div className="flex justify-center gap-6 text-sm">
-          <div className="flex items-center gap-2">
-            <Sun className={cn('w-5 h-5', theme === 'dark' ? 'text-amber-400' : 'text-amber-600')} />
-            <span className={theme === 'dark' ? 'text-amber-400' : 'text-amber-600'}>
-              {t('home.dualNarrative.line1Title')}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Sparkles className={cn('w-5 h-5', theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600')} />
-            <span className={theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'}>
-              {t('home.dualNarrative.line2Title')}
-            </span>
-          </div>
-        </div>
       </div>
     </div>
   )
@@ -663,24 +633,6 @@ const QUICK_NAV_ITEMS: QuickNavItem[] = [
     link: '/demos',
     color: '#22D3EE',
     gradient: 'from-cyan-500 to-blue-500',
-  },
-  {
-    id: 'games',
-    titleKey: 'home.quick.games',
-    descKey: 'home.polarquest.subtitle',
-    icon: <Gamepad2 className="w-5 h-5" />,
-    link: '/games',
-    color: '#EC4899',
-    gradient: 'from-pink-500 to-rose-500',
-  },
-  {
-    id: 'opticalStudio',
-    titleKey: 'home.quick.opticalStudio',
-    descKey: 'home.opticalDesignStudio.subtitle',
-    icon: <Wrench className="w-5 h-5" />,
-    link: '/optical-studio',
-    color: '#F59E0B',
-    gradient: 'from-amber-500 to-orange-500',
   },
   {
     id: 'calc',

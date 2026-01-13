@@ -24,9 +24,9 @@
     "subtitle": "Interactive Polarization Optics Platform",
     "description": "Explore the fascinating world of polarized light through interactive demos, hands-on experiments, and engaging historical stories. From Malus's Law to birefringence, from basic concepts to cutting-edge applications — discover how polarized light shapes our understanding of the physical world.",
     "chronicles": {
-      "title": "Chronicles of Light",
-      "subtitle": "Historical Stories × Classic Experiments",
-      "description": "Dual narrative: left traces core discoveries in optics history, right follows the polarized light journey—ignite curiosity with stories, verify intuition with experiments.",
+      "title": "A New World Under Polarized Light",
+      "subtitle": "Gamified Education × Scientific Practice",
+      "description": "01 Academy Disruptive Innovation Challenge Camp course, a gamified education and scientific practice platform for polarization optics.",
       "cta": "Explore",
       "link1": "Malus's Discovery",
       "link2": "Recreate Malus's Law",
@@ -92,14 +92,14 @@
       "description": "This is a course from Shenzhen 01 Academy's Disruptive Innovation Challenge Camp, offering a gamified education and scientific practice platform for polarization optics. Content includes progressive course experiments with historical stories, polarization devices and basic optical paths, as well as fundamental theory and computational simulations. The platform also provides advanced features including gamified puzzle challenges, classroom showcase collections, and virtual research groups for participating in frontier scientific research. We invite everyone to make full use of this platform, experience 01 Academy's research-based learning approach, understand and utilize light polarization, and explore the wonderful world under polarized light."
     },
     "dualNarrative": {
-      "title": "Dual Narrative: Optics & Polarization",
-      "subtitle": "From Historical Discoveries to Modern Applications",
-      "description": "The left thread traces pivotal discoveries in the history of optics, while the right thread focuses on the unique journey of polarized light. Let stories ignite curiosity and experiments verify intuition, understanding the mysteries of light where both narratives interweave.",
+      "title": "Shenzhen 01 Academy Disruptive Innovation Challenge Camp",
+      "subtitle": "",
+      "description": "This course from Shenzhen 01 Academy provides a gamified education and scientific practice platform for polarization optics. Content includes progressive course experiments with historical stories, polarization devices and basic optical paths, as well as fundamental theory and computational simulations. The platform also provides advanced features including gamified puzzle challenges, classroom showcase collections, and virtual research groups for participating in frontier scientific research. We invite everyone to make full use of this platform, experience 01 Academy's research-based learning approach, understand and utilize light polarization, and explore the wonderful world under polarized light.",
       "line1Label": "Thread One",
       "line1Title": "History of Optics",
       "line2Label": "Thread Two",
       "line2Title": "Polarization Journey",
-      "exploreChronicles": "Explore Chronicles of Light"
+      "exploreChronicles": "Explore Historical Timeline"
     },
     "coursesSection": {
       "title": "Courses",
@@ -207,13 +207,13 @@
     "viewAll": "View All",
     "quickAccess": "Quick Access",
     "quick": {
-      "games": "Games",
-      "demos": "Demos",
-      "calc": "Calc",
-      "experiments": "Experiments",
-      "chronicles": "Chronicles",
-      "lab": "Lab",
-      "opticalStudio": "Optical Studio"
+      "games": "PolarQuest",
+      "demos": "Demo Gallery",
+      "calc": "Calculation Workshop",
+      "experiments": "Polarization Workshop",
+      "chronicles": "Chronicles of Light",
+      "lab": "Virtual Research Lab",
+      "opticalStudio": "Optical Design Studio"
     },
     "stats": {
       "completed": "Progress",
