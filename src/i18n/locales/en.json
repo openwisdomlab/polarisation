@@ -3965,6 +3965,7 @@
     "brewster": {
       "title": "Brewster's Angle Interactive Demo",
       "subtitle": "tan(θB) = n₂/n₁ — At this angle, reflected light is fully s-polarized",
+      "dynamicDemo": "Dynamic Demo",
       "air": "Air",
       "medium": "Medium",
       "normal": "Normal",
