@@ -706,10 +706,12 @@ export function ChromaticDemo() {
         </InfoCard>
       </div>
 
-      {/* 真实实验案例 */}
+      {/* 真实实验场景 - Hybrid Layout */}
       <RealExperimentMicroGallery
         relatedModules={['chromatic-polarization', 'birefringence', 'stress-analysis', 'interference']}
         includeCulturalArt={true}
+        layoutMode="hybrid"
+        featuredCount={3}
       />
     </div>
   )

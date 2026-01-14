@@ -7,7 +7,7 @@
 
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Play, X, ChevronLeft, ChevronRight, Eye, Sparkles } from 'lucide-react'
+import { Play, X, ChevronLeft, ChevronRight, Eye, Sparkles, Palette, FlaskConical, Lightbulb } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   getResourcesByModule,
@@ -17,6 +17,108 @@ import {
   getMediaByTag,
 } from '@/data/cultural-creations'
 import { TripleViewToggle } from './TripleViewToggle'
+import { CategoryCarousel } from './CategoryCarousel'
+
+// ===== Helper Functions =====
+
+interface ResourceCategory {
+  id: string
+  title: string
+  titleZh: string
+  description?: string
+  descriptionZh?: string
+  icon: React.ReactNode
+  resources: PolarizationResource[]
+}
+
+/**
+ * Auto-categorize resources based on their properties
+ */
+function categorizeResources(
+  resources: PolarizationResource[]
+): ResourceCategory[] {
+  const categories: ResourceCategory[] = []
+
+  // Category 1: Art Creations
+  const artResources = resources.filter(r => r.category === 'art')
+  if (artResources.length > 0) {
+    categories.push({
+      id: 'art',
+      title: 'Artistic Creations',
+      titleZh: '艺术创作系列',
+      description: 'Polarization art and creative explorations',
+      descriptionZh: '偏振光艺术与创意探索',
+      icon: <Palette className="w-5 h-5" />,
+      resources: artResources,
+    })
+  }
+
+  // Category 2: Setup & Equipment
+  const setupResources = resources.filter(
+    r =>
+      r.title.toLowerCase().includes('setup') ||
+      r.titleZh?.includes('装置') ||
+      r.titleZh?.includes('设备') ||
+      r.description?.toLowerCase().includes('apparatus') ||
+      r.descriptionZh?.includes('设备')
+  )
+  if (setupResources.length > 0) {
+    categories.push({
+      id: 'setup',
+      title: 'Experimental Setup',
+      titleZh: '实验装置',
+      description: 'Laboratory equipment and configurations',
+      descriptionZh: '实验室设备与配置',
+      icon: <FlaskConical className="w-5 h-5" />,
+      resources: setupResources,
+    })
+  }
+
+  // Category 3: Polarization Effects
+  const effectsResources = resources.filter(
+    r =>
+      !artResources.includes(r) &&
+      !setupResources.includes(r) &&
+      (r.category === 'birefringence' ||
+        r.category === 'interference' ||
+        r.category === 'stress' ||
+        r.metadata.polarizationSystem === 'parallel' ||
+        r.metadata.polarizationSystem === 'crossed')
+  )
+  if (effectsResources.length > 0) {
+    categories.push({
+      id: 'effects',
+      title: 'Polarization Effects',
+      titleZh: '偏振效应',
+      description: 'Observable polarization phenomena',
+      descriptionZh: '可观察的偏振现象',
+      icon: <Lightbulb className="w-5 h-5" />,
+      resources: effectsResources,
+    })
+  }
+
+  // Category 4: Videos (if any remaining)
+  const videoResources = resources.filter(
+    r =>
+      r.type === 'video' &&
+      !artResources.includes(r) &&
+      !setupResources.includes(r) &&
+      !effectsResources.includes(r)
+  )
+  if (videoResources.length > 0) {
+    categories.push({
+      id: 'videos',
+      title: 'Video Demonstrations',
+      titleZh: '视频演示',
+      description: 'Dynamic experimental recordings',
+      descriptionZh: '动态实验记录',
+      icon: <Play className="w-5 h-5" />,
+      resources: videoResources,
+    })
+  }
+
+  return categories
+}
 
 interface RealExperimentMicroGalleryProps {
   /** Related module IDs to filter resources */
@@ -27,6 +129,10 @@ interface RealExperimentMicroGalleryProps {
   initialShowCount?: number
   /** Include cultural creations (art) */
   includeCulturalArt?: boolean
+  /** Layout mode: 'grid' (default) or 'hybrid' (featured + carousels) */
+  layoutMode?: 'grid' | 'hybrid'
+  /** Number of featured items to show in hybrid mode */
+  featuredCount?: number
 }
 
 export function RealExperimentMicroGallery({
@@ -34,6 +140,8 @@ export function RealExperimentMicroGallery({
   title,
   initialShowCount = 6,
   includeCulturalArt = false,
+  layoutMode = 'grid',
+  featuredCount = 3,
 }: RealExperimentMicroGalleryProps) {
   const { i18n } = useTranslation()
   const isZh = i18n.language === 'zh'
@@ -69,7 +177,15 @@ export function RealExperimentMicroGallery({
       index === self.findIndex(r => r.id === resource.id)
   )
 
-  // Limit display count
+  // Categorize resources for hybrid layout
+  const categorizedResources = categorizeResources(allResources)
+
+  // Select featured items (highest quality/most representative)
+  const featuredResources = allResources
+    .filter(r => r.type === 'video' || r.category === 'art')
+    .slice(0, featuredCount)
+
+  // Limit display count for grid mode
   const displayResources = showAll
     ? allResources
     : allResources.slice(0, initialShowCount)
@@ -100,41 +216,91 @@ export function RealExperimentMicroGallery({
         <div className="flex items-center gap-2 text-cyan-400">
           <Sparkles className="w-5 h-5" />
           <h3 className="text-xl font-bold">
-            {title || (isZh ? '真实实验案例' : 'Real Experiments')}
+            {title || (isZh ? '真实实验场景' : 'Real Experiments')}
           </h3>
         </div>
         <div className="flex-1 h-px bg-gradient-to-r from-cyan-500/30 to-transparent" />
       </div>
 
       {/* Description */}
-      <p className="text-slate-400 text-sm mb-6">
+      <p className="text-slate-400 text-sm mb-8">
         {isZh
           ? '以下是与当前演示相关的真实实验照片和视频。点击查看详细的偏振系统对比。'
           : 'Real experiment photos and videos related to this demo. Click to view detailed polarization system comparisons.'}
       </p>
 
-      {/* Gallery Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
-        {displayResources.map((resource, index) => (
-          <ResourceThumbnail
-            key={resource.id}
-            resource={resource}
-            onClick={() => handleResourceClick(resource, index)}
-          />
-        ))}
-      </div>
+      {/* Conditional Layout Rendering */}
+      {layoutMode === 'hybrid' ? (
+        // Hybrid Layout: Featured + Categorized Carousels
+        <div className="space-y-12">
+          {/* Featured Section */}
+          {featuredResources.length > 0 && (
+            <section>
+              <h4 className="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-yellow-400" />
+                {isZh ? '精选实验' : 'Featured'}
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredResources.map((resource, index) => (
+                  <FeaturedCard
+                    key={resource.id}
+                    resource={resource}
+                    onClick={() => handleResourceClick(resource, index)}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
 
-      {/* Show More Button */}
-      {allResources.length > initialShowCount && !showAll && (
-        <button
-          onClick={() => setShowAll(true)}
-          className="w-full py-2 text-sm text-cyan-400 hover:text-cyan-300 transition-colors
-                     border border-cyan-500/30 rounded-lg hover:bg-cyan-500/5"
-        >
-          {isZh
-            ? `显示更多 (${allResources.length - initialShowCount} 项)`
-            : `Show More (${allResources.length - initialShowCount} items)`}
-        </button>
+          {/* Categorized Carousels */}
+          {categorizedResources.map(category => (
+            <CategoryCarousel
+              key={category.id}
+              title={category.title}
+              titleZh={category.titleZh}
+              description={category.description}
+              descriptionZh={category.descriptionZh}
+              icon={category.icon}
+              count={category.resources.length}
+              itemsPerView={5}
+              gap={16}
+            >
+              {category.resources.map((resource) => (
+                <ResourceThumbnail
+                  key={resource.id}
+                  resource={resource}
+                  onClick={() => handleResourceClick(resource, allResources.indexOf(resource))}
+                />
+              ))}
+            </CategoryCarousel>
+          ))}
+        </div>
+      ) : (
+        // Grid Layout (Original)
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
+            {displayResources.map((resource, index) => (
+              <ResourceThumbnail
+                key={resource.id}
+                resource={resource}
+                onClick={() => handleResourceClick(resource, index)}
+              />
+            ))}
+          </div>
+
+          {/* Show More Button */}
+          {allResources.length > initialShowCount && !showAll && (
+            <button
+              onClick={() => setShowAll(true)}
+              className="w-full py-2 text-sm text-cyan-400 hover:text-cyan-300 transition-colors
+                         border border-cyan-500/30 rounded-lg hover:bg-cyan-500/5"
+            >
+              {isZh
+                ? `显示更多 (${allResources.length - initialShowCount} 项)`
+                : `Show More (${allResources.length - initialShowCount} items)`}
+            </button>
+          )}
+        </>
       )}
 
       {/* Detail Modal */}
@@ -155,6 +321,69 @@ export function RealExperimentMicroGallery({
 }
 
 // ===== Sub-components =====
+
+interface FeaturedCardProps {
+  resource: PolarizationResource
+  onClick: () => void
+}
+
+function FeaturedCard({ resource, onClick }: FeaturedCardProps) {
+  const { i18n } = useTranslation()
+  const isZh = i18n.language === 'zh'
+  const isVideo = resource.type === 'video'
+
+  return (
+    <motion.button
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={onClick}
+      className="relative aspect-[4/3] rounded-xl overflow-hidden bg-slate-800
+                 border border-slate-700 hover:border-cyan-500/50 transition-all group"
+    >
+      {/* Thumbnail Image */}
+      <img
+        src={resource.thumbnail || resource.url}
+        alt={isZh ? resource.titleZh : resource.title}
+        className="w-full h-full object-cover"
+      />
+
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent">
+        <div className="absolute bottom-0 left-0 right-0 p-6">
+          <h4 className="text-white text-lg font-semibold mb-2">
+            {isZh ? resource.titleZh : resource.title}
+          </h4>
+          <p className="text-slate-300 text-sm line-clamp-2">
+            {isZh ? resource.descriptionZh : resource.description}
+          </p>
+        </div>
+      </div>
+
+      {/* Type Badge */}
+      <div className="absolute top-4 right-4">
+        {isVideo && (
+          <div className="bg-red-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2">
+            <Play className="w-4 h-4" />
+            {isZh ? '视频' : 'Video'}
+          </div>
+        )}
+        {resource.category === 'art' && (
+          <div className="bg-purple-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2">
+            <Palette className="w-4 h-4" />
+            {isZh ? '艺术' : 'Art'}
+          </div>
+        )}
+      </div>
+
+      {/* View Icon */}
+      <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="bg-black/50 backdrop-blur-sm p-2 rounded-lg">
+          <Eye className="w-5 h-5 text-white" />
+        </div>
+      </div>
+    </motion.button>
+  )
+}
 
 interface ResourceThumbnailProps {
   resource: PolarizationResource

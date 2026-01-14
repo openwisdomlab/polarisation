@@ -14,3 +14,7 @@ export {
   type ParameterCurve,
   type TimelinePoint,
 } from './TimelineSyncPlayer'
+
+// Phase 3: Hybrid Layout Components
+export { Carousel } from './Carousel'
+export { CategoryCarousel } from './CategoryCarousel'
