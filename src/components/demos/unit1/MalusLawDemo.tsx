@@ -13,9 +13,7 @@ import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { SliderControl, ControlPanel, InfoCard } from '../DemoControls'
 import { RealExperimentMicroGallery } from '@/components/real-experiments'
-
-// 难度级别类型
-type DifficultyLevel = 'foundation' | 'application' | 'research'
+import { DifficultyLevel } from '../DifficultyStrategy'
 
 // 组件属性接口
 interface MalusLawDemoProps {
@@ -372,7 +370,7 @@ function MalusCurveChart({ currentAngle, intensity }: { currentAngle: number; in
 }
 
 // 主组件
-export function MalusLawDemo({ difficultyLevel = 'application' }: MalusLawDemoProps) {
+export function MalusLawDemo({ difficultyLevel = 'explore' }: MalusLawDemoProps) {
   const { t } = useTranslation()
   const [angle, setAngle] = useState(30)
   const [incidentIntensity, setIncidentIntensity] = useState(1)
@@ -382,8 +380,8 @@ export function MalusLawDemo({ difficultyLevel = 'application' }: MalusLawDemoPr
   const [extinctionRatio, setExtinctionRatio] = useState(1000)
 
   // 判断是否为各难度级别
-  const isFoundation = difficultyLevel === 'foundation'
-  const isResearch = difficultyLevel === 'research'
+  const isFoundation = difficultyLevel === 'explore'
+  const isResearch = difficultyLevel === 'professional'
 
   // 计算透射强度 (考虑非理想偏振片的消光比)
   const cosTheta = Math.cos((angle * Math.PI) / 180)

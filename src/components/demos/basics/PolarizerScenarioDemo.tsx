@@ -40,7 +40,7 @@ const SCENARIO_ICONS: Record<string, React.ReactNode> = {
 }
 
 export function PolarizerScenarioDemo({
-  difficultyLevel = 'application',
+  difficultyLevel = 'explore',
 }: PolarizerScenarioDemoProps) {
   const { i18n } = useTranslation()
   const { theme } = useTheme()
@@ -79,7 +79,7 @@ export function PolarizerScenarioDemo({
   return (
     <div className="space-y-6">
       {/* === FOUNDATION MODE: Sandbox with Why Button === */}
-      <DifficultyGate level="foundation" currentLevel={difficultyLevel}>
+      <DifficultyGate level="explore" currentLevel={difficultyLevel}>
         <div className="space-y-6">
           {/* Large Interactive Visual */}
           <div className={cn(
@@ -127,7 +127,7 @@ export function PolarizerScenarioDemo({
       </DifficultyGate>
 
       {/* === APPLICATION MODE: Scenario Task === */}
-      <DifficultyGate level="application" currentLevel={difficultyLevel}>
+      <DifficultyGate level="explore" currentLevel={difficultyLevel}>
         <TaskModeWrapper
           taskTitle="Find the extinction angle"
           taskTitleZh="找到消光角"
@@ -284,7 +284,7 @@ export function PolarizerScenarioDemo({
       </DifficultyGate>
 
       {/* === RESEARCH MODE: Lab Controls with Raw Data === */}
-      <DifficultyGate level="research" currentLevel={difficultyLevel}>
+      <DifficultyGate level="professional" currentLevel={difficultyLevel}>
         <LabControls
           showJonesVectors={config.showJonesVectors}
           showMuellerMatrices={config.showMuellerMatrices}

@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import i18n from '@/i18n'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
-import { ListItem } from '@/components/demos/DemoControls'
+// ListItem removed - no longer needed after merging lifeScene and diy
 import { DemoErrorBoundary } from '@/components/demos/DemoErrorBoundary'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
 import { Palette, BookOpen, Box, BarChart2, Menu, X, ChevronDown, ChevronRight, Lightbulb, HelpCircle, Search, GraduationCap, ArrowLeft, ExternalLink, FileCode } from 'lucide-react'
@@ -18,7 +18,7 @@ import { useIsMobile } from '@/hooks/useIsMobile'
 import { PersistentHeader } from '@/components/shared/PersistentHeader'
 
 // Extracted SVG icons and diagrams
-import { LifeSceneIcon, DIYIcon, ResourcesIcon, MalusDiagram, BirefringenceDiagram, WaveplateDiagram, PolarizationStateDiagram, FresnelDiagram, BrewsterDiagram, ScatteringDiagram, StokesDiagram, MuellerDiagram, LightWaveDiagram } from '@/components/demos/icons'
+import { ResourcesIcon, MalusDiagram, BirefringenceDiagram, WaveplateDiagram, PolarizationStateDiagram, FresnelDiagram, BrewsterDiagram, ScatteringDiagram, StokesDiagram, MuellerDiagram, LightWaveDiagram } from '@/components/demos/icons'
 import { SEO } from '@/components/shared/SEO'
 
 // Demo components
@@ -41,7 +41,7 @@ import { PolarizationCalculatorDemo } from '@/components/demos/unit5/Polarizatio
 import { PolarimetricMicroscopyDemo } from '@/components/demos/unit5/PolarimetricMicroscopyDemo'
 
 // Optical Basics demos
-import { LIFE_SCENE_ILLUSTRATIONS } from '@/components/demos/LifeSceneIllustrations'
+// LIFE_SCENE_ILLUSTRATIONS removed - no longer needed after merging lifeScene and diy
 import { PolarizationIntroDemo } from '@/components/demos/basics/PolarizationIntroDemo'
 import { InteractiveOpticalBenchDemo } from '@/components/demos/basics/InteractiveOpticalBenchDemo'
 // Unified demos (merged versions)
@@ -128,9 +128,8 @@ const getQuestions = (
   difficultyLevel?: DifficultyLevel
 ): DemoQuestions | undefined => {
   try {
-    // Get the difficulty suffix for questions
-    const suffix = difficultyLevel === 'foundation' ? '_foundation' :
-                   difficultyLevel === 'research' ? '_research' : ''
+    // Get the difficulty suffix for questions (simplified two-tier system)
+    const suffix = difficultyLevel === 'professional' ? '_professional' : ''
 
     // Try to get difficulty-specific leading question first, fallback to default
     let leading = t(`${basePath}.questions.leading${suffix}`)
@@ -187,9 +186,8 @@ const getLifeScene = (
   difficultyLevel?: DifficultyLevel
 ): DemoInfo['lifeScene'] | undefined => {
   try {
-    // Get the difficulty suffix
-    const suffix = difficultyLevel === 'foundation' ? '_foundation' :
-                   difficultyLevel === 'research' ? '_research' : ''
+    // Get the difficulty suffix (simplified two-tier system)
+    const suffix = difficultyLevel === 'professional' ? '_professional' : ''
 
     // Try difficulty-specific title first, fallback to default
     let title = t(`${basePath}.lifeScene.title${suffix}`)
@@ -937,8 +935,8 @@ const getDemoInfo = (t: (key: string) => string, difficultyLevel?: DifficultyLev
   },
 })
 
-// 课程难度层级类型
-export type DifficultyLevel = 'foundation' | 'application' | 'research'
+// 课程难度层级类型 - Simplified to two levels
+export type DifficultyLevel = 'explore' | 'professional'
 
 // Props interface for demo components that support difficulty levels
 interface DemoComponentProps {
@@ -956,7 +954,7 @@ interface DemoItem {
 }
 
 // 搜索匹配结果接口 - 包含匹配位置信息
-type SearchSection = 'title' | 'description' | 'physics' | 'lifeScene' | 'experiment' | 'frontier' | 'diy' | 'questions'
+type SearchSection = 'title' | 'description' | 'physics' | 'lifeScene' | 'experiment' | 'frontier' | 'diy' | 'questions' | 'experience'
 
 interface SearchMatch {
   demo: DemoItem
@@ -978,6 +976,7 @@ const getSectionLabel = (section: SearchSection, t: (key: string) => string): st
     experiment: t('gallery.cards.experiment') || '实验应用',
     frontier: t('gallery.cards.frontier') || '前沿应用',
     diy: t('gallery.cards.diy') || '动手试试',
+    experience: t('gallery.cards.experience') || '体验偏振',
     questions: t('gallery.questions.title') || '探索前的思考'
   }
   return labels[section]
@@ -1008,7 +1007,7 @@ const getMatchContext = (text: string, query: string, contextLength: number = 50
   return result
 }
 
-// 难度级别配置 - 基于研究型学习模式的三层体系
+// 难度级别配置 - 简化为两层体系
 const DIFFICULTY_CONFIG: Record<DifficultyLevel, {
   color: string
   icon: string
@@ -1019,42 +1018,36 @@ const DIFFICULTY_CONFIG: Record<DifficultyLevel, {
   contentStyle: 'simple' | 'standard' | 'academic'
   showMathSymbols: boolean
   showDerivedFormulas: boolean
+  description: string
+  descriptionZh: string
 }> = {
-  foundation: {
-    color: 'green',
-    icon: '🌱', // 基础层 - 发芽成长
-    showFormula: false,
-    showAdvancedDetails: false,
-    maxPhysicsDetails: 2,
-    maxFrontierDetails: 1,
-    // PSRT: 问题驱动科研入门 - 激发兴趣,建立直觉
-    contentStyle: 'simple',
-    showMathSymbols: false,
-    showDerivedFormulas: false,
-  },
-  application: {
+  explore: {
     color: 'cyan',
-    icon: '🔬', // 应用层 - 实验探索
+    icon: '🔍', // 探索模式 - 交互式学习
     showFormula: true,
     showAdvancedDetails: false,
     maxPhysicsDetails: 3,
     maxFrontierDetails: 2,
-    // ESRT: 轮转研究训练 - 动手实践,理解应用
+    // 探索模式：交互式可视化 + 动手实验
     contentStyle: 'standard',
     showMathSymbols: true,
     showDerivedFormulas: false,
+    description: 'Interactive learning with hands-on experiments',
+    descriptionZh: '交互式学习，动手实验',
   },
-  research: {
+  professional: {
     color: 'purple',
-    icon: '🚀', // 研究层 - 前沿探索
+    icon: '🎓', // 专业模式 - 深入研究
     showFormula: true,
     showAdvancedDetails: true,
-    maxPhysicsDetails: 4,
+    maxPhysicsDetails: 5,
     maxFrontierDetails: 3,
-    // ORIC/SURF: 自主原创研究 - 深入前沿,自主创新
+    // 专业模式：完整数学推导 + 数据导出
     contentStyle: 'academic',
     showMathSymbols: true,
     showDerivedFormulas: true,
+    description: 'Full mathematical rigor and data export',
+    descriptionZh: '完整数学推导和数据导出',
   },
 }
 
@@ -1070,7 +1063,7 @@ function DifficultySelector({
   theme: string
   t: (key: string) => string
 }) {
-  const levels: DifficultyLevel[] = ['foundation', 'application', 'research']
+  const levels: DifficultyLevel[] = ['explore', 'professional']
   const [hoveredLevel, setHoveredLevel] = useState<DifficultyLevel | null>(null)
 
   return (
@@ -1155,7 +1148,7 @@ const DEMOS: DemoItem[] = [
     component: ElectromagneticWaveDemo,
     descriptionKey: 'basics.demos.emWave.description',
     visualType: '2D',
-    difficulty: 'foundation', // 电磁波可视化 + 波谱（统一演示）
+    difficulty: 'explore', // 电磁波可视化 + 波谱（统一演示）
   },
   {
     id: 'polarization-intro',
@@ -1164,7 +1157,7 @@ const DEMOS: DemoItem[] = [
     component: PolarizationIntroDemo,
     descriptionKey: 'basics.demos.polarizationIntro.description',
     visualType: '2D',
-    difficulty: 'foundation', // 初步认识偏振,生活场景引入
+    difficulty: 'explore', // 初步认识偏振,生活场景引入
   },
   // Unified: 偏振类型 + 三偏振片悖论 (merged into one comprehensive demo)
   {
@@ -1174,7 +1167,7 @@ const DEMOS: DemoItem[] = [
     component: PolarizationTypesUnifiedDemo,
     descriptionKey: 'basics.demos.polarizationTypesUnified.description',
     visualType: '2D',
-    difficulty: 'application', // 偏振类型 + 三偏振片悖论（统一演示）
+    difficulty: 'explore', // 偏振类型 + 三偏振片悖论（统一演示）
   },
   {
     id: 'optical-bench',
@@ -1183,7 +1176,7 @@ const DEMOS: DemoItem[] = [
     component: InteractiveOpticalBenchDemo,
     descriptionKey: 'basics.demos.opticalBench.description',
     visualType: '2D',
-    difficulty: 'application', // 交互式实验设计
+    difficulty: 'explore', // 交互式实验设计
   },
   // Legacy demos kept for backward compatibility (can be accessed directly)
   // Note: These are now included in unified demos above
@@ -1200,7 +1193,7 @@ const DEMOS: DemoItem[] = [
     component: PolarizationStateDemo,
     descriptionKey: 'demos.polarizationState.description',
     visualType: '3D',
-    difficulty: 'foundation', // 3D可视化偏振态,直观理解
+    difficulty: 'explore', // 3D可视化偏振态,直观理解
   },
   {
     id: 'malus',
@@ -1209,7 +1202,7 @@ const DEMOS: DemoItem[] = [
     component: MalusLawDemo,
     descriptionKey: 'demos.malus.description',
     visualType: '2D',
-    difficulty: 'application', // 定量测量,cos²公式应用
+    difficulty: 'explore', // 定量测量,cos²公式应用
   },
   {
     id: 'birefringence',
@@ -1218,7 +1211,7 @@ const DEMOS: DemoItem[] = [
     component: BirefringenceDemo,
     descriptionKey: 'demos.birefringence.description',
     visualType: '3D',
-    difficulty: 'application', // 冰洲石实验现象和原理
+    difficulty: 'explore', // 冰洲石实验现象和原理
   },
   {
     id: 'waveplate',
@@ -1227,7 +1220,7 @@ const DEMOS: DemoItem[] = [
     component: WaveplateDemo,
     descriptionKey: 'demos.waveplate.description',
     visualType: '3D',
-    difficulty: 'research', // 波片调制原理,相位差计算
+    difficulty: 'professional', // 波片调制原理,相位差计算
   },
   // Unit 2
   {
@@ -1237,7 +1230,7 @@ const DEMOS: DemoItem[] = [
     component: FresnelDemo,
     descriptionKey: 'demos.fresnel.description',
     visualType: '2D',
-    difficulty: 'research', // 复杂的菲涅尔公式推导
+    difficulty: 'professional', // 复杂的菲涅尔公式推导
   },
   {
     id: 'brewster',
@@ -1246,7 +1239,7 @@ const DEMOS: DemoItem[] = [
     component: BrewsterDemo,
     descriptionKey: 'demos.brewster.description',
     visualType: '2D',
-    difficulty: 'application', // 布儒斯特角测量实验
+    difficulty: 'explore', // 布儒斯特角测量实验
   },
   // Unit 3
   {
@@ -1256,7 +1249,7 @@ const DEMOS: DemoItem[] = [
     component: AnisotropyDemo,
     descriptionKey: 'demos.anisotropy.description',
     visualType: '2D',
-    difficulty: 'foundation', // 色偏振生活应用(应力显示)
+    difficulty: 'explore', // 色偏振生活应用(应力显示)
   },
   {
     id: 'chromatic',
@@ -1265,7 +1258,7 @@ const DEMOS: DemoItem[] = [
     component: ChromaticDemo,
     descriptionKey: 'demos.chromatic.description',
     visualType: '2D',
-    difficulty: 'application', // 色偏振实验和测量
+    difficulty: 'explore', // 色偏振实验和测量
   },
   {
     id: 'optical-rotation',
@@ -1274,7 +1267,7 @@ const DEMOS: DemoItem[] = [
     component: OpticalRotationDemo,
     descriptionKey: 'demos.opticalRotation.description',
     visualType: '2D',
-    difficulty: 'application', // 旋光实验和糖浓度测量
+    difficulty: 'explore', // 旋光实验和糖浓度测量
   },
   // Unit 4
   {
@@ -1284,7 +1277,7 @@ const DEMOS: DemoItem[] = [
     component: MieScatteringDemo,
     descriptionKey: 'demos.mieScattering.description',
     visualType: '2D',
-    difficulty: 'research', // 复杂的米氏散射理论
+    difficulty: 'professional', // 复杂的米氏散射理论
   },
   {
     id: 'rayleigh',
@@ -1293,7 +1286,7 @@ const DEMOS: DemoItem[] = [
     component: RayleighScatteringDemo,
     descriptionKey: 'demos.rayleigh.description',
     visualType: '2D',
-    difficulty: 'foundation', // 蓝天白云的自然现象解释
+    difficulty: 'explore', // 蓝天白云的自然现象解释
   },
   {
     id: 'monte-carlo-scattering',
@@ -1302,7 +1295,7 @@ const DEMOS: DemoItem[] = [
     component: MonteCarloScatteringDemo,
     descriptionKey: 'demos.monteCarloScattering.description',
     visualType: '2D',
-    difficulty: 'research', // 蒙特卡洛模拟方法
+    difficulty: 'professional', // 蒙特卡洛模拟方法
   },
   // Unit 5
   {
@@ -1312,7 +1305,7 @@ const DEMOS: DemoItem[] = [
     component: StokesVectorDemo,
     descriptionKey: 'demos.stokes.description',
     visualType: '3D',
-    difficulty: 'research', // 斯托克斯矢量的数学表示
+    difficulty: 'professional', // 斯托克斯矢量的数学表示
   },
   {
     id: 'mueller',
@@ -1321,7 +1314,7 @@ const DEMOS: DemoItem[] = [
     component: MuellerMatrixDemo,
     descriptionKey: 'demos.mueller.description',
     visualType: '2D',
-    difficulty: 'research', // 缪勒矩阵的完备表征
+    difficulty: 'professional', // 缪勒矩阵的完备表征
   },
   {
     id: 'jones',
@@ -1330,7 +1323,7 @@ const DEMOS: DemoItem[] = [
     component: JonesMatrixDemo,
     descriptionKey: 'demos.jones.description',
     visualType: '2D',
-    difficulty: 'research', // Jones矩阵的复数表示
+    difficulty: 'professional', // Jones矩阵的复数表示
   },
   {
     id: 'calculator',
@@ -1339,7 +1332,7 @@ const DEMOS: DemoItem[] = [
     component: PolarizationCalculatorDemo,
     descriptionKey: 'demos.calculator.description',
     visualType: '2D',
-    difficulty: 'application', // 综合计算工具
+    difficulty: 'explore', // 综合计算工具
   },
   {
     id: 'polarimetric-microscopy',
@@ -1348,7 +1341,7 @@ const DEMOS: DemoItem[] = [
     component: PolarimetricMicroscopyDemo,
     descriptionKey: 'demos.polarimetricMicroscopy.description',
     visualType: '2D',
-    difficulty: 'research', // Mueller矩阵显微成像
+    difficulty: 'professional', // Mueller矩阵显微成像
   },
 ]
 
@@ -1647,32 +1640,30 @@ export function DemosPage() {
   // 学习者可根据需要点击展开感兴趣的内容
   const getInitialExpandedCards = (): Record<string, boolean> => {
     const tabParam = searchParams.get('tab')
-    const validTabs = ['lifeScene', 'physics', 'experiment', 'frontier', 'diy', 'resources']
+    const validTabs = ['experience', 'physics', 'experiment', 'frontier', 'resources']
     if (tabParam && validTabs.includes(tabParam)) {
       return {
-        lifeScene: tabParam === 'lifeScene',
+        experience: tabParam === 'experience',
         physics: tabParam === 'physics',
         experiment: tabParam === 'experiment',
         frontier: tabParam === 'frontier',
-        diy: tabParam === 'diy',
         resources: tabParam === 'resources',
       }
     }
     // 信息减负策略：默认所有卡片折叠
     // 让学习者专注于演示本身，需要时再展开详细信息
     return {
-      lifeScene: false,
+      experience: false,
       physics: false,
       experiment: false,
       frontier: false,
-      diy: false,
       resources: false,
     }
   }
 
   const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>(getInitialExpandedCards)
   const [searchQuery, setSearchQuery] = useState('')
-  const [difficultyLevel, setDifficultyLevel] = useState<DifficultyLevel>('application')
+  const [difficultyLevel, setDifficultyLevel] = useState<DifficultyLevel>('explore')
   const [showDifficultyChange, setShowDifficultyChange] = useState(false)
 
   // Show visual feedback when difficulty changes
@@ -1898,11 +1889,10 @@ export function DemosPage() {
     // Reset cards to collapsed when switching to a new (not previously visited) demo
     if (!visitedDemos.has(demoId)) {
       setExpandedCards({
-        lifeScene: true,  // Life scene card expanded by default
+        experience: true,  // Experience card expanded by default
         physics: false,
         experiment: false,
         frontier: false,
-        diy: false,
       })
       setVisitedDemos(prev => new Set(prev).add(demoId))
     }
@@ -2388,8 +2378,7 @@ export function DemosPage() {
                 <div className="flex items-center gap-3">
                   <GraduationCap className={cn(
                     'w-5 h-5',
-                    difficultyLevel === 'foundation' ? 'text-green-400' :
-                    difficultyLevel === 'research' ? 'text-purple-400' : 'text-cyan-400'
+                    difficultyLevel === 'explore' ? 'text-cyan-400' : 'text-purple-400'
                   )} />
                   <span className={cn(
                     'text-sm font-medium',
@@ -2409,11 +2398,9 @@ export function DemosPage() {
                   <div className={cn(
                     'absolute right-4 top-full mt-2 px-4 py-2 rounded-lg text-sm font-medium shadow-lg z-50',
                     'animate-in fade-in slide-in-from-top-2 duration-300',
-                    difficultyLevel === 'foundation'
-                      ? 'bg-green-500/90 text-white'
-                      : difficultyLevel === 'research'
-                      ? 'bg-purple-500/90 text-white'
-                      : 'bg-cyan-500/90 text-white'
+                    difficultyLevel === 'explore'
+                      ? 'bg-cyan-500/90 text-white'
+                      : 'bg-purple-500/90 text-white'
                   )}>
                     {DIFFICULTY_CONFIG[difficultyLevel].icon} {t(`course.difficulty.${difficultyLevel}`)}
                   </div>
@@ -2624,186 +2611,164 @@ export function DemosPage() {
             {/* Collapsible Info cards - responsive grid layout */}
             {demoInfo && (
               <div className="mt-5 space-y-4">
-                {/* Life Scene card - full width, at top */}
-                {demoInfo.lifeScene && (
+                {/* Experience Polarization card - Merged lifeScene + diy with two-column layout */}
+                {(demoInfo.lifeScene || demoInfo.diy) && (
                   <CollapsibleCard
-                    title={t('gallery.cards.lifeScene')}
-                    icon={<LifeSceneIcon />}
-                    color="orange"
-                    isExpanded={expandedCards.lifeScene}
-                    onToggle={() => toggleCard('lifeScene')}
+                    title={t('gallery.cards.experience') || '体验偏振'}
+                    icon={<span className="text-xl">✨</span>}
+                    color="teal"
+                    isExpanded={expandedCards.experience}
+                    onToggle={() => toggleCard('experience')}
                   >
-                    <div className="space-y-4">
-                      {/* Illustration or placeholder */}
-                      {activeDemo && LIFE_SCENE_ILLUSTRATIONS[activeDemo] ? (
+                    {/* Two-column layout: Life Scene (left) + DIY (right) */}
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {/* Left column - Life Scene (without images) */}
+                      {demoInfo.lifeScene && (
                         <div
                           className={cn(
-                            'rounded-lg p-3 border overflow-hidden',
+                            'rounded-lg p-4 border',
                             theme === 'dark'
-                              ? 'bg-slate-900/50 border-orange-400/30'
-                              : 'bg-orange-50/50 border-orange-200'
+                              ? 'bg-teal-900/20 border-teal-500/30'
+                              : 'bg-teal-50 border-teal-200'
                           )}
                         >
-                          {(() => {
-                            const IllustrationComponent = LIFE_SCENE_ILLUSTRATIONS[activeDemo]
-                            return <IllustrationComponent />
-                          })()}
-                        </div>
-                      ) : (
-                        <div
-                          className={cn(
-                            'rounded-lg p-4 border-2 border-dashed flex items-center justify-center min-h-[120px]',
-                            theme === 'dark'
-                              ? 'bg-orange-400/5 border-orange-400/30'
-                              : 'bg-orange-50 border-orange-300'
-                          )}
-                        >
-                          <div className="text-center">
-                            <div className={cn(
-                              'text-4xl mb-2',
-                              theme === 'dark' ? 'text-orange-400/50' : 'text-orange-400'
-                            )}>
-                              🖼️
-                            </div>
-                            <p className={cn(
-                              'text-xs italic',
-                              theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-                            )}>
-                              {demoInfo.lifeScene.imageAlt}
-                            </p>
+                          <h5
+                            className={cn(
+                              'font-semibold text-sm mb-3 flex items-center gap-2',
+                              theme === 'dark' ? 'text-teal-400' : 'text-teal-700'
+                            )}
+                          >
+                            🌍 {t('gallery.cards.lifeScene') || '生活中的偏振'}
+                          </h5>
+
+                          {/* Hook question/statement */}
+                          <p className={cn(
+                            'text-sm font-medium mb-3 leading-relaxed',
+                            theme === 'dark' ? 'text-teal-200' : 'text-teal-900'
+                          )}>
+                            {demoInfo.lifeScene.hook}
+                          </p>
+
+                          {/* Facts list */}
+                          <div className="space-y-2">
+                            {demoInfo.lifeScene.facts.map((fact, i) => (
+                              <div
+                                key={i}
+                                className={cn(
+                                  'text-sm flex items-start gap-2',
+                                  theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                                )}
+                              >
+                                <span className={theme === 'dark' ? 'text-teal-400' : 'text-teal-600'}>
+                                  ★
+                                </span>
+                                <span>{fact}</span>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       )}
 
-                      {/* Hook question/statement */}
-                      <p className={cn(
-                        'text-base font-medium leading-relaxed',
-                        theme === 'dark' ? 'text-orange-200' : 'text-orange-900'
-                      )}>
-                        {demoInfo.lifeScene.hook}
-                      </p>
-
-                      {/* Facts list */}
-                      <div className="space-y-2">
-                        {demoInfo.lifeScene.facts.map((fact, i) => (
-                          <ListItem
-                            key={i}
-                            icon={
-                              <span className={theme === 'dark' ? 'text-orange-400' : 'text-orange-600'}>
-                                ★
-                              </span>
-                            }
+                      {/* Right column - DIY */}
+                      {demoInfo.diy && (
+                        <div
+                          className={cn(
+                            'rounded-lg p-4 border',
+                            theme === 'dark'
+                              ? 'bg-amber-900/20 border-amber-500/30'
+                              : 'bg-amber-50 border-amber-200'
+                          )}
+                        >
+                          <h5
+                            className={cn(
+                              'font-semibold text-sm mb-3 flex items-center gap-2',
+                              theme === 'dark' ? 'text-amber-400' : 'text-amber-700'
+                            )}
                           >
-                            {fact}
-                          </ListItem>
-                        ))}
-                      </div>
-                    </div>
-                  </CollapsibleCard>
-                )}
+                            🔬 {t('gallery.cards.diy') || '动手试试'}
+                          </h5>
 
-                {/* DIY card - full width, at bottom */}
-                {demoInfo.diy && (
-                  <CollapsibleCard
-                    title={t('gallery.cards.diy')}
-                    icon={<DIYIcon />}
-                    color="yellow"
-                    isExpanded={expandedCards.diy}
-                    onToggle={() => toggleCard('diy')}
-                  >
-                    <div className="space-y-4">
-                      {/* Materials list */}
-                      <div
-                        className={cn(
-                          'rounded-lg px-4 py-3 border',
-                          theme === 'dark'
-                            ? 'bg-yellow-400/5 border-yellow-400/20'
-                            : 'bg-yellow-50 border-yellow-200'
-                        )}
-                      >
-                        <h5
-                          className={cn(
-                            'font-semibold text-sm mb-2 flex items-center gap-2',
-                            theme === 'dark' ? 'text-yellow-400' : 'text-yellow-700'
-                          )}
-                        >
-                          📦 Materials
-                        </h5>
-                        <ul className="space-y-1">
-                          {demoInfo.diy.materials.map((material, i) => (
-                            <li
-                              key={i}
-                              className={cn(
-                                'text-sm flex items-center gap-2',
-                                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                              )}
-                            >
-                              <span className={theme === 'dark' ? 'text-yellow-400' : 'text-yellow-600'}>•</span>
-                              {material}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                          {/* Materials */}
+                          <div className="mb-3">
+                            <p className={cn(
+                              'text-xs font-medium mb-1.5',
+                              theme === 'dark' ? 'text-amber-300' : 'text-amber-700'
+                            )}>
+                              📦 Materials
+                            </p>
+                            <ul className="space-y-1">
+                              {demoInfo.diy.materials.map((material, i) => (
+                                <li
+                                  key={i}
+                                  className={cn(
+                                    'text-xs flex items-center gap-2',
+                                    theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                                  )}
+                                >
+                                  <span className={theme === 'dark' ? 'text-amber-400' : 'text-amber-600'}>•</span>
+                                  {material}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
 
-                      {/* Steps */}
-                      <div>
-                        <h5
-                          className={cn(
-                            'font-semibold text-sm mb-2 flex items-center gap-2',
-                            theme === 'dark' ? 'text-yellow-400' : 'text-yellow-700'
-                          )}
-                        >
-                          📝 Steps
-                        </h5>
-                        <ol className="space-y-2">
-                          {demoInfo.diy.steps.map((step, i) => (
-                            <li
-                              key={i}
-                              className={cn(
-                                'text-sm flex items-start gap-3',
-                                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                              )}
-                            >
-                              <span
-                                className={cn(
-                                  'flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold',
-                                  theme === 'dark'
-                                    ? 'bg-yellow-400/20 text-yellow-400'
-                                    : 'bg-yellow-200 text-yellow-800'
-                                )}
-                              >
-                                {i + 1}
-                              </span>
-                              {step}
-                            </li>
-                          ))}
-                        </ol>
-                      </div>
+                          {/* Steps */}
+                          <div className="mb-3">
+                            <p className={cn(
+                              'text-xs font-medium mb-1.5',
+                              theme === 'dark' ? 'text-amber-300' : 'text-amber-700'
+                            )}>
+                              📝 Steps
+                            </p>
+                            <ol className="space-y-1.5">
+                              {demoInfo.diy.steps.map((step, i) => (
+                                <li
+                                  key={i}
+                                  className={cn(
+                                    'text-xs flex items-start gap-2',
+                                    theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                                  )}
+                                >
+                                  <span
+                                    className={cn(
+                                      'flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold',
+                                      theme === 'dark'
+                                        ? 'bg-amber-400/20 text-amber-400'
+                                        : 'bg-amber-200 text-amber-800'
+                                    )}
+                                  >
+                                    {i + 1}
+                                  </span>
+                                  {step}
+                                </li>
+                              ))}
+                            </ol>
+                          </div>
 
-                      {/* Observation */}
-                      <div
-                        className={cn(
-                          'rounded-lg px-4 py-3 border-2 border-dashed',
-                          theme === 'dark'
-                            ? 'bg-yellow-400/5 border-yellow-400/40'
-                            : 'bg-yellow-100/50 border-yellow-400'
-                        )}
-                      >
-                        <h5
-                          className={cn(
-                            'font-semibold text-sm mb-1 flex items-center gap-2',
-                            theme === 'dark' ? 'text-yellow-400' : 'text-yellow-700'
-                          )}
-                        >
-                          💡 What you'll observe
-                        </h5>
-                        <p className={cn(
-                          'text-sm',
-                          theme === 'dark' ? 'text-yellow-200' : 'text-yellow-900'
-                        )}>
-                          {demoInfo.diy.observation}
-                        </p>
-                      </div>
+                          {/* Observation */}
+                          <div
+                            className={cn(
+                              'rounded px-3 py-2 border',
+                              theme === 'dark'
+                                ? 'bg-amber-400/5 border-amber-400/30'
+                                : 'bg-amber-100/50 border-amber-300'
+                            )}
+                          >
+                            <p className={cn(
+                              'text-[10px] font-medium mb-1',
+                              theme === 'dark' ? 'text-amber-300' : 'text-amber-700'
+                            )}>
+                              💡 Observation
+                            </p>
+                            <p className={cn(
+                              'text-xs',
+                              theme === 'dark' ? 'text-amber-200' : 'text-amber-900'
+                            )}>
+                              {demoInfo.diy.observation}
+                            </p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </CollapsibleCard>
                 )}

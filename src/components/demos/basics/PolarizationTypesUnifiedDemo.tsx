@@ -172,7 +172,7 @@ interface Props {
   difficultyLevel?: DifficultyLevel
 }
 
-export function PolarizationTypesUnifiedDemo({ difficultyLevel = 'application' }: Props) {
+export function PolarizationTypesUnifiedDemo({ difficultyLevel = 'explore' }: Props) {
   const { i18n } = useTranslation()
   const isZh = i18n.language === 'zh'
   const config = useDifficultyConfig(difficultyLevel)
@@ -562,7 +562,7 @@ export function PolarizationTypesUnifiedDemo({ difficultyLevel = 'application' }
             </div>
 
             {/* Foundation: Why button */}
-            <DifficultyGate level="foundation" currentLevel={difficultyLevel}>
+            <DifficultyGate level="explore" currentLevel={difficultyLevel}>
               <WhyButton className="mt-4">
                 <div className="space-y-2 text-sm">
                   <p>{isZh ? '光是电磁波，电场可以在不同方向振动。偏振就是描述电场振动方向的方式！' : 'Light is an EM wave with electric fields oscillating in different directions. Polarization describes how the E-field oscillates!'}</p>
@@ -593,7 +593,7 @@ export function PolarizationTypesUnifiedDemo({ difficultyLevel = 'application' }
             transition={{ duration: 0.2 }}
           >
             {/* Paradox View */}
-            <DifficultyGate level="application" currentLevel={difficultyLevel}>
+            <DifficultyGate level="explore" currentLevel={difficultyLevel}>
               <TaskModeWrapper
                 taskTitle="Make Light Pass Through!"
                 taskTitleZh="让光通过！"
@@ -740,7 +740,7 @@ export function PolarizationTypesUnifiedDemo({ difficultyLevel = 'application' }
             </div>
 
             {/* Foundation: Why button */}
-            <DifficultyGate level="foundation" currentLevel={difficultyLevel}>
+            <DifficultyGate level="explore" currentLevel={difficultyLevel}>
               <WhyButton className="mt-4">
                 <div className="space-y-2 text-sm">
                   <p>{isZh ? '两个正交（90°）的偏振片会完全阻挡光线。但神奇的是...' : 'Two crossed (90°) polarizers completely block light. But the magic is...'}</p>

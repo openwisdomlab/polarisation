@@ -44,8 +44,8 @@ import {
   Eye,
 } from 'lucide-react'
 
-// Types
-export type DifficultyLevel = 'foundation' | 'application' | 'research'
+// Types - Simplified to two difficulty levels
+export type DifficultyLevel = 'explore' | 'professional'
 
 export interface DifficultyConfig {
   // Display
@@ -55,6 +55,8 @@ export interface DifficultyConfig {
   labelZh: string
   modeName: string
   modeNameZh: string
+  description: string
+  descriptionZh: string
 
   // Content visibility
   showFormula: boolean
@@ -75,57 +77,26 @@ export interface DifficultyConfig {
   showDerivedFormulas: boolean
 
   // Interactive features
-  showWhyButton: boolean        // Foundation: "Why?" reveal button
-  showTaskMode: boolean         // Application: Task-based challenges
-  showLabControls: boolean      // Research: Export, raw data controls
+  showWhyButton: boolean        // Explore: "Why?" reveal button
+  showTaskMode: boolean         // Explore: Task-based challenges
+  showLabControls: boolean      // Professional: Export, raw data controls
 }
 
-// Progressive Disclosure Configuration
+// Progressive Disclosure Configuration - Two-tier system
 export const DIFFICULTY_STRATEGY: Record<DifficultyLevel, DifficultyConfig> = {
-  foundation: {
-    // Display
-    color: 'green',
-    icon: '🌱',
-    label: 'Foundation',
-    labelZh: '基础层',
-    modeName: 'Sandbox Mode',
-    modeNameZh: '沙盒模式',
-
-    // Content visibility - HIDE everything complex
-    showFormula: false,
-    showCharts: false,
-    showAdvancedDetails: false,
-    showRawData: false,
-    showExportButtons: false,
-    showJonesVectors: false,
-    showMuellerMatrices: false,
-
-    // Content limits - minimal
-    maxPhysicsDetails: 2,
-    maxFrontierDetails: 1,
-
-    // Content style
-    contentStyle: 'simple',
-    showMathSymbols: false,
-    showDerivedFormulas: false,
-
-    // Interactive features
-    showWhyButton: true,        // "Why?" button to reveal explanations
-    showTaskMode: false,
-    showLabControls: false,
-  },
-
-  application: {
+  explore: {
     // Display
     color: 'cyan',
-    icon: '🔬',
-    label: 'Application',
-    labelZh: '应用层',
-    modeName: 'Scenario Mode',
-    modeNameZh: '场景模式',
+    icon: '🔍',
+    label: 'Explore',
+    labelZh: '探索模式',
+    modeName: 'Explore Mode',
+    modeNameZh: '探索模式',
+    description: 'Learn through interactive visualization and hands-on experiments',
+    descriptionZh: '通过交互式可视化和动手实验来学习',
 
-    // Content visibility - show practical formulas
-    showFormula: true,
+    // Content visibility - Show practical content, hide advanced math
+    showFormula: true,          // Show key formulas (e.g., Malus's Law)
     showCharts: true,
     showAdvancedDetails: false,
     showRawData: false,
@@ -139,23 +110,25 @@ export const DIFFICULTY_STRATEGY: Record<DifficultyLevel, DifficultyConfig> = {
 
     // Content style
     contentStyle: 'standard',
-    showMathSymbols: true,
-    showDerivedFormulas: false,
+    showMathSymbols: true,      // Show basic symbols like θ, λ
+    showDerivedFormulas: false, // Hide derivations
 
     // Interactive features
-    showWhyButton: false,
+    showWhyButton: true,        // "Why?" button for deeper explanations
     showTaskMode: true,         // Task-based challenges with Virtual Polarizer
     showLabControls: false,
   },
 
-  research: {
+  professional: {
     // Display
     color: 'purple',
-    icon: '🚀',
-    label: 'Research',
-    labelZh: '研究层',
-    modeName: 'Lab Mode',
-    modeNameZh: '实验室模式',
+    icon: '🎓',
+    label: 'Professional',
+    labelZh: '专业模式',
+    modeName: 'Professional Mode',
+    modeNameZh: '专业模式',
+    description: 'Full mathematical rigor with data export and advanced analysis',
+    descriptionZh: '完整的数学推导，支持数据导出和高级分析',
 
     // Content visibility - show EVERYTHING
     showFormula: true,
@@ -167,7 +140,7 @@ export const DIFFICULTY_STRATEGY: Record<DifficultyLevel, DifficultyConfig> = {
     showMuellerMatrices: true,
 
     // Content limits - maximum
-    maxPhysicsDetails: 4,
+    maxPhysicsDetails: 5,
     maxFrontierDetails: 3,
 
     // Content style
@@ -482,7 +455,7 @@ interface DifficultyGateProps {
   children: ReactNode
 }
 
-const LEVEL_ORDER: DifficultyLevel[] = ['foundation', 'application', 'research']
+const LEVEL_ORDER: DifficultyLevel[] = ['explore', 'professional']
 
 export function DifficultyGate({
   level,

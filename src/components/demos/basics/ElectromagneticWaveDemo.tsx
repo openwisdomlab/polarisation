@@ -195,7 +195,7 @@ interface Props {
   difficultyLevel?: DifficultyLevel
 }
 
-export function ElectromagneticWaveDemo({ difficultyLevel = 'application' }: Props) {
+export function ElectromagneticWaveDemo({ difficultyLevel = 'explore' }: Props) {
   const { t, i18n } = useTranslation()
   const isZh = i18n.language === 'zh'
   const config = useDifficultyConfig(difficultyLevel)
@@ -506,7 +506,7 @@ export function ElectromagneticWaveDemo({ difficultyLevel = 'application' }: Pro
             </div>
 
             {/* Foundation: Why button */}
-            <DifficultyGate level="foundation" currentLevel={difficultyLevel}>
+            <DifficultyGate level="explore" currentLevel={difficultyLevel}>
               <WhyButton className="mt-4">
                 <div className="space-y-2 text-sm">
                   <p>{isZh ? '光是一种电磁波，它由电场（E）和磁场（B）相互垂直振荡产生。' : 'Light is an electromagnetic wave consisting of perpendicular oscillating electric (E) and magnetic (B) fields.'}</p>
@@ -516,7 +516,7 @@ export function ElectromagneticWaveDemo({ difficultyLevel = 'application' }: Pro
             </DifficultyGate>
 
             {/* Application/Research: Formula */}
-            <DifficultyGate level="application" currentLevel={difficultyLevel} showWhen="at-least">
+            <DifficultyGate level="explore" currentLevel={difficultyLevel} showWhen="at-least">
               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <InfoCard title={isZh ? '电磁波特性' : 'EM Wave Properties'} color="cyan">
                   <ul className="text-xs text-gray-300 space-y-1.5">
@@ -791,7 +791,7 @@ export function ElectromagneticWaveDemo({ difficultyLevel = 'application' }: Pro
             </div>
 
             {/* Foundation: Why button */}
-            <DifficultyGate level="foundation" currentLevel={difficultyLevel}>
+            <DifficultyGate level="explore" currentLevel={difficultyLevel}>
               <WhyButton className="mt-4">
                 <div className="space-y-2 text-sm">
                   <p>{isZh ? '电磁波谱就像一把无限长的"光尺子"——我们看到的彩虹只是其中很小的一段！' : 'The EM spectrum is like an infinite ruler of light—the rainbow we see is just a tiny portion!'}</p>
@@ -801,7 +801,7 @@ export function ElectromagneticWaveDemo({ difficultyLevel = 'application' }: Pro
             </DifficultyGate>
 
             {/* Knowledge cards for application/research */}
-            <DifficultyGate level="application" currentLevel={difficultyLevel} showWhen="at-least">
+            <DifficultyGate level="explore" currentLevel={difficultyLevel} showWhen="at-least">
               <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                 <InfoCard title={isZh ? '光的本质' : 'Nature of Light'} color="cyan">
                   <ul className="text-xs text-gray-300 space-y-1.5">

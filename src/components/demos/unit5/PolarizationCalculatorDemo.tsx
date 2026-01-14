@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 import { SliderControl, ControlPanel, InfoCard } from '../DemoControls'
+import { DifficultyLevel } from '../DifficultyStrategy'
 import { Copy, Check, Code, Plus, Trash2, ChevronDown, ChevronUp, Download, RotateCcw, Calculator } from 'lucide-react'
 
 // ==================== 类型定义 ====================
@@ -725,9 +726,6 @@ function StokesDisplay({
   )
 }
 
-// 难度层级类型
-type DifficultyLevel = 'foundation' | 'application' | 'research'
-
 // 主组件 Props
 interface PolarizationCalculatorDemoProps {
   difficultyLevel?: DifficultyLevel
@@ -740,7 +738,7 @@ export function PolarizationCalculatorDemo({ difficultyLevel }: PolarizationCalc
   const isZh = i18n.language === 'zh'
 
   // Foundation level hides advanced features (matrices and code export)
-  const isFoundation = difficultyLevel === 'foundation'
+  const isFoundation = difficultyLevel === 'explore'
 
   // 状态
   const [elements, setElements] = useState<OpticalElement[]>([

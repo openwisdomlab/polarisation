@@ -13,10 +13,10 @@ import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
+import { DifficultyLevel } from '../DifficultyStrategy'
 import { SliderControl, ControlPanel, InfoCard, ValueDisplay } from '../DemoControls'
 
 // 难度级别类型
-type DifficultyLevel = 'foundation' | 'application' | 'research'
 
 // 组件属性接口
 interface StokesVectorDemoProps {
@@ -569,7 +569,7 @@ function MuellerMatrixDisplay({ stokes, theme }: { stokes: StokesVector; theme: 
 }
 
 // 主演示组件
-export function StokesVectorDemo({ difficultyLevel = 'application' }: StokesVectorDemoProps) {
+export function StokesVectorDemo({ difficultyLevel = 'explore' }: StokesVectorDemoProps) {
   const { t } = useTranslation()
   const { theme } = useTheme()
   const [intensity, setIntensity] = useState(1)
@@ -578,8 +578,8 @@ export function StokesVectorDemo({ difficultyLevel = 'application' }: StokesVect
   const [dop, setDop] = useState(1)
 
   // 判断难度级别
-  const isFoundation = difficultyLevel === 'foundation'
-  const isResearch = difficultyLevel === 'research'
+  const isFoundation = difficultyLevel === 'explore'
+  const isResearch = difficultyLevel === 'professional'
 
   // 计算斯托克斯矢量
   const stokes = calculateStokes(intensity, polarizationAngle, ellipticity, dop)
