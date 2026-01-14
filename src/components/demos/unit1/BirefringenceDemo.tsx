@@ -700,12 +700,12 @@ export function BirefringenceDemo() {
                   const resources = getResourcesByModule('birefringence')
                   // Try to match by material type if available
                   return resources.find(r =>
-                    r.metadata?.material?.toLowerCase().includes(params.material as string)
+                    r.metadata?.material?.toLowerCase()?.includes(params.material as string)
                   ) || resources[0]
                 }}
                 calculateSimilarity={(params, resource) => {
                   // Simple similarity based on material type
-                  const materialMatch = resource.metadata?.material?.toLowerCase().includes(params.material as string) ? 100 : 50
+                  const materialMatch = resource.metadata?.material?.toLowerCase()?.includes(params.material as string) ? 100 : 50
                   return materialMatch
                 }}
                 title="Birefringence: Real vs Simulation"
