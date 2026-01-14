@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils'
 import { ListItem } from '@/components/demos/DemoControls'
 import { DemoErrorBoundary } from '@/components/demos/DemoErrorBoundary'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
-import { Gamepad2, BookOpen, Box, BarChart2, Menu, X, ChevronDown, ChevronRight, Lightbulb, HelpCircle, Search, GraduationCap, ArrowLeft, ExternalLink, FileCode } from 'lucide-react'
+import { Palette, BookOpen, Box, BarChart2, Menu, X, ChevronDown, ChevronRight, Lightbulb, HelpCircle, Search, GraduationCap, ArrowLeft, ExternalLink, FileCode } from 'lucide-react'
 import { SourceCodeViewer } from '@/components/demos/source-code'
 import { hasDemoSource } from '@/data/demo-sources'
 import { useIsMobile } from '@/hooks/useIsMobile'
@@ -2185,7 +2185,7 @@ export function DemosPage() {
             {!isCompact && (
               <>
                 <Link
-                  to="/games"
+                  to="/optical-studio"
                   className={cn(
                     'flex items-center gap-2 px-4 py-2 rounded-lg transition-all',
                     theme === 'dark'
@@ -2193,8 +2193,8 @@ export function DemosPage() {
                       : 'text-gray-600 hover:text-gray-900 hover:bg-cyan-100'
                   )}
                 >
-                  <Gamepad2 className="w-4 h-4" />
-                  <span>{t('common.game')}</span>
+                  <Palette className="w-4 h-4" />
+                  <span>{isZh ? '设计室' : 'Studio'}</span>
                 </Link>
                 <Link
                   to="/course"

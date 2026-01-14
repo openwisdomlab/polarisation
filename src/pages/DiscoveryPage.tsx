@@ -28,7 +28,6 @@ import {
   Play,
   Lightbulb,
   BookOpen,
-  Gamepad2,
   FlaskConical,
   ArrowRight,
   ArrowLeft,
@@ -951,7 +950,7 @@ export default function DiscoveryPage() {
                     </div>
                   </div>
 
-                  {/* 游戏挑战 */}
+                  {/* 动手实验 */}
                   <div className={cn(
                     'p-4 rounded-xl flex items-center gap-4',
                     theme === 'dark'
@@ -959,27 +958,27 @@ export default function DiscoveryPage() {
                       : 'bg-pink-50 border border-pink-100'
                   )}>
                     <div className="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center flex-shrink-0">
-                      <Gamepad2 className="w-5 h-5 text-white" />
+                      <FlaskConical className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
                       <h4 className={cn(
                         'font-medium text-sm',
                         theme === 'dark' ? 'text-pink-300' : 'text-pink-700'
                       )}>
-                        {isZh ? '准备好挑战了吗？' : 'Ready for a challenge?'}
+                        {isZh ? '想亲自动手实验吗？' : 'Want to experiment yourself?'}
                       </h4>
                       <p className={cn(
                         'text-xs',
                         theme === 'dark' ? 'text-pink-400/70' : 'text-pink-600/70'
                       )}>
-                        {isZh ? '用你学到的知识来解决光学谜题' : 'Use what you learned to solve optical puzzles'}
+                        {isZh ? '用你学到的知识进行创意实验' : 'Apply what you learned in creative experiments'}
                       </p>
                     </div>
                     <Link
-                      to="/games/2d"
+                      to="/experiments"
                       className="px-4 py-2 rounded-lg bg-pink-500 text-white text-sm font-medium hover:bg-pink-600 transition-colors"
                     >
-                      {isZh ? '开始' : 'Play'}
+                      {isZh ? '开始' : 'Start'}
                     </Link>
                   </div>
 

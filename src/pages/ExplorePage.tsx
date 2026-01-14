@@ -464,7 +464,7 @@ export default function ExplorePage() {
             </Link>
 
             <Link
-              to="/games/2d"
+              to="/calc"
               className={cn(
                 'flex items-center gap-2 p-3 rounded-lg transition-colors',
                 theme === 'dark'
@@ -473,7 +473,7 @@ export default function ExplorePage() {
               )}
             >
               <Sparkles className="w-4 h-4" />
-              <span className="text-sm">{isZh ? '游戏' : 'Games'}</span>
+              <span className="text-sm">{isZh ? '计算工坊' : 'Calculators'}</span>
             </Link>
 
             <Link

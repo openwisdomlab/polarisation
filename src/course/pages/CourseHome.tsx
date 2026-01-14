@@ -350,9 +350,9 @@ export function CourseHome() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { href: '/demos', label: isZh ? '交互演示' : 'Interactive Demos', icon: FlaskConical },
-            { href: '/games', label: isZh ? '趣味游戏' : 'Puzzle Games', icon: Target },
             { href: '/optical-studio', label: isZh ? '光学设计室' : 'Optical Studio', icon: Compass },
             { href: '/calc', label: isZh ? '计算工具' : 'Calculators', icon: Telescope },
+            { href: '/lab', label: isZh ? '虚拟课题组' : 'Research Lab', icon: Target },
           ].map((item) => (
             <Link
               key={item.href}

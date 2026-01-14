@@ -2,7 +2,7 @@
  * ExplorationNodePage - 探索节点详情页
  *
  * 展示单个探索节点的完整内容
- * 整合所有探索组件：实验、演示、游戏、深入内容等
+ * 整合所有探索组件：实验、演示、深入内容等
  */
 
 import { useEffect, useMemo } from 'react'
@@ -15,7 +15,6 @@ import {
   Clock,
   Tag,
   Play,
-  Gamepad2,
   BookOpen,
   History,
   Sparkles,
@@ -363,60 +362,6 @@ export default function ExplorationNodePage() {
           </section>
         )}
 
-        {/* Game challenges */}
-        {node.games.length > 0 && (
-          <section className="mb-8">
-            <h2 className={cn(
-              'flex items-center gap-2 text-lg font-semibold mb-4',
-              theme === 'dark' ? 'text-white' : 'text-gray-900'
-            )}>
-              <Gamepad2 className={cn(
-                'w-5 h-5',
-                theme === 'dark' ? 'text-purple-400' : 'text-purple-600'
-              )} />
-              {isZh ? '游戏挑战' : 'Game Challenges'}
-            </h2>
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              {node.games.map((game, index) => (
-                <Link
-                  key={index}
-                  to={`/games/${game.type}?level=${game.levelId}`}
-                  className={cn(
-                    'flex items-center gap-3 p-4 rounded-xl border transition-all',
-                    theme === 'dark'
-                      ? 'bg-purple-500/10 border-purple-500/20 hover:border-purple-500/50'
-                      : 'bg-purple-50 border-purple-200 hover:border-purple-400'
-                  )}
-                >
-                  <div className={cn(
-                    'p-2 rounded-lg',
-                    theme === 'dark' ? 'bg-purple-500/20' : 'bg-purple-100'
-                  )}>
-                    <Gamepad2 className={cn(
-                      'w-5 h-5',
-                      theme === 'dark' ? 'text-purple-400' : 'text-purple-600'
-                    )} />
-                  </div>
-                  <div>
-                    <div className={cn(
-                      'text-sm font-medium',
-                      theme === 'dark' ? 'text-white' : 'text-gray-900'
-                    )}>
-                      {game.type === '2d' ? '2D ' : '3D '}{isZh ? '游戏' : 'Game'} - {isZh ? '关卡' : 'Level'} {game.levelId}
-                    </div>
-                    <div className={cn(
-                      'text-xs',
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                    )}>
-                      {isZh ? game.challenge.zh : game.challenge.en}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
 
         {/* Deep dive content */}
         <section className="mb-8">

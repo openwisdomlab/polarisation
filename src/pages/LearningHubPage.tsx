@@ -18,7 +18,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Compass,
   BookOpen,
-  Gamepad2,
   FlaskConical,
   History,
   Calculator,
@@ -101,18 +100,18 @@ const LEARNING_MODULES: LearningModule[] = [
 
   // EXPLORE - Self-directed learning
   {
-    id: 'games',
-    titleEn: 'Puzzle Games',
-    titleZh: '益智游戏',
-    descriptionEn: 'Learn by solving light puzzles',
-    descriptionZh: '通过解决光学谜题学习',
-    icon: <Gamepad2 className="w-6 h-6" />,
+    id: 'experiments',
+    titleEn: 'Creative Experiments',
+    titleZh: '创意实验',
+    descriptionEn: 'Hands-on polarization experiments',
+    descriptionZh: '动手偏振实验',
+    icon: <Microscope className="w-6 h-6" />,
     color: '#EC4899',
-    route: '/games',
+    route: '/experiments',
     category: 'explore',
     difficulty: 1,
     estimatedTime: '5-30 min',
-    rewards: ['Problem Solving', 'Fun!']
+    rewards: ['Hands-on Skills', 'Discovery']
   },
   {
     id: 'optical-studio',

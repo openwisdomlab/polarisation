@@ -22,7 +22,6 @@ import {
   Lightbulb,
   BookOpen,
   FlaskConical,
-  Gamepad2,
   Eye
 } from 'lucide-react'
 
@@ -279,20 +278,6 @@ export function MicroLearningCard({
                   >
                     <Play className="w-3 h-3" />
                     {isZh ? '互动演示' : 'Demo'}
-                  </Link>
-                )}
-                {content.relatedGame && (
-                  <Link
-                    to={content.relatedGame}
-                    className={cn(
-                      'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
-                      theme === 'dark'
-                        ? 'bg-slate-700 text-pink-400 hover:bg-slate-600'
-                        : 'bg-pink-50 text-pink-700 hover:bg-pink-100'
-                    )}
-                  >
-                    <Gamepad2 className="w-3 h-3" />
-                    {isZh ? '游戏挑战' : 'Game'}
                   </Link>
                 )}
                 {content.relatedCalculator && (

@@ -169,14 +169,14 @@ export const EXPLORATION_PATHS: ExplorationPath[] = [
         duration: 5
       },
       {
-        id: 'game-level1',
+        id: 'experiment-polarizer',
         title: { en: 'Test Your Knowledge', zh: '测试你的知识' },
         description: {
-          en: 'Solve a simple polarization puzzle',
-          zh: '解决一个简单的偏振谜题'
+          en: 'Try the interactive optical bench',
+          zh: '尝试互动光学工作台'
         },
-        type: 'game',
-        gameRoute: '/games/2d?level=0',
+        type: 'demo',
+        demoId: 'optical-bench',
         optional: true,
         duration: 3
       }
@@ -260,14 +260,14 @@ export const EXPLORATION_PATHS: ExplorationPath[] = [
         duration: 2
       },
       {
-        id: 'game-malus',
+        id: 'calc-jones',
         title: { en: 'Apply It', zh: '应用它' },
         description: {
-          en: 'Use your new knowledge to solve puzzles',
-          zh: '用你的新知识解决谜题'
+          en: 'Use the Jones calculator to verify your understanding',
+          zh: '使用Jones计算器验证你的理解'
         },
-        type: 'game',
-        gameRoute: '/games/2d?level=2',
+        type: 'demo',
+        demoId: 'malus',
         duration: 5
       }
     ],
