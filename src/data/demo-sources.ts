@@ -23,14 +23,20 @@ import type { DemoSourceCode, LanguageImplementation } from '@/types/source-code
 // TypeScript/React implementations (Web demos)
 // TypeScript/React 实现（网页演示）
 import MalusLawDemoTsx from '@/components/demos/unit1/MalusLawDemo.tsx?raw'
+import BirefringenceDemoTsx from '@/components/demos/unit1/BirefringenceDemo.tsx?raw'
+import FresnelDemoTsx from '@/components/demos/unit2/FresnelDemo.tsx?raw'
 
 // Python implementations
 // Python 实现
 import MalusLawDemoPython from '@/demo-sources/python/malus_law.py?raw'
+import BirefringenceDemoPython from '@/demo-sources/python/birefringence.py?raw'
+import FresnelDemoPython from '@/demo-sources/python/fresnel.py?raw'
 
 // MATLAB/Octave implementations
 // MATLAB/Octave 实现
 import MalusLawDemoMatlab from '@/demo-sources/matlab/malus_law.m?raw'
+import BirefringenceDemoMatlab from '@/demo-sources/matlab/birefringence.m?raw'
+import FresnelDemoMatlab from '@/demo-sources/matlab/fresnel.m?raw'
 
 // ============================================================================
 // DEMO SOURCE CODE REGISTRY
@@ -169,6 +175,253 @@ malus_law
   ],
 }
 
+/**
+ * Birefringence Demo - All Language Implementations
+ * 双折射演示 - 所有语言实现
+ */
+const BIREFRINGENCE_SOURCE: DemoSourceCode = {
+  id: 'birefringence',
+  name: 'Birefringence (Double Refraction)',
+  nameZh: '双折射效应',
+  description: 'Visualization of light splitting into ordinary and extraordinary rays in calcite crystal',
+  descriptionZh: '方解石晶体中光分裂为寻常光和非常光的可视化',
+  complexity: 'intermediate',
+
+  concepts: [
+    'Birefringence',
+    'Ordinary ray (o-ray): I_o = I₀ × cos²(θ)',
+    'Extraordinary ray (e-ray): I_e = I₀ × sin²(θ)',
+    'Energy conservation: I_o + I_e = I₀',
+    'Anisotropic materials',
+    'Optic axis',
+  ],
+  conceptsZh: [
+    '双折射',
+    '寻常光 (o光): I_o = I₀ × cos²(θ)',
+    '非常光 (e光): I_e = I₀ × sin²(θ)',
+    '能量守恒: I_o + I_e = I₀',
+    '各向异性材料',
+    '光轴',
+  ],
+
+  tags: ['birefringence', 'double-refraction', 'calcite', 'intermediate', 'polarization'],
+
+  relatedDemos: ['malus-law', 'waveplate', 'optical-rotation'],
+
+  implementations: [
+    // TypeScript/React (Web)
+    {
+      language: 'typescript',
+      sourceCode: BirefringenceDemoTsx,
+      dependencies: {
+        'react': '^19.0.0',
+        '@react-three/fiber': '^8.0.0',
+        '@react-three/drei': '^9.0.0',
+        'three': '^0.160.0',
+        'framer-motion': '^11.0.0',
+      },
+      notes: '3D visualization with interactive controls and real-time ray splitting.',
+      notesZh: '3D可视化，包含交互式控制和实时光线分裂效果。',
+    },
+
+    // Python
+    {
+      language: 'python',
+      sourceCode: BirefringenceDemoPython,
+      dependencies: {
+        'numpy': '>=1.24.0',
+        'matplotlib': '>=3.7.0',
+      },
+      setup: `# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\\Scripts\\activate
+
+# Install dependencies
+pip install numpy matplotlib
+
+# Run the demo
+python birefringence.py`,
+      setupZh: `# 创建虚拟环境
+python -m venv venv
+source venv/bin/activate  # Windows系统: venv\\Scripts\\activate
+
+# 安装依赖
+pip install numpy matplotlib
+
+# 运行演示
+python birefringence.py`,
+      notes: 'Interactive slider visualization with intensity curves and bar charts. Includes detailed physics comments.',
+      notesZh: '交互式滑动条可视化，包含强度曲线和柱状图。含详细物理注释。',
+    },
+
+    // MATLAB/Octave
+    {
+      language: 'matlab',
+      sourceCode: BirefringenceDemoMatlab,
+      dependencies: {
+        'MATLAB': 'R2016b or later',
+        'Octave': '4.0 or later (free alternative)',
+      },
+      setup: `% In MATLAB/Octave:
+% 1. Navigate to the directory containing birefringence.m
+% 2. Run the script:
+birefringence`,
+      setupZh: `% 在 MATLAB/Octave 中:
+% 1. 导航到包含 birefringence.m 的目录
+% 2. 运行脚本:
+birefringence`,
+      notes: 'Real-time interactive visualization with calcite crystal rendering. Compatible with free Octave.',
+      notesZh: '实时交互式可视化，包含方解石晶体渲染。兼容免费的 Octave。',
+    },
+  ],
+
+  resources: [
+    {
+      type: 'documentation',
+      title: 'Birefringence - Wikipedia',
+      titleZh: '双折射 - 维基百科',
+      url: 'https://en.wikipedia.org/wiki/Birefringence',
+      description: 'Comprehensive explanation of double refraction phenomenon',
+      descriptionZh: '双折射现象的全面解释',
+    },
+    {
+      type: 'tutorial',
+      title: 'Understanding Wave Plates',
+      titleZh: '理解波片',
+      url: 'https://www.edmundoptics.com/knowledge-center/application-notes/optics/understanding-waveplates/',
+      description: 'Practical guide to birefringent optical elements',
+      descriptionZh: '双折射光学元件实用指南',
+    },
+  ],
+}
+
+/**
+ * Fresnel Equations Demo - All Language Implementations
+ * 菲涅尔方程演示 - 所有语言实现
+ */
+const FRESNEL_SOURCE: DemoSourceCode = {
+  id: 'fresnel-equations',
+  name: 'Fresnel Equations',
+  nameZh: '菲涅尔方程',
+  description: 'Interactive demonstration of reflection and transmission coefficients at optical interfaces',
+  descriptionZh: '光学界面反射和透射系数的交互演示',
+  complexity: 'intermediate',
+
+  concepts: [
+    'Fresnel equations',
+    's-polarization (⊥ plane of incidence)',
+    'p-polarization (∥ plane of incidence)',
+    "Brewster's angle: θ_B = arctan(n₂/n₁)",
+    'Total internal reflection',
+    'Energy conservation: R + T = 1',
+    "Snell's law",
+  ],
+  conceptsZh: [
+    '菲涅尔方程',
+    's偏振（垂直于入射面）',
+    'p偏振（平行于入射面）',
+    '布儒斯特角: θ_B = arctan(n₂/n₁)',
+    '全内反射',
+    '能量守恒: R + T = 1',
+    '斯涅尔定律',
+  ],
+
+  tags: ['fresnel', 'reflection', 'transmission', 'brewster-angle', 'interface', 'intermediate'],
+
+  relatedDemos: ['brewster-angle', 'total-internal-reflection', 'malus-law'],
+
+  implementations: [
+    // TypeScript/React (Web)
+    {
+      language: 'typescript',
+      sourceCode: FresnelDemoTsx,
+      dependencies: {
+        'react': '^19.0.0',
+        'framer-motion': '^11.0.0',
+      },
+      notes: 'SVG-based ray diagram with real-time coefficient calculations and interactive angle adjustment.',
+      notesZh: '基于SVG的光线图，实时系数计算和交互式角度调整。',
+    },
+
+    // Python
+    {
+      language: 'python',
+      sourceCode: FresnelDemoPython,
+      dependencies: {
+        'numpy': '>=1.24.0',
+        'matplotlib': '>=3.7.0',
+      },
+      setup: `# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\\Scripts\\activate
+
+# Install dependencies
+pip install numpy matplotlib
+
+# Run the demo
+python fresnel.py`,
+      setupZh: `# 创建虚拟环境
+python -m venv venv
+source venv/bin/activate  # Windows系统: venv\\Scripts\\activate
+
+# 安装依赖
+pip install numpy matplotlib
+
+# Run演示
+python fresnel.py`,
+      notes: 'Dual-panel visualization: ray diagram + coefficient curves. Includes Brewster angle and critical angle markers.',
+      notesZh: '双面板可视化：光线图 + 系数曲线。包含布儒斯特角和临界角标记。',
+    },
+
+    // MATLAB/Octave
+    {
+      language: 'matlab',
+      sourceCode: FresnelDemoMatlab,
+      dependencies: {
+        'MATLAB': 'R2016b or later',
+        'Octave': '4.0 or later (free alternative)',
+      },
+      setup: `% In MATLAB/Octave:
+% 1. Navigate to the directory containing fresnel.m
+% 2. Run the script:
+fresnel`,
+      setupZh: `% 在 MATLAB/Octave 中:
+% 1. 导航到包含 fresnel.m 的目录
+% 2. 运行脚本:
+fresnel`,
+      notes: 'Interactive interface with s/p polarization toggles. Real-time visualization of Brewster angle phenomenon.',
+      notesZh: '交互式界面，支持s/p偏振切换。实时可视化布儒斯特角现象。',
+    },
+  ],
+
+  resources: [
+    {
+      type: 'documentation',
+      title: 'Fresnel Equations - Wikipedia',
+      titleZh: '菲涅尔方程 - 维基百科',
+      url: 'https://en.wikipedia.org/wiki/Fresnel_equations',
+      description: 'Complete mathematical derivation and applications',
+      descriptionZh: '完整数学推导和应用',
+    },
+    {
+      type: 'tutorial',
+      title: "Understanding Brewster's Angle",
+      titleZh: '理解布儒斯特角',
+      url: 'https://www.rp-photonics.com/brewsters_angle.html',
+      description: 'Detailed explanation of polarizing angle phenomenon',
+      descriptionZh: '偏振角现象的详细解释',
+    },
+    {
+      type: 'paper',
+      title: 'Original Fresnel Work (1823)',
+      titleZh: '菲涅尔原始工作 (1823)',
+      url: 'https://gallica.bnf.fr/ark:/12148/bpt6k5476278v',
+      description: 'Historical paper by Augustin-Jean Fresnel',
+      descriptionZh: 'Augustin-Jean Fresnel 的历史论文',
+    },
+  ],
+}
+
 // ============================================================================
 // REGISTRY OBJECT - Add more demos here
 // 注册表对象 - 在此添加更多演示
@@ -180,11 +433,13 @@ malus_law
  */
 export const DEMO_SOURCES_REGISTRY: Record<string, DemoSourceCode> = {
   'malus-law': MALUS_LAW_SOURCE,
+  'birefringence': BIREFRINGENCE_SOURCE,
+  'fresnel-equations': FRESNEL_SOURCE,
 
   // TODO: Add more demos
-  // 'birefringence': BIREFRINGENCE_SOURCE,
   // 'brewster-angle': BREWSTER_SOURCE,
   // 'chromatic-polarization': CHROMATIC_SOURCE,
+  // 'waveplate': WAVEPLATE_SOURCE,
   // ... etc
 }
 
