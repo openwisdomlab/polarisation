@@ -804,7 +804,6 @@ function AnimatedPolarizer({
   angle?: 0 | 90
 }) {
   const color = theme === 'dark' ? '#22d3ee' : '#0891b2'
-  const gridColor = theme === 'dark' ? '#475569' : '#94a3b8'
   const isHorizontal = angle === 0
 
   return (

@@ -21,10 +21,8 @@ import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Sparkles,
   Eye,
   ChevronRight,
-  ChevronDown,
   Play,
   Lightbulb,
   BookOpen,
@@ -32,12 +30,7 @@ import {
   ArrowRight,
   ArrowLeft,
   Compass,
-  HelpCircle,
   Check,
-  RefreshCw,
-  Minus,
-  Plus,
-  X,
   MessageCircle
 } from 'lucide-react'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
@@ -191,14 +184,6 @@ const DISCOVERY_TOPICS: DiscoveryTopic[] = [
     relatedTopics: ['stress-patterns', 'astronomy']
   }
 ]
-
-// 当前发现状态
-interface DiscoveryState {
-  currentTopicId: string | null
-  expandedSections: string[]
-  completedCheckpoints: string[]
-  depthLevel: 'simple' | 'formulas' | 'theory'
-}
 
 // 入口卡片组件 - 单个问题入口
 function QuestionEntryCard({
@@ -666,7 +651,6 @@ export default function DiscoveryPage() {
   const [filterStage, setFilterStage] = useState<1 | 2 | 3 | null>(null)
   const [depthLevel, setDepthLevel] = useState<'simple' | 'formulas' | 'theory'>('simple')
   const [completedCheckpoints, setCompletedCheckpoints] = useState<string[]>([])
-  const [showDemoModal, setShowDemoModal] = useState(false)
 
   // 更新URL
   useEffect(() => {
@@ -712,7 +696,8 @@ export default function DiscoveryPage() {
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1, delay: 0.1 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
             className={cn(
               'text-lg',
               theme === 'dark' ? 'text-gray-400' : 'text-gray-600'

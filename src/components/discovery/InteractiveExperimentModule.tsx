@@ -462,7 +462,7 @@ export function InteractiveExperimentModule({
                 </button>
                 <button
                   onClick={goNext}
-                  disabled={step.type === 'predict' && !predictions[step.id] && step.prediction?.options}
+                  disabled={step.type === 'predict' && !predictions[step.id] && !!step.prediction?.options}
                   className={cn(
                     'flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors',
                     'bg-cyan-500 text-white hover:bg-cyan-600',

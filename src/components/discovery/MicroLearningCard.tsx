@@ -17,7 +17,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ChevronDown,
   ChevronUp,
-  ExternalLink,
   Play,
   Lightbulb,
   BookOpen,
@@ -108,8 +107,7 @@ interface MicroLearningCardProps {
 export function MicroLearningCard({
   content,
   depthLevel = 'simple',
-  defaultExpanded = false,
-  onTryDemo
+  defaultExpanded = false
 }: MicroLearningCardProps) {
   const { theme } = useTheme()
   const { i18n } = useTranslation()

@@ -8,8 +8,8 @@
  * - 多入口多出口的网状连接
  */
 
-import { useState, useMemo } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
@@ -18,7 +18,6 @@ import {
   ChevronRight,
   ChevronLeft,
   Check,
-  Lock,
   Play,
   Gamepad2,
   FlaskConical,
