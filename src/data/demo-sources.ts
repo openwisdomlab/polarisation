@@ -25,18 +25,24 @@ import type { DemoSourceCode, LanguageImplementation } from '@/types/source-code
 import MalusLawDemoTsx from '@/components/demos/unit1/MalusLawDemo.tsx?raw'
 import BirefringenceDemoTsx from '@/components/demos/unit1/BirefringenceDemo.tsx?raw'
 import FresnelDemoTsx from '@/components/demos/unit2/FresnelDemo.tsx?raw'
+import WaveplateDemoTsx from '@/components/demos/unit1/WaveplateDemo.tsx?raw'
+import BrewsterDemoTsx from '@/components/demos/unit2/BrewsterDemo.tsx?raw'
 
 // Python implementations
 // Python 实现
 import MalusLawDemoPython from '@/demo-sources/python/malus_law.py?raw'
 import BirefringenceDemoPython from '@/demo-sources/python/birefringence.py?raw'
 import FresnelDemoPython from '@/demo-sources/python/fresnel.py?raw'
+import WaveplateDemoPython from '@/demo-sources/python/waveplate.py?raw'
+import BrewsterDemoPython from '@/demo-sources/python/brewster.py?raw'
 
 // MATLAB/Octave implementations
 // MATLAB/Octave 实现
 import MalusLawDemoMatlab from '@/demo-sources/matlab/malus_law.m?raw'
 import BirefringenceDemoMatlab from '@/demo-sources/matlab/birefringence.m?raw'
 import FresnelDemoMatlab from '@/demo-sources/matlab/fresnel.m?raw'
+import WaveplateDemoMatlab from '@/demo-sources/matlab/waveplate.m?raw'
+import BrewsterDemoMatlab from '@/demo-sources/matlab/brewster.m?raw'
 
 // ============================================================================
 // DEMO SOURCE CODE REGISTRY
@@ -422,6 +428,180 @@ fresnel`,
   ],
 }
 
+/**
+ * Waveplate Demo - All Language Implementations
+ * 波片演示 - 所有语言实现
+ */
+const WAVEPLATE_SOURCE: DemoSourceCode = {
+  id: 'waveplate',
+  name: 'Waveplate (Quarter-Wave & Half-Wave Plates)',
+  nameZh: '波片（λ/4和λ/2波片）',
+  description: 'Interactive demonstration of how waveplates change polarization states',
+  descriptionZh: '波片如何改变偏振态的交互演示',
+  complexity: 'intermediate',
+
+  concepts: [
+    'Quarter-wave plate (λ/4): Phase retardation π/2',
+    'Half-wave plate (λ/2): Phase retardation π',
+    '45° linear → circular polarization (λ/4)',
+    'Linear polarization rotation (λ/2)',
+    'Fast axis and slow axis',
+    'Jones matrix representation',
+    'Elliptical polarization states',
+  ],
+  conceptsZh: [
+    '四分之一波片(λ/4)：相位延迟 π/2',
+    '二分之一波片(λ/2)：相位延迟 π',
+    '45°线偏振 → 圆偏振 (λ/4)',
+    '线偏振方向旋转 (λ/2)',
+    '快轴与慢轴',
+    'Jones矩阵表示',
+    '椭圆偏振态',
+  ],
+
+  implementations: [
+    {
+      language: 'typescript',
+      // languageDisplay: 'TypeScript (React)',
+      code: WaveplateDemoTsx,
+      dependencies: { react: '^19.0.0', 'framer-motion': '^11.0.0', typescript: '^5.0.0' },
+      description: 'Interactive web-based demonstration with real-time visualization',
+      descriptionZh: 'Web交互演示，实时可视化',
+    },
+    {
+      language: 'python',
+      // languageDisplay: 'Python',
+      code: WaveplateDemoPython,
+      dependencies: { numpy: '>=1.20.0', matplotlib: '>=3.3.0' },
+      description: 'Standalone Python demo with interactive sliders for quarter-wave and half-wave plates',
+      descriptionZh: '独立Python演示，带有λ/4和λ/2波片交互滑块',
+      runInstructions: {
+        install: 'pip install numpy matplotlib',
+        run: 'python waveplate.py',
+      },
+    },
+    {
+      language: 'matlab',
+      // languageDisplay: 'MATLAB/Octave',
+      code: WaveplateDemoMatlab,
+      dependencies: {},
+      description: 'MATLAB/Octave compatible implementation with Jones calculus',
+      descriptionZh: 'MATLAB/Octave兼容实现，包含Jones演算',
+      runInstructions: {
+        install: 'No toolboxes required / 无需工具箱',
+        run: 'waveplate',
+      },
+      compatibility: 'MATLAB R2016b+ or GNU Octave 4.0+',
+    },
+  ],
+
+  tags: ['polarization', 'waveplate', 'jones-calculus', 'circular-polarization', 'optical-components'],
+
+  resources: [
+    {
+      type: 'documentation',
+      title: 'Waveplates - RP Photonics Encyclopedia',
+      titleZh: '波片 - RP光子学百科',
+      url: 'https://www.rp-photonics.com/waveplates.html',
+      description: 'Comprehensive guide to waveplates',
+      descriptionZh: '波片综合指南',
+    },
+    {
+      type: 'documentation',
+      title: 'Quarter-Wave Plate - Thorlabs',
+      titleZh: '四分之一波片 - Thorlabs',
+      url: 'https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=711',
+      description: 'Commercial waveplate specifications',
+      descriptionZh: '商业波片规格',
+    },
+  ],
+}
+
+/**
+ * Brewster's Angle Demo - All Language Implementations
+ * 布儒斯特角演示 - 所有语言实现
+ */
+const BREWSTER_SOURCE: DemoSourceCode = {
+  id: 'brewster',
+  name: "Brewster's Angle",
+  nameZh: '布儒斯特角',
+  description: 'Demonstration of Brewster\'s angle where p-polarized light has zero reflectance',
+  descriptionZh: '演示布儒斯特角现象：p偏振光反射率为零',
+  complexity: 'intermediate',
+
+  concepts: [
+    "Brewster's angle: θ_B = arctan(n₂/n₁)",
+    'p-polarization reflectance R_p = 0 at Brewster angle',
+    'Reflected light is completely s-polarized',
+    'Reflected and refracted rays are perpendicular',
+    'Applications in polarizers and laser windows',
+  ],
+  conceptsZh: [
+    '布儒斯特角：θ_B = arctan(n₂/n₁)',
+    '在布儒斯特角，p偏振光反射率 R_p = 0',
+    '反射光为完全s偏振',
+    '反射光与折射光垂直',
+    '应用于偏振片和激光窗口',
+  ],
+
+  implementations: [
+    {
+      language: 'typescript',
+      // languageDisplay: 'TypeScript (React)',
+      code: BrewsterDemoTsx,
+      dependencies: { react: '^19.0.0', 'framer-motion': '^11.0.0', typescript: '^5.0.0' },
+      description: 'Interactive web demonstration with dispersion effects',
+      descriptionZh: 'Web交互演示，包含色散效应',
+    },
+    {
+      language: 'python',
+      // languageDisplay: 'Python',
+      code: BrewsterDemoPython,
+      dependencies: { numpy: '>=1.20.0', matplotlib: '>=3.3.0' },
+      description: 'Standalone Python demo showing Brewster angle and Fresnel coefficients',
+      descriptionZh: '独立Python演示，显示布儒斯特角和Fresnel系数',
+      runInstructions: {
+        install: 'pip install numpy matplotlib',
+        run: 'python brewster.py',
+      },
+    },
+    {
+      language: 'matlab',
+      // languageDisplay: 'MATLAB/Octave',
+      code: BrewsterDemoMatlab,
+      dependencies: {},
+      description: 'MATLAB/Octave compatible with interactive interface angle adjustment',
+      descriptionZh: 'MATLAB/Octave兼容，可交互调整入射角',
+      runInstructions: {
+        install: 'No toolboxes required / 无需工具箱',
+        run: 'brewster',
+      },
+      compatibility: 'MATLAB R2016b+ or GNU Octave 4.0+',
+    },
+  ],
+
+  tags: ['polarization', 'brewster-angle', 'fresnel-equations', 'reflection', 'interface-optics'],
+
+  resources: [
+    {
+      type: 'documentation',
+      title: "Brewster's Angle - HyperPhysics",
+      titleZh: '布儒斯特角 - HyperPhysics',
+      url: 'http://hyperphysics.phy-astr.gsu.edu/hbase/phyopt/brewster.html',
+      description: 'Physics explanation of Brewster angle',
+      descriptionZh: '布儒斯特角的物理解释',
+    },
+    {
+      type: 'documentation',
+      title: 'Brewster Windows - RP Photonics',
+      titleZh: '布儒斯特窗 - RP光子学',
+      url: 'https://www.rp-photonics.com/brewster_windows.html',
+      description: 'Applications in laser systems',
+      descriptionZh: '在激光系统中的应用',
+    },
+  ],
+}
+
 // ============================================================================
 // REGISTRY OBJECT - Add more demos here
 // 注册表对象 - 在此添加更多演示
@@ -435,11 +615,13 @@ export const DEMO_SOURCES_REGISTRY: Record<string, DemoSourceCode> = {
   'malus': MALUS_LAW_SOURCE,
   'birefringence': BIREFRINGENCE_SOURCE,
   'fresnel': FRESNEL_SOURCE,
+  'waveplate': WAVEPLATE_SOURCE,
+  'brewster': BREWSTER_SOURCE,
 
   // TODO: Add more demos
-  // 'brewster-angle': BREWSTER_SOURCE,
-  // 'chromatic-polarization': CHROMATIC_SOURCE,
-  // 'waveplate': WAVEPLATE_SOURCE,
+  // 'optical-rotation': OPTICAL_ROTATION_SOURCE,
+  // 'rayleigh': RAYLEIGH_SCATTERING_SOURCE,
+  // 'chromatic': CHROMATIC_SOURCE,
   // ... etc
 }
 
