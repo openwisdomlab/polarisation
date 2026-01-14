@@ -19,7 +19,6 @@ export { JonesCalculatorPage } from './JonesCalculatorPage'
 export { StokesCalculatorPage } from './StokesCalculatorPage'
 export { MuellerCalculatorPage } from './MuellerCalculatorPage'
 export { DetectiveGamePage } from './DetectiveGamePage'
-export { CoursePage } from './CoursePage'
 export { default as LearningHubPage } from './LearningHubPage'
 export { default as LightExplorerPage } from './LightExplorerPage'
 

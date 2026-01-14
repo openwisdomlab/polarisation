@@ -25,7 +25,6 @@ const JonesCalculatorPage = lazy(() => import('@/pages/JonesCalculatorPage'))
 const StokesCalculatorPage = lazy(() => import('@/pages/StokesCalculatorPage'))
 const MuellerCalculatorPage = lazy(() => import('@/pages/MuellerCalculatorPage'))
 const DetectiveGamePage = lazy(() => import('@/pages/DetectiveGamePage'))
-const CoursePage = lazy(() => import('@/pages/CoursePage'))
 const LearningHubPage = lazy(() => import('@/pages/LearningHubPage'))
 
 // Light Explorer - 渐进式探索光学编年史
@@ -100,7 +99,8 @@ export function App() {
         {/* 渐进式探索入口 (可选) */}
         <Route path="/chronicles/explore" element={<LightExplorerPage />} />
 
-        <Route path="/course" element={<CoursePage />} />
+        {/* Redirect /course to home page (course outline is now on homepage) */}
+        <Route path="/course" element={<Navigate to="/" replace />} />
         <Route path="/learn" element={<LearningHubPage />} />
         <Route path="/lab" element={<LabPage />} />
 
