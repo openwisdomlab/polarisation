@@ -148,138 +148,98 @@ function ExpandedUnitCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95, x: 0 }}
-      animate={{ opacity: 1, scale: 1, x: 0 }}
-      exit={{ opacity: 0, scale: 0.95, x: 0 }}
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
       className={cn(
-        'absolute left-0 top-0 z-50 rounded-2xl border overflow-hidden backdrop-blur-sm',
-        'w-[520px] max-w-[calc(100vw-2rem)]',
+        'absolute left-0 top-0 z-50 rounded-xl border overflow-y-auto backdrop-blur-sm',
+        'w-full max-h-[80vh]',
         theme === 'dark'
-          ? 'bg-slate-800/95 border-slate-700'
-          : 'bg-white/95 border-gray-200'
+          ? 'bg-slate-800/98 border-slate-700'
+          : 'bg-white/98 border-gray-200'
       )}
       style={{
-        boxShadow: `0 12px 48px ${color}25, 0 4px 24px rgba(0,0,0,0.15)`,
+        boxShadow: `0 8px 32px ${color}20, 0 2px 12px rgba(0,0,0,0.1)`,
         borderColor: `${color}50`,
       }}
     >
-      {/* Header */}
+      {/* Compact Header */}
       <div
-        className="p-5"
+        className="p-3"
         style={{
           background: theme === 'dark'
             ? `linear-gradient(135deg, ${color}10 0%, transparent 100%)`
             : `linear-gradient(135deg, ${color}08 0%, transparent 100%)`
         }}
       >
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-4">
-            {/* Icon */}
-            <div
-              className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: color }}
-            >
-              <span className="text-white">{icon}</span>
-            </div>
-
-            <div className="flex-1 min-w-0">
-              {/* Badge */}
-              <div className="flex items-center gap-2 mb-2">
-                <span
-                  className="text-xs font-medium px-2.5 py-1 rounded-full"
-                  style={{ backgroundColor: `${color}20`, color }}
-                >
-                  {isZh ? `单元 ${unit.unitNumber}` : `Unit ${unit.unitNumber}`}
-                </span>
-              </div>
-
-              {/* Title */}
-              <h3 className={cn(
-                'text-lg font-bold leading-tight mb-1',
-                theme === 'dark' ? 'text-white' : 'text-gray-900'
-              )}>
-                {isZh ? unit.titleZh : unit.titleEn}
-              </h3>
-
-              {/* Subtitle */}
-              <p className={cn(
-                'text-sm',
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-              )}>
-                {isZh ? unit.subtitleZh : unit.subtitleEn}
-              </p>
-            </div>
+        <div className="flex items-start gap-2">
+          {/* Icon */}
+          <div
+            className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
+            style={{ backgroundColor: color }}
+          >
+            <span className="text-white text-sm">{unit.unitNumber}</span>
           </div>
 
-          {/* Stats & Close */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-3 text-xs">
-              <span className={cn(
-                'flex items-center gap-1',
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-              )}>
-                <Eye className="w-3.5 h-3.5" />
-                {totalDemos}
-              </span>
-              <span className={cn(
-                'flex items-center gap-1',
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-              )}>
-                <Users className="w-3.5 h-3.5" />
-                {totalEvents}
-              </span>
-            </div>
-            <button
-              onClick={onClose}
-              className={cn(
-                'p-1.5 rounded-lg transition-colors',
-                theme === 'dark'
-                  ? 'hover:bg-slate-700 text-gray-400'
-                  : 'hover:bg-gray-100 text-gray-500'
-              )}
-            >
-              <ChevronDown className="w-4 h-4" />
-            </button>
+          <div className="flex-1 min-w-0">
+            {/* Title */}
+            <h3 className={cn(
+              'text-sm font-bold leading-tight mb-0.5',
+              theme === 'dark' ? 'text-white' : 'text-gray-900'
+            )}>
+              {isZh ? unit.titleZh : unit.titleEn}
+            </h3>
+
+            {/* Subtitle */}
+            <p className={cn(
+              'text-xs leading-tight',
+              theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+            )}>
+              {isZh ? unit.subtitleZh : unit.subtitleEn}
+            </p>
           </div>
+
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            className={cn(
+              'flex-shrink-0 p-1 rounded-lg transition-colors',
+              theme === 'dark'
+                ? 'hover:bg-slate-700 text-gray-400'
+                : 'hover:bg-gray-100 text-gray-500'
+            )}
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
         </div>
-
-        {/* Description */}
-        <p className={cn(
-          'mt-4 text-sm leading-relaxed',
-          theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
-        )}>
-          {isZh ? unit.descriptionZh : unit.descriptionEn}
-        </p>
       </div>
 
-      {/* Learning Objectives - 学习目标 */}
+      {/* Learning Objectives - 学习目标 (精简版) */}
       <div className={cn(
-        'px-5 py-4 border-t',
+        'px-3 py-2.5 border-t',
         theme === 'dark' ? 'border-slate-700' : 'border-gray-100'
       )}>
         <h4 className={cn(
-          'text-sm font-semibold mb-3 flex items-center gap-2',
+          'text-xs font-semibold mb-2 flex items-center gap-1.5',
           theme === 'dark' ? 'text-white' : 'text-gray-900'
         )}>
-          <Target className="w-4 h-4" style={{ color }} />
-          {isZh ? '学习目标' : 'Learning Objectives'}
+          <Target className="w-3.5 h-3.5" style={{ color }} />
+          {isZh ? '学习目标' : 'Objectives'}
         </h4>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {(isZh ? unit.learningObjectives.zh : unit.learningObjectives.en).map((objective, idx) => (
+        <div className="space-y-1.5">
+          {(isZh ? unit.learningObjectives.zh : unit.learningObjectives.en).slice(0, 3).map((objective, idx) => (
             <div
               key={idx}
               className={cn(
-                'flex items-start gap-2 text-xs',
+                'flex items-start gap-1.5 text-xs leading-snug',
                 theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
               )}
             >
               <div
-                className="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center mt-0.5"
+                className="flex-shrink-0 w-3.5 h-3.5 rounded-full flex items-center justify-center mt-0.5"
                 style={{ backgroundColor: `${color}20` }}
               >
-                <svg className="w-2.5 h-2.5" viewBox="0 0 12 12" fill={color}>
-                  <path d="M10.28 2.28a.75.75 0 00-1.06-1.06L4.5 5.94 2.78 4.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.06 0l5.25-5.25z" />
-                </svg>
+                <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }} />
               </div>
               <span className="flex-1">{objective}</span>
             </div>
@@ -287,40 +247,36 @@ function ExpandedUnitCard({
         </div>
       </div>
 
-      {/* Course Chapters - 课程章节 */}
+      {/* Course Chapters - 课程章节 (紧凑版) */}
       <div className={cn(
-        'px-5 py-4 border-t',
+        'px-3 py-2.5 border-t',
         theme === 'dark' ? 'border-slate-700' : 'border-gray-100'
       )}>
         <h4 className={cn(
-          'text-sm font-semibold mb-3 flex items-center gap-2',
+          'text-xs font-semibold mb-2 flex items-center gap-1.5',
           theme === 'dark' ? 'text-white' : 'text-gray-900'
         )}>
-          <BookOpen className="w-4 h-4" style={{ color }} />
-          {isZh ? '课程章节' : 'Course Chapters'}
+          <BookOpen className="w-3.5 h-3.5" style={{ color }} />
+          {isZh ? '课程章节' : 'Chapters'}
         </h4>
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {unit.sections.map((section) => {
-            const sectionEvents = section.relatedEvents?.length || 0
-            const sectionDemos = section.relatedDemos?.length || 0
-
             return (
               <Link
                 key={section.id}
                 to={section.relatedDemos[0] ? `/demos/${section.relatedDemos[0]}` : '#'}
                 className={cn(
-                  'group flex items-center gap-3 p-3 rounded-xl transition-all',
+                  'group flex items-start gap-2 p-2 rounded-lg transition-all',
                   theme === 'dark'
-                    ? 'bg-slate-700/30 hover:bg-slate-700/60 border border-slate-700/50'
-                    : 'bg-gray-50 hover:bg-gray-100 border border-gray-100'
+                    ? 'bg-slate-700/30 hover:bg-slate-700/60'
+                    : 'bg-gray-50 hover:bg-gray-100'
                 )}
               >
                 {/* Section number */}
                 <div
-                  className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold border-2"
+                  className="flex-shrink-0 w-7 h-7 rounded flex items-center justify-center text-xs font-bold"
                   style={{
-                    backgroundColor: `${color}10`,
-                    borderColor: `${color}40`,
+                    backgroundColor: `${color}15`,
                     color,
                   }}
                 >
@@ -330,125 +286,66 @@ function ExpandedUnitCard({
                 {/* Section content */}
                 <div className="flex-1 min-w-0">
                   <h5 className={cn(
-                    'text-sm font-medium leading-tight',
+                    'text-xs font-medium leading-tight',
                     theme === 'dark' ? 'text-white' : 'text-gray-900'
                   )}>
                     {isZh ? section.titleZh : section.titleEn}
                   </h5>
                   <p className={cn(
-                    'text-xs mt-0.5 line-clamp-1',
+                    'text-[10px] mt-0.5 leading-snug line-clamp-2',
                     theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
                   )}>
                     {isZh ? section.descriptionZh : section.descriptionEn}
                   </p>
                 </div>
 
-                {/* Stats */}
-                <div className="flex items-center gap-3 flex-shrink-0">
-                  {sectionEvents > 0 && (
-                    <span className={cn(
-                      'flex items-center gap-1 text-xs',
-                      theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                    )}>
-                      <Sparkles className="w-3 h-3" />
-                      {sectionEvents} {isZh ? '事件' : 'events'}
-                    </span>
-                  )}
-                  {sectionDemos > 0 && (
-                    <span className={cn(
-                      'flex items-center gap-1 text-xs',
-                      theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                    )}>
-                      <FlaskConical className="w-3 h-3" />
-                      {sectionDemos} {isZh ? '演示' : 'demos'}
-                    </span>
-                  )}
-                  <ChevronRight className={cn(
-                    'w-4 h-4 transition-transform group-hover:translate-x-0.5',
-                    theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                  )} />
-                </div>
+                {/* Arrow */}
+                <ChevronRight className={cn(
+                  'w-3.5 h-3.5 flex-shrink-0 mt-0.5 transition-transform group-hover:translate-x-0.5',
+                  theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                )} />
               </Link>
             )
           })}
         </div>
       </div>
 
-      {/* Home Experiments - 家庭小实验 */}
-      {unit.homeExperiments && unit.homeExperiments.length > 0 && (
-        <div className={cn(
-          'px-5 py-4 border-t',
-          theme === 'dark' ? 'border-slate-700' : 'border-gray-100'
-        )}>
-          <h4 className={cn(
-            'text-sm font-semibold mb-3 flex items-center gap-2',
-            theme === 'dark' ? 'text-white' : 'text-gray-900'
-          )}>
-            <span className="text-base">🏠</span>
-            {isZh ? '家庭小实验' : 'Home Experiments'}
-          </h4>
-          {unit.homeExperiments.slice(0, 1).map((exp, idx) => (
-            <div
-              key={idx}
-              className={cn(
-                'p-4 rounded-xl',
-                theme === 'dark'
-                  ? 'bg-gradient-to-br from-slate-700/50 to-slate-800/50 border border-slate-700/50'
-                  : 'bg-gradient-to-br from-amber-50/50 to-orange-50/50 border border-amber-100/50'
-              )}
-            >
-              <h5 className={cn(
-                'text-sm font-semibold mb-2',
-                theme === 'dark' ? 'text-white' : 'text-gray-900'
-              )}>
-                {isZh ? exp.titleZh : exp.titleEn}
-              </h5>
-              <p className={cn(
-                'text-xs mb-3',
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-              )}>
-                {isZh ? '材料：' : 'Materials: '}
-                {(isZh ? exp.materials.zh : exp.materials.en).join('、')}
-              </p>
-              <p className={cn(
-                'text-xs px-3 py-2 rounded-lg',
-                theme === 'dark'
-                  ? 'bg-cyan-500/10 text-cyan-400'
-                  : 'bg-cyan-50 text-cyan-700'
-              )}>
-                ✨ {isZh ? exp.observation.zh : exp.observation.en}
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Application Domains - 应用领域 */}
+      {/* Quick Stats - 快速统计 */}
       <div className={cn(
-        'px-5 py-4 border-t',
+        'px-3 py-2.5 border-t',
         theme === 'dark' ? 'border-slate-700' : 'border-gray-100'
       )}>
-        <h4 className={cn(
-          'text-sm font-semibold mb-3 flex items-center gap-2',
-          theme === 'dark' ? 'text-white' : 'text-gray-900'
-        )}>
-          <Rocket className="w-4 h-4" style={{ color }} />
-          {isZh ? '应用领域' : 'Applications'}
-        </h4>
-        <div className="flex flex-wrap gap-2">
-          {(isZh ? unit.applications.zh : unit.applications.en).map((app, idx) => (
-            <span
-              key={idx}
-              className={cn(
-                'px-3 py-1.5 rounded-full text-xs font-medium transition-colors cursor-default',
-                theme === 'dark'
-                  ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              )}
-            >
-              {app}
+        <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-3">
+            <span className={cn(
+              'flex items-center gap-1',
+              theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+            )}>
+              <Eye className="w-3 h-3" />
+              <span className="font-medium">{totalDemos}</span>
+              <span className="text-[10px]">{isZh ? '演示' : 'demos'}</span>
             </span>
-          ))}
+            <span className={cn(
+              'flex items-center gap-1',
+              theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+            )}>
+              <Users className="w-3 h-3" />
+              <span className="font-medium">{totalEvents}</span>
+              <span className="text-[10px]">{isZh ? '事件' : 'events'}</span>
+            </span>
+          </div>
+          <Link
+            to="/course"
+            className={cn(
+              'text-xs font-medium px-2 py-1 rounded transition-colors',
+              theme === 'dark'
+                ? 'text-cyan-400 hover:bg-slate-700'
+                : 'text-cyan-600 hover:bg-gray-100'
+            )}
+            style={{ color }}
+          >
+            {isZh ? '查看详情' : 'View More'} →
+          </Link>
         </div>
       </div>
     </motion.div>
