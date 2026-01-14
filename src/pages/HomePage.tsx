@@ -455,132 +455,146 @@ function CourseOutlineColumn({
         </button>
       </div>
 
-      {/* Units list */}
-      <div className="p-3 space-y-2 max-h-[600px] overflow-y-auto scrollbar-thin relative">
-        {/* Expanded card overlay - positioned absolutely to extend beyond column */}
-        <AnimatePresence>
-          {expandedUnitId && (() => {
-            const index = PSRT_CURRICULUM.findIndex(u => u.id === expandedUnitId)
-            const unit = PSRT_CURRICULUM[index]
-            if (!unit) return null
-            const mapping = COURSE_TIMELINE_MAPPINGS.find(m => m.unitNumber === unit.unitNumber)
-            const color = unitColors[index % unitColors.length]
-            return (
-              <ExpandedUnitCard
-                key={`expanded-${unit.id}`}
-                unit={unit}
-                theme={theme}
-                isZh={isZh}
-                color={color}
-                icon={unitIcons[index]}
-                mapping={mapping}
-                onClose={() => {
-                  setExpandedUnitId(null)
-                  onUnitClick(null)
-                }}
-              />
-            )
-          })()}
-        </AnimatePresence>
-
-        {/* Compact unit cards */}
+      {/* Units list - Accordion style */}
+      <div className="p-3 space-y-2 max-h-[600px] overflow-y-auto scrollbar-thin">
         {PSRT_CURRICULUM.map((unit, index) => {
           const mapping = COURSE_TIMELINE_MAPPINGS.find(m => m.unitNumber === unit.unitNumber)
           const color = unitColors[index % unitColors.length]
           const isExpanded = expandedUnitId === unit.id
           const isActive = activeUnitId === unit.id
           const totalDemos = unit.sections.reduce((sum, s) => sum + s.relatedDemos.length, 0)
-
-          // Hide when this unit is expanded (showing overlay instead)
-          if (isExpanded) {
-            return (
-              <div
-                key={unit.id}
-                className="h-14 rounded-xl border-2 border-dashed flex items-center justify-center"
-                style={{ borderColor: `${color}40` }}
-              >
-                <span className="text-xs" style={{ color }}>
-                  {isZh ? '已展开 ↗' : 'Expanded ↗'}
-                </span>
-              </div>
-            )
-          }
-
-          // Hide all other units when any unit is expanded
-          if (expandedUnitId) {
-            return null
-          }
+          const totalEvents = mapping?.keyEvents?.length || 0
 
           return (
-            <motion.button
-              key={unit.id}
-              layout
-              onClick={() => handleUnitClick(unit.id, mapping)}
-              className={cn(
-                'w-full text-left p-3 rounded-xl border transition-all duration-200',
-                isActive
-                  ? theme === 'dark'
-                    ? 'bg-slate-700 shadow-lg'
-                    : 'bg-white shadow-lg'
-                  : theme === 'dark'
-                    ? 'bg-slate-800/50 hover:bg-slate-700'
-                    : 'bg-gray-50 hover:bg-white'
-              )}
-              style={{
-                borderColor: isActive ? color : theme === 'dark' ? '#334155' : '#e5e7eb',
-                boxShadow: isActive ? `0 4px 20px ${color}20` : undefined,
-              }}
-            >
-              <div className="flex items-start gap-3">
-                {/* Unit number */}
-                <div
-                  className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold"
-                  style={{ backgroundColor: color }}
-                >
-                  {unit.unitNumber}
-                </div>
-
-                {/* Unit info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span style={{ color }}>{unitIcons[index]}</span>
-                    <div className="flex items-center gap-2 text-xs">
-                      <span className={cn(
-                        'flex items-center gap-0.5',
-                        theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-                      )}>
-                        <Eye className="w-3 h-3" />
-                        {totalDemos}
-                      </span>
-                      <span className={cn(
-                        'flex items-center gap-0.5',
-                        theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-                      )}>
-                        <Users className="w-3 h-3" />
-                        {mapping?.keyEvents?.length || 0}
-                      </span>
-                    </div>
+            <div key={unit.id} className="space-y-2">
+              {/* Unit header card - always visible */}
+              <motion.button
+                layout
+                onClick={() => handleUnitClick(unit.id, mapping)}
+                className={cn(
+                  'w-full text-left p-3 rounded-xl border transition-all duration-200',
+                  isExpanded || isActive
+                    ? theme === 'dark'
+                      ? 'bg-slate-700 shadow-lg'
+                      : 'bg-white shadow-lg'
+                    : theme === 'dark'
+                      ? 'bg-slate-800/50 hover:bg-slate-700'
+                      : 'bg-gray-50 hover:bg-white'
+                )}
+                style={{
+                  borderColor: (isExpanded || isActive) ? color : theme === 'dark' ? '#334155' : '#e5e7eb',
+                  boxShadow: (isExpanded || isActive) ? `0 4px 20px ${color}20` : undefined,
+                }}
+              >
+                <div className="flex items-start gap-3">
+                  {/* Unit number */}
+                  <div
+                    className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold"
+                    style={{ backgroundColor: color }}
+                  >
+                    {unit.unitNumber}
                   </div>
-                  <h3 className={cn(
-                    'text-sm font-semibold leading-tight',
-                    theme === 'dark' ? 'text-white' : 'text-gray-900'
-                  )}>
-                    {isZh ? unit.titleZh : unit.titleEn}
-                  </h3>
-                  <p className={cn(
-                    'text-xs mt-1 line-clamp-1',
-                    theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
-                  )}>
-                    {isZh ? unit.subtitleZh : unit.subtitleEn}
-                  </p>
-                </div>
 
-                <ChevronDown className={cn(
-                  'w-4 h-4 flex-shrink-0 transition-transform',
-                  theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
-                )} />
-              </div>
-            </motion.button>
+                  {/* Unit info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span style={{ color }}>{unitIcons[index]}</span>
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className={cn(
+                          'flex items-center gap-0.5',
+                          theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                        )}>
+                          <Eye className="w-3 h-3" />
+                          {totalDemos}
+                        </span>
+                        <span className={cn(
+                          'flex items-center gap-0.5',
+                          theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                        )}>
+                          <Users className="w-3 h-3" />
+                          {totalEvents}
+                        </span>
+                      </div>
+                    </div>
+                    <h3 className={cn(
+                      'text-sm font-semibold leading-tight',
+                      theme === 'dark' ? 'text-white' : 'text-gray-900'
+                    )}>
+                      {isZh ? unit.titleZh : unit.titleEn}
+                    </h3>
+                    <p className={cn(
+                      'text-xs mt-1 line-clamp-1',
+                      theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
+                    )}>
+                      {isZh ? unit.subtitleZh : unit.subtitleEn}
+                    </p>
+                  </div>
+
+                  <ChevronDown className={cn(
+                    'w-4 h-4 flex-shrink-0 transition-transform',
+                    isExpanded && 'rotate-180',
+                    theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
+                  )} />
+                </div>
+              </motion.button>
+
+              {/* Expanded content - Accordion style */}
+              <AnimatePresence>
+                {isExpanded && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className="overflow-hidden"
+                  >
+                    <div className={cn(
+                      'rounded-xl border p-3 space-y-3',
+                      theme === 'dark'
+                        ? 'bg-slate-800/80 border-slate-700'
+                        : 'bg-white/80 border-gray-200'
+                    )}
+                      style={{ borderColor: `${color}30` }}
+                    >
+                      {/* Learning objectives */}
+                      <div>
+                        <h4 className={cn(
+                          'text-xs font-semibold flex items-center gap-1.5 mb-2',
+                          theme === 'dark' ? 'text-white' : 'text-gray-900'
+                        )}>
+                          <Target className="w-3.5 h-3.5" style={{ color }} />
+                          {isZh ? '学习目标' : 'Objectives'}
+                        </h4>
+                        <div className="space-y-1.5">
+                          {(isZh ? unit.learningObjectives.zh : unit.learningObjectives.en).slice(0, 2).map((obj, idx) => (
+                            <div key={idx} className={cn(
+                              'text-xs leading-snug pl-4 relative',
+                              theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+                            )}>
+                              <span className="absolute left-0 top-0.5 text-[10px]" style={{ color }}>●</span>
+                              {obj}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Quick link to full course */}
+                      <Link
+                        to="/course"
+                        className={cn(
+                          'block w-full text-center text-xs font-medium py-2 rounded-lg transition-colors',
+                          theme === 'dark'
+                            ? 'bg-slate-700 hover:bg-slate-600 text-white'
+                            : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
+                        )}
+                      >
+                        {isZh ? '查看完整课程' : 'View Full Course'} →
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           )
         })}
       </div>
