@@ -506,6 +506,11 @@ function CourseOutlineColumn({
             )
           }
 
+          // Hide all other units when any unit is expanded
+          if (expandedUnitId) {
+            return null
+          }
+
           return (
             <motion.button
               key={unit.id}

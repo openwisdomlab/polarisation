@@ -5,12 +5,15 @@
 import { useState, useEffect, Suspense, ReactNode, memo } from 'react'
 import { Link, useSearchParams, useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import i18n from '@/i18n'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 import { ListItem } from '@/components/demos/DemoControls'
 import { DemoErrorBoundary } from '@/components/demos/DemoErrorBoundary'
 import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
-import { Gamepad2, BookOpen, Box, BarChart2, Menu, X, ChevronDown, ChevronRight, Lightbulb, HelpCircle, Search, GraduationCap, ArrowLeft, ExternalLink } from 'lucide-react'
+import { Gamepad2, BookOpen, Box, BarChart2, Menu, X, ChevronDown, ChevronRight, Lightbulb, HelpCircle, Search, GraduationCap, ArrowLeft, ExternalLink, FileCode } from 'lucide-react'
+import { SourceCodeViewer } from '@/components/demos/source-code'
+import { hasDemoSource } from '@/data/demo-sources'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { PersistentHeader } from '@/components/shared/PersistentHeader'
 import { SEO } from '@/components/shared/SEO'
@@ -1729,6 +1732,7 @@ export function DemosPage() {
   const { demoId: urlDemoId } = useParams<{ demoId?: string }>()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const isZh = i18n.language === 'zh'
 
   // Determine initial demo from URL param or show museum homepage
   const getInitialDemo = (): string | null => {
@@ -1755,6 +1759,7 @@ export function DemosPage() {
   }
 
   const [activeDemo, setActiveDemo] = useState<string | null>(getInitialDemo)
+  const [viewingSource, setViewingSource] = useState<string | null>(null)
   const [showMuseumHomepage, setShowMuseumHomepage] = useState<boolean>(() => getInitialDemo() === null)
   const [showMobileSidebar, setShowMobileSidebar] = useState(false)
   const [expandedUnit, setExpandedUnit] = useState<number | null>(() => {
@@ -2730,6 +2735,36 @@ export function DemosPage() {
                   : 'bg-gradient-to-br from-white to-gray-50 border-cyan-200 shadow-lg'
               )}
             >
+              {/* Source Code Toolbar */}
+              {activeDemo && hasDemoSource(activeDemo) && (
+                <div className={cn(
+                  'flex items-center justify-between px-5 py-3 border-b',
+                  theme === 'dark'
+                    ? 'bg-slate-900/50 border-slate-700'
+                    : 'bg-gray-50 border-gray-200'
+                )}>
+                  <div className="flex items-center gap-2 text-sm">
+                    <FileCode className="w-4 h-4 text-cyan-400" />
+                    <span className={theme === 'dark' ? 'text-slate-300' : 'text-gray-700'}>
+                      {isZh ? '提供多语言源码（Python, MATLAB等）' : 'Multi-language source code available'}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setViewingSource(activeDemo)}
+                    className={cn(
+                      'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
+                      'hover:scale-105 active:scale-95',
+                      theme === 'dark'
+                        ? 'bg-cyan-600 hover:bg-cyan-700 text-white'
+                        : 'bg-cyan-500 hover:bg-cyan-600 text-white'
+                    )}
+                  >
+                    <FileCode className="w-4 h-4" />
+                    <span>{isZh ? '查看源码' : 'View Source'}</span>
+                  </button>
+                </div>
+              )}
+
               <div className="p-5 min-h-[550px]">
                 <DemoErrorBoundary demoName={currentDemo?.titleKey ? t(currentDemo.titleKey) : undefined}>
                   <Suspense fallback={<DemoLoading />}>
@@ -3102,6 +3137,15 @@ export function DemosPage() {
         </main>
         </div>
       </div>
+
+      {/* Source Code Viewer Modal */}
+      {viewingSource && (
+        <SourceCodeViewer
+          demoId={viewingSource}
+          initialLanguage="typescript"
+          onClose={() => setViewingSource(null)}
+        />
+      )}
     </>
   )
 }
