@@ -16,7 +16,6 @@ import {
   Monitor,
   Camera,
   Microscope,
-  ArrowRight,
   Play,
   Pause,
   RotateCcw,
@@ -1055,33 +1054,6 @@ export function PolarizationComparison() {
         </div>
       </div>
 
-      {/* 底部 CTA */}
-      <div className={cn(
-        'p-6 text-center border-t',
-        theme === 'dark' ? 'border-slate-700' : 'border-gray-200'
-      )}>
-        <p className={cn(
-          'text-sm mb-4',
-          theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-        )}>
-          {isZh
-            ? '想深入了解偏振光的奥秘？探索我们的互动演示！'
-            : 'Want to dive deeper into the mysteries of polarization? Explore our interactive demos!'}
-        </p>
-        <Link
-          to="/demos"
-          className={cn(
-            'inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold',
-            'bg-gradient-to-r from-cyan-500 to-violet-500 text-white',
-            'hover:from-cyan-600 hover:to-violet-600 transition-all',
-            'shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40'
-          )}
-        >
-          <Play className="w-5 h-5" />
-          {isZh ? '开始探索偏振世界' : 'Start Exploring Polarization'}
-          <ArrowRight className="w-5 h-5" />
-        </Link>
-      </div>
     </div>
   )
 }

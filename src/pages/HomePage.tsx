@@ -2043,10 +2043,10 @@ export function HomePage() {
           theme === 'dark' ? 'text-gray-600' : 'text-gray-500'
         )}>
           <p className="opacity-60">
-            {isZh ? '© 2025 开放智慧实验室' : '© 2025 Open Wisdom Lab'}
+            {isZh ? '© 2025 深圳零一学院' : '© 2025 X-Institute'}
           </p>
           <p className="opacity-50 mt-1">
-            {isZh ? 'Supported by 开放智慧实验室' : 'Supported by Open Wisdom Lab (开放智慧实验室)'}
+            {isZh ? 'Supported by 开放智慧实验室' : 'Supported by Open Wisdom Lab'}
           </p>
         </footer>
       </main>
