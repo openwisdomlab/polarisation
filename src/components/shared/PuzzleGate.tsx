@@ -28,6 +28,23 @@ interface PuzzleGateProps {
 
 // 检查访问权限
 export function checkAccess(): boolean {
+  // 环境变量可以禁用密码锁
+  // 设置 VITE_DISABLE_PUZZLE_GATE=true 可跳过验证
+  if (import.meta.env.VITE_DISABLE_PUZZLE_GATE === 'true') {
+    return true
+  }
+
+  // URL 参数也可以跳过验证 (用于分享链接等场景)
+  // 例如: ?bypass=true
+  if (typeof window !== 'undefined') {
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.get('bypass') === 'true') {
+      // 保存到 localStorage 以便后续访问不需要参数
+      saveAccess()
+      return true
+    }
+  }
+
   try {
     const data = localStorage.getItem(STORAGE_KEY)
     if (!data) return false
