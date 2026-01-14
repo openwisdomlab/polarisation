@@ -234,7 +234,7 @@ interface CategoryFilter {
 
 const CATEGORY_FILTERS: CategoryFilter[] = [
   { id: 'all', labelZh: '全部', labelEn: 'All', icon: <Layers className="w-4 h-4" />, color: '#64748b' },
-  { id: 'discovery', labelZh: '发现', labelEn: 'Discovery', icon: <Search className="w-4 h-4" />, color: '#F59E0B' },
+  { id: 'discovery', labelZh: '发现', labelEn: 'Discovery', icon: <Search className="w-4 h-4" />, color: '#8B5CF6' },
   { id: 'theory', labelZh: '理论', labelEn: 'Theory', icon: <Lightbulb className="w-4 h-4" />, color: '#3B82F6' },
 ]
 
@@ -273,8 +273,8 @@ interface ParticleProps {
 // Generate random particles
 function generateParticles(count: number, theme: 'dark' | 'light'): ParticleProps[] {
   const colors = theme === 'dark'
-    ? ['#22d3ee', '#a855f7', '#3b82f6', '#f59e0b', '#22c55e']
-    : ['#0891b2', '#7c3aed', '#2563eb', '#d97706', '#16a34a']
+    ? ['#22d3ee', '#a855f7', '#3b82f6', '#8b5cf6', '#22c55e']
+    : ['#0891b2', '#7c3aed', '#2563eb', '#6d28d9', '#16a34a']
 
   return Array.from({ length: count }, (_, i) => ({
     delay: Math.random() * 5,
@@ -421,8 +421,8 @@ export function HomePage() {
     <div className={cn(
       'min-h-screen',
       theme === 'dark'
-        ? 'bg-gradient-to-br from-[#0a0a1a] via-[#1a1a3a] to-[#0a0a2a]'
-        : 'bg-gradient-to-br from-[#fffbeb] via-[#fef3c7] to-[#fffbeb]'
+        ? 'bg-gradient-to-br from-[#0f0d1a] via-[#1a1a3a] to-[#0f0d2a]'
+        : 'bg-gradient-to-br from-[#f0f4ff] via-[#e8eeff] to-[#f5f0ff]'
     )}>
       {/* Header - only visible after scrolling */}
       <AnimatePresence>
@@ -844,8 +844,8 @@ export function HomePage() {
                 <div className="grid grid-cols-[1fr_auto_1fr] gap-4">
                   {/* Left column: General Optics label centered */}
                   <div className="flex items-center justify-center gap-2">
-                    <Sun className={cn('w-5 h-5', theme === 'dark' ? 'text-amber-400' : 'text-amber-600')} />
-                    <span className={cn('font-semibold text-sm', theme === 'dark' ? 'text-amber-400' : 'text-amber-700')}>
+                    <Sun className={cn('w-5 h-5', theme === 'dark' ? 'text-violet-400' : 'text-violet-600')} />
+                    <span className={cn('font-semibold text-sm', theme === 'dark' ? 'text-violet-400' : 'text-violet-700')}>
                       {isZh ? '广义光学' : 'General Optics'}
                     </span>
                   </div>
@@ -894,13 +894,13 @@ export function HomePage() {
                             <div className={cn(
                               'relative z-10 px-4 py-1.5 rounded-full font-semibold text-sm border',
                               theme === 'dark'
-                                ? 'bg-gradient-to-r from-slate-800 to-slate-700 border-amber-500/50 text-amber-300'
-                                : 'bg-gradient-to-r from-amber-50 to-orange-50 border-amber-400 text-amber-700'
+                                ? 'bg-gradient-to-r from-violet-900/80 to-purple-900/80 border-violet-500/50 text-violet-300'
+                                : 'bg-gradient-to-r from-violet-100 to-purple-100 border-violet-400 text-violet-700'
                             )}
                             style={{
                               boxShadow: theme === 'dark'
-                                ? '0 0 16px rgba(245, 158, 11, 0.2)'
-                                : '0 0 12px rgba(245, 158, 11, 0.15)'
+                                ? '0 0 16px rgba(139, 92, 246, 0.2)'
+                                : '0 0 12px rgba(139, 92, 246, 0.15)'
                             }}
                             >
                               {getCenturyLabel(century, isZh)}
@@ -931,7 +931,7 @@ export function HomePage() {
                                   {/* Horizontal connector */}
                                   <div className={cn(
                                     'absolute right-0 top-6 w-4 h-0.5 translate-x-full',
-                                    theme === 'dark' ? 'bg-amber-500/50' : 'bg-amber-400/70'
+                                    theme === 'dark' ? 'bg-violet-500/50' : 'bg-violet-400/70'
                                   )} />
                                 </div>
                               </div>
@@ -950,12 +950,12 @@ export function HomePage() {
                                 className={cn(
                                   'w-3 h-3 rounded-full border-2 z-10',
                                   theme === 'dark'
-                                    ? 'bg-amber-500 border-amber-300'
-                                    : 'bg-amber-400 border-amber-200'
+                                    ? 'bg-violet-500 border-violet-300'
+                                    : 'bg-violet-400 border-violet-200'
                                 )}
                                 style={{
                                   marginTop: idx === 0 ? '20px' : '60px',
-                                  boxShadow: `0 0 8px ${theme === 'dark' ? '#f59e0b' : '#fbbf24'}`
+                                  boxShadow: `0 0 8px ${theme === 'dark' ? '#8b5cf6' : '#a78bfa'}`
                                 }}
                               />
                             ))}
@@ -1038,8 +1038,8 @@ export function HomePage() {
               theme === 'dark' ? 'bg-slate-800/50' : 'bg-white/80'
             )}>
               <div className="flex items-center gap-2">
-                <Sun className={cn('w-4 h-4', theme === 'dark' ? 'text-amber-400' : 'text-amber-600')} />
-                <span className={cn('text-xs font-medium', theme === 'dark' ? 'text-amber-400' : 'text-amber-700')}>
+                <Sun className={cn('w-4 h-4', theme === 'dark' ? 'text-violet-400' : 'text-violet-600')} />
+                <span className={cn('text-xs font-medium', theme === 'dark' ? 'text-violet-400' : 'text-violet-700')}>
                   {isZh ? '广义光学' : 'General Optics'}
                 </span>
               </div>
@@ -1086,8 +1086,8 @@ export function HomePage() {
                             className={cn(
                               'absolute left-0 px-3 py-1.5 rounded-full flex items-center justify-center font-bold text-xs border-2 z-10',
                               theme === 'dark'
-                                ? 'bg-gradient-to-r from-slate-800 to-slate-700 border-amber-500/60 text-amber-300'
-                                : 'bg-gradient-to-r from-amber-50 to-orange-50 border-amber-400 text-amber-700'
+                                ? 'bg-gradient-to-r from-violet-900/80 to-purple-900/80 border-violet-500/60 text-violet-300'
+                                : 'bg-gradient-to-r from-violet-100 to-purple-100 border-violet-400 text-violet-700'
                             )}
                             style={{ left: 0, transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}
                           >
@@ -1106,13 +1106,13 @@ export function HomePage() {
                               className={cn(
                                 'absolute w-3 h-3 rounded-full border-2 z-10',
                                 theme === 'dark'
-                                  ? 'bg-amber-500 border-amber-300'
-                                  : 'bg-amber-400 border-amber-200'
+                                  ? 'bg-violet-500 border-violet-300'
+                                  : 'bg-violet-400 border-violet-200'
                               )}
                               style={{
                                 left: '-24px',
                                 top: '20px',
-                                boxShadow: `0 0 6px ${theme === 'dark' ? '#f59e0b' : '#fbbf24'}`
+                                boxShadow: `0 0 6px ${theme === 'dark' ? '#8b5cf6' : '#a78bfa'}`
                               }}
                             />
                             <TimelineEventCard

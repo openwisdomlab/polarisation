@@ -27,12 +27,12 @@ function TimelineEventCard({
   relatedUnit,
 }: TimelineEventCardProps) {
   const isOptics = event.track === 'optics'
-  const trackColor = isOptics ? '#F59E0B' : '#22D3EE'
+  const trackColor = isOptics ? '#8B5CF6' : '#22D3EE'
   const scientistName = isZh ? event.scientistZh : event.scientistEn
 
   // Category badge color
   const categoryColors: Record<string, string> = {
-    discovery: '#F59E0B',
+    discovery: '#8B5CF6',
     theory: '#3B82F6',
   }
   const categoryLabels: Record<string, { zh: string; en: string }> = {
@@ -81,7 +81,7 @@ function TimelineEventCard({
               <span className={cn(
                 'text-xs font-bold px-2 py-0.5 rounded-full',
                 isOptics
-                  ? 'bg-amber-500/20 text-amber-500'
+                  ? 'bg-violet-500/20 text-violet-500'
                   : 'bg-cyan-500/20 text-cyan-500'
               )}>
                 {event.year}
