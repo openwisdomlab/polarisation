@@ -563,12 +563,19 @@ interface ShowcaseCache {
 
 /**
  * Restore icon component from iconName for cached items
+ * Returns null if any icon is missing (cache is stale)
  */
-function restoreIcons(cachedItems: CachedShowcaseItem[]): ShowcaseItem[] {
-  return cachedItems.map(item => ({
-    ...item,
-    icon: ICON_MAP[item.iconName],
-  }))
+function restoreIcons(cachedItems: CachedShowcaseItem[]): ShowcaseItem[] | null {
+  const restored: ShowcaseItem[] = []
+  for (const item of cachedItems) {
+    const icon = ICON_MAP[item.iconName]
+    if (!icon) {
+      // Cache contains an invalid iconName - cache is stale
+      return null
+    }
+    restored.push({ ...item, icon })
+  }
+  return restored
 }
 
 /**
@@ -673,7 +680,12 @@ export function getShowcaseItems(count: number = 6): ShowcaseItem[] {
       // Check if cache is still valid (same hour seed)
       if (data.seed === currentSeed && data.items.length === count) {
         // Restore icon components from iconName
-        return restoreIcons(data.items)
+        const restored = restoreIcons(data.items)
+        if (restored) {
+          return restored
+        }
+        // Cache is stale (missing icons), clear it
+        localStorage.removeItem(STORAGE_KEY)
       }
     }
   } catch {
