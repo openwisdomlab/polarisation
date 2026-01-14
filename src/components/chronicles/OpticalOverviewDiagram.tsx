@@ -8,10 +8,8 @@ import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
-import { Sun, Sparkles, Zap, FlaskConical, ChevronDown, Star } from 'lucide-react'
-import { CATEGORY_COLORS, type CategoryColorKey } from '@/data/chronicles-constants'
+import { Sun, Sparkles, Zap, FlaskConical, ChevronDown } from 'lucide-react'
 import { BranchCard } from './BranchCard'
-import { SpectrumScaleBar } from './SpectrumScaleBar'
 
 export interface OpticalOverviewDiagramProps {
   onFilterChange?: (branch: string) => void
@@ -26,16 +24,12 @@ export function OpticalOverviewDiagram({ onFilterChange }: OpticalOverviewDiagra
   const [isExpanded, setIsExpanded] = useState(false)
   // 选中的分支 - 默认选中偏振光学
   const [selectedBranch, setSelectedBranch] = useState<string>('polarization')
-  // Hover 状态
-  const [hoveredBranch, setHoveredBranch] = useState<string | null>(null)
 
   const handleBranchSelect = useCallback((branchId: string) => {
     setSelectedBranch(branchId)
     onFilterChange?.(branchId)
   }, [onFilterChange])
 
-  // 当前激活的分支（hover 优先）
-  const activeBranch = hoveredBranch || selectedBranch
 
   // 光学分支数据
   const branches = useMemo(() => [
@@ -110,11 +104,6 @@ export function OpticalOverviewDiagram({ onFilterChange }: OpticalOverviewDiagra
       ]
     },
   ], [theme])
-
-  // 获取颜色辅助函数
-  const getColor = useCallback((category: CategoryColorKey) => {
-    return theme === 'dark' ? CATEGORY_COLORS[category].dark : CATEGORY_COLORS[category].light
-  }, [theme])
 
   return (
     <motion.div
@@ -306,85 +295,22 @@ export function OpticalOverviewDiagram({ onFilterChange }: OpticalOverviewDiagra
                     isZh={isZh}
                     theme={theme}
                     onClick={() => handleBranchSelect(branch.id)}
-                    onHover={(hovered) => setHoveredBranch(hovered ? branch.id : null)}
+                    onHover={() => {}}
                     index={index}
                   />
                 ))}
               </div>
 
-              {/* 底部：电磁波谱条 */}
-              <SpectrumScaleBar
-                activeBranch={activeBranch}
-                theme={theme}
-                isZh={isZh}
-                onHover={setHoveredBranch}
-              />
-            </div>
-
-            {/* 底部交互说明 */}
-            <motion.div
-              className={cn(
-                'px-6 py-4 border-t',
-                theme === 'dark' ? 'border-slate-700/50 bg-slate-900/30' : 'border-gray-100 bg-gray-50/30'
-              )}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              {/* 图例按钮 */}
-              <div className="flex flex-wrap items-center justify-center gap-3 mb-3">
-                {branches.map((branch) => {
-                  const colors = getColor(branch.category)
-                  const isActive = selectedBranch === branch.id
-
-                  return (
-                    <motion.button
-                      key={branch.id}
-                      onClick={() => handleBranchSelect(branch.id)}
-                      className={cn(
-                        'flex items-center gap-2 px-4 py-2 rounded-full border-2 transition-all',
-                        'backdrop-blur-sm'
-                      )}
-                      style={{
-                        backgroundColor: isActive ? `${colors.stroke}15` : 'transparent',
-                        borderColor: isActive ? colors.stroke : `${colors.stroke}40`,
-                      }}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <motion.div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: colors.stroke }}
-                        animate={isActive ? {
-                          scale: [1, 1.3, 1],
-                          boxShadow: [`0 0 0px ${colors.stroke}`, `0 0 10px ${colors.stroke}`, `0 0 0px ${colors.stroke}`],
-                        } : {}}
-                        transition={{ duration: 1.5, repeat: Infinity }}
-                      />
-                      <span
-                        className={cn('text-sm font-medium', isActive ? 'font-bold' : '')}
-                        style={{ color: colors.text }}
-                      >
-                        {isZh ? branch.nameZh : branch.nameEn}
-                      </span>
-                      {branch.isHighlight && (
-                        <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                      )}
-                    </motion.button>
-                  )
-                })}
-              </div>
-
-              {/* 说明文字 */}
+              {/* 简化的底部说明 */}
               <p className={cn(
-                'text-center text-xs leading-relaxed',
+                'text-center text-xs mt-4',
                 theme === 'dark' ? 'text-gray-500' : 'text-gray-400'
               )}>
                 {isZh
-                  ? '💡 点击卡片或图例切换焦点 | 偏振光学揭示光的横波本质，是连接经典光学与量子光学的桥梁'
-                  : '💡 Click cards or legend to switch focus | Polarization reveals the transverse nature of light, bridging classical and quantum optics'}
+                  ? '点击卡片了解更多 · 偏振光学是连接经典与量子光学的桥梁'
+                  : 'Click cards to learn more · Polarization bridges classical and quantum optics'}
               </p>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
