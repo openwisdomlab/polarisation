@@ -2401,22 +2401,6 @@ export function DemosPage() {
                                         {unitDemos.indexOf(demo) + 1}
                                       </span>
                                       <span className="truncate flex-1">{t(demo.titleKey)}</span>
-                                      {hasDemoSource(demo.id) && (
-                                        <span title={isZh ? '源码可用' : 'Source available'}>
-                                          <FileCode
-                                            className={cn(
-                                              'w-3.5 h-3.5 flex-shrink-0',
-                                              activeDemo === demo.id
-                                                ? theme === 'dark'
-                                                  ? 'text-cyan-300'
-                                                  : 'text-cyan-600'
-                                                : theme === 'dark'
-                                                  ? 'text-emerald-400'
-                                                  : 'text-emerald-500'
-                                            )}
-                                          />
-                                        </span>
-                                      )}
                                       <VisualTypeBadge type={demo.visualType} />
                                     </div>
                                     {/* Search match details */}
@@ -2778,36 +2762,6 @@ export function DemosPage() {
                   : 'bg-gradient-to-br from-white to-gray-50 border-cyan-200 shadow-lg'
               )}
             >
-              {/* Source Code Toolbar */}
-              {activeDemo && hasDemoSource(activeDemo) && (
-                <div className={cn(
-                  'flex items-center justify-between px-5 py-3 border-b',
-                  theme === 'dark'
-                    ? 'bg-slate-900/50 border-slate-700'
-                    : 'bg-gray-50 border-gray-200'
-                )}>
-                  <div className="flex items-center gap-2 text-sm">
-                    <FileCode className="w-4 h-4 text-cyan-400" />
-                    <span className={theme === 'dark' ? 'text-slate-300' : 'text-gray-700'}>
-                      {isZh ? '提供多语言源码（Python, MATLAB等）' : 'Multi-language source code available'}
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => setViewingSource(activeDemo)}
-                    className={cn(
-                      'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
-                      'hover:scale-105 active:scale-95',
-                      theme === 'dark'
-                        ? 'bg-cyan-600 hover:bg-cyan-700 text-white'
-                        : 'bg-cyan-500 hover:bg-cyan-600 text-white'
-                    )}
-                  >
-                    <FileCode className="w-4 h-4" />
-                    <span>{isZh ? '查看源码' : 'View Source'}</span>
-                  </button>
-                </div>
-              )}
-
               <div className="p-5 min-h-[550px]">
                 <DemoErrorBoundary demoName={currentDemo?.titleKey ? t(currentDemo.titleKey) : undefined}>
                   <Suspense fallback={<DemoLoading />}>
