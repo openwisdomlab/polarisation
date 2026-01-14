@@ -1011,6 +1011,13 @@
       "resources": "延伸阅读",
       "experience": "体验偏振"
     },
+    "resourcesDisclaimer": "以下资源来自外部网站，仅供参考学习。",
+    "resourceTypes": {
+      "videos": "视频资源",
+      "articles": "文章资料",
+      "papers": "学术论文",
+      "tools": "工具与软件"
+    },
     "difficulty": {
       "label": "课程难度层级",
       "foundation": "基础层",
