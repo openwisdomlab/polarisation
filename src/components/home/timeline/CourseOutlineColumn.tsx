@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { Link } from 'react-router-dom'
-import { BookOpen, Sparkles, Lightbulb, Zap, Target, Telescope, ChevronDown, ChevronRight, Layers, Eye, Users } from 'lucide-react'
+import { BookOpen, Sparkles, Lightbulb, Zap, Target, Telescope, ChevronDown, ChevronRight, Eye, Users } from 'lucide-react'
 import { COURSE_TIMELINE_MAPPINGS, type CourseTimelineMapping } from '@/data/course-timeline-integration'
 import { PSRT_CURRICULUM } from '@/data/psrt-curriculum'
 
@@ -74,40 +74,6 @@ function CourseOutlineColumn({
         )}>
           {isZh ? '点击单元展开详情' : 'Click unit to expand details'}
         </p>
-      </div>
-
-      {/* Show All Button */}
-      <div className="p-3 pb-0">
-        <button
-          onClick={() => {
-            setExpandedUnitId(null)
-            onUnitClick(null)
-          }}
-          className={cn(
-            'w-full text-left p-3 rounded-xl border transition-all duration-200',
-            !activeUnitId
-              ? theme === 'dark'
-                ? 'bg-slate-700 border-cyan-500 shadow-lg'
-                : 'bg-white border-cyan-500 shadow-lg'
-              : theme === 'dark'
-                ? 'bg-slate-800/50 border-slate-700 hover:bg-slate-800'
-                : 'bg-gray-50 border-gray-200 hover:bg-white'
-          )}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold bg-gradient-to-br from-cyan-500 to-blue-500"
-            >
-              <Layers className="w-4 h-4" />
-            </div>
-            <span className={cn(
-              'text-sm font-medium',
-              theme === 'dark' ? 'text-white' : 'text-gray-900'
-            )}>
-              {isZh ? '显示全部' : 'Show All'}
-            </span>
-          </div>
-        </button>
       </div>
 
       {/* Units list - Accordion style */}
