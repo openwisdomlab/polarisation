@@ -40,11 +40,9 @@ import RayleighScatteringPython from '@/demo-sources/python/rayleigh_scattering.
 
 // Stage 2: Advanced polarimetry demos (Jones/Stokes/Mueller)
 // 阶段2：高级偏振演示（Jones/Stokes/Mueller）
-import JonesMatrixPython from '@/demo-sources/python/jones_matrix.py?raw'
+// Note: Using optimized versions with PolarCraft unified theme
 import JonesMatrixOptimizedPython from '@/demo-sources/python/jones_matrix_optimized.py?raw'
-import StokesVectorPython from '@/demo-sources/python/stokes_vector.py?raw'
 import StokesVectorOptimizedPython from '@/demo-sources/python/stokes_vector_optimized.py?raw'
-import MuellerMatrixPython from '@/demo-sources/python/mueller_matrix.py?raw'
 import MuellerMatrixOptimizedPython from '@/demo-sources/python/mueller_matrix_optimized.py?raw'
 
 // MATLAB/Octave implementations
