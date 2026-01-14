@@ -12,6 +12,7 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { SliderControl, ControlPanel, InfoCard } from '../DemoControls'
+import { RealExperimentMicroGallery } from '@/components/real-experiments'
 
 // 难度级别类型
 type DifficultyLevel = 'foundation' | 'application' | 'research'
@@ -723,6 +724,12 @@ export function MalusLawDemo({ difficultyLevel = 'application' }: MalusLawDemoPr
           </ul>
         </InfoCard>
       </div>
+
+      {/* 真实实验案例 */}
+      <RealExperimentMicroGallery
+        relatedModules={['malus', 'polarization-intro', 'stress-analysis']}
+        includeCulturalArt={false}
+      />
     </div>
   )
 }

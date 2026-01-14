@@ -16,6 +16,11 @@ import {
 } from '../DemoControls'
 import { ThicknessVisualizer, StressComparator } from '@/components/gallery'
 import { FlaskConical, Box, Beaker } from 'lucide-react'
+import {
+  RealExperimentMicroGallery,
+  SideBySideComparison,
+} from '@/components/real-experiments'
+import { getResourcesByModule } from '@/data/resource-gallery'
 
 // 光源组件
 function LightSource({ position }: { position: [number, number, number] }) {
@@ -621,6 +626,93 @@ export function BirefringenceDemo() {
               <ThicknessVisualizer showTheoryBar={true} showVideoButton={true} />
             </div>
 
+            {/* Real vs Simulation Comparison */}
+            <div className="bg-slate-900/50 rounded-xl border border-cyan-400/20 p-4">
+              <div className="flex items-center gap-2 mb-4">
+                <Box className="w-5 h-5 text-cyan-400" />
+                <h3 className="text-lg font-semibold text-white">
+                  {isZh ? '双折射对比演示' : 'Birefringence Comparison Demo'}
+                </h3>
+              </div>
+              <p className="text-gray-400 text-sm mb-4">
+                {isZh
+                  ? '拖动中间分割线，对比真实双折射实验与3D模拟器。调整参数查看相似度匹配！'
+                  : 'Drag the center divider to compare real birefringence experiment with 3D simulator. Adjust parameters to see similarity matching!'}
+              </p>
+
+              <SideBySideComparison
+                realResource={getResourcesByModule('birefringence').filter(r => r.type === 'image')}
+                simulatorComponent={
+                  <svg viewBox="0 0 600 400" className="w-full h-auto">
+                    {/* Background */}
+                    <rect x="0" y="0" width="600" height="400" fill="#0f172a" rx="8" />
+
+                    {/* Incident light */}
+                    <line x1="50" y1="200" x2="200" y2="200" stroke="#ffffff" strokeWidth="4" />
+
+                    {/* Birefringent crystal */}
+                    <rect
+                      x="200"
+                      y="120"
+                      width="80"
+                      height="160"
+                      fill="rgba(100, 200, 255, 0.3)"
+                      stroke="#67e8f9"
+                      strokeWidth="2"
+                    />
+
+                    {/* o-ray (ordinary ray) */}
+                    <line
+                      x1="280"
+                      y1="200"
+                      x2="500"
+                      y2="200"
+                      stroke="#ef4444"
+                      strokeWidth="3"
+                    />
+                    <text x="520" y="205" fill="#ef4444" fontSize="14">o-ray</text>
+
+                    {/* e-ray (extraordinary ray) */}
+                    <line
+                      x1="280"
+                      y1="200"
+                      x2="500"
+                      y2="140"
+                      stroke="#22c55e"
+                      strokeWidth="3"
+                    />
+                    <text x="520" y="145" fill="#22c55e" fontSize="14">e-ray</text>
+
+                    {/* Labels */}
+                    <text x="300" y="30" fill="#94a3b8" fontSize="16" fontWeight="bold">
+                      Birefringence Effect
+                    </text>
+                    <text x="240" y="300" fill="#67e8f9" fontSize="12" textAnchor="middle">
+                      Calcite Crystal
+                    </text>
+                  </svg>
+                }
+                simulatorParams={{
+                  material: 'calcite',
+                  angle: 0,
+                }}
+                autoMatchResource={(params) => {
+                  const resources = getResourcesByModule('birefringence')
+                  // Try to match by material type if available
+                  return resources.find(r =>
+                    r.metadata?.material?.toLowerCase().includes(params.material as string)
+                  ) || resources[0]
+                }}
+                calculateSimilarity={(params, resource) => {
+                  // Simple similarity based on material type
+                  const materialMatch = resource.metadata?.material?.toLowerCase().includes(params.material as string) ? 100 : 50
+                  return materialMatch
+                }}
+                title="Birefringence: Real vs Simulation"
+                titleZh="双折射：真实 vs 模拟"
+              />
+            </div>
+
             {/* Stress comparison */}
             <div className="bg-slate-900/50 rounded-xl border border-purple-400/20 p-4">
               <div className="flex items-center gap-2 mb-4">
@@ -646,6 +738,12 @@ export function BirefringenceDemo() {
                 <li>{isZh ? '应力大小与颜色数量成正比' : 'Stress magnitude is proportional to the number of colors'}</li>
               </ul>
             </InfoCard>
+
+            {/* 真实实验案例 */}
+            <RealExperimentMicroGallery
+              relatedModules={['birefringence', 'waveplate', 'chromatic-polarization', 'stress-analysis']}
+              includeCulturalArt={true}
+            />
           </motion.div>
         )}
       </AnimatePresence>

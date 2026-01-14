@@ -7,6 +7,7 @@ import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { SliderControl, ControlPanel, InfoCard } from '../DemoControls'
 import { MediaGalleryPanel } from './MediaGalleryPanel'
+import { RealExperimentMicroGallery } from '@/components/real-experiments'
 
 // 波长到RGB颜色转换
 function wavelengthToRGB(wavelength: number): [number, number, number] {
@@ -704,6 +705,12 @@ export function ChromaticDemo() {
           </ul>
         </InfoCard>
       </div>
+
+      {/* 真实实验案例 */}
+      <RealExperimentMicroGallery
+        relatedModules={['chromatic-polarization', 'birefringence', 'stress-analysis', 'interference']}
+        includeCulturalArt={true}
+      />
     </div>
   )
 }

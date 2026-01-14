@@ -17,6 +17,11 @@ import {
   cauchyIndex,
   wavelengthToRGB,
 } from '@/core/WaveOptics'
+import {
+  RealExperimentMicroGallery,
+  TimelineSyncPlayer,
+} from '@/components/real-experiments'
+import { BREWSTER_PERPENDICULAR_VERTICAL_LASER_VIDEO } from '@/data/resource-gallery'
 
 // 材料类型定义
 interface MaterialData {
@@ -1009,6 +1014,161 @@ export function BrewsterDemo() {
           </ul>
         </InfoCard>
       </div>
+
+      {/* 动态演示：旋转玻璃片视频同步 */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
+          <h3 className="text-lg font-semibold text-cyan-300 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {t('demoUi.brewster.dynamicDemo') || '动态演示：玻璃片旋转与布儒斯特角'}
+          </h3>
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
+        </div>
+
+        <TimelineSyncPlayer
+          realResource={BREWSTER_PERPENDICULAR_VERTICAL_LASER_VIDEO}
+          simulatorComponent={(time) => {
+            // 假设视频时长10秒，旋转一圈
+            const rotationDegrees = (time / 10) * 180 // 10秒旋转180度（0-180）
+            const glassAngle = rotationDegrees % 180
+
+            // 计算当前角度的反射率
+            const currentResult = calculateBrewster(glassAngle, n1, n2)
+            const currentBrewster = Math.abs(glassAngle - brewsterAngle) < 2
+
+            return (
+              <svg viewBox="0 0 600 400" className="w-full h-auto">
+                {/* 背景 */}
+                <rect x="0" y="0" width="600" height="400" fill="#0f172a" rx="8" />
+
+                {/* 入射光束 */}
+                <line
+                  x1="50"
+                  y1="200"
+                  x2="250"
+                  y2="200"
+                  stroke="#22d3ee"
+                  strokeWidth="4"
+                  opacity="0.8"
+                />
+
+                {/* 玻璃片（旋转） */}
+                <g transform={`translate(260, 200) rotate(${glassAngle})`}>
+                  <rect
+                    x="-10"
+                    y="-80"
+                    width="20"
+                    height="160"
+                    fill="rgba(100, 200, 255, 0.3)"
+                    stroke="#67e8f9"
+                    strokeWidth="2"
+                    rx="3"
+                  />
+                </g>
+
+                {/* 反射光束（强度随角度变化） */}
+                <line
+                  x1="260"
+                  y1="200"
+                  x2={260 + 200 * Math.cos(glassAngle * 2 * Math.PI / 180)}
+                  y2={200 - 200 * Math.sin(glassAngle * 2 * Math.PI / 180)}
+                  stroke="#ef4444"
+                  strokeWidth="3"
+                  opacity={Math.max(0.2, currentResult.Rs)}
+                />
+
+                {/* 透射光束 */}
+                <line
+                  x1="260"
+                  y1="200"
+                  x2="500"
+                  y2={200 + (glassAngle - 56.3) * 1.5} // 简化的折射效果
+                  stroke="#22c55e"
+                  strokeWidth="3"
+                  opacity="0.6"
+                />
+
+                {/* 角度标注 */}
+                <text x="300" y="30" fill="#94a3b8" fontSize="16" fontWeight="bold">
+                  Glass Angle: {glassAngle.toFixed(1)}°
+                </text>
+                <text x="300" y="55" fill={currentBrewster ? '#22c55e' : '#94a3b8'} fontSize="14">
+                  Brewster Angle: {brewsterAngle.toFixed(1)}°
+                </text>
+
+                {/* 布儒斯特角指示 */}
+                {currentBrewster && (
+                  <g>
+                    <circle cx="260" cy="200" r="100" fill="none" stroke="#22c55e" strokeWidth="2" strokeDasharray="5 5" opacity="0.5" />
+                    <text x="300" y="380" fill="#22c55e" fontSize="18" fontWeight="bold">
+                      ✓ At Brewster Angle!
+                    </text>
+                  </g>
+                )}
+
+                {/* 反射率指示 */}
+                <text x="20" y="380" fill="#ef4444" fontSize="12">
+                  Reflection: {(currentResult.Rs * 100).toFixed(1)}%
+                </text>
+              </svg>
+            )
+          }}
+          duration={10} // 视频时长10秒
+          parameterCurves={[
+            {
+              label: 'Reflection (s-pol)',
+              labelZh: '反射率 (s偏振)',
+              color: '#ef4444',
+              unit: '%',
+              getValue: (time: number) => {
+                const angle = (time / 10) * 180
+                const result = calculateBrewster(angle, n1, n2)
+                return result.Rs * 100
+              },
+            },
+            {
+              label: 'Reflection (p-pol)',
+              labelZh: '反射率 (p偏振)',
+              color: '#22c55e',
+              unit: '%',
+              getValue: (time: number) => {
+                const angle = (time / 10) * 180
+                const result = calculateBrewster(angle, n1, n2)
+                return result.Rp * 100
+              },
+            },
+            {
+              label: 'Polarization Degree',
+              labelZh: '偏振度',
+              color: '#a78bfa',
+              unit: '',
+              getValue: (time: number) => {
+                const angle = (time / 10) * 180
+                const result = calculateBrewster(angle, n1, n2)
+                return Math.abs(result.Rs - result.Rp) / (result.Rs + result.Rp + 0.001) * 100
+              },
+            },
+          ]}
+          customTimePoints={[
+            { time: 0, label: 'Start (0°)', labelZh: '起始 (0°)' },
+            { time: (brewsterAngle / 180) * 10, label: `Brewster Angle (${brewsterAngle.toFixed(1)}°)`, labelZh: `布儒斯特角 (${brewsterAngle.toFixed(1)}°)` },
+            { time: 5, label: '90°', labelZh: '垂直入射 (90°)' },
+            { time: 10, label: 'End (180°)', labelZh: '结束 (180°)' },
+          ]}
+          title="Glass Plate Rotation - Brewster Angle Extinction"
+          titleZh="玻璃片旋转 - 布儒斯特角消光"
+        />
+      </div>
+
+      {/* 真实实验案例 */}
+      <RealExperimentMicroGallery
+        relatedModules={['brewster', 'fresnel', 'polarization-intro', 'malus']}
+        includeCulturalArt={false}
+      />
     </div>
   )
 }

@@ -668,6 +668,214 @@ export const BREWSTER_VERTICAL_DARK_SPOT: PolarizationResource = {
   },
 }
 
+// ===== 布儒斯特角详细实验装置系列 (Detailed Brewster Apparatus Series) =====
+
+export const BREWSTER_SETUP_DIAGRAM: PolarizationResource = {
+  id: 'brewster-setup-diagram',
+  type: 'image',
+  title: 'Brewster Experiment Setup Diagram',
+  titleZh: '布儒斯特实验装置示意图',
+  description: 'Schematic diagram of the complete Brewster angle experimental setup',
+  descriptionZh: '布儒斯特角实验装置完整示意图',
+  category: 'brewster',
+  url: '/images/brewster/实验装置示意图.png',
+  thumbnail: '/images/brewster/实验装置示意图.png',
+  relatedModules: ['brewster', 'fresnel', 'polarization-intro'],
+  metadata: {
+    polarizationSystem: 'front',
+  },
+}
+
+// 无偏振片系列
+export const BREWSTER_NO_POLARIZER: PolarizationResource = {
+  id: 'brewster-no-polarizer',
+  type: 'image',
+  title: 'Brewster Setup - No Polarizer',
+  titleZh: '布儒斯特装置俯视图（无偏振片）',
+  description: 'Top view of Brewster apparatus without polarizers',
+  descriptionZh: '无偏振片情况下的布儒斯特实验装置俯视图',
+  category: 'brewster',
+  url: '/images/brewster/实验装置俯视图（无偏振片）.png',
+  thumbnail: '/images/brewster/实验装置俯视图（无偏振片）.png',
+  relatedModules: ['brewster', 'fresnel'],
+  metadata: {
+    polarizationSystem: 'none',
+  },
+}
+
+export const BREWSTER_NO_POLARIZER_VERTICAL_LASER: PolarizationResource = {
+  id: 'brewster-no-polarizer-vertical-laser',
+  type: 'image',
+  title: 'Brewster - No Polarizer with Vertical Green Laser',
+  titleZh: '无偏振片-纵向绿色激光',
+  description: 'Brewster setup without polarizer, green laser beam in vertical orientation',
+  descriptionZh: '无偏振片情况下，纵向绿色激光照射的布儒斯特实验',
+  category: 'brewster',
+  url: '/images/brewster/实验装置俯视图（无偏振片）-开启绿色激光（纵向光束）.png',
+  thumbnail: '/images/brewster/实验装置俯视图（无偏振片）-开启绿色激光（纵向光束）.png',
+  relatedModules: ['brewster', 'fresnel'],
+  metadata: {
+    polarizationSystem: 'none',
+    hasVideo: true,
+    videoUrl: '/videos/brewster/实验装置俯视图（无偏振片）-开启绿色激光（纵向光束）-旋转玻璃片视频.mp4',
+  },
+}
+
+export const BREWSTER_NO_POLARIZER_VIDEO: PolarizationResource = {
+  id: 'brewster-no-polarizer-video',
+  type: 'video',
+  title: 'Brewster - Rotating Glass Plate (No Polarizer)',
+  titleZh: '无偏振片-旋转玻璃片视频',
+  description: 'Video showing glass plate rotation in Brewster apparatus without polarizer, demonstrating reflection changes',
+  descriptionZh: '无偏振片条件下旋转玻璃片的视频，展示反射光强度变化',
+  category: 'brewster',
+  url: '/videos/brewster/实验装置俯视图（无偏振片）-开启绿色激光（纵向光束）-旋转玻璃片视频.mp4',
+  thumbnail: '/images/brewster/实验装置俯视图（无偏振片）-开启绿色激光（纵向光束）.png',
+  relatedModules: ['brewster', 'fresnel', 'polarization-intro'],
+  metadata: {
+    polarizationSystem: 'none',
+    hasVideo: true,
+    videoUrl: '/videos/brewster/实验装置俯视图（无偏振片）-开启绿色激光（纵向光束）-旋转玻璃片视频.mp4',
+  },
+}
+
+// 偏振片平行方向系列
+export const BREWSTER_PARALLEL_POLARIZER: PolarizationResource = {
+  id: 'brewster-parallel-polarizer',
+  type: 'image',
+  title: 'Brewster Setup - Parallel Polarizers',
+  titleZh: '布儒斯特装置俯视图（偏振片平行方向）',
+  description: 'Top view of Brewster apparatus with parallel polarizers',
+  descriptionZh: '偏振片平行方向布置的布儒斯特实验装置俯视图',
+  category: 'brewster',
+  url: '/images/brewster/实验装置俯视图（偏振片平行方向）.png',
+  thumbnail: '/images/brewster/实验装置俯视图（偏振片平行方向）.png',
+  relatedModules: ['brewster', 'fresnel', 'malus'],
+  metadata: {
+    polarizationSystem: 'parallel',
+  },
+}
+
+export const BREWSTER_PARALLEL_VERTICAL_LASER: PolarizationResource = {
+  id: 'brewster-parallel-vertical-laser',
+  type: 'image',
+  title: 'Brewster - Parallel Polarizers with Vertical Laser',
+  titleZh: '偏振片平行-纵向绿色激光',
+  description: 'Parallel polarizers with vertical green laser beam showing maximum transmission',
+  descriptionZh: '偏振片平行布置，纵向绿色激光，显示最大透射',
+  category: 'brewster',
+  url: '/images/brewster/实验装置俯视图（偏振片平行方向）-开启绿色激光（纵向光束）.png',
+  thumbnail: '/images/brewster/实验装置俯视图（偏振片平行方向）-开启绿色激光（纵向光束）.png',
+  relatedModules: ['brewster', 'fresnel', 'malus'],
+  metadata: {
+    polarizationSystem: 'parallel',
+  },
+}
+
+export const BREWSTER_PARALLEL_HORIZONTAL_LASER: PolarizationResource = {
+  id: 'brewster-parallel-horizontal-laser',
+  type: 'image',
+  title: 'Brewster - Parallel Polarizers with Horizontal Laser',
+  titleZh: '偏振片平行-横向绿色激光',
+  description: 'Parallel polarizers with horizontal green laser beam',
+  descriptionZh: '偏振片平行布置，横向绿色激光照射',
+  category: 'brewster',
+  url: '/images/brewster/实验装置俯视图（偏振片平行方向）-开启绿色激光（横向光束）.png',
+  thumbnail: '/images/brewster/实验装置俯视图（偏振片平行方向）-开启绿色激光（横向光束）.png',
+  relatedModules: ['brewster', 'fresnel', 'malus'],
+  metadata: {
+    polarizationSystem: 'parallel',
+  },
+}
+
+// 偏振片垂直方向系列
+export const BREWSTER_PERPENDICULAR_POLARIZER: PolarizationResource = {
+  id: 'brewster-perpendicular-polarizer',
+  type: 'image',
+  title: 'Brewster Setup - Crossed Polarizers',
+  titleZh: '布儒斯特装置俯视图（偏振片垂直方向）',
+  description: 'Top view of Brewster apparatus with crossed (perpendicular) polarizers',
+  descriptionZh: '偏振片垂直交叉布置的布儒斯特实验装置俯视图',
+  category: 'brewster',
+  url: '/images/brewster/实验装置俯视图（偏振片垂直方向）.png',
+  thumbnail: '/images/brewster/实验装置俯视图（偏振片垂直方向）.png',
+  relatedModules: ['brewster', 'fresnel', 'malus'],
+  metadata: {
+    polarizationSystem: 'crossed',
+  },
+}
+
+export const BREWSTER_PERPENDICULAR_VERTICAL_LASER: PolarizationResource = {
+  id: 'brewster-perpendicular-vertical-laser',
+  type: 'image',
+  title: 'Brewster - Crossed Polarizers with Vertical Laser',
+  titleZh: '偏振片垂直-纵向绿色激光',
+  description: 'Crossed polarizers with vertical green laser beam showing polarization effects at Brewster angle',
+  descriptionZh: '偏振片垂直交叉，纵向绿色激光，展示布儒斯特角偏振效应',
+  category: 'brewster',
+  url: '/images/brewster/实验装置俯视图（偏振片垂直方向）-开启绿色激光（纵向光束）.png',
+  thumbnail: '/images/brewster/实验装置俯视图（偏振片垂直方向）-开启绿色激光（纵向光束）.png',
+  relatedModules: ['brewster', 'fresnel', 'malus'],
+  metadata: {
+    polarizationSystem: 'crossed',
+    hasVideo: true,
+    videoUrl: '/videos/brewster/实验装置俯视图（偏振片垂直方向）-开启绿色激光（纵向光束）-旋转玻璃片视频.mp4',
+  },
+}
+
+export const BREWSTER_PERPENDICULAR_VERTICAL_LASER_VIDEO: PolarizationResource = {
+  id: 'brewster-perpendicular-vertical-laser-video',
+  type: 'video',
+  title: 'Brewster - Rotating Glass with Crossed Polarizers',
+  titleZh: '偏振片垂直-旋转玻璃片视频',
+  description: 'Video showing glass plate rotation with crossed polarizers, demonstrating Brewster angle extinction',
+  descriptionZh: '正交偏振片下旋转玻璃片视频，展示布儒斯特角消光现象',
+  category: 'brewster',
+  url: '/videos/brewster/实验装置俯视图（偏振片垂直方向）-开启绿色激光（纵向光束）-旋转玻璃片视频.mp4',
+  thumbnail: '/images/brewster/实验装置俯视图（偏振片垂直方向）-开启绿色激光（纵向光束）.png',
+  relatedModules: ['brewster', 'fresnel', 'malus'],
+  metadata: {
+    polarizationSystem: 'crossed',
+    hasVideo: true,
+    videoUrl: '/videos/brewster/实验装置俯视图（偏振片垂直方向）-开启绿色激光（纵向光束）-旋转玻璃片视频.mp4',
+  },
+}
+
+export const BREWSTER_PERPENDICULAR_HORIZONTAL_LASER: PolarizationResource = {
+  id: 'brewster-perpendicular-horizontal-laser',
+  type: 'image',
+  title: 'Brewster - Crossed Polarizers with Horizontal Laser',
+  titleZh: '偏振片垂直-横向绿色激光',
+  description: 'Crossed polarizers with horizontal green laser beam',
+  descriptionZh: '偏振片垂直交叉，横向绿色激光照射',
+  category: 'brewster',
+  url: '/images/brewster/实验装置俯视图（偏振片垂直方向）-开启绿色激光（横向光束）.png',
+  thumbnail: '/images/brewster/实验装置俯视图（偏振片垂直方向）-开启绿色激光（横向光束）.png',
+  relatedModules: ['brewster', 'fresnel', 'malus'],
+  metadata: {
+    polarizationSystem: 'crossed',
+  },
+}
+
+// 偏振片纵向方向视频
+export const BREWSTER_VERTICAL_DIRECTION_VIDEO: PolarizationResource = {
+  id: 'brewster-vertical-direction-video',
+  type: 'video',
+  title: 'Brewster - Vertical Polarizer Rotation',
+  titleZh: '偏振片纵向-旋转玻璃片视频',
+  description: 'Video showing glass plate rotation with polarizer in vertical direction',
+  descriptionZh: '偏振片纵向方向下旋转玻璃片的视频',
+  category: 'brewster',
+  url: '/videos/brewster/实验装置俯视图（偏振片纵向方向）-开启绿色激光（纵向光束）-旋转玻璃片视频.mp4',
+  thumbnail: '/images/brewster/实验装置俯视图（偏振片垂直方向）-开启绿色激光（纵向光束）.png',
+  relatedModules: ['brewster', 'fresnel', 'polarization-intro'],
+  metadata: {
+    polarizationSystem: 'crossed',
+    hasVideo: true,
+    videoUrl: '/videos/brewster/实验装置俯视图（偏振片纵向方向）-开启绿色激光（纵向光束）-旋转玻璃片视频.mp4',
+  },
+}
+
 // ===== 冰洲石双折射实验资源 (Calcite Birefringence Experiments) =====
 
 export const CALCITE_DOUBLE_REFRACTION: PolarizationResource = {
@@ -927,6 +1135,19 @@ export const POLARIZATION_RESOURCES: PolarizationResource[] = [
   BREWSTER_APPARATUS,
   BREWSTER_HORIZONTAL_DARK_SPOT,
   BREWSTER_VERTICAL_DARK_SPOT,
+  // Brewster Detailed Series
+  BREWSTER_SETUP_DIAGRAM,
+  BREWSTER_NO_POLARIZER,
+  BREWSTER_NO_POLARIZER_VERTICAL_LASER,
+  BREWSTER_NO_POLARIZER_VIDEO,
+  BREWSTER_PARALLEL_POLARIZER,
+  BREWSTER_PARALLEL_VERTICAL_LASER,
+  BREWSTER_PARALLEL_HORIZONTAL_LASER,
+  BREWSTER_PERPENDICULAR_POLARIZER,
+  BREWSTER_PERPENDICULAR_VERTICAL_LASER,
+  BREWSTER_PERPENDICULAR_VERTICAL_LASER_VIDEO,
+  BREWSTER_PERPENDICULAR_HORIZONTAL_LASER,
+  BREWSTER_VERTICAL_DIRECTION_VIDEO,
   // Calcite Birefringence Experiments
   CALCITE_DOUBLE_REFRACTION,
   CALCITE_POLARIZER_SEQUENCE,
