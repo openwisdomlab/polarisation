@@ -56,7 +56,7 @@ function categorizeResources(
   // Category 2: Setup & Equipment
   const setupResources = resources.filter(
     r =>
-      r.title.toLowerCase().includes('setup') ||
+      r.title?.toLowerCase().includes('setup') ||
       r.titleZh?.includes('装置') ||
       r.titleZh?.includes('设备') ||
       r.description?.toLowerCase().includes('apparatus') ||
@@ -82,8 +82,8 @@ function categorizeResources(
       (r.category === 'birefringence' ||
         r.category === 'interference' ||
         r.category === 'stress' ||
-        r.metadata.polarizationSystem === 'parallel' ||
-        r.metadata.polarizationSystem === 'crossed')
+        r.metadata?.polarizationSystem === 'parallel' ||
+        r.metadata?.polarizationSystem === 'crossed')
   )
   if (effectsResources.length > 0) {
     categories.push({
@@ -159,8 +159,13 @@ export function RealExperimentMicroGallery({
   // Optionally include cultural art
   const culturalResources = includeCulturalArt
     ? getMediaByTag('chromatic-polarization').map(media => ({
-        ...media,
         // Convert CulturalMedia to PolarizationResource-compatible format
+        id: media.id,
+        type: media.type,
+        title: media.name,
+        titleZh: media.nameZh,
+        description: media.description,
+        descriptionZh: media.descriptionZh,
         url: media.path,
         thumbnail: media.thumbnail || media.path,
         category: 'art' as const,
@@ -168,7 +173,7 @@ export function RealExperimentMicroGallery({
         metadata: {
           polarizationSystem: media.polarizationSystem,
         },
-      } as unknown as PolarizationResource))
+      } as PolarizationResource))
     : []
 
   // Combine and deduplicate

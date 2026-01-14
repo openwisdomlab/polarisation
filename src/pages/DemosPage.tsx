@@ -1873,7 +1873,7 @@ export function DemosPage() {
       const info = demoInfoMap[demo.id]
       if (info) {
         // Physics principle and formula
-        if (info.physics?.principle?.toLowerCase().includes(query)) {
+        if (info.physics?.principle?.toLowerCase()?.includes(query)) {
           matches.push({
             section: 'physics',
             sectionLabel: getSectionLabel('physics', t),
@@ -1881,7 +1881,7 @@ export function DemosPage() {
             highlightedText: highlightText(getMatchContext(info.physics.principle, query), query)
           })
         }
-        if (info.physics?.formula?.toLowerCase().includes(query)) {
+        if (info.physics?.formula?.toLowerCase()?.includes(query)) {
           matches.push({
             section: 'physics',
             sectionLabel: getSectionLabel('physics', t) + ' - 公式',
@@ -1890,7 +1890,7 @@ export function DemosPage() {
           })
         }
         info.physics?.details?.forEach((d, i) => {
-          if (d?.toLowerCase().includes(query)) {
+          if (d?.toLowerCase()?.includes(query)) {
             matches.push({
               section: 'physics',
               sectionLabel: getSectionLabel('physics', t) + ` [${i + 1}]`,
@@ -1901,7 +1901,7 @@ export function DemosPage() {
         })
 
         // Life scene
-        if (info.lifeScene?.title?.toLowerCase().includes(query)) {
+        if (info.lifeScene?.title?.toLowerCase()?.includes(query)) {
           matches.push({
             section: 'lifeScene',
             sectionLabel: getSectionLabel('lifeScene', t) + ' - 标题',
@@ -1909,7 +1909,7 @@ export function DemosPage() {
             highlightedText: highlightText(getMatchContext(info.lifeScene.title, query), query)
           })
         }
-        if (info.lifeScene?.hook?.toLowerCase().includes(query)) {
+        if (info.lifeScene?.hook?.toLowerCase()?.includes(query)) {
           matches.push({
             section: 'lifeScene',
             sectionLabel: getSectionLabel('lifeScene', t) + ' - 引言',
@@ -1918,7 +1918,7 @@ export function DemosPage() {
           })
         }
         info.lifeScene?.facts?.forEach((f, i) => {
-          if (f?.toLowerCase().includes(query)) {
+          if (f?.toLowerCase()?.includes(query)) {
             matches.push({
               section: 'lifeScene',
               sectionLabel: getSectionLabel('lifeScene', t) + ` - 事实${i + 1}`,
@@ -1929,7 +1929,7 @@ export function DemosPage() {
         })
 
         // Experiment
-        if (info.experiment?.title?.toLowerCase().includes(query)) {
+        if (info.experiment?.title?.toLowerCase()?.includes(query)) {
           matches.push({
             section: 'experiment',
             sectionLabel: getSectionLabel('experiment', t),
@@ -1937,7 +1937,7 @@ export function DemosPage() {
             highlightedText: highlightText(getMatchContext(info.experiment.title, query), query)
           })
         }
-        if (info.experiment?.example?.toLowerCase().includes(query)) {
+        if (info.experiment?.example?.toLowerCase()?.includes(query)) {
           matches.push({
             section: 'experiment',
             sectionLabel: getSectionLabel('experiment', t) + ' - 示例',
@@ -1947,7 +1947,7 @@ export function DemosPage() {
         }
 
         // Frontier
-        if (info.frontier?.title?.toLowerCase().includes(query)) {
+        if (info.frontier?.title?.toLowerCase()?.includes(query)) {
           matches.push({
             section: 'frontier',
             sectionLabel: getSectionLabel('frontier', t),
@@ -1955,7 +1955,7 @@ export function DemosPage() {
             highlightedText: highlightText(getMatchContext(info.frontier.title, query), query)
           })
         }
-        if (info.frontier?.example?.toLowerCase().includes(query)) {
+        if (info.frontier?.example?.toLowerCase()?.includes(query)) {
           matches.push({
             section: 'frontier',
             sectionLabel: getSectionLabel('frontier', t) + ' - 示例',
@@ -1965,7 +1965,7 @@ export function DemosPage() {
         }
 
         // DIY
-        if (info.diy?.title?.toLowerCase().includes(query)) {
+        if (info.diy?.title?.toLowerCase()?.includes(query)) {
           matches.push({
             section: 'diy',
             sectionLabel: getSectionLabel('diy', t),
@@ -1974,7 +1974,7 @@ export function DemosPage() {
           })
         }
         info.diy?.materials?.forEach((m, i) => {
-          if (m?.toLowerCase().includes(query)) {
+          if (m?.toLowerCase()?.includes(query)) {
             matches.push({
               section: 'diy',
               sectionLabel: getSectionLabel('diy', t) + ` - 材料${i + 1}`,
@@ -1985,7 +1985,7 @@ export function DemosPage() {
         })
 
         // Questions
-        if (info.questions?.leading?.toLowerCase().includes(query)) {
+        if (info.questions?.leading?.toLowerCase()?.includes(query)) {
           matches.push({
             section: 'questions',
             sectionLabel: getSectionLabel('questions', t) + ' - 核心问题',
@@ -1994,7 +1994,7 @@ export function DemosPage() {
           })
         }
         info.questions?.guided?.forEach((q, i) => {
-          if (q?.toLowerCase().includes(query)) {
+          if (q?.toLowerCase()?.includes(query)) {
             matches.push({
               section: 'questions',
               sectionLabel: getSectionLabel('questions', t) + ` - 引导${i + 1}`,
@@ -2004,7 +2004,7 @@ export function DemosPage() {
           }
         })
         info.questions?.openEnded?.forEach((q, i) => {
-          if (q?.toLowerCase().includes(query)) {
+          if (q?.toLowerCase()?.includes(query)) {
             matches.push({
               section: 'questions',
               sectionLabel: getSectionLabel('questions', t) + ` - 开放${i + 1}`,

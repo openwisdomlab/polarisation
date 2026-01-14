@@ -301,17 +301,17 @@ export function GlobalSearch({ className }: GlobalSearchProps) {
 
     return searchData
       .filter(item => {
-        const titleMatch = item.titleEn.toLowerCase().includes(lowerQuery) ||
-          item.titleZh.includes(lowerQuery)
-        const descMatch = item.descriptionEn?.toLowerCase().includes(lowerQuery) ||
+        const titleMatch = item.titleEn?.toLowerCase().includes(lowerQuery) ||
+          item.titleZh?.includes(lowerQuery)
+        const descMatch = item.descriptionEn?.toLowerCase()?.includes(lowerQuery) ||
           item.descriptionZh?.includes(lowerQuery)
-        const metaMatch = item.meta?.toLowerCase().includes(lowerQuery)
+        const metaMatch = item.meta?.toLowerCase()?.includes(lowerQuery)
 
         // Also try matching individual words
         const wordsMatch = words.every(word =>
-          item.titleEn.toLowerCase().includes(word) ||
-          item.titleZh.includes(word) ||
-          item.descriptionEn?.toLowerCase().includes(word) ||
+          item.titleEn?.toLowerCase().includes(word) ||
+          item.titleZh?.includes(word) ||
+          item.descriptionEn?.toLowerCase()?.includes(word) ||
           item.descriptionZh?.includes(word)
         )
 
