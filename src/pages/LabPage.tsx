@@ -20,7 +20,8 @@ import {
   Beaker, Microscope,
   BarChart3, Sparkles, Calculator,
   TrendingUp, PlayCircle, Rocket,
-  Search, Eye, Brain, Dna, TreePine
+  Search, Eye, Brain, Dna, TreePine,
+  Github, Code, ExternalLink
 } from 'lucide-react'
 import { RESEARCH_CHALLENGES, type ResearchChallenge } from '@/data/research-challenges'
 
@@ -885,6 +886,77 @@ export function LabPage() {
                           </span>
                         ))}
                       </div>
+
+                      {/* Source Code Reference - 参考源码 */}
+                      {challenge.sourceCodeReference && (
+                        <div className={cn(
+                          'p-4 rounded-xl mb-4 border-2',
+                          theme === 'dark'
+                            ? 'bg-slate-700/30 border-cyan-500/30'
+                            : 'bg-cyan-50/50 border-cyan-200'
+                        )}>
+                          <div className="flex items-center gap-2 mb-3">
+                            <Code className="w-4 h-4 text-cyan-500" />
+                            <h4 className={cn(
+                              'text-sm font-semibold',
+                              theme === 'dark' ? 'text-cyan-400' : 'text-cyan-700'
+                            )}>
+                              {isZh ? '参考源码' : 'Reference Source Code'}
+                            </h4>
+                            <span className={cn(
+                              'text-xs px-2 py-0.5 rounded-full',
+                              theme === 'dark' ? 'bg-cyan-500/20 text-cyan-300' : 'bg-cyan-100 text-cyan-600'
+                            )}>
+                              {challenge.sourceCodeReference.language}
+                            </span>
+                          </div>
+
+                          <p className={cn(
+                            'text-xs mb-3',
+                            theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                          )}>
+                            {isZh
+                              ? challenge.sourceCodeReference.descriptionZh
+                              : challenge.sourceCodeReference.descriptionEn}
+                          </p>
+
+                          {/* Key Files */}
+                          {challenge.sourceCodeReference.keyFiles && (
+                            <div className="mb-3">
+                              <div className={cn(
+                                'text-xs font-medium mb-1',
+                                theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
+                              )}>
+                                {isZh ? '核心文件:' : 'Key Files:'}
+                              </div>
+                              <div className={cn(
+                                'text-xs font-mono p-2 rounded max-h-24 overflow-y-auto',
+                                theme === 'dark' ? 'bg-slate-800/50 text-gray-300' : 'bg-white text-gray-700'
+                              )}>
+                                {challenge.sourceCodeReference.keyFiles.map((file, i) => (
+                                  <div key={i}>{file}</div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* GitHub Button */}
+                          <a
+                            href={challenge.sourceCodeReference.repository}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={cn(
+                              'flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg font-medium transition-all',
+                              'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600',
+                              'text-white shadow hover:shadow-lg hover:-translate-y-0.5'
+                            )}
+                          >
+                            <Github className="w-4 h-4" />
+                            <span>{isZh ? '查看 GitHub 仓库' : 'View on GitHub'}</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </div>
+                      )}
 
                       {/* Action Button */}
                       {challenge.status === 'active' && (

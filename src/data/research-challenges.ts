@@ -64,6 +64,20 @@ export interface ResearchChallenge {
   relatedDemos?: string[]
   relatedPapers?: { title: string; url: string }[]
   supplementaryNote?: { en: string; zh: string }
+
+  // 可选：参考源码
+  sourceCodeReference?: {
+    repository: string           // GitHub仓库URL
+    nameEn: string               // 项目名称英文
+    nameZh: string               // 项目名称中文
+    descriptionEn: string        // 描述英文
+    descriptionZh: string        // 描述中文
+    language: string             // 主要语言 (e.g., 'Python')
+    keyFiles?: string[]          // 核心文件列表
+    dependencies?: Record<string, string>  // 依赖项
+    setupEn?: string             // 安装说明英文
+    setupZh?: string             // 安装说明中文
+  }
 }
 
 export const RESEARCH_CHALLENGES: ResearchChallenge[] = [
@@ -166,6 +180,65 @@ export const RESEARCH_CHALLENGES: ResearchChallenge[] = [
     supplementaryNote: {
       en: 'This project is not a fixed-answer teaching demo, but an ongoing real research project. Real research includes: continuously analyzing new experimental data, comparing different algorithms and analysis strategies, and organizing results into reports or papers. Research is never about those who know the answer explaining it, but about those who don\'t know the answer exploring together. If you\'re willing to join this exploration, you\'re already part of this research group.',
       zh: '本虚拟课题组项目并非结论固定的教学演示实验，而是来源于正在进行的真实科研工作。真实的研究工作包括：持续分析新的实验数据、比较不同算法和分析策略、把结果整理成报告或论文。科研从来不是知道答案的人在讲解，而是不知道答案的人在一起探索。如果你愿意参与这场探索，那么从现在开始，你已经是这个课题组的一部分了。'
+    },
+
+    // 参考源码 - Mueller SuperPixel
+    sourceCodeReference: {
+      repository: 'https://github.com/Weijinfu/Muller-SuperPixel',
+      nameEn: 'Mueller SuperPixel Analysis',
+      nameZh: 'Mueller超像素分析',
+      descriptionEn: 'Polarization feature template calculation program for identifying cell pixels in Mueller matrix images using super-pixel clustering and polarization feature analysis. The workflow includes: K-means super-pixel clustering → Mask annotation → Polarization feature extraction → Cell pixel prediction.',
+      descriptionZh: '用于Mueller矩阵图像中细胞像素识别的偏振特征模板计算程序，采用超像素聚类和偏振特征分析。工作流程包括：K-means超像素聚类 → 掩膜标注 → 偏振特征提取 → 细胞像素预测。',
+      language: 'Python',
+      keyFiles: [
+        'super_pixel.py     # 超像素聚类实现',
+        'muller_features.py # 偏振特征计算',
+        'mask_gui.py        # 交互式掩膜绘制工具',
+        'predict.py         # 细胞像素预测模块',
+        'pft.py             # 偏振特征模板创建',
+        'config.yaml        # 配置参数'
+      ],
+      dependencies: {
+        'numpy': '>=1.20.0',
+        'scipy': '>=1.7.0',
+        'opencv-python': '>=4.5.0',
+        'scikit-learn': '>=0.24.0',
+        'pillow': '>=8.0.0',
+        'matplotlib': '>=3.4.0',
+        'tkinter': 'built-in'
+      },
+      setupEn: `# Clone the repository
+git clone https://github.com/Weijinfu/Muller-SuperPixel.git
+cd Muller-SuperPixel
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\\Scripts\\activate
+
+# Install dependencies
+pip install numpy scipy opencv-python scikit-learn pillow matplotlib
+
+# Run the super-pixel clustering
+python super_pixel.py
+
+# Or use the mask annotation GUI
+python mask_gui.py`,
+      setupZh: `# 克隆仓库
+git clone https://github.com/Weijinfu/Muller-SuperPixel.git
+cd Muller-SuperPixel
+
+# 创建虚拟环境
+python -m venv venv
+source venv/bin/activate  # Windows系统: venv\\Scripts\\activate
+
+# 安装依赖
+pip install numpy scipy opencv-python scikit-learn pillow matplotlib
+
+# 运行超像素聚类
+python super_pixel.py
+
+# 或使用掩膜标注GUI
+python mask_gui.py`
     }
   },
 
