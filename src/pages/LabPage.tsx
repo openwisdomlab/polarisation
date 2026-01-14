@@ -940,21 +940,43 @@ export function LabPage() {
                             </div>
                           )}
 
-                          {/* GitHub Button */}
-                          <a
-                            href={challenge.sourceCodeReference.repository}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={cn(
-                              'flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg font-medium transition-all',
-                              'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600',
-                              'text-white shadow hover:shadow-lg hover:-translate-y-0.5'
-                            )}
-                          >
-                            <Github className="w-4 h-4" />
-                            <span>{isZh ? '查看 GitHub 仓库' : 'View on GitHub'}</span>
-                            <ExternalLink className="w-3 h-3" />
-                          </a>
+                          {/* Source Code Button */}
+                          {challenge.sourceCodeReference.repository.startsWith('http') ? (
+                            // External GitHub repository
+                            <a
+                              href={challenge.sourceCodeReference.repository}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={cn(
+                                'flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg font-medium transition-all',
+                                'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600',
+                                'text-white shadow hover:shadow-lg hover:-translate-y-0.5'
+                              )}
+                            >
+                              <Github className="w-4 h-4" />
+                              <span>{isZh ? '查看 GitHub 仓库' : 'View on GitHub'}</span>
+                              <ExternalLink className="w-3 h-3" />
+                            </a>
+                          ) : (
+                            // Local source file - show as downloadable/viewable
+                            <button
+                              onClick={() => {
+                                // Open source code viewer or copy path
+                                navigator.clipboard.writeText(challenge.sourceCodeReference!.repository)
+                                alert(isZh
+                                  ? `源码路径已复制到剪贴板:\n${challenge.sourceCodeReference!.repository}`
+                                  : `Source path copied to clipboard:\n${challenge.sourceCodeReference!.repository}`)
+                              }}
+                              className={cn(
+                                'flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg font-medium transition-all',
+                                'bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600',
+                                'text-white shadow hover:shadow-lg hover:-translate-y-0.5'
+                              )}
+                            >
+                              <Code className="w-4 h-4" />
+                              <span>{isZh ? '查看源码文件' : 'View Source File'}</span>
+                            </button>
+                          )}
                         </div>
                       )}
 

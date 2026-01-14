@@ -342,6 +342,62 @@ python mask_gui.py`
     supplementaryNote: {
       en: 'This project is not a fixed-answer teaching demo, but an ongoing real research project. Microscopy images often contain overlapping cells, complex backgrounds — these are typical features of real research data. There is no standard answer. Real research includes: continuously analyzing new experimental data, comparing different algorithms and analysis strategies, organizing results into reports or papers. Research is never about those who know the answer explaining it, but about those who don\'t know the answer exploring together. If you\'re willing to join this exploration, you\'re already part of this research group.',
       zh: '本虚拟课题组项目并非结论固定的教学演示实验，而是来源于正在进行的真实科研工作。显微图像中常存在微藻细胞聚集重叠、背景复杂干扰等不利现象，而这些正是真实科研数据的典型特征。本课题没有标准答案，在本虚拟课题组中，真实的研究工作包括：持续分析新的实验数据、比较不同算法和分析策略、把结果整理成报告或论文。科研从来不是知道答案的人在讲解，而是不知道答案的人在一起探索。如果你愿意参与这场探索，那么从现在开始，你已经是这个课题组的一部分了。'
+    },
+
+    // 参考源码 - PFT Algae (偏振特征模版微藻识别)
+    sourceCodeReference: {
+      repository: 'src/demo-sources/research/pft_algae.py',
+      nameEn: 'PFT Microalgae Identification',
+      nameZh: '偏振特征模版微藻识别',
+      descriptionEn: 'Polarization Feature Template (PFT) algorithm for microalgae identification using K-means super-pixel clustering. The workflow includes: Mueller matrix data loading → K-means clustering (512 super-pixels) → Feature template extraction → Statistical classification → Contour visualization. Supports outlier detection using 3-sigma threshold.',
+      descriptionZh: '基于K-means超像素聚类的微藻偏振特征模版（PFT）识别算法。工作流程包括：Mueller矩阵数据加载 → K-means聚类（512个超像素） → 特征模版提取 → 统计分类 → 轮廓可视化。支持基于3倍标准差的异常值检测。',
+      language: 'Python',
+      keyFiles: [
+        'pft_algae.py          # 主程序：完整PFT算法实现',
+        'load_microalgae_data  # 函数：加载微藻数据',
+        'extract_features      # 函数：提取偏振特征',
+        'train_kmeans_model    # 函数：训练K-means模型',
+        'calculate_pft         # 函数：计算偏振特征模版',
+        'predict_and_visualize # 函数：预测与可视化'
+      ],
+      dependencies: {
+        'numpy': '>=1.20.0',
+        'scipy': '>=1.7.0',
+        'matplotlib': '>=3.4.0',
+        'scikit-learn': '>=0.24.0',
+        'scikit-image': '>=0.18.0',
+        'hdf5storage': '>=0.1.18',
+        'pillow': '>=8.0.0',
+        'pandas': '>=1.3.0'
+      },
+      setupEn: `# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\\Scripts\\activate
+
+# Install dependencies
+pip install numpy scipy matplotlib scikit-learn scikit-image hdf5storage pillow pandas
+
+# Data format requirements:
+# - pbps.mat: Mueller matrix polarization parameters (H x W x 16)
+# - mask.mat: Cell region mask (H x W, binary)
+# - FinalMM.mat: Calibrated Mueller matrix (for visualization)
+
+# Run the PFT algorithm
+python pft_algae.py`,
+      setupZh: `# 创建虚拟环境
+python -m venv venv
+source venv/bin/activate  # Windows系统: venv\\Scripts\\activate
+
+# 安装依赖
+pip install numpy scipy matplotlib scikit-learn scikit-image hdf5storage pillow pandas
+
+# 数据格式要求:
+# - pbps.mat: Mueller矩阵偏振参数 (H x W x 16)
+# - mask.mat: 细胞区域掩膜 (H x W, 二值图)
+# - FinalMM.mat: 校准后的Mueller矩阵（用于可视化）
+
+# 运行PFT算法
+python pft_algae.py`
     }
   }
 ]
