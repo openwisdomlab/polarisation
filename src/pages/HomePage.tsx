@@ -15,6 +15,7 @@ import { LanguageThemeSwitcher } from '@/components/ui/LanguageThemeSwitcher'
 import { useTheme } from '@/contexts/ThemeContext'
 import { PolarWorldLogo } from '@/components/icons'
 import { OpticalOverviewDiagram } from '@/components/chronicles/OpticalOverviewDiagram'
+import { PolarizationComparison } from '@/components/shared/PolarizationComparison'
 import { cn } from '@/lib/utils'
 import {
   ChevronRight,
@@ -996,6 +997,11 @@ export function HomePage() {
               })}
             </div>
           </div>
+        </div>
+
+        {/* Polarization Comparison Demo - 偏振演示 */}
+        <div className="mt-12 max-w-7xl mx-auto">
+          <PolarizationComparison />
         </div>
 
         {/* Footer */}
