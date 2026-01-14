@@ -521,7 +521,7 @@ export function InteractiveExperimentModule({
                         key={idx}
                         to={
                           next.type === 'demo' ? `/demos/${next.id}` :
-                          next.type === 'game' ? `/games/${next.id}` :
+                          next.type === 'game' ? `/experiments` :
                           next.type === 'calculator' ? `/calc/${next.id}` :
                           `/discover?topic=${next.id}`
                         }
