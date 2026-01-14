@@ -937,11 +937,6 @@ export function PuzzleGate({ onAccessGranted }: PuzzleGateProps) {
                     '[&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:hover:scale-125'
                   )}
                 />
-                {/* 目标位置指示器 */}
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 w-1 h-4 bg-green-500/50 rounded pointer-events-none"
-                  style={{ left: `${(CORRECT_ANGLE_1 / 180) * 100}%` }}
-                />
               </div>
             </div>
 
@@ -994,11 +989,6 @@ export function PuzzleGate({ onAccessGranted }: PuzzleGateProps) {
                     '[&::-webkit-slider-thumb]:cursor-pointer',
                     '[&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:hover:scale-125'
                   )}
-                />
-                {/* 目标位置指示器 */}
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 w-1 h-4 bg-green-500/50 rounded pointer-events-none"
-                  style={{ left: `${(CORRECT_ANGLE_2 / 180) * 100}%` }}
                 />
               </div>
             </div>
@@ -1117,8 +1107,8 @@ export function PuzzleGate({ onAccessGranted }: PuzzleGateProps) {
           transition={{ duration: 3, repeat: Infinity }}
         >
           {isZh
-            ? '💡 提示：观察滑块上的绿色标记，那是正确角度的位置'
-            : '💡 Hint: Look for the green markers on the sliders - they indicate the correct angles'}
+            ? '💡 提示：调整两个偏振片的角度，让光透过率达到最佳状态'
+            : '💡 Hint: Adjust both polarizers to achieve optimal light transmission'}
         </motion.p>
       </motion.div>
 
