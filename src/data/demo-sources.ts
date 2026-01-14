@@ -45,6 +45,19 @@ import JonesMatrixOptimizedPython from '@/demo-sources/python/jones_matrix_optim
 import StokesVectorOptimizedPython from '@/demo-sources/python/stokes_vector_optimized.py?raw'
 import MuellerMatrixOptimizedPython from '@/demo-sources/python/mueller_matrix_optimized.py?raw'
 
+// AI Prompts for LLM-assisted code generation
+// AI 提示词用于大模型辅助代码生成
+import MalusLawPrompt from '@/demo-sources/prompts/malus_law_prompt.md?raw'
+import BirefringencePrompt from '@/demo-sources/prompts/birefringence_prompt.md?raw'
+import FresnelPrompt from '@/demo-sources/prompts/fresnel_prompt.md?raw'
+import WaveplatePrompt from '@/demo-sources/prompts/waveplate_prompt.md?raw'
+import BrewsterPrompt from '@/demo-sources/prompts/brewster_prompt.md?raw'
+import OpticalRotationPrompt from '@/demo-sources/prompts/optical_rotation_prompt.md?raw'
+import RayleighScatteringPrompt from '@/demo-sources/prompts/rayleigh_scattering_prompt.md?raw'
+import JonesMatrixPrompt from '@/demo-sources/prompts/jones_matrix_prompt.md?raw'
+import StokesVectorPrompt from '@/demo-sources/prompts/stokes_vector_prompt.md?raw'
+import MuellerMatrixPrompt from '@/demo-sources/prompts/mueller_matrix_prompt.md?raw'
+
 // MATLAB/Octave implementations
 // MATLAB/Octave 实现
 import MalusLawDemoMatlab from '@/demo-sources/matlab/malus_law.m?raw'
@@ -161,6 +174,17 @@ malus_law
 % 安装后使用方式与 MATLAB 相同`,
       notes: 'Traditional scientific computing standard. Compatible with free Octave.',
       notesZh: '传统科学计算标准。兼容免费的 Octave 软件。',
+    },
+
+    // AI Prompt
+    {
+      language: 'prompt',
+      sourceCode: MalusLawPrompt,
+      dependencies: {
+        'LLM': 'Claude, GPT-4, or similar',
+      },
+      notes: 'Use this prompt with AI assistants (Claude, GPT-4, etc.) to generate similar demos in any language.',
+      notesZh: '使用此提示词配合AI助手（Claude、GPT-4等）生成任意语言的类似演示。',
     },
   ],
 
@@ -290,6 +314,17 @@ birefringence`,
       notes: 'Real-time interactive visualization with calcite crystal rendering. Compatible with free Octave.',
       notesZh: '实时交互式可视化，包含方解石晶体渲染。兼容免费的 Octave。',
     },
+
+    // AI Prompt
+    {
+      language: 'prompt',
+      sourceCode: BirefringencePrompt,
+      dependencies: {
+        'LLM': 'Claude, GPT-4, or similar',
+      },
+      notes: 'Use this prompt with AI assistants to generate birefringence demos with 3D crystal visualization.',
+      notesZh: '使用此提示词配合AI助手生成包含3D晶体可视化的双折射演示。',
+    },
   ],
 
   resources: [
@@ -409,6 +444,17 @@ fresnel`,
       notes: 'Interactive interface with s/p polarization toggles. Real-time visualization of Brewster angle phenomenon.',
       notesZh: '交互式界面，支持s/p偏振切换。实时可视化布儒斯特角现象。',
     },
+
+    // AI Prompt
+    {
+      language: 'prompt',
+      sourceCode: FresnelPrompt,
+      dependencies: {
+        'LLM': 'Claude, GPT-4, or similar',
+      },
+      notes: 'Use this prompt to generate Fresnel equations demos with 6-panel visualization.',
+      notesZh: '使用此提示词生成包含6面板可视化的菲涅尔方程演示。',
+    },
   ],
 
   resources: [
@@ -500,6 +546,17 @@ waveplate`,
       notes: 'MATLAB/Octave compatible (R2016b+, Octave 4.0+). No toolboxes required. Includes Jones calculus implementation.',
       notesZh: 'MATLAB/Octave兼容 (R2016b+, Octave 4.0+)。无需工具箱。包含Jones演算实现。',
     },
+
+    // AI Prompt
+    {
+      language: 'prompt',
+      sourceCode: WaveplatePrompt,
+      dependencies: {
+        'LLM': 'Claude, GPT-4, or similar',
+      },
+      notes: 'Use this prompt to generate waveplate demos with Poincaré sphere visualization and Jones calculus.',
+      notesZh: '使用此提示词生成包含Poincaré球可视化和Jones演算的波片演示。',
+    },
   ],
 
   tags: ['polarization', 'waveplate', 'jones-calculus', 'circular-polarization', 'optical-components'],
@@ -581,6 +638,17 @@ brewster`,
       notes: 'MATLAB/Octave compatible (R2016b+, Octave 4.0+). No toolboxes required. Interactive angle adjustment.',
       notesZh: 'MATLAB/Octave兼容 (R2016b+, Octave 4.0+)。无需工具箱。可交互调整入射角。',
     },
+
+    // AI Prompt
+    {
+      language: 'prompt',
+      sourceCode: BrewsterPrompt,
+      dependencies: {
+        'LLM': 'Claude, GPT-4, or similar',
+      },
+      notes: 'Use this prompt to generate Brewster angle demos showing R_p = 0 phenomenon.',
+      notesZh: '使用此提示词生成展示R_p = 0现象的布儒斯特角演示。',
+    },
   ],
 
   tags: ['polarization', 'brewster-angle', 'fresnel-equations', 'reflection', 'interface-optics'],
@@ -661,6 +729,17 @@ optical_rotation`,
       notes: 'MATLAB/Octave compatible (R2016b+, Octave 4.0+). No toolboxes required. Interactive substance selection and parameter adjustment.',
       notesZh: 'MATLAB/Octave兼容 (R2016b+, Octave 4.0+)。无需工具箱。可交互选择物质和调节参数。',
     },
+
+    // AI Prompt
+    {
+      language: 'prompt',
+      sourceCode: OpticalRotationPrompt,
+      dependencies: {
+        'LLM': 'Claude, GPT-4, or similar',
+      },
+      notes: 'Use this prompt to generate optical rotation demos for chiral materials (sugars, etc.).',
+      notesZh: '使用此提示词生成手性材料（糖类等）的旋光性演示。',
+    },
   ],
 
   resources: [
@@ -738,6 +817,17 @@ rayleigh_scattering`,
 rayleigh_scattering`,
       notes: 'MATLAB/Octave compatible (R2016b+, Octave 4.0+). No toolboxes required. Real-time sky color calculation and polarization display.',
       notesZh: 'MATLAB/Octave兼容 (R2016b+, Octave 4.0+)。无需工具箱。实时天空颜色计算和偏振显示。',
+    },
+
+    // AI Prompt
+    {
+      language: 'prompt',
+      sourceCode: RayleighScatteringPrompt,
+      dependencies: {
+        'LLM': 'Claude, GPT-4, or similar',
+      },
+      notes: 'Use this prompt to generate sky polarization demos explaining why the sky is blue.',
+      notesZh: '使用此提示词生成天空偏振演示，解释天空为何是蓝色。',
     },
   ],
 
@@ -838,6 +928,17 @@ python jones_matrix_optimized.py
 python jones_matrix.py`,
       notes: 'Advanced interactive demo with 6 optical elements (Polarizer, HWP, QWP, Rotator, Phase Shifter, Custom Matrix). Features 3D Poincaré sphere visualization, real-time Jones calculus, and optimized PolarCraft dark theme.',
       notesZh: '高级交互演示，包含6种光学元件（偏振器、半波片、四分之一波片、旋转器、相移器、自定义矩阵）。具有3D Poincaré球可视化、实时Jones演算和优化的PolarCraft暗色主题。',
+    },
+
+    // AI Prompt
+    {
+      language: 'prompt',
+      sourceCode: JonesMatrixPrompt,
+      dependencies: {
+        'LLM': 'Claude, GPT-4, or similar',
+      },
+      notes: 'Comprehensive prompt for generating Jones matrix calculators with 6+ optical elements and Poincaré sphere.',
+      notesZh: '全面的提示词，用于生成包含6种以上光学元件和Poincaré球的Jones矩阵计算器。',
     },
   ],
 
@@ -941,6 +1042,17 @@ python stokes_vector.py`,
       notes: 'Comprehensive 6-panel visualization: Stokes bar chart, 3D Poincaré sphere, polarization ellipse, intensity measurements (I₀°/45°/90°/RCP), DOP gauge, and parameters table. Includes interactive sliders for S₁, S₂, S₃ with automatic normalization.',
       notesZh: '全面的6面板可视化：Stokes柱状图、3D Poincaré球、偏振椭圆、强度测量（I₀°/45°/90°/RCP）、偏振度仪表和参数表。包含S₁、S₂、S₃的交互滑块和自动归一化。',
     },
+
+    // AI Prompt
+    {
+      language: 'prompt',
+      sourceCode: StokesVectorPrompt,
+      dependencies: {
+        'LLM': 'Claude, GPT-4, or similar',
+      },
+      notes: 'Prompt for generating Stokes vector demos with DOP visualization and Poincaré sphere.',
+      notesZh: '用于生成包含偏振度可视化和Poincaré球的Stokes向量演示的提示词。',
+    },
   ],
 
   resources: [
@@ -1042,6 +1154,17 @@ python mueller_matrix_optimized.py
 python mueller_matrix.py`,
       notes: 'Advanced multi-panel demo with 7 optical elements (Polarizer, HWP, QWP, Rotator, Diattenuator, Depolarizer, Custom Matrix). Features Lu-Chipman decomposition, input/output Stokes visualization, 3D Poincaré sphere, and detailed matrix display.',
       notesZh: '高级多面板演示，包含7种光学元件（偏振器、半波片、四分之一波片、旋转器、二向衰减器、退偏器、自定义矩阵）。具有Lu-Chipman分解、输入/输出Stokes可视化、3D Poincaré球和详细矩阵显示。',
+    },
+
+    // AI Prompt
+    {
+      language: 'prompt',
+      sourceCode: MuellerMatrixPrompt,
+      dependencies: {
+        'LLM': 'Claude, GPT-4, or similar',
+      },
+      notes: 'Comprehensive prompt for generating Mueller matrix calculators with Lu-Chipman decomposition and depolarization.',
+      notesZh: '全面的提示词，用于生成包含Lu-Chipman分解和退偏功能的Mueller矩阵计算器。',
     },
   ],
 

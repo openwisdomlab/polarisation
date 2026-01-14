@@ -71,6 +71,8 @@ export function LanguageSelector({
                         ? 'bg-blue-500/20 text-blue-300'
                         : info.category === 'scientific'
                         ? 'bg-purple-500/20 text-purple-300'
+                        : info.category === 'ai-generation'
+                        ? 'bg-emerald-500/20 text-emerald-300'
                         : 'bg-green-500/20 text-green-300'
                     }
                   `}
@@ -79,6 +81,8 @@ export function LanguageSelector({
                     ? isZh ? '网页' : 'Web'
                     : info.category === 'scientific'
                     ? isZh ? '科学' : 'Scientific'
+                    : info.category === 'ai-generation'
+                    ? isZh ? 'AI生成' : 'AI Gen'
                     : isZh ? '统计' : 'Statistical'}
                 </span>
               </div>

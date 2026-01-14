@@ -10,7 +10,7 @@
  * Supported programming languages for demos
  * 支持的演示编程语言
  */
-export type SourceLanguage = 'typescript' | 'python' | 'matlab' | 'julia' | 'r'
+export type SourceLanguage = 'typescript' | 'python' | 'matlab' | 'julia' | 'r' | 'prompt'
 
 /**
  * Language metadata for display and processing
@@ -22,11 +22,11 @@ export interface LanguageInfo {
   nameZh: string
   icon: string // emoji
   fileExtension: string
-  highlightLanguage: string // Prism.js language key
+  highlightLanguage: string // Prism.js language key (or 'markdown' for prompts)
   color: string // Brand color
   description: string
   descriptionZh: string
-  category: 'web' | 'scientific' | 'statistical'
+  category: 'web' | 'scientific' | 'statistical' | 'ai-generation'
 }
 
 /**
@@ -93,6 +93,18 @@ export const LANGUAGE_INFO: Record<SourceLanguage, LanguageInfo> = {
     description: 'Statistical computing and data visualization',
     descriptionZh: '统计计算与数据可视化',
     category: 'statistical',
+  },
+  prompt: {
+    id: 'prompt',
+    name: 'AI Prompt',
+    nameZh: 'AI 提示词',
+    icon: '🤖',
+    fileExtension: '.md',
+    highlightLanguage: 'markdown',
+    color: '#10b981',
+    description: 'AI code generation prompt (for LLM-assisted development)',
+    descriptionZh: 'AI 代码生成提示词（用于大模型辅助开发）',
+    category: 'ai-generation',
   },
 }
 

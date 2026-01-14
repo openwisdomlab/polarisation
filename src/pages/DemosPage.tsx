@@ -1399,6 +1399,160 @@ const UNITS: UnitInfo[] = [
   { num: 5, titleKey: 'course.units.5.title', color: 'pink', isAdvanced: true, stage: 3 }, // Unit 5 标记为高级内容
 ]
 
+// B2: Recommended demos configuration based on difficulty level
+const RECOMMENDED_DEMOS: Record<DifficultyLevel, string[]> = {
+  explore: [
+    'polarization-intro',        // 偏振简介 - 生活场景引入
+    'polarization-state',        // 偏振态可视化 - 3D直观理解
+    'rayleigh',                  // 瑞利散射 - 蓝天白云的自然现象
+  ],
+  professional: [
+    'malus',                     // 马吕斯定律 - 定量测量
+    'fresnel',                   // 菲涅尔公式 - 复杂推导
+    'stokes',                    // 斯托克斯矢量 - 完备表征
+  ],
+}
+
+// C1: Question Wall - Maps common questions to relevant demos
+interface QuestionItem {
+  id: string
+  question: string
+  questionZh: string
+  demoId: string
+  category: 'phenomenon' | 'application' | 'principle' | 'measurement'
+  difficulty: DifficultyLevel
+}
+
+const QUESTION_WALL: QuestionItem[] = [
+  // Phenomenon questions (natural phenomena)
+  {
+    id: 'q1',
+    question: 'Why is the sky blue?',
+    questionZh: '为什么天空是蓝色的？',
+    demoId: 'rayleigh',
+    category: 'phenomenon',
+    difficulty: 'explore',
+  },
+  {
+    id: 'q2',
+    question: 'Why do sunsets appear red and orange?',
+    questionZh: '为什么日落时天空是红色和橙色的？',
+    demoId: 'rayleigh',
+    category: 'phenomenon',
+    difficulty: 'explore',
+  },
+  {
+    id: 'q3',
+    question: 'What is the rainbow pattern in soap bubbles?',
+    questionZh: '肥皂泡的彩虹色是什么？',
+    demoId: 'chromatic',
+    category: 'phenomenon',
+    difficulty: 'explore',
+  },
+  {
+    id: 'q4',
+    question: 'Why do some crystals show double images?',
+    questionZh: '为什么有些晶体会产生双像？',
+    demoId: 'birefringence',
+    category: 'phenomenon',
+    difficulty: 'explore',
+  },
+
+  // Application questions (practical uses)
+  {
+    id: 'q5',
+    question: 'How do polarized sunglasses work?',
+    questionZh: '偏振太阳镜是如何工作的？',
+    demoId: 'malus',
+    category: 'application',
+    difficulty: 'explore',
+  },
+  {
+    id: 'q6',
+    question: 'How do 3D glasses create depth perception?',
+    questionZh: '3D眼镜是如何产生立体感的？',
+    demoId: 'polarization-types',
+    category: 'application',
+    difficulty: 'explore',
+  },
+  {
+    id: 'q7',
+    question: 'How do LCD screens display images?',
+    questionZh: 'LCD显示屏是如何显示图像的？',
+    demoId: 'waveplate',
+    category: 'application',
+    difficulty: 'professional',
+  },
+  {
+    id: 'q8',
+    question: 'How can we see stress in transparent materials?',
+    questionZh: '如何看到透明材料中的应力？',
+    demoId: 'chromatic',
+    category: 'application',
+    difficulty: 'explore',
+  },
+
+  // Principle questions (physical principles)
+  {
+    id: 'q9',
+    question: 'What happens when light passes through two polarizers?',
+    questionZh: '光通过两个偏振片会发生什么？',
+    demoId: 'malus',
+    category: 'principle',
+    difficulty: 'explore',
+  },
+  {
+    id: 'q10',
+    question: 'Why does rotating a polarizer change light intensity?',
+    questionZh: '为什么旋转偏振片会改变光强？',
+    demoId: 'malus',
+    category: 'principle',
+    difficulty: 'explore',
+  },
+  {
+    id: 'q11',
+    question: 'What is Brewster\'s angle?',
+    questionZh: '什么是布儒斯特角？',
+    demoId: 'brewster',
+    category: 'principle',
+    difficulty: 'professional',
+  },
+  {
+    id: 'q12',
+    question: 'How does light reflect from different surfaces?',
+    questionZh: '光如何从不同表面反射？',
+    demoId: 'fresnel',
+    category: 'principle',
+    difficulty: 'professional',
+  },
+
+  // Measurement questions (detection and analysis)
+  {
+    id: 'q13',
+    question: 'How do we measure polarization states?',
+    questionZh: '如何测量偏振状态？',
+    demoId: 'stokes',
+    category: 'measurement',
+    difficulty: 'professional',
+  },
+  {
+    id: 'q14',
+    question: 'What is the Poincaré sphere?',
+    questionZh: '什么是庞加莱球？',
+    demoId: 'stokes',
+    category: 'measurement',
+    difficulty: 'professional',
+  },
+  {
+    id: 'q15',
+    question: 'How can we calculate polarization transformations?',
+    questionZh: '如何计算偏振变换？',
+    demoId: 'jones-matrix',
+    category: 'measurement',
+    difficulty: 'professional',
+  },
+]
+
 function DemoLoading() {
   const { t } = useTranslation()
   const { theme } = useTheme()
@@ -1665,6 +1819,7 @@ export function DemosPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [difficultyLevel, setDifficultyLevel] = useState<DifficultyLevel>('explore')
   const [showDifficultyChange, setShowDifficultyChange] = useState(false)
+  const [showQuestionWall, setShowQuestionWall] = useState(false)
 
   // Show visual feedback when difficulty changes
   const handleDifficultyChange = (level: DifficultyLevel) => {
@@ -1886,11 +2041,13 @@ export function DemosPage() {
       setExpandedUnit(demo.unit)
     }
 
-    // Reset cards to collapsed when switching to a new (not previously visited) demo
+    // Reset cards with intelligent defaults based on difficulty level
     if (!visitedDemos.has(demoId)) {
+      // Explore mode: show experience card (most engaging for learners)
+      // Professional mode: show physics card (academic rigor)
       setExpandedCards({
-        experience: true,  // Experience card expanded by default
-        physics: false,
+        experience: difficultyLevel === 'explore',
+        physics: difficultyLevel === 'professional',
         experiment: false,
         frontier: false,
       })
@@ -2114,9 +2271,118 @@ export function DemosPage() {
                 {t('gallery.search.results', { count: filteredDemos.length })}
               </p>
             )}
+
+            {/* C1: Question Wall Button */}
+            <button
+              onClick={() => setShowQuestionWall(true)}
+              className={cn(
+                'w-full mt-3 px-3 py-2.5 rounded-lg border transition-all duration-200',
+                'flex items-center gap-2 text-sm font-medium',
+                'hover:scale-[1.02] active:scale-[0.98]',
+                theme === 'dark'
+                  ? 'bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/30 text-purple-400 hover:border-purple-400'
+                  : 'bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200 text-purple-700 hover:border-purple-400'
+              )}
+            >
+              <MessageCircle className="w-4 h-4" />
+              <span className="flex-1 text-left">{isZh ? '问题墙' : 'Question Wall'}</span>
+              <span className={cn(
+                'text-xs px-1.5 py-0.5 rounded-full',
+                theme === 'dark' ? 'bg-purple-400/20 text-purple-300' : 'bg-purple-200 text-purple-700'
+              )}>
+                {QUESTION_WALL.length}
+              </span>
+            </button>
           </div>
 
           <div className="p-4">
+            {/* B2: Recommended Demos Section - Shows top 3 demos for current difficulty level */}
+            {!searchQuery && (
+              <div className="mb-4">
+                <div className={cn(
+                  'mb-3 px-3 py-2 rounded-lg border',
+                  theme === 'dark'
+                    ? 'bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/30'
+                    : 'bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200'
+                )}>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🎯</span>
+                    <span className={cn(
+                      'text-xs font-semibold',
+                      theme === 'dark' ? 'text-amber-400' : 'text-amber-700'
+                    )}>
+                      {isZh ? '推荐开始' : 'Recommended for You'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-2 ml-2">
+                  {RECOMMENDED_DEMOS[difficultyLevel].map((demoId: string) => {
+                    const demo = DEMOS.find(d => d.id === demoId)
+                    if (!demo) return null
+
+                    const isActive = activeDemo === demo.id
+
+                    return (
+                      <button
+                        key={demo.id}
+                        onClick={() => {
+                          handleDemoChange(demo.id)
+                          if (isCompact) setShowMobileSidebar(false)
+                        }}
+                        className={cn(
+                          'w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-left transition-all duration-200',
+                          'hover:translate-x-1 active:scale-[0.98]',
+                          isActive
+                            ? theme === 'dark'
+                              ? 'bg-gradient-to-r from-amber-400/20 to-orange-400/10 text-amber-400 border-l-2 border-amber-400'
+                              : 'bg-gradient-to-r from-amber-100 to-orange-50 text-amber-700 border-l-2 border-amber-500'
+                            : theme === 'dark'
+                              ? 'text-gray-400 hover:bg-slate-800/50 hover:text-white border border-slate-800'
+                              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 border border-gray-200'
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            'w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0',
+                            isActive
+                              ? theme === 'dark'
+                                ? 'bg-amber-400 text-black'
+                                : 'bg-amber-500 text-white'
+                              : theme === 'dark'
+                                ? 'bg-slate-700 text-gray-400'
+                                : 'bg-gray-200 text-gray-500'
+                          )}
+                        >
+                          ⭐
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="truncate">{t(demo.titleKey)}</span>
+                            <VisualTypeBadge type={demo.visualType} />
+                          </div>
+                          <span className={cn(
+                            'text-[10px] mt-0.5 block',
+                            isActive
+                              ? theme === 'dark' ? 'text-amber-300/70' : 'text-amber-600/70'
+                              : theme === 'dark' ? 'text-gray-600' : 'text-gray-500'
+                          )}>
+                            {demo.unit === 0 ? t('basics.title') : `${t('game.level')} ${demo.unit}`}
+                          </span>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {/* Divider */}
+                <div className={cn(
+                  'my-4 border-t',
+                  theme === 'dark' ? 'border-slate-800' : 'border-gray-200'
+                )} />
+              </div>
+            )}
+
             {/* P2: 按学习阶段分组展示 */}
             {LEARNING_STAGES.map((stage) => {
               const stageUnits = UNITS.filter(u => stage.units.includes(u.num))

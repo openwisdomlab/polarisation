@@ -23,6 +23,7 @@ import 'prismjs/components/prism-python'
 import 'prismjs/components/prism-matlab'
 import 'prismjs/components/prism-julia'
 import 'prismjs/components/prism-r'
+import 'prismjs/components/prism-markdown'
 
 import { getDemoSource, getDemoSourceByLanguage } from '@/data/demo-sources'
 import { LANGUAGE_INFO, type SourceLanguage } from '@/types/source-code'
@@ -255,12 +256,58 @@ export function SourceCodeViewer({
 
           {/* Code Display */}
           <div className="flex-1 overflow-auto bg-slate-950 p-6">
-            <pre className="text-sm leading-relaxed">
-              <code
-                className={`language-${languageInfo.highlightLanguage}`}
-                dangerouslySetInnerHTML={{ __html: highlightedCode }}
-              />
-            </pre>
+            {selectedLanguage === 'prompt' ? (
+              // Special rendering for AI prompts with markdown styling
+              <div className="prose prose-invert prose-sm max-w-none
+                prose-headings:text-emerald-300 prose-headings:font-bold
+                prose-h1:text-2xl prose-h1:border-b prose-h1:border-emerald-500/30 prose-h1:pb-2
+                prose-h2:text-xl prose-h2:text-cyan-300 prose-h2:mt-6
+                prose-h3:text-lg prose-h3:text-amber-300
+                prose-p:text-slate-300 prose-p:leading-relaxed
+                prose-strong:text-white
+                prose-code:bg-slate-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-cyan-300 prose-code:before:content-[''] prose-code:after:content-['']
+                prose-pre:bg-slate-900 prose-pre:border prose-pre:border-slate-700
+                prose-ul:text-slate-300 prose-ol:text-slate-300
+                prose-li:marker:text-emerald-400
+                prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline
+                prose-blockquote:border-l-emerald-500 prose-blockquote:text-slate-400
+                prose-hr:border-slate-700">
+                {/* Render markdown as styled HTML */}
+                <div dangerouslySetInnerHTML={{
+                  __html: currentImpl.sourceCode
+                    // Convert markdown headers
+                    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                    // Convert bold and italic
+                    .replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    // Convert inline code
+                    .replace(/`([^`]+)`/g, '<code>$1</code>')
+                    // Convert code blocks
+                    .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+                    // Convert unordered lists
+                    .replace(/^\s*-\s+(.*)$/gim, '<li>$1</li>')
+                    .replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>')
+                    // Convert ordered lists
+                    .replace(/^\s*\d+\.\s+(.*)$/gim, '<li>$1</li>')
+                    // Convert horizontal rules
+                    .replace(/^---$/gim, '<hr/>')
+                    // Convert paragraphs (lines with content)
+                    .replace(/^(?!<[huplo]|<li|<hr)(.+)$/gim, '<p>$1</p>')
+                    // Clean up extra line breaks
+                    .replace(/\n\n+/g, '\n')
+                }} />
+              </div>
+            ) : (
+              <pre className="text-sm leading-relaxed">
+                <code
+                  className={`language-${languageInfo.highlightLanguage}`}
+                  dangerouslySetInnerHTML={{ __html: highlightedCode }}
+                />
+              </pre>
+            )}
           </div>
 
           {/* Footer - Dependencies and Resources */}
