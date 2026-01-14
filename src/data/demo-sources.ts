@@ -35,6 +35,8 @@ import BirefringenceDemoPython from '@/demo-sources/python/birefringence.py?raw'
 import FresnelDemoPython from '@/demo-sources/python/fresnel.py?raw'
 import WaveplateDemoPython from '@/demo-sources/python/waveplate.py?raw'
 import BrewsterDemoPython from '@/demo-sources/python/brewster.py?raw'
+import OpticalRotationPython from '@/demo-sources/python/optical_rotation.py?raw'
+import RayleighScatteringPython from '@/demo-sources/python/rayleigh_scattering.py?raw'
 
 // MATLAB/Octave implementations
 // MATLAB/Octave 实现
@@ -43,6 +45,8 @@ import BirefringenceDemoMatlab from '@/demo-sources/matlab/birefringence.m?raw'
 import FresnelDemoMatlab from '@/demo-sources/matlab/fresnel.m?raw'
 import WaveplateDemoMatlab from '@/demo-sources/matlab/waveplate.m?raw'
 import BrewsterDemoMatlab from '@/demo-sources/matlab/brewster.m?raw'
+import OpticalRotationMatlab from '@/demo-sources/matlab/optical_rotation.m?raw'
+import RayleighScatteringMatlab from '@/demo-sources/matlab/rayleigh_scattering.m?raw'
 
 // ============================================================================
 // DEMO SOURCE CODE REGISTRY
@@ -462,36 +466,32 @@ const WAVEPLATE_SOURCE: DemoSourceCode = {
   implementations: [
     {
       language: 'typescript',
-      // languageDisplay: 'TypeScript (React)',
-      code: WaveplateDemoTsx,
+      sourceCode: WaveplateDemoTsx,
       dependencies: { react: '^19.0.0', 'framer-motion': '^11.0.0', typescript: '^5.0.0' },
-      description: 'Interactive web-based demonstration with real-time visualization',
-      descriptionZh: 'Web交互演示，实时可视化',
+      notes: 'Interactive web-based demonstration with real-time visualization of quarter-wave and half-wave plates.',
+      notesZh: 'Web交互演示，实时可视化λ/4和λ/2波片效果。',
     },
     {
       language: 'python',
-      // languageDisplay: 'Python',
-      code: WaveplateDemoPython,
+      sourceCode: WaveplateDemoPython,
       dependencies: { numpy: '>=1.20.0', matplotlib: '>=3.3.0' },
-      description: 'Standalone Python demo with interactive sliders for quarter-wave and half-wave plates',
-      descriptionZh: '独立Python演示，带有λ/4和λ/2波片交互滑块',
-      runInstructions: {
-        install: 'pip install numpy matplotlib',
-        run: 'python waveplate.py',
-      },
+      setup: `pip install numpy matplotlib
+python waveplate.py`,
+      setupZh: `pip install numpy matplotlib
+python waveplate.py`,
+      notes: 'Standalone Python demo with interactive sliders for quarter-wave and half-wave plates, Jones calculus calculations.',
+      notesZh: '独立Python演示，带有λ/4和λ/2波片交互滑块，包含Jones演算。',
     },
     {
       language: 'matlab',
-      // languageDisplay: 'MATLAB/Octave',
-      code: WaveplateDemoMatlab,
+      sourceCode: WaveplateDemoMatlab,
       dependencies: {},
-      description: 'MATLAB/Octave compatible implementation with Jones calculus',
-      descriptionZh: 'MATLAB/Octave兼容实现，包含Jones演算',
-      runInstructions: {
-        install: 'No toolboxes required / 无需工具箱',
-        run: 'waveplate',
-      },
-      compatibility: 'MATLAB R2016b+ or GNU Octave 4.0+',
+      setup: `% In MATLAB/Octave:
+waveplate`,
+      setupZh: `% 在 MATLAB/Octave 中:
+waveplate`,
+      notes: 'MATLAB/Octave compatible (R2016b+, Octave 4.0+). No toolboxes required. Includes Jones calculus implementation.',
+      notesZh: 'MATLAB/Octave兼容 (R2016b+, Octave 4.0+)。无需工具箱。包含Jones演算实现。',
     },
   ],
 
@@ -547,36 +547,32 @@ const BREWSTER_SOURCE: DemoSourceCode = {
   implementations: [
     {
       language: 'typescript',
-      // languageDisplay: 'TypeScript (React)',
-      code: BrewsterDemoTsx,
+      sourceCode: BrewsterDemoTsx,
       dependencies: { react: '^19.0.0', 'framer-motion': '^11.0.0', typescript: '^5.0.0' },
-      description: 'Interactive web demonstration with dispersion effects',
-      descriptionZh: 'Web交互演示，包含色散效应',
+      notes: 'Interactive web demonstration with dispersion effects and real-time Fresnel coefficient calculations.',
+      notesZh: 'Web交互演示，包含色散效应和实时Fresnel系数计算。',
     },
     {
       language: 'python',
-      // languageDisplay: 'Python',
-      code: BrewsterDemoPython,
+      sourceCode: BrewsterDemoPython,
       dependencies: { numpy: '>=1.20.0', matplotlib: '>=3.3.0' },
-      description: 'Standalone Python demo showing Brewster angle and Fresnel coefficients',
-      descriptionZh: '独立Python演示，显示布儒斯特角和Fresnel系数',
-      runInstructions: {
-        install: 'pip install numpy matplotlib',
-        run: 'python brewster.py',
-      },
+      setup: `pip install numpy matplotlib
+python brewster.py`,
+      setupZh: `pip install numpy matplotlib
+python brewster.py`,
+      notes: 'Standalone Python demo showing Brewster angle where R_p = 0, with interactive sliders and reflectance curves.',
+      notesZh: '独立Python演示，显示布儒斯特角R_p = 0现象，包含交互滑块和反射率曲线。',
     },
     {
       language: 'matlab',
-      // languageDisplay: 'MATLAB/Octave',
-      code: BrewsterDemoMatlab,
+      sourceCode: BrewsterDemoMatlab,
       dependencies: {},
-      description: 'MATLAB/Octave compatible with interactive interface angle adjustment',
-      descriptionZh: 'MATLAB/Octave兼容，可交互调整入射角',
-      runInstructions: {
-        install: 'No toolboxes required / 无需工具箱',
-        run: 'brewster',
-      },
-      compatibility: 'MATLAB R2016b+ or GNU Octave 4.0+',
+      setup: `% In MATLAB/Octave:
+brewster`,
+      setupZh: `% 在 MATLAB/Octave 中:
+brewster`,
+      notes: 'MATLAB/Octave compatible (R2016b+, Octave 4.0+). No toolboxes required. Interactive angle adjustment.',
+      notesZh: 'MATLAB/Octave兼容 (R2016b+, Octave 4.0+)。无需工具箱。可交互调整入射角。',
     },
   ],
 
@@ -602,6 +598,170 @@ const BREWSTER_SOURCE: DemoSourceCode = {
   ],
 }
 
+/**
+ * Optical Rotation Demo - All Language Implementations
+ * 旋光性演示 - 所有语言实现
+ */
+const OPTICAL_ROTATION_SOURCE: DemoSourceCode = {
+  id: 'optical-rotation',
+  name: 'Optical Rotation (Sugar Solution)',
+  nameZh: '旋光性（糖溶液）',
+  description: 'Demonstration of chiral molecules rotating the plane of polarized light',
+  descriptionZh: '手性分子旋转偏振光平面的演示',
+  complexity: 'intermediate',
+
+  concepts: [
+    'Optical rotation formula: α = [α]_λ^T × l × c',
+    'Specific rotation: substance characteristic',
+    'Chirality and handedness',
+    'Dextrorotatory (+) and levorotatory (-)',
+    'Sucrose: +66.5°, Fructose: -92.4°',
+    'Applications in sugar industry and pharmaceuticals',
+  ],
+  conceptsZh: [
+    '旋光公式：α = [α]_λ^T × l × c',
+    '比旋光度：物质特性',
+    '手性与旋向性',
+    '右旋(+)和左旋(-)',
+    '蔗糖：+66.5°，果糖：-92.4°',
+    '在制糖和制药工业中的应用',
+  ],
+
+  tags: ['polarization', 'optical-rotation', 'chirality', 'sugar', 'intermediate'],
+
+  relatedDemos: ['malus-law', 'waveplate', 'birefringence'],
+
+  implementations: [
+    {
+      language: 'python',
+      sourceCode: OpticalRotationPython,
+      dependencies: { numpy: '>=1.20.0', matplotlib: '>=3.3.0' },
+      setup: `pip install numpy matplotlib
+python optical_rotation.py`,
+      setupZh: `pip install numpy matplotlib
+python optical_rotation.py`,
+      notes: 'Interactive demo with 4 sugar types (sucrose +66.5°, fructose -92.4°, glucose +52.7°, lactose +52.3°). Adjust concentration and sample length.',
+      notesZh: '交互式演示，支持4种糖（蔗糖+66.5°、果糖-92.4°、葡萄糖+52.7°、乳糖+52.3°）。可调节浓度和样品长度。',
+    },
+    {
+      language: 'matlab',
+      sourceCode: OpticalRotationMatlab,
+      dependencies: {},
+      setup: `% In MATLAB/Octave:
+optical_rotation`,
+      setupZh: `% 在 MATLAB/Octave 中:
+optical_rotation`,
+      notes: 'MATLAB/Octave compatible (R2016b+, Octave 4.0+). No toolboxes required. Interactive substance selection and parameter adjustment.',
+      notesZh: 'MATLAB/Octave兼容 (R2016b+, Octave 4.0+)。无需工具箱。可交互选择物质和调节参数。',
+    },
+  ],
+
+  resources: [
+    {
+      type: 'documentation',
+      title: 'Optical Rotation - Wikipedia',
+      titleZh: '旋光性 - 维基百科',
+      url: 'https://en.wikipedia.org/wiki/Optical_rotation',
+      description: 'Explanation of optical activity in chiral molecules',
+      descriptionZh: '手性分子光学活性的解释',
+    },
+    {
+      type: 'documentation',
+      title: 'Polarimetry - Chemistry LibreTexts',
+      titleZh: '旋光测定 - 化学文库',
+      url: 'https://chem.libretexts.org/Bookshelves/Organic_Chemistry/Supplemental_Modules_(Organic_Chemistry)/Chirality/Polarimetry',
+      description: 'Practical applications in analytical chemistry',
+      descriptionZh: '分析化学中的实际应用',
+    },
+  ],
+}
+
+/**
+ * Rayleigh Scattering Demo - All Language Implementations
+ * 瑞利散射演示 - 所有语言实现
+ */
+const RAYLEIGH_SCATTERING_SOURCE: DemoSourceCode = {
+  id: 'rayleigh',
+  name: 'Rayleigh Scattering - Why is the Sky Blue?',
+  nameZh: '瑞利散射 - 为什么天空是蓝色？',
+  description: 'Demonstration of wavelength-dependent scattering explaining blue sky and red sunset',
+  descriptionZh: '波长相关散射演示，解释蓝天和红色日落',
+  complexity: 'intermediate',
+
+  concepts: [
+    'Rayleigh scattering: I(θ, λ) ∝ (1 + cos²θ) / λ⁴',
+    'Blue light scatters 5.6× more than red',
+    '90° scattering produces 100% linear polarization',
+    'Sun elevation affects sky color (path length effect)',
+    'Polarization of skylight for animal navigation',
+    'Applications in atmospheric optics and photography',
+  ],
+  conceptsZh: [
+    '瑞利散射：I(θ, λ) ∝ (1 + cos²θ) / λ⁴',
+    '蓝光散射强度是红光的5.6倍',
+    '90°散射产生100%线偏振',
+    '太阳高度影响天空颜色（光程效应）',
+    '天空偏振光用于动物导航',
+    '在大气光学和摄影中的应用',
+  ],
+
+  tags: ['scattering', 'rayleigh', 'sky-blue', 'polarization', 'atmosphere', 'intermediate'],
+
+  relatedDemos: ['malus-law', 'mie-scattering', 'polarization-intro'],
+
+  implementations: [
+    {
+      language: 'python',
+      sourceCode: RayleighScatteringPython,
+      dependencies: { numpy: '>=1.20.0', matplotlib: '>=3.3.0' },
+      setup: `pip install numpy matplotlib
+python rayleigh_scattering.py`,
+      setupZh: `pip install numpy matplotlib
+python rayleigh_scattering.py`,
+      notes: 'Interactive sky scene with sun elevation (0-90°) and viewing angle adjustment. Shows blue/red ratio (~5.6×), wavelength-to-RGB conversion, and polar scattering pattern (1 + cos²θ).',
+      notesZh: '交互式天空场景，可调节太阳高度(0-90°)和观察角度。显示蓝光/红光比值(~5.6×)、波长到RGB转换和极坐标散射图(1 + cos²θ)。',
+    },
+    {
+      language: 'matlab',
+      sourceCode: RayleighScatteringMatlab,
+      dependencies: {},
+      setup: `% In MATLAB/Octave:
+rayleigh_scattering`,
+      setupZh: `% 在 MATLAB/Octave 中:
+rayleigh_scattering`,
+      notes: 'MATLAB/Octave compatible (R2016b+, Octave 4.0+). No toolboxes required. Real-time sky color calculation and polarization display.',
+      notesZh: 'MATLAB/Octave兼容 (R2016b+, Octave 4.0+)。无需工具箱。实时天空颜色计算和偏振显示。',
+    },
+  ],
+
+  resources: [
+    {
+      type: 'documentation',
+      title: 'Rayleigh Scattering - HyperPhysics',
+      titleZh: '瑞利散射 - HyperPhysics',
+      url: 'http://hyperphysics.phy-astr.gsu.edu/hbase/atmos/blusky.html',
+      description: 'Why is the sky blue? Physics explanation',
+      descriptionZh: '为什么天空是蓝色的？物理解释',
+    },
+    {
+      type: 'documentation',
+      title: 'Atmospheric Optics - RP Photonics',
+      titleZh: '大气光学 - RP光子学',
+      url: 'https://www.rp-photonics.com/atmospheric_optics.html',
+      description: 'Comprehensive guide to atmospheric optical phenomena',
+      descriptionZh: '大气光学现象综合指南',
+    },
+    {
+      type: 'tutorial',
+      title: 'Polarization of Skylight',
+      titleZh: '天光偏振',
+      url: 'https://www.polarization.com/sky/sky.html',
+      description: 'Detailed explanation of skylight polarization patterns',
+      descriptionZh: '天光偏振模式的详细解释',
+    },
+  ],
+}
+
 // ============================================================================
 // REGISTRY OBJECT - Add more demos here
 // 注册表对象 - 在此添加更多演示
@@ -617,11 +777,12 @@ export const DEMO_SOURCES_REGISTRY: Record<string, DemoSourceCode> = {
   'fresnel': FRESNEL_SOURCE,
   'waveplate': WAVEPLATE_SOURCE,
   'brewster': BREWSTER_SOURCE,
+  'optical-rotation': OPTICAL_ROTATION_SOURCE,
+  'rayleigh': RAYLEIGH_SCATTERING_SOURCE,
 
   // TODO: Add more demos
-  // 'optical-rotation': OPTICAL_ROTATION_SOURCE,
-  // 'rayleigh': RAYLEIGH_SCATTERING_SOURCE,
   // 'chromatic': CHROMATIC_SOURCE,
+  // 'mie-scattering': MIE_SCATTERING_SOURCE,
   // ... etc
 }
 
