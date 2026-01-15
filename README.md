@@ -328,7 +328,7 @@ Each demo provides source code implementations in multiple programming languages
 ### Project Structure
 
 ```
-polarisation/
+polarisationcourse/
 ├── src/
 │   ├── core/                  # Physics engine & world logic
 │   │   └── game2d/            # 2D game specific logic
@@ -702,7 +702,7 @@ npm run preview  # 预览生产构建
 ### 项目结构
 
 ```
-polarisation/
+polarisationcourse/
 ├── src/
 │   ├── core/                  # 物理引擎和世界逻辑
 │   │   └── game2d/            # 2D游戏特定逻辑

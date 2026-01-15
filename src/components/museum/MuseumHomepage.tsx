@@ -1245,7 +1245,7 @@ function MuseumFooter() {
               </li>
               <li>
                 <a
-                  href="https://github.com/openwisdomlab/polarisation"
+                  href="https://github.com/openwisdomlab/polarisationcourse"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={cn(
@@ -1284,7 +1284,7 @@ function MuseumFooter() {
               </li>
               <li>
                 <a
-                  href="https://github.com/openwisdomlab/polarisation/blob/main/CONTRIBUTING.md"
+                  href="https://github.com/openwisdomlab/polarisationcourse/blob/main/CONTRIBUTING.md"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={cn(

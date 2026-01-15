@@ -83,7 +83,7 @@ npm run build        # Build for production
 ### Directory Structure
 
 ```
-polarisation/
+polarisationcourse/
 ├── src/                          # React application source
 │   ├── App.tsx                   # Root component with React Router
 │   ├── main.tsx                  # React entry point
