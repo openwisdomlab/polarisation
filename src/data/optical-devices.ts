@@ -387,7 +387,7 @@ export const DEVICES: Device[] = [
     icon: '⊙',
     specifications: [
       { key: 'Resolution', valueEn: '0.001° - 0.01°', valueZh: '0.001° - 0.01°' },
-      { key: 'Light Source', valueEn: 'Sodium D-line (589nm)', valueZh: '钠D线（589nm）' },
+      { key: 'Light Source', valueEn: '589nm yellow light', valueZh: '589nm黄光' },
       { key: 'Applications', valueEn: 'Sugar content, chiral molecules', valueZh: '糖含量、手性分子' },
     ],
     applications: {

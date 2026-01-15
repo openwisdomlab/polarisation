@@ -98,7 +98,7 @@ export function AnisotropyDemo() {
 
     // 相位延迟（假设厚度为1mm，波长589nm）
     const thickness = 1e-3 // 1mm
-    const wavelength = 589e-9 // 钠黄光
+    const wavelength = 589e-9 // 589nm黄光
     const phaseDelay = (2 * Math.PI * birefringence * thickness) / wavelength
 
     return {

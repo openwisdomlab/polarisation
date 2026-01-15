@@ -23,11 +23,11 @@ const SPECIFIC_ROTATIONS: Record<string, { value: number; direction: 'd' | 'l' }
 
 // 单色光波长选项 (nm)
 const WAVELENGTH_OPTIONS = [
-  { wavelength: 589, name: '钠黄光 (D线)', color: '#fbbf24' },  // 钠D线 - 黄色
-  { wavelength: 656, name: '氢红光 (Hα)', color: '#ef4444' },   // 氢Hα - 红色
-  { wavelength: 546, name: '汞绿光', color: '#22c55e' },         // 汞绿线 - 绿色
-  { wavelength: 486, name: '氢蓝光 (Hβ)', color: '#3b82f6' },   // 氢Hβ - 蓝色
-  { wavelength: 436, name: '汞紫光', color: '#8b5cf6' },         // 汞紫线 - 紫色
+  { wavelength: 589, name: '黄光', color: '#fbbf24' },
+  { wavelength: 656, name: '红光', color: '#ef4444' },
+  { wavelength: 546, name: '绿光', color: '#22c55e' },
+  { wavelength: 486, name: '蓝光', color: '#3b82f6' },
+  { wavelength: 436, name: '紫光', color: '#8b5cf6' },
 ]
 
 // 多色光的各波长分量 (用于色散效果)
@@ -693,7 +693,7 @@ export function OpticalRotationDemo() {
   const [pathLength, setPathLength] = useState(1.0)
   const [analyzerAngle, setAnalyzerAngle] = useState(0)
   const [lightMode, setLightMode] = useState<'monochromatic' | 'polychromatic'>('monochromatic')
-  const [selectedWavelength, setSelectedWavelength] = useState(589) // 默认钠黄光
+  const [selectedWavelength, setSelectedWavelength] = useState(589) // 默认589nm黄光
 
   const baseSpecificRotation = SPECIFIC_ROTATIONS[substance]?.value || 66.5
   // 单色光模式使用选定波长的旋光度
