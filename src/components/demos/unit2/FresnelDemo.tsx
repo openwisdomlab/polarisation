@@ -56,11 +56,13 @@ function IntensityBar({
   value,
   color,
   maxValue = 1,
+  isDark = true,
 }: {
   label: string
   value: number
   color: 'cyan' | 'pink' | 'green'
   maxValue?: number
+  isDark?: boolean
 }) {
   const colors = {
     cyan: {
@@ -89,7 +91,7 @@ function IntensityBar({
         <span className={`text-sm font-medium ${colorSet.text}`}>{label}</span>
         <span className={`font-mono text-sm ${colorSet.text}`}>{(value * 100).toFixed(1)}%</span>
       </div>
-      <div className="h-4 rounded-full bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-600/50 overflow-hidden relative shadow-inner">
+      <div className={`h-4 rounded-full overflow-hidden relative shadow-inner ${isDark ? 'bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-600/50' : 'bg-gradient-to-b from-gray-200 to-gray-300 border border-gray-400/50'}`}>
         <motion.div
           className="absolute inset-[2px] rounded-full origin-left"
           style={{
@@ -408,10 +410,12 @@ function FresnelCurveChart({
   n1,
   n2,
   currentAngle,
+  isDark = true,
 }: {
   n1: number
   n2: number
   currentAngle: number
+  isDark?: boolean
 }) {
   // 生成曲线数据
   const { rsPath, rpPath, brewsterAngle, criticalAngle } = useMemo(() => {
@@ -452,23 +456,23 @@ function FresnelCurveChart({
   return (
     <svg viewBox="0 0 300 160" className="w-full h-auto">
       {/* 背景网格 */}
-      <rect x="40" y="30" width="220" height="100" fill="#1e293b" rx="4" />
+      <rect x="40" y="30" width="220" height="100" fill={isDark ? '#1e293b' : '#e2e8f0'} rx="4" />
 
       {/* 坐标轴 */}
-      <line x1="40" y1="130" x2="270" y2="130" stroke="#475569" strokeWidth="1" />
-      <line x1="40" y1="30" x2="40" y2="130" stroke="#475569" strokeWidth="1" />
+      <line x1="40" y1="130" x2="270" y2="130" stroke={isDark ? '#475569' : '#9ca3af'} strokeWidth="1" />
+      <line x1="40" y1="30" x2="40" y2="130" stroke={isDark ? '#475569' : '#9ca3af'} strokeWidth="1" />
 
       {/* 网格线 */}
-      <line x1="40" y1="80" x2="270" y2="80" stroke="#374151" strokeWidth="0.5" strokeDasharray="3 3" />
-      <line x1="150" y1="30" x2="150" y2="130" stroke="#374151" strokeWidth="0.5" strokeDasharray="3 3" />
+      <line x1="40" y1="80" x2="270" y2="80" stroke={isDark ? '#374151' : '#d1d5db'} strokeWidth="0.5" strokeDasharray="3 3" />
+      <line x1="150" y1="30" x2="150" y2="130" stroke={isDark ? '#374151' : '#d1d5db'} strokeWidth="0.5" strokeDasharray="3 3" />
 
       {/* X轴刻度 */}
       {[0, 45, 90].map((angle) => {
         const x = 40 + (angle / 90) * 220
         return (
           <g key={angle}>
-            <line x1={x} y1="130" x2={x} y2="135" stroke="#94a3b8" strokeWidth="1" />
-            <text x={x} y="147" textAnchor="middle" fill="#94a3b8" fontSize="10">{angle}°</text>
+            <line x1={x} y1="130" x2={x} y2="135" stroke={isDark ? '#94a3b8' : '#6b7280'} strokeWidth="1" />
+            <text x={x} y="147" textAnchor="middle" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="10">{angle}°</text>
           </g>
         )
       })}
@@ -478,8 +482,8 @@ function FresnelCurveChart({
         const y = 130 - val * 100
         return (
           <g key={i}>
-            <line x1="35" y1={y} x2="40" y2={y} stroke="#94a3b8" strokeWidth="1" />
-            <text x="30" y={y + 4} textAnchor="end" fill="#94a3b8" fontSize="10">{val}</text>
+            <line x1="35" y1={y} x2="40" y2={y} stroke={isDark ? '#94a3b8' : '#6b7280'} strokeWidth="1" />
+            <text x="30" y={y + 4} textAnchor="end" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="10">{val}</text>
           </g>
         )
       })}
@@ -557,8 +561,8 @@ function FresnelCurveChart({
       />
 
       {/* 轴标签 */}
-      <text x="155" y="158" textAnchor="middle" fill="#94a3b8" fontSize="11">θ (度)</text>
-      <text x="15" y="85" fill="#94a3b8" fontSize="11" transform="rotate(-90 15 85)">R</text>
+      <text x="155" y="158" textAnchor="middle" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="11">θ (度)</text>
+      <text x="15" y="85" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="11" transform="rotate(-90 15 85)">R</text>
 
       {/* 图例 */}
       <g transform="translate(200, 40)">
@@ -642,14 +646,14 @@ export function FresnelDemo() {
             <h4 className={`text-sm font-semibold mb-3 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>反射率与透射率</h4>
             {showS && (
               <>
-                <IntensityBar label="Rs (s偏振反射率)" value={Rs} color="cyan" />
-                <IntensityBar label="Ts (s偏振透射率)" value={Ts} color="green" />
+                <IntensityBar label="Rs (s偏振反射率)" value={Rs} color="cyan" isDark={theme === 'dark'} />
+                <IntensityBar label="Ts (s偏振透射率)" value={Ts} color="green" isDark={theme === 'dark'} />
               </>
             )}
             {showP && (
               <>
-                <IntensityBar label="Rp (p偏振反射率)" value={Rp} color="pink" />
-                <IntensityBar label="Tp (p偏振透射率)" value={Tp} color="green" />
+                <IntensityBar label="Rp (p偏振反射率)" value={Rp} color="pink" isDark={theme === 'dark'} />
+                <IntensityBar label="Tp (p偏振透射率)" value={Tp} color="green" isDark={theme === 'dark'} />
               </>
             )}
           </div>
@@ -761,7 +765,7 @@ export function FresnelDemo() {
 
           {/* 反射率曲线 */}
           <ControlPanel title="反射率曲线 R(θ)">
-            <FresnelCurveChart n1={n1} n2={n2} currentAngle={incidentAngle} />
+            <FresnelCurveChart n1={n1} n2={n2} currentAngle={incidentAngle} isDark={theme === 'dark'} />
             <p className={`text-xs mt-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
               红点表示当前入射角对应的反射率。在布儒斯特角处，p偏振反射率为零。
             </p>

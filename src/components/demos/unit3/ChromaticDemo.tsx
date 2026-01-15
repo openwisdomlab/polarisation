@@ -208,12 +208,14 @@ function OpticalPathDiagram({
   polarizerAngle,
   analyzerAngle,
   resultColor,
+  theme,
 }: {
   thickness: number
   birefringence: number
   polarizerAngle: number
   analyzerAngle: number
   resultColor: string
+  theme: string
 }) {
   return (
     <svg viewBox="0 0 700 280" className="w-full h-auto max-h-[320px]">
@@ -244,7 +246,7 @@ function OpticalPathDiagram({
       </defs>
 
       {/* 背景 */}
-      <rect x="0" y="0" width="700" height="280" fill="#0f172a" rx="8" />
+      <rect x="0" y="0" width="700" height="280" fill={theme === 'dark' ? '#0f172a' : '#f8fafc'} rx="8" />
 
       {/* 白光光源 */}
       <g transform="translate(50, 140)">
@@ -555,6 +557,7 @@ export function ChromaticDemo() {
               polarizerAngle={polarizerAngle}
               analyzerAngle={analyzerAngle}
               resultColor={resultColor.hex}
+              theme={theme}
             />
           </div>
 

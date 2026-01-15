@@ -139,11 +139,13 @@ function PhotonVisualization({
   mediumWidth,
   mediumHeight,
   showPolarization,
+  theme,
 }: {
   photons: Photon[]
   mediumWidth: number
   mediumHeight: number
   showPolarization: boolean
+  theme: string
 }) {
   const scale = 500 / mediumWidth
   const offsetX = 50
@@ -153,9 +155,9 @@ function PhotonVisualization({
     <svg viewBox="0 0 600 400" className="w-full h-auto">
       <defs>
         <linearGradient id="mediumGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#1e293b" stopOpacity="0.8" />
-          <stop offset="50%" stopColor="#334155" stopOpacity="0.9" />
-          <stop offset="100%" stopColor="#1e293b" stopOpacity="0.8" />
+          <stop offset="0%" stopColor={theme === 'dark' ? '#1e293b' : '#e2e8f0'} stopOpacity="0.8" />
+          <stop offset="50%" stopColor={theme === 'dark' ? '#334155' : '#cbd5e1'} stopOpacity="0.9" />
+          <stop offset="100%" stopColor={theme === 'dark' ? '#1e293b' : '#e2e8f0'} stopOpacity="0.8" />
         </linearGradient>
         <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="2" result="coloredBlur" />
@@ -170,7 +172,7 @@ function PhotonVisualization({
       </defs>
 
       {/* 背景 */}
-      <rect x="0" y="0" width="600" height="400" fill="#0f172a" rx="8" />
+      <rect x="0" y="0" width="600" height="400" fill={theme === 'dark' ? '#0f172a' : '#f8fafc'} rx="8" />
 
       {/* 介质区域 */}
       <rect
@@ -480,6 +482,7 @@ export function MonteCarloScatteringDemo() {
               mediumWidth={mediumWidth}
               mediumHeight={mediumHeight}
               showPolarization={showPolarization}
+              theme={theme}
             />
           </div>
 

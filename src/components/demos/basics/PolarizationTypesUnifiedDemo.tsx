@@ -46,7 +46,8 @@ function PolarizerVisualizer({
   color,
   isActive,
   showLines = true,
-}: PolarizerVisualizerProps) {
+  isDark = true,
+}: PolarizerVisualizerProps & { isDark?: boolean }) {
   const lineCount = 7
   const radius = 35
 
@@ -57,8 +58,8 @@ function PolarizerVisualizer({
         cy="0"
         rx={radius}
         ry={radius * 1.2}
-        fill={isActive ? `${color}15` : '#1e293b'}
-        stroke={isActive ? color : '#475569'}
+        fill={isActive ? `${color}15` : (isDark ? '#1e293b' : '#e2e8f0')}
+        stroke={isActive ? color : (isDark ? '#475569' : '#94a3b8')}
         strokeWidth={isActive ? 2 : 1}
         animate={{ scale: isActive ? 1.05 : 1 }}
         transition={{ duration: 0.3 }}
@@ -86,7 +87,7 @@ function PolarizerVisualizer({
           <polygon points="0,47 -4,40 4,40" fill={color} opacity="0.7" />
         </g>
       )}
-      <text x="0" y={radius + 25} textAnchor="middle" fill="#9ca3af" fontSize="11">
+      <text x="0" y={radius + 25} textAnchor="middle" fill={isDark ? '#9ca3af' : '#6b7280'} fontSize="11">
         {label}
       </text>
       <text x="0" y={radius + 40} textAnchor="middle" fill={color} fontSize="12" fontWeight="bold">
@@ -395,7 +396,7 @@ export function PolarizationTypesUnifiedDemo({ difficultyLevel = 'explore' }: Pr
             <div className="flex gap-6 flex-col lg:flex-row">
               <div className="flex-1">
                 <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 border-indigo-500/20' : 'bg-gradient-to-br from-white via-gray-50 to-indigo-50 border-indigo-200'} rounded-xl border p-4`}>
-                  <svg viewBox="0 0 400 400" className="w-full h-auto max-w-[400px] mx-auto">
+                  <svg viewBox="0 0 400 400" className="w-full h-auto max-w-[400px] mx-auto" style={{ background: theme === 'dark' ? '#0f172a' : '#f8fafc' }}>
                     <defs>
                       <filter id="glow-cyan">
                         <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
@@ -411,15 +412,15 @@ export function PolarizationTypesUnifiedDemo({ difficultyLevel = 'explore' }: Pr
                     </defs>
 
                     {/* Axes */}
-                    <line x1="70" y1="200" x2="330" y2="200" stroke="#4b5563" strokeWidth="1.5" />
-                    <line x1="200" y1="70" x2="200" y2="330" stroke="#4b5563" strokeWidth="1.5" />
-                    <polygon points="330,200 320,195 320,205" fill="#4b5563" />
-                    <polygon points="200,70 195,80 205,80" fill="#4b5563" />
-                    <text x="340" y="205" fill="#9ca3af" fontSize="14">Ex</text>
-                    <text x="205" y="60" fill="#9ca3af" fontSize="14">Ey</text>
+                    <line x1="70" y1="200" x2="330" y2="200" stroke={theme === 'dark' ? '#4b5563' : '#9ca3af'} strokeWidth="1.5" />
+                    <line x1="200" y1="70" x2="200" y2="330" stroke={theme === 'dark' ? '#4b5563' : '#9ca3af'} strokeWidth="1.5" />
+                    <polygon points="330,200 320,195 320,205" fill={theme === 'dark' ? '#4b5563' : '#9ca3af'} />
+                    <polygon points="200,70 195,80 205,80" fill={theme === 'dark' ? '#4b5563' : '#9ca3af'} />
+                    <text x="340" y="205" fill={theme === 'dark' ? '#9ca3af' : '#4b5563'} fontSize="14">Ex</text>
+                    <text x="205" y="60" fill={theme === 'dark' ? '#9ca3af' : '#4b5563'} fontSize="14">Ey</text>
 
                     {/* Reference shape */}
-                    <path d={referencePath} fill="none" stroke="#4b5563" strokeWidth="1" strokeDasharray="5 5" />
+                    <path d={referencePath} fill="none" stroke={theme === 'dark' ? '#4b5563' : '#9ca3af'} strokeWidth="1" strokeDasharray="5 5" />
 
                     {/* Trail */}
                     {showTrail && (
@@ -430,11 +431,11 @@ export function PolarizationTypesUnifiedDemo({ difficultyLevel = 'explore' }: Pr
                     <motion.line x1="200" y1="200" x2={ex} y2={ey} stroke="#22d3ee" strokeWidth="3" filter="url(#glow-cyan)" />
                     <circle cx={ex} cy={ey} r="6" fill="#22d3ee" filter="url(#glow-cyan)" />
                     <motion.circle cx={ex} cy={ey} r="4" fill="#fbbf24" filter="url(#glow-cyan)" />
-                    <circle cx="200" cy="200" r="4" fill="#9ca3af" />
+                    <circle cx="200" cy="200" r="4" fill={theme === 'dark' ? '#9ca3af' : '#6b7280'} />
 
                     {/* Label */}
-                    <text x="20" y="30" fill="#9ca3af" fontSize="14">{getTypeLabel(polarizationType)}</text>
-                    <text x="320" y="30" fill="#6b7280" fontSize="12">
+                    <text x="20" y="30" fill={theme === 'dark' ? '#9ca3af' : '#4b5563'} fontSize="14">{getTypeLabel(polarizationType)}</text>
+                    <text x="320" y="30" fill={theme === 'dark' ? '#6b7280' : '#9ca3af'} fontSize="12">
                       φ = {((time * 2 * 180 / Math.PI) % 360).toFixed(0)}°
                     </text>
                   </svg>
@@ -610,16 +611,16 @@ export function PolarizationTypesUnifiedDemo({ difficultyLevel = 'explore' }: Pr
             <div className="flex gap-6 flex-col lg:flex-row">
               <div className="flex-1">
                 <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950 border-blue-500/20' : 'bg-gradient-to-br from-white via-gray-50 to-blue-50 border-blue-200'} rounded-xl border p-4 overflow-hidden`}>
-                  <svg viewBox="0 0 700 320" className="w-full h-auto" style={{ minHeight: '300px' }}>
+                  <svg viewBox="0 0 700 320" className="w-full h-auto" style={{ minHeight: '300px', background: theme === 'dark' ? '#0f172a' : '#f8fafc' }}>
                     <defs>
                       <pattern id="three-pol-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(100,150,255,0.05)" strokeWidth="1" />
+                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke={theme === 'dark' ? 'rgba(100,150,255,0.05)' : 'rgba(100,150,255,0.15)'} strokeWidth="1" />
                       </pattern>
                     </defs>
 
                     <rect width="700" height="320" fill="url(#three-pol-grid)" />
 
-                    <text x="350" y="25" textAnchor="middle" fill="#e2e8f0" fontSize="14" fontWeight="bold">
+                    <text x="350" y="25" textAnchor="middle" fill={theme === 'dark' ? '#e2e8f0' : '#1e293b'} fontSize="14" fontWeight="bold">
                       {isZh ? '三偏振片实验' : 'Three Polarizer Experiment'}
                     </text>
 
@@ -627,7 +628,7 @@ export function PolarizationTypesUnifiedDemo({ difficultyLevel = 'explore' }: Pr
                     <g transform="translate(50, 150)">
                       <motion.circle cx="0" cy="0" r="20" fill="#ffd700" animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }} />
                       <circle cx="0" cy="0" r="15" fill="#fff" opacity="0.5" />
-                      <text x="0" y="45" textAnchor="middle" fill="#9ca3af" fontSize="11">{isZh ? '非偏振光' : 'Unpolarized'}</text>
+                      <text x="0" y="45" textAnchor="middle" fill={theme === 'dark' ? '#9ca3af' : '#6b7280'} fontSize="11">{isZh ? '非偏振光' : 'Unpolarized'}</text>
                       <text x="0" y="60" textAnchor="middle" fill="#ffd700" fontSize="11">I₀ = 100%</text>
                     </g>
 
@@ -640,20 +641,20 @@ export function PolarizationTypesUnifiedDemo({ difficultyLevel = 'explore' }: Pr
                     <LightBeam x1={500} x2={650} intensity={calculations.I3} polarization={calculations.pol3} showPolarization={showPolarization} />
 
                     {/* Polarizers */}
-                    <PolarizerVisualizer x={165} angle={polarizer1Angle} label={isZh ? '起偏器 P₁' : 'P₁'} color="#22d3ee" isActive={true} />
+                    <PolarizerVisualizer x={165} angle={polarizer1Angle} label={isZh ? '起偏器 P₁' : 'P₁'} color="#22d3ee" isActive={true} isDark={theme === 'dark'} />
                     <AnimatePresence>
                       {showMiddlePolarizer && polarizer2Angle !== null && (
                         <motion.g initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}>
-                          <PolarizerVisualizer x={315} angle={polarizer2Angle} label={isZh ? '中间片 P₂' : 'P₂'} color="#fbbf24" isActive={true} />
+                          <PolarizerVisualizer x={315} angle={polarizer2Angle} label={isZh ? '中间片 P₂' : 'P₂'} color="#fbbf24" isActive={true} isDark={theme === 'dark'} />
                         </motion.g>
                       )}
                     </AnimatePresence>
-                    <PolarizerVisualizer x={465} angle={polarizer3Angle} label={isZh ? '检偏器 P₃' : 'P₃'} color="#4ade80" isActive={true} />
+                    <PolarizerVisualizer x={465} angle={polarizer3Angle} label={isZh ? '检偏器 P₃' : 'P₃'} color="#4ade80" isActive={true} isDark={theme === 'dark'} />
 
                     {/* Detector */}
                     <g transform="translate(610, 150)">
-                      <rect x="-20" y="-25" width="40" height="50" rx="4" fill={calculations.I3 > 0.01 ? '#22c55e20' : '#1e293b'} stroke={calculations.I3 > 0.01 ? '#22c55e' : '#475569'} strokeWidth="2" />
-                      <text x="0" y="45" textAnchor="middle" fill="#9ca3af" fontSize="11">{isZh ? '探测器' : 'Detector'}</text>
+                      <rect x="-20" y="-25" width="40" height="50" rx="4" fill={calculations.I3 > 0.01 ? '#22c55e20' : (theme === 'dark' ? '#1e293b' : '#e2e8f0')} stroke={calculations.I3 > 0.01 ? '#22c55e' : (theme === 'dark' ? '#475569' : '#94a3b8')} strokeWidth="2" />
+                      <text x="0" y="45" textAnchor="middle" fill={theme === 'dark' ? '#9ca3af' : '#6b7280'} fontSize="11">{isZh ? '探测器' : 'Detector'}</text>
                       <text x="0" y="60" textAnchor="middle" fill="#22c55e" fontSize="11" fontWeight="bold">{(calculations.transmission * 100).toFixed(1)}%</text>
                     </g>
 

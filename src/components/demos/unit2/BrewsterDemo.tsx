@@ -84,9 +84,11 @@ function calculateBrewster(theta: number, n1: number, n2: number) {
 function DispersionCurve({
   material,
   currentWavelength,
+  isDark = true,
 }: {
   material: MaterialData
   currentWavelength: number
+  isDark?: boolean
 }) {
   const curveData = useMemo(() => {
     const points: { x: number; y: number; wavelength: number; n: number }[] = []
@@ -136,7 +138,7 @@ function DispersionCurve({
       </defs>
 
       {/* 背景 */}
-      <rect x="30" y="10" width="160" height="60" fill="#1e293b" rx="3" />
+      <rect x="30" y="10" width="160" height="60" fill={isDark ? '#1e293b' : '#e2e8f0'} rx="3" />
 
       {/* 光谱背景条 */}
       <rect x="30" y="72" width="160" height="6" fill="url(#spectrumGradient)" rx="2" opacity="0.6" />
@@ -170,10 +172,10 @@ function DispersionCurve({
       )}
 
       {/* 坐标轴标签 */}
-      <text x="15" y="45" fill="#94a3b8" fontSize="8" textAnchor="middle" transform="rotate(-90, 15, 45)">n(λ)</text>
-      <text x="30" y="80" fill="#94a3b8" fontSize="7">380</text>
-      <text x="185" y="80" fill="#94a3b8" fontSize="7">780nm</text>
-      <text x="110" y="8" fill="#94a3b8" fontSize="8" textAnchor="middle">n = {currentN.toFixed(4)}</text>
+      <text x="15" y="45" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="8" textAnchor="middle" transform="rotate(-90, 15, 45)">n(λ)</text>
+      <text x="30" y="80" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="7">380</text>
+      <text x="185" y="80" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="7">780nm</text>
+      <text x="110" y="8" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="8" textAnchor="middle">n = {currentN.toFixed(4)}</text>
     </svg>
   )
 }
@@ -182,9 +184,11 @@ function DispersionCurve({
 function BrewsterWavelengthCurve({
   material,
   currentWavelength,
+  isDark = true,
 }: {
   material: MaterialData
   currentWavelength: number
+  isDark?: boolean
 }) {
   const curveData = useMemo(() => {
     const points: { x: number; y: number; wavelength: number; brewster: number }[] = []
@@ -209,7 +213,7 @@ function BrewsterWavelengthCurve({
 
   return (
     <svg viewBox="0 0 200 80" className="w-full h-auto">
-      <rect x="30" y="10" width="160" height="60" fill="#1e293b" rx="3" />
+      <rect x="30" y="10" width="160" height="60" fill={isDark ? '#1e293b' : '#e2e8f0'} rx="3" />
 
       {/* 曲线 */}
       <path d={pathD} fill="none" stroke="#f472b6" strokeWidth="2" />
@@ -240,9 +244,9 @@ function BrewsterWavelengthCurve({
       )}
 
       {/* 坐标轴标签 */}
-      <text x="15" y="45" fill="#94a3b8" fontSize="8" textAnchor="middle" transform="rotate(-90, 15, 45)">θB</text>
-      <text x="30" y="80" fill="#94a3b8" fontSize="7">380</text>
-      <text x="185" y="80" fill="#94a3b8" fontSize="7">780nm</text>
+      <text x="15" y="45" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="8" textAnchor="middle" transform="rotate(-90, 15, 45)">θB</text>
+      <text x="30" y="80" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="7">380</text>
+      <text x="185" y="80" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="7">780nm</text>
       <text x="110" y="8" fill="#f472b6" fontSize="8" textAnchor="middle">θB = {currentBrewster.toFixed(2)}°</text>
     </svg>
   )
@@ -307,6 +311,7 @@ function BrewsterDiagram({
   n1,
   n2,
   labels,
+  isDark = true,
 }: {
   incidentAngle: number
   n1: number
@@ -325,6 +330,7 @@ function BrewsterDiagram({
     pPol: string
     brewsterAngle: string
   }
+  isDark?: boolean
 }) {
   const result = calculateBrewster(incidentAngle, n1, n2)
   const brewsterAngle = (Math.atan(n2 / n1) * 180) / Math.PI
@@ -367,12 +373,12 @@ function BrewsterDiagram({
     <svg viewBox="0 0 600 400" className="w-full h-auto">
       <defs>
         <linearGradient id="airGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#0f172a" stopOpacity="0.8" />
-          <stop offset="100%" stopColor="#1e3a5f" stopOpacity="0.4" />
+          <stop offset="0%" stopColor={isDark ? '#0f172a' : '#e0f2fe'} stopOpacity="0.8" />
+          <stop offset="100%" stopColor={isDark ? '#1e3a5f' : '#bae6fd'} stopOpacity="0.4" />
         </linearGradient>
         <linearGradient id="glassGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#1e5f5f" stopOpacity="0.3" />
-          <stop offset="100%" stopColor="#0f4c4c" stopOpacity="0.6" />
+          <stop offset="0%" stopColor={isDark ? '#1e5f5f' : '#99f6e4'} stopOpacity="0.3" />
+          <stop offset="100%" stopColor={isDark ? '#0f4c4c' : '#5eead4'} stopOpacity="0.6" />
         </linearGradient>
         <filter id="glowYellow" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="4" result="coloredBlur" />
@@ -402,8 +408,8 @@ function BrewsterDiagram({
       <line x1="30" y1="200" x2="570" y2="200" stroke="#67e8f9" strokeWidth="2" />
 
       {/* 法线 */}
-      <line x1={cx} y1="30" x2={cx} y2="370" stroke="#94a3b8" strokeWidth="1" strokeDasharray="6 4" opacity="0.6" />
-      <text x={cx + 8} y="45" fill="#94a3b8" fontSize="11">{labels.normal}</text>
+      <line x1={cx} y1="30" x2={cx} y2="370" stroke={isDark ? '#94a3b8' : '#6b7280'} strokeWidth="1" strokeDasharray="6 4" opacity="0.6" />
+      <text x={cx + 8} y="45" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="11">{labels.normal}</text>
 
       {/* 光源 */}
       <motion.circle
@@ -587,8 +593,8 @@ function BrewsterDiagram({
 
       {/* 图例 */}
       <g transform="translate(450, 30)">
-        <rect x="0" y="0" width="110" height="90" fill="rgba(30,41,59,0.9)" rx="6" stroke="#475569" strokeWidth="1" />
-        <text x="10" y="18" fill="#94a3b8" fontSize="10">{labels.polarizationStates}</text>
+        <rect x="0" y="0" width="110" height="90" fill={isDark ? 'rgba(30,41,59,0.9)' : 'rgba(241,245,249,0.95)'} rx="6" stroke={isDark ? '#475569' : '#94a3b8'} strokeWidth="1" />
+        <text x="10" y="18" fill={isDark ? '#94a3b8' : '#475569'} fontSize="10">{labels.polarizationStates}</text>
         <PolarizationIndicator type="unpolarized" x={25} y={35} size={16} color="#fbbf24" />
         <text x="45" y="39" fill="#fbbf24" fontSize="10">{labels.naturalLight}</text>
         <PolarizationIndicator type="s" x={25} y={55} size={16} color="#22d3ee" />
@@ -605,10 +611,12 @@ function PolarizationDegreeChart({
   n1,
   n2,
   currentAngle,
+  isDark = true,
 }: {
   n1: number
   n2: number
   currentAngle: number
+  isDark?: boolean
 }) {
   const brewsterAngle = (Math.atan(n2 / n1) * 180) / Math.PI
 
@@ -646,19 +654,19 @@ function PolarizationDegreeChart({
 
   return (
     <svg viewBox="0 0 300 160" className="w-full h-auto">
-      <rect x="40" y="30" width="220" height="100" fill="#1e293b" rx="4" />
+      <rect x="40" y="30" width="220" height="100" fill={isDark ? '#1e293b' : '#e2e8f0'} rx="4" />
 
       {/* 坐标轴 */}
-      <line x1="40" y1="130" x2="270" y2="130" stroke="#475569" strokeWidth="1" />
-      <line x1="40" y1="30" x2="40" y2="130" stroke="#475569" strokeWidth="1" />
+      <line x1="40" y1="130" x2="270" y2="130" stroke={isDark ? '#475569' : '#9ca3af'} strokeWidth="1" />
+      <line x1="40" y1="30" x2="40" y2="130" stroke={isDark ? '#475569' : '#9ca3af'} strokeWidth="1" />
 
       {/* X轴刻度 */}
       {[0, 45, 90].map((angle) => {
         const x = 40 + (angle / 90) * 220
         return (
           <g key={angle}>
-            <line x1={x} y1="130" x2={x} y2="135" stroke="#94a3b8" strokeWidth="1" />
-            <text x={x} y="147" textAnchor="middle" fill="#94a3b8" fontSize="10">{angle}°</text>
+            <line x1={x} y1="130" x2={x} y2="135" stroke={isDark ? '#94a3b8' : '#6b7280'} strokeWidth="1" />
+            <text x={x} y="147" textAnchor="middle" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="10">{angle}°</text>
           </g>
         )
       })}
@@ -668,7 +676,7 @@ function PolarizationDegreeChart({
         const y = 130 - val * 100
         return (
           <g key={i}>
-            <text x="30" y={y + 4} textAnchor="end" fill="#94a3b8" fontSize="10">{(val * 100).toFixed(0)}%</text>
+            <text x="30" y={y + 4} textAnchor="end" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="10">{(val * 100).toFixed(0)}%</text>
           </g>
         )
       })}
@@ -784,7 +792,7 @@ export function BrewsterDemo() {
         {/* 左侧：可视化 */}
         <div className="space-y-4">
           <div className={`rounded-xl border p-4 ${theme === 'dark' ? 'bg-gradient-to-br from-slate-900/90 via-slate-900/95 to-cyan-950/90 border-cyan-500/30 shadow-[0_15px_40px_rgba(0,0,0,0.5)]' : 'bg-gradient-to-br from-white via-gray-50 to-cyan-50 border-cyan-200 shadow-lg'}`}>
-            <BrewsterDiagram incidentAngle={incidentAngle} n1={n1} n2={n2} labels={diagramLabels} />
+            <BrewsterDiagram incidentAngle={incidentAngle} n1={n1} n2={n2} labels={diagramLabels} isDark={theme === 'dark'} />
           </div>
 
           {/* 状态指示 */}
@@ -967,7 +975,7 @@ export function BrewsterDemo() {
 
           {/* 偏振度曲线 */}
           <ControlPanel title={t('demoUi.brewster.reflectedPolDegree')}>
-            <PolarizationDegreeChart n1={n1} n2={n2} currentAngle={incidentAngle} />
+            <PolarizationDegreeChart n1={n1} n2={n2} currentAngle={incidentAngle} isDark={theme === 'dark'} />
             <p className={`text-xs mt-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
               {t('demoUi.brewster.chartDesc')}
             </p>
@@ -977,13 +985,13 @@ export function BrewsterDemo() {
           {showDispersion && (
             <div className="grid grid-cols-2 gap-3">
               <ControlPanel title={t('demoUi.brewster.dispersionCurve')}>
-                <DispersionCurve material={currentMaterial} currentWavelength={wavelength} />
+                <DispersionCurve material={currentMaterial} currentWavelength={wavelength} isDark={theme === 'dark'} />
                 <p className="text-xs text-gray-500 mt-1">
                   {currentMaterial.type === 'sellmeier' ? 'Sellmeier' : 'Cauchy'}
                 </p>
               </ControlPanel>
               <ControlPanel title={t('demoUi.brewster.brewsterDispersion')}>
-                <BrewsterWavelengthCurve material={currentMaterial} currentWavelength={wavelength} />
+                <BrewsterWavelengthCurve material={currentMaterial} currentWavelength={wavelength} isDark={theme === 'dark'} />
                 <p className="text-xs text-gray-500 mt-1">
                   θB = arctan(n)
                 </p>
@@ -1047,7 +1055,7 @@ export function BrewsterDemo() {
             return (
               <svg viewBox="0 0 600 400" className="w-full h-auto">
                 {/* 背景 */}
-                <rect x="0" y="0" width="600" height="400" fill="#0f172a" rx="8" />
+                <rect x="0" y="0" width="600" height="400" fill={theme === 'dark' ? '#0f172a' : '#f8fafc'} rx="8" />
 
                 {/* 入射光束 */}
                 <line

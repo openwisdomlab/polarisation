@@ -20,11 +20,13 @@ function WavePropagation3DCanvas({
   ampX,
   ampY,
   animate,
+  theme,
 }: {
   phaseDiff: number
   ampX: number
   ampY: number
   animate: boolean
+  theme: string
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const timeRef = useRef(0)
@@ -56,7 +58,7 @@ function WavePropagation3DCanvas({
 
     const draw = () => {
       // 清除画布
-      ctx.fillStyle = '#0f172a'
+      ctx.fillStyle = theme === 'dark' ? '#0f172a' : '#f8fafc'
       ctx.fillRect(0, 0, width, height)
 
       const t = timeRef.current * speed
@@ -168,7 +170,7 @@ function WavePropagation3DCanvas({
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [phaseDiff, ampX, ampY, animate])
+  }, [phaseDiff, ampX, ampY, animate, theme])
 
   return (
     <canvas
@@ -185,11 +187,13 @@ function PolarizationStateCanvas({
   ampX,
   ampY,
   animate,
+  theme,
 }: {
   phaseDiff: number
   ampX: number
   ampY: number
   animate: boolean
+  theme: string
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const timeRef = useRef(0)
@@ -218,7 +222,7 @@ function PolarizationStateCanvas({
 
     const draw = () => {
       // 清除画布
-      ctx.fillStyle = '#0f172a'
+      ctx.fillStyle = theme === 'dark' ? '#0f172a' : '#f8fafc'
       ctx.fillRect(0, 0, width, height)
 
       // 绘制坐标轴
@@ -312,7 +316,7 @@ function PolarizationStateCanvas({
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [phaseDiff, ampX, ampY, animate])
+  }, [phaseDiff, ampX, ampY, animate, theme])
 
   return (
     <canvas
@@ -470,6 +474,7 @@ export function PolarizationStateDemo() {
               ampX={ampX}
               ampY={ampY}
               animate={animate}
+              theme={theme}
             />
           </div>
         </div>
@@ -485,6 +490,7 @@ export function PolarizationStateDemo() {
               ampX={ampX}
               ampY={ampY}
               animate={animate}
+              theme={theme}
             />
             <div className="text-center space-y-1">
               <div>

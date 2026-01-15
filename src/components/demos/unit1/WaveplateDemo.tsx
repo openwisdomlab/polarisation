@@ -51,11 +51,13 @@ function WaveplateCanvas({
   inputAngle,
   fastAxisAngle,
   animate,
+  theme,
 }: {
   waveplateType: WaveplateType
   inputAngle: number
   fastAxisAngle: number
   animate: boolean
+  theme: string
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const timeRef = useRef(0)
@@ -111,7 +113,7 @@ function WaveplateCanvas({
 
     const draw = () => {
       // 清除画布
-      ctx.fillStyle = '#0f172a'
+      ctx.fillStyle = theme === 'dark' ? '#0f172a' : '#f8fafc'
       ctx.fillRect(0, 0, width, height)
 
       const t = timeRef.current * 0.05
@@ -172,13 +174,13 @@ function WaveplateCanvas({
       ctx.fillText(outputLabel, 500, centerY + 40)
 
       // 绘制屏幕
-      ctx.fillStyle = '#1e293b'
+      ctx.fillStyle = theme === 'dark' ? '#1e293b' : '#e2e8f0'
       ctx.fillRect(screenX - 5, centerY - 80, 20, 160)
 
       // 屏幕上的光斑
       drawScreenSpot(ctx, screenX, centerY, outputState.type, outputColor, t)
 
-      ctx.fillStyle = '#94a3b8'
+      ctx.fillStyle = theme === 'dark' ? '#94a3b8' : '#6b7280'
       ctx.fillText('观察屏', screenX, centerY + 100)
 
       if (animate) {
@@ -194,7 +196,7 @@ function WaveplateCanvas({
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [waveplateType, inputAngle, fastAxisAngle, animate, outputState])
+  }, [waveplateType, inputAngle, fastAxisAngle, animate, outputState, theme])
 
   return (
     <canvas
@@ -442,8 +444,10 @@ function drawScreenSpot(
 // 相位延迟图
 function PhaseRetardationDiagram({
   waveplateType,
+  theme,
 }: {
   waveplateType: WaveplateType
+  theme: string
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -464,7 +468,7 @@ function PhaseRetardationDiagram({
     ctx.scale(dpr, dpr)
 
     // 清除
-    ctx.fillStyle = '#1e293b'
+    ctx.fillStyle = theme === 'dark' ? '#1e293b' : '#e2e8f0'
     ctx.fillRect(0, 0, width, height)
 
     const centerY = height / 2
@@ -505,7 +509,7 @@ function PhaseRetardationDiagram({
     ctx.fillStyle = '#94a3b8'
     ctx.textAlign = 'right'
     ctx.fillText(phaseText, width - 10, 20)
-  }, [waveplateType])
+  }, [waveplateType, theme])
 
   return (
     <canvas
@@ -780,6 +784,7 @@ export function WaveplateDemo() {
             inputAngle={inputAngle}
             fastAxisAngle={fastAxisAngle}
             animate={animate}
+            theme={theme}
           />
         </div>
       </div>
@@ -840,7 +845,7 @@ export function WaveplateDemo() {
 
         {/* 相位延迟图 */}
         <ControlPanel title="相位延迟示意">
-          <PhaseRetardationDiagram waveplateType={waveplateType} />
+          <PhaseRetardationDiagram waveplateType={waveplateType} theme={theme} />
           <div className={`text-xs mt-2 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-600'}`}>
             {waveplateType === 'quarter'
               ? '快轴与慢轴相位差为 π/2 (90°)'

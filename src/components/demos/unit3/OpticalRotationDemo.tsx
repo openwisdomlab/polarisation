@@ -59,6 +59,7 @@ function OpticalRotationDiagram({
   analyzerAngle,
   lightMode,
   selectedWavelength,
+  theme = 'dark',
 }: {
   substance: string
   concentration: number
@@ -66,6 +67,7 @@ function OpticalRotationDiagram({
   analyzerAngle: number
   lightMode: 'monochromatic' | 'polychromatic'
   selectedWavelength: number
+  theme?: 'dark' | 'light'
 }) {
   const baseSpecificRotation = SPECIFIC_ROTATIONS[substance]?.value || 66.5
 
@@ -130,7 +132,7 @@ function OpticalRotationDiagram({
       </defs>
 
       {/* 背景 */}
-      <rect x="0" y="0" width="700" height="300" fill="#0f172a" rx="8" />
+      <rect x="0" y="0" width="700" height="300" fill={theme === 'dark' ? '#0f172a' : '#f8fafc'} rx="8" />
 
       {/* 光源 */}
       <g transform="translate(50, 150)">
@@ -538,8 +540,8 @@ function OpticalRotationDiagram({
               y="-35"
               width="50"
               height="70"
-              fill="#1e293b"
-              stroke="#475569"
+              fill={theme === 'dark' ? '#1e293b' : '#e2e8f0'}
+              stroke={theme === 'dark' ? '#475569' : '#9ca3af'}
               strokeWidth="2"
               rx="6"
             />
@@ -604,10 +606,12 @@ function RotationChart({
   substance,
   pathLength,
   currentConcentration,
+  isDark = true,
 }: {
   substance: string
   pathLength: number
   currentConcentration: number
+  isDark?: boolean
 }) {
   const specificRotation = SPECIFIC_ROTATIONS[substance]?.value || 66.5
   const isPositive = specificRotation >= 0
@@ -633,26 +637,26 @@ function RotationChart({
 
   return (
     <svg viewBox="0 0 300 160" className="w-full h-auto">
-      <rect x="40" y="30" width="220" height="100" fill="#1e293b" rx="4" />
+      <rect x="40" y="30" width="220" height="100" fill={isDark ? '#1e293b' : '#e2e8f0'} rx="4" />
 
       {/* 坐标轴 */}
-      <line x1="40" y1="100" x2="270" y2="100" stroke="#475569" strokeWidth="1" />
-      <line x1="40" y1="30" x2="40" y2="130" stroke="#475569" strokeWidth="1" />
+      <line x1="40" y1="100" x2="270" y2="100" stroke={isDark ? '#475569' : '#9ca3af'} strokeWidth="1" />
+      <line x1="40" y1="30" x2="40" y2="130" stroke={isDark ? '#475569' : '#9ca3af'} strokeWidth="1" />
 
       {/* X轴刻度 */}
       {[0, 0.5, 1].map((c) => {
         const x = 40 + c * 220
         return (
           <g key={c}>
-            <line x1={x} y1="130" x2={x} y2="135" stroke="#94a3b8" strokeWidth="1" />
-            <text x={x} y="147" textAnchor="middle" fill="#94a3b8" fontSize="10">{c}</text>
+            <line x1={x} y1="130" x2={x} y2="135" stroke={isDark ? '#94a3b8' : '#6b7280'} strokeWidth="1" />
+            <text x={x} y="147" textAnchor="middle" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="10">{c}</text>
           </g>
         )
       })}
 
       {/* Y轴刻度 */}
-      <text x="30" y="104" textAnchor="end" fill="#94a3b8" fontSize="10">0°</text>
-      <text x="30" y="44" textAnchor="end" fill="#94a3b8" fontSize="10">
+      <text x="30" y="104" textAnchor="end" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="10">0°</text>
+      <text x="30" y="44" textAnchor="end" fill={isDark ? '#94a3b8' : '#6b7280'} fontSize="10">
         {isPositive ? '+' : ''}{maxRotation.toFixed(0)}°
       </text>
 
@@ -745,6 +749,7 @@ export function OpticalRotationDemo() {
               analyzerAngle={analyzerAngle}
               lightMode={lightMode}
               selectedWavelength={selectedWavelength}
+              theme={theme}
             />
           </div>
 
@@ -981,6 +986,7 @@ export function OpticalRotationDemo() {
               substance={substance}
               pathLength={pathLength}
               currentConcentration={concentration}
+              isDark={theme === 'dark'}
             />
           </ControlPanel>
         </div>
