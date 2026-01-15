@@ -77,7 +77,7 @@ function CourseOutlineColumn({
       </div>
 
       {/* Units list - Accordion style */}
-      <div className="p-3 space-y-2 max-h-[600px] overflow-y-auto scrollbar-thin">
+      <div className="p-3 space-y-3 max-h-[800px] overflow-y-auto scrollbar-thin">
         {PSRT_CURRICULUM.map((unit, index) => {
           const mapping = COURSE_TIMELINE_MAPPINGS.find(m => m.unitNumber === unit.unitNumber)
           const color = unitColors[index % unitColors.length]
@@ -87,7 +87,7 @@ function CourseOutlineColumn({
           const totalEvents = mapping?.keyEvents?.length || 0
 
           return (
-            <div key={unit.id} className="space-y-2">
+            <div key={unit.id} className="space-y-3">
               {/* Unit header card - always visible */}
               <motion.button
                 layout
