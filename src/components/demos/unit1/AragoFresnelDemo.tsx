@@ -253,11 +253,11 @@ function OpticalSetupDiagram({
       <text x="40" y="135" textAnchor="middle" fill="#94a3b8" fontSize="10">偏振光源</text>
 
       {/* 双缝 */}
-      <rect x="140" y="20" width="10" height="60" fill="#475569" />
-      <rect x="140" y="120" width="10" height="60" fill="#475569" />
-      <rect x="142" y="80" width="6" height="15" fill="#1e293b" /> {/* 上缝 */}
-      <rect x="142" y="105" width="6" height="15" fill="#1e293b" /> {/* 下缝 */}
-      <text x="145" y="195" textAnchor="middle" fill="#94a3b8" fontSize="10">双缝</text>
+      <rect x="140" y="20" width="10" height="60" fill={theme === 'dark' ? '#475569' : '#9ca3af'} />
+      <rect x="140" y="120" width="10" height="60" fill={theme === 'dark' ? '#475569' : '#9ca3af'} />
+      <rect x="142" y="80" width="6" height="15" fill={theme === 'dark' ? '#1e293b' : '#e2e8f0'} /> {/* 上缝 */}
+      <rect x="142" y="105" width="6" height="15" fill={theme === 'dark' ? '#1e293b' : '#e2e8f0'} /> {/* 下缝 */}
+      <text x="145" y="195" textAnchor="middle" fill={theme === 'dark' ? '#94a3b8' : '#6b7280'} fontSize="10">双缝</text>
 
       {/* 偏振片1和2（在双缝后） */}
       <g>
@@ -364,13 +364,13 @@ function OpticalSetupDiagram({
       )}
 
       {/* 屏幕 */}
-      <rect x="550" y="40" width="10" height="120" fill="#1e293b" stroke="#475569" strokeWidth="1" rx="2" />
-      <text x="555" y="175" textAnchor="middle" fill="#94a3b8" fontSize="10">屏幕</text>
+      <rect x="550" y="40" width="10" height="120" fill={theme === 'dark' ? '#1e293b' : '#e2e8f0'} stroke={theme === 'dark' ? '#475569' : '#9ca3af'} strokeWidth="1" rx="2" />
+      <text x="555" y="175" textAnchor="middle" fill={theme === 'dark' ? '#94a3b8' : '#6b7280'} fontSize="10">屏幕</text>
 
       {/* 偏振状态说明 */}
       <g transform="translate(480, 15)">
-        <rect x="0" y="0" width="110" height="55" fill="rgba(30,41,59,0.9)" rx="4" stroke="#475569" />
-        <text x="10" y="15" fill="#94a3b8" fontSize="9">偏振状态:</text>
+        <rect x="0" y="0" width="110" height="55" fill={theme === 'dark' ? 'rgba(30,41,59,0.9)' : 'rgba(241,245,249,0.95)'} rx="4" stroke={theme === 'dark' ? '#475569' : '#9ca3af'} />
+        <text x="10" y="15" fill={theme === 'dark' ? '#94a3b8' : '#475569'} fontSize="9">偏振状态:</text>
         <line x1="10" y1="28" x2="30" y2="28" stroke="#ff6b6b" strokeWidth="2" />
         <text x="35" y="31" fill="#ff6b6b" fontSize="9">光束1 ({pol1}°)</text>
         <line x1="10" y1="43" x2="30" y2="43" stroke="#4ecdc4" strokeWidth="2" />
@@ -386,11 +386,13 @@ function PolarizationVectorDiagram({
   pol2,
   analyzerAngle,
   showAnalyzer,
+  isDark = true,
 }: {
   pol1: number
   pol2: number
   analyzerAngle: number
   showAnalyzer: boolean
+  isDark?: boolean
 }) {
   // effectiveAnalyzer used for projection visualization logic
   const _ = showAnalyzer ? analyzerAngle : null
@@ -411,9 +413,9 @@ function PolarizationVectorDiagram({
       </defs>
 
       {/* 背景和坐标轴 */}
-      <circle cx="100" cy="100" r="80" fill="#1e293b" stroke="#475569" strokeWidth="1" />
-      <line x1="20" y1="100" x2="180" y2="100" stroke="#475569" strokeWidth="1" />
-      <line x1="100" y1="20" x2="100" y2="180" stroke="#475569" strokeWidth="1" />
+      <circle cx="100" cy="100" r="80" fill={isDark ? '#1e293b' : '#e2e8f0'} stroke={isDark ? '#475569' : '#9ca3af'} strokeWidth="1" />
+      <line x1="20" y1="100" x2="180" y2="100" stroke={isDark ? '#475569' : '#9ca3af'} strokeWidth="1" />
+      <line x1="100" y1="20" x2="100" y2="180" stroke={isDark ? '#475569' : '#9ca3af'} strokeWidth="1" />
 
       {/* 偏振矢量1 */}
       <line
@@ -612,6 +614,7 @@ export function AragoFresnelDemo() {
               pol2={pol2}
               analyzerAngle={analyzerAngle}
               showAnalyzer={showAnalyzer}
+              isDark={theme === 'dark'}
             />
           </ControlPanel>
 

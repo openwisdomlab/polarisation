@@ -1141,7 +1141,7 @@ export function WindowPhotographyIllustration() {
         <g transform="translate(75, 130)">
           <rect x="-18" y="-12" width="36" height="22" rx="4" fill={colors.text} />
           <circle cx="0" cy="0" r="8" fill={colors.muted} />
-          <circle cx="0" cy="0" r="5" fill="#1e293b" />
+          <circle cx="0" cy="0" r="5" fill={colors.bg} />
         </g>
 
         <text x="75" y="12" textAnchor="middle" fill={colors.text} fontSize="8" fontWeight="bold">Without Filter</text>
@@ -1163,7 +1163,7 @@ export function WindowPhotographyIllustration() {
           <rect x="-18" y="-12" width="36" height="22" rx="4" fill={colors.text} />
           <circle cx="0" cy="0" r="8" fill={colors.primary} />
           <circle cx="0" cy="0" r="10" fill="none" stroke={colors.primary} strokeWidth="2" />
-          <circle cx="0" cy="0" r="5" fill="#1e293b" />
+          <circle cx="0" cy="0" r="5" fill={colors.bg} />
         </g>
 
         <text x="75" y="12" textAnchor="middle" fill={colors.text} fontSize="8" fontWeight="bold">With Polarizer</text>
@@ -1532,6 +1532,7 @@ export function TapeArtIllustration() {
 // 电磁波穿越太空对比 - 用于光波演示 (light-wave)
 export function WaveTravelIllustration() {
   const colors = useColors()
+  const { theme } = useTheme()
   const [showSpace, setShowSpace] = useState(true)
 
   return (

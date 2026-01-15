@@ -174,13 +174,13 @@ function WaveplateCanvas({
       ctx.fillText(outputLabel, 500, centerY + 40)
 
       // 绘制屏幕
-      ctx.fillStyle = '#1e293b'
+      ctx.fillStyle = theme === 'dark' ? '#1e293b' : '#e2e8f0'
       ctx.fillRect(screenX - 5, centerY - 80, 20, 160)
 
       // 屏幕上的光斑
       drawScreenSpot(ctx, screenX, centerY, outputState.type, outputColor, t)
 
-      ctx.fillStyle = '#94a3b8'
+      ctx.fillStyle = theme === 'dark' ? '#94a3b8' : '#6b7280'
       ctx.fillText('观察屏', screenX, centerY + 100)
 
       if (animate) {
