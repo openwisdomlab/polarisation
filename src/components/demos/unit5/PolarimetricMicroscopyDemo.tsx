@@ -110,11 +110,13 @@ function MicroscopyImage({
   showOverlay,
   overlayType,
   pixelSize,
+  theme,
 }: {
   sample: SampleType
   showOverlay: boolean
   overlayType: 'retardance' | 'depol' | 'diattenuation'
   pixelSize: number
+  theme: string
 }) {
   const config = SAMPLES[sample]
 
@@ -177,7 +179,7 @@ function MicroscopyImage({
   return (
     <svg viewBox="0 0 220 220" className="w-full h-auto">
       {/* Background */}
-      <rect x="0" y="0" width="220" height="220" fill="#0f172a" rx="8" />
+      <rect x="0" y="0" width="220" height="220" fill={theme === 'dark' ? '#0f172a' : '#f8fafc'} rx="8" />
 
       {/* Microscopy field border */}
       <circle
@@ -344,6 +346,7 @@ export function PolarimetricMicroscopyDemo() {
               showOverlay={showOverlay}
               overlayType={overlayType}
               pixelSize={pixelSize}
+              theme={theme}
             />
           </div>
 

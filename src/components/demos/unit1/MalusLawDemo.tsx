@@ -28,12 +28,14 @@ function LightBar({
   color,
   showValue = true,
   valueText,
+  isDark = true,
 }: {
   label: string
   intensity: number
   color: 'blue' | 'orange'
   showValue?: boolean
   valueText?: string
+  isDark?: boolean
 }) {
   const colors = {
     blue: {
@@ -51,8 +53,8 @@ function LightBar({
   return (
     <div className="space-y-1">
       <div className="flex items-center gap-3">
-        <span className="w-8 font-mono text-sm text-blue-200">{label}</span>
-        <div className="flex-1 h-5 rounded-full bg-gradient-to-b from-slate-800 to-slate-900 border border-blue-500/30 overflow-hidden relative shadow-inner">
+        <span className={`w-8 font-mono text-sm ${isDark ? 'text-blue-200' : 'text-blue-700'}`}>{label}</span>
+        <div className={`flex-1 h-5 rounded-full border overflow-hidden relative shadow-inner ${isDark ? 'bg-gradient-to-b from-slate-800 to-slate-900 border-blue-500/30' : 'bg-gradient-to-b from-gray-100 to-gray-200 border-blue-300'}`}>
           <motion.div
             className="absolute inset-[2px] rounded-full"
             style={{
@@ -69,7 +71,7 @@ function LightBar({
         </div>
       </div>
       {showValue && valueText && (
-        <div className="text-xs text-gray-400 ml-11">
+        <div className={`text-xs ml-11 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
           {valueText}
         </div>
       )}
@@ -85,6 +87,7 @@ function PolarizerCircle({
   isBase = false,
   interactive = false,
   onAngleChange,
+  isDark = true,
 }: {
   angle: number
   label: string
@@ -92,6 +95,7 @@ function PolarizerCircle({
   isBase?: boolean
   interactive?: boolean
   onAngleChange?: (angle: number) => void
+  isDark?: boolean
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -181,15 +185,21 @@ function PolarizerCircle({
 
   return (
     <div className="flex flex-col items-center">
-      <span className="text-xs text-gray-400 mb-2">{label}</span>
-      <span className="text-[10px] text-gray-500 mb-2">{sublabel}</span>
+      <span className={`text-xs mb-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{label}</span>
+      <span className={`text-[10px] mb-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>{sublabel}</span>
       <div
         ref={containerRef}
-        className={`relative w-16 h-16 rounded-full border bg-gradient-to-br from-slate-800/80 to-slate-900/80 shadow-[0_0_15px_rgba(60,105,240,0.3),inset_0_0_15px_rgba(0,0,0,0.7)] flex items-center justify-center ${
+        className={`relative w-16 h-16 rounded-full border flex items-center justify-center ${
+          isDark
+            ? 'bg-gradient-to-br from-slate-800/80 to-slate-900/80 shadow-[0_0_15px_rgba(60,105,240,0.3),inset_0_0_15px_rgba(0,0,0,0.7)]'
+            : 'bg-gradient-to-br from-gray-100 to-gray-200 shadow-[0_0_8px_rgba(60,105,240,0.2),inset_0_0_8px_rgba(0,0,0,0.1)]'
+        } ${
           interactive
-            ? 'cursor-grab active:cursor-grabbing border-purple-500/60 hover:border-purple-400/80 hover:shadow-[0_0_20px_rgba(147,51,234,0.5)]'
-            : 'border-blue-500/40'
-        } ${isDragging ? 'cursor-grabbing border-purple-400 shadow-[0_0_25px_rgba(147,51,234,0.6)]' : ''}`}
+            ? isDark
+              ? 'cursor-grab active:cursor-grabbing border-purple-500/60 hover:border-purple-400/80 hover:shadow-[0_0_20px_rgba(147,51,234,0.5)]'
+              : 'cursor-grab active:cursor-grabbing border-purple-400 hover:border-purple-500 hover:shadow-[0_0_15px_rgba(147,51,234,0.3)]'
+            : isDark ? 'border-blue-500/40' : 'border-blue-400'
+        } ${isDragging ? (isDark ? 'cursor-grabbing border-purple-400 shadow-[0_0_25px_rgba(147,51,234,0.6)]' : 'cursor-grabbing border-purple-500 shadow-[0_0_15px_rgba(147,51,234,0.4)]') : ''}`}
         onMouseDown={(e) => handleDragStart(e.clientX, e.clientY)}
         onTouchStart={(e) => {
           if (e.touches.length > 0) {
@@ -243,7 +253,7 @@ function PolarizerCircle({
         )}
         {/* 角度显示 */}
         <motion.div
-          className="absolute bottom-2 text-[10px] text-blue-100 font-mono"
+          className={`absolute bottom-2 text-[10px] font-mono ${isDark ? 'text-blue-100' : 'text-blue-700'}`}
           key={Math.round(angle)}
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
@@ -254,7 +264,7 @@ function PolarizerCircle({
       {/* 拖拽提示 */}
       {interactive && isHovering && !isDragging && (
         <motion.span
-          className="text-[9px] text-purple-400 mt-1"
+          className={`text-[9px] mt-1 ${isDark ? 'text-purple-400' : 'text-purple-600'}`}
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}
@@ -445,7 +455,7 @@ export function MalusLawDemo({ difficultyLevel = 'explore' }: MalusLawDemoProps)
           {/* 光学装置 */}
           <div className={`rounded-lg border border-blue-400/30 p-4 space-y-4 ${theme === 'dark' ? 'bg-gradient-to-br from-slate-800/50 to-slate-900/50' : 'bg-gradient-to-br from-gray-100/50 to-gray-200/50'}`}>
             {/* 入射光 */}
-            <LightBar label="I₀" intensity={incidentIntensity} color="blue" />
+            <LightBar label="I₀" intensity={incidentIntensity} color="blue" isDark={theme === 'dark'} />
 
             {/* 偏振片 */}
             <div className="flex justify-around items-center py-4">
@@ -454,8 +464,9 @@ export function MalusLawDemo({ difficultyLevel = 'explore' }: MalusLawDemoProps)
                 label={t('demoUi.malus.firstPolarizer')}
                 sublabel={t('demoUi.malus.polarizerBase')}
                 isBase
+                isDark={theme === 'dark'}
               />
-              <div className="flex flex-col items-center text-gray-500">
+              <div className={`flex flex-col items-center ${theme === 'dark' ? 'text-gray-500' : 'text-gray-600'}`}>
                 <motion.div
                   className="w-16 h-[2px] bg-gradient-to-r from-blue-400 to-purple-400"
                   animate={{ opacity: [0.3, 1, 0.3] }}
@@ -469,6 +480,7 @@ export function MalusLawDemo({ difficultyLevel = 'explore' }: MalusLawDemoProps)
                 sublabel={isFoundation ? t('demoUi.malus.analyzerRotate') : t('demoUi.malus.analyzerRotate')}
                 interactive
                 onAngleChange={setAngle}
+                isDark={theme === 'dark'}
               />
             </div>
 
@@ -479,6 +491,7 @@ export function MalusLawDemo({ difficultyLevel = 'explore' }: MalusLawDemoProps)
               color="orange"
               showValue
               valueText={`${t('demoUi.malus.transmittedIntensity')} ${transmittedIntensity.toFixed(3)} ${t('demoUi.malus.relativeValue')}`}
+              isDark={theme === 'dark'}
             />
           </div>
 
@@ -705,19 +718,19 @@ export function MalusLawDemo({ difficultyLevel = 'explore' }: MalusLawDemoProps)
       {/* 知识卡片 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <InfoCard title={t('demoUi.malus.malusLaw')} color="cyan">
-          <p className="text-xs text-gray-300">
+          <p className="text-xs">
             {t('demoUi.malus.malusDesc')}
           </p>
         </InfoCard>
         <InfoCard title={t('demoUi.malus.applications')} color="purple">
-          <ul className="text-xs text-gray-300 space-y-1">
+          <ul className="text-xs space-y-1">
             {(t('demoUi.malus.appList', { returnObjects: true }) as string[]).map((item, i) => (
               <li key={i}>• {item}</li>
             ))}
           </ul>
         </InfoCard>
         <InfoCard title={t('demoUi.malus.specialAngles')} color="orange">
-          <ul className="text-xs text-gray-300 space-y-1">
+          <ul className="text-xs space-y-1">
             {(t('demoUi.malus.angleList', { returnObjects: true }) as string[]).map((item, i) => (
               <li key={i}>• {item}</li>
             ))}

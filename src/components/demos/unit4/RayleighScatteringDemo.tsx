@@ -362,7 +362,7 @@ function RayleighDiagram({
 }
 
 // 波长依赖性曲线图
-function WavelengthDependenceChart() {
+function WavelengthDependenceChart({ theme }: { theme: string }) {
   const width = 280
   const height = 150
   const margin = { left: 45, right: 15, top: 20, bottom: 35 }
@@ -400,7 +400,7 @@ function WavelengthDependenceChart() {
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="w-full">
       {/* 背景 */}
-      <rect x={0} y={0} width={width} height={height} fill="#0f172a" rx={8} />
+      <rect x={0} y={0} width={width} height={height} fill={theme === 'dark' ? '#0f172a' : '#f8fafc'} rx={8} />
 
       {/* 网格线 */}
       {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => (
@@ -488,7 +488,7 @@ function WavelengthDependenceChart() {
 }
 
 // 偏振度vs散射角图表
-function PolarizationAngleChart({ currentAngle }: { currentAngle: number }) {
+function PolarizationAngleChart({ currentAngle, theme }: { currentAngle: number; theme: string }) {
   const width = 280
   const height = 150
   const margin = { left: 45, right: 15, top: 20, bottom: 35 }
@@ -526,7 +526,7 @@ function PolarizationAngleChart({ currentAngle }: { currentAngle: number }) {
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="w-full">
       {/* 背景 */}
-      <rect x={0} y={0} width={width} height={height} fill="#0f172a" rx={8} />
+      <rect x={0} y={0} width={width} height={height} fill={theme === 'dark' ? '#0f172a' : '#f8fafc'} rx={8} />
 
       {/* 坐标轴 */}
       <line
@@ -699,11 +699,11 @@ export function RayleighScatteringDemo() {
           <div className="grid grid-cols-2 gap-4">
             <div className={`${theme === 'dark' ? 'bg-slate-900/50 border-cyan-400/20' : 'bg-white border-cyan-200 shadow-sm'} rounded-xl border p-3`}>
               <h4 className={`text-xs font-medium ${theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'} mb-2`}>波长依赖性 (λ⁻⁴)</h4>
-              <WavelengthDependenceChart />
+              <WavelengthDependenceChart theme={theme} />
             </div>
             <div className={`${theme === 'dark' ? 'bg-slate-900/50 border-cyan-400/20' : 'bg-white border-cyan-200 shadow-sm'} rounded-xl border p-3`}>
               <h4 className={`text-xs font-medium ${theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'} mb-2`}>偏振度 vs 散射角</h4>
-              <PolarizationAngleChart currentAngle={scatterAngle} />
+              <PolarizationAngleChart currentAngle={scatterAngle} theme={theme} />
             </div>
           </div>
         </div>

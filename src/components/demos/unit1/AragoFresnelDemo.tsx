@@ -102,6 +102,7 @@ function InterferencePattern({
   slitSeparation,
   screenDistance,
   showAnalyzer,
+  theme,
 }: {
   pol1: number
   pol2: number
@@ -110,6 +111,7 @@ function InterferencePattern({
   slitSeparation: number
   screenDistance: number
   showAnalyzer: boolean
+  theme: string
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -130,7 +132,7 @@ function InterferencePattern({
     ctx.scale(dpr, dpr)
 
     // 清除背景
-    ctx.fillStyle = '#0f172a'
+    ctx.fillStyle = theme === 'dark' ? '#0f172a' : '#f8fafc'
     ctx.fillRect(0, 0, width, height)
 
     // 计算干涉图样
@@ -177,7 +179,7 @@ function InterferencePattern({
     ctx.textAlign = 'right'
     ctx.fillText(`V = ${(visibility * 100).toFixed(1)}%`, width - 10, 20)
 
-  }, [pol1, pol2, analyzerAngle, wavelength, slitSeparation, screenDistance, showAnalyzer])
+  }, [pol1, pol2, analyzerAngle, wavelength, slitSeparation, screenDistance, showAnalyzer, theme])
 
   return (
     <canvas
@@ -195,12 +197,14 @@ function OpticalSetupDiagram({
   analyzerAngle,
   showAnalyzer,
   animate,
+  theme,
 }: {
   pol1: number
   pol2: number
   analyzerAngle: number
   showAnalyzer: boolean
   animate: boolean
+  theme: string
 }) {
   const timeRef = useRef(0)
 
@@ -234,7 +238,7 @@ function OpticalSetupDiagram({
       </defs>
 
       {/* 背景 */}
-      <rect x="0" y="0" width="600" height="200" fill="#0f172a" rx="8" />
+      <rect x="0" y="0" width="600" height="200" fill={theme === 'dark' ? '#0f172a' : '#f8fafc'} rx="8" />
 
       {/* 光源 */}
       <motion.circle
@@ -553,6 +557,7 @@ export function AragoFresnelDemo() {
               analyzerAngle={analyzerAngle}
               showAnalyzer={showAnalyzer}
               animate={animate}
+              theme={theme}
             />
           </div>
 
@@ -577,6 +582,7 @@ export function AragoFresnelDemo() {
                 slitSeparation={slitSeparation}
                 screenDistance={screenDistance}
                 showAnalyzer={showAnalyzer}
+                theme={theme}
               />
             </div>
 

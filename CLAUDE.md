@@ -1,5 +1,11 @@
 # CLAUDE.md - PolarCraft Development Guide
 
+## Repository Information
+
+**GitHub Repository**: https://github.com/openwisdomlab/polarisationcourse
+
+**Note**: This is an independent repository hosted under the openwisdomlab organization. It was originally cloned from another project but is now maintained independently. Do not confuse it with any other polarisation-related repositories.
+
 ## Project Overview
 
 PolarCraft is an educational voxel puzzle game based on polarized light physics. It combines real optical principles (Malus's Law, birefringence, interference) with Minecraft-style voxel gameplay. Players manipulate polarized light beams to solve puzzles using various optical components.

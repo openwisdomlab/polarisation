@@ -100,17 +100,17 @@ export function InteractiveOpticalBenchDemo() {
       {/* 可视化区域 */}
       <div className="flex-1 min-w-0">
         <div className={`${theme === 'dark' ? 'bg-slate-900/50 border-slate-700/50' : 'bg-white border-gray-200'} rounded-xl p-4 border`}>
-          <svg viewBox="0 0 100 70" className="w-full h-auto max-h-[280px]" style={{ background: '#0a0a1a' }}>
+          <svg viewBox="0 0 100 70" className="w-full h-auto max-h-[280px]" style={{ background: theme === 'dark' ? '#0a0a1a' : '#f8fafc' }}>
             <defs>
               <LightBeamDefs />
               <pattern id="demo-grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#1e293b" strokeWidth="0.2" />
+                <path d="M 10 0 L 0 0 0 10" fill="none" stroke={theme === 'dark' ? '#1e293b' : '#e2e8f0'} strokeWidth="0.2" />
               </pattern>
             </defs>
             <rect width="100" height="70" fill="url(#demo-grid)" />
 
             {/* 标题 */}
-            <text x="50" y="8" textAnchor="middle" fill="#94a3b8" fontSize="3">
+            <text x="50" y="8" textAnchor="middle" fill={theme === 'dark' ? '#94a3b8' : '#4b5563'} fontSize="3">
               {isZh ? '马吕斯定律实验' : "Malus's Law Experiment"}
             </text>
 
@@ -157,7 +157,7 @@ export function InteractiveOpticalBenchDemo() {
               showPolarization={showPolarization}
               getPolarizationColor={getPolarizationColor}
             />
-            <text x="15" y="62" textAnchor="middle" fill="#94a3b8" fontSize="2">
+            <text x="15" y="62" textAnchor="middle" fill={theme === 'dark' ? '#94a3b8' : '#4b5563'} fontSize="2">
               {isZh ? '光源' : 'Source'}
             </text>
 
@@ -171,9 +171,9 @@ export function InteractiveOpticalBenchDemo() {
               onClick={() => {}}
               onRotate={() => {}}
               getPolarizationColor={getPolarizationColor}
-              isDark={true}
+              isDark={theme === 'dark'}
             />
-            <text x="50" y="62" textAnchor="middle" fill="#94a3b8" fontSize="2">
+            <text x="50" y="62" textAnchor="middle" fill={theme === 'dark' ? '#94a3b8' : '#4b5563'} fontSize="2">
               {isZh ? '偏振片' : 'Polarizer'}
             </text>
 
@@ -183,11 +183,11 @@ export function InteractiveOpticalBenchDemo() {
               y={50}
               sensorState={sensorState}
               requiredIntensity={1}
-              isDark={true}
+              isDark={theme === 'dark'}
               isAnimating={isAnimating}
               getPolarizationColor={getPolarizationColor}
             />
-            <text x="85" y="62" textAnchor="middle" fill="#94a3b8" fontSize="2">
+            <text x="85" y="62" textAnchor="middle" fill={theme === 'dark' ? '#94a3b8' : '#4b5563'} fontSize="2">
               {isZh ? '探测器' : 'Detector'}
             </text>
           </svg>

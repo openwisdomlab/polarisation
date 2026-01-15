@@ -118,9 +118,11 @@ function mieIntensity(sizeParameter: number): number {
 function MieScatteringDiagram({
   particleSize,
   wavelength,
+  theme,
 }: {
   particleSize: number
   wavelength: number
+  theme: string
 }) {
   // 尺寸参数 x = 2πr/λ
   const sizeParameter = (2 * Math.PI * particleSize * 1000) / wavelength
@@ -210,7 +212,7 @@ function MieScatteringDiagram({
       </defs>
 
       {/* 背景 */}
-      <rect x="0" y="0" width="600" height="400" fill="#0f172a" rx="8" />
+      <rect x="0" y="0" width="600" height="400" fill={theme === 'dark' ? '#0f172a' : '#f8fafc'} rx="8" />
 
       {/* 坐标参考线 */}
       <line x1="50" y1="200" x2="550" y2="200" stroke="#374151" strokeWidth="1" strokeDasharray="4 4" opacity="0.5" />
@@ -491,7 +493,7 @@ export function MieScatteringDemo() {
         {/* 左侧：可视化 */}
         <div className="space-y-4">
           <div className={`rounded-xl bg-gradient-to-br ${theme === 'dark' ? 'from-slate-900/90 via-slate-900/95 to-pink-950/90 border-pink-500/30' : 'from-white via-gray-50 to-pink-50 border-pink-200'} border p-4 ${theme === 'dark' ? 'shadow-[0_15px_40px_rgba(0,0,0,0.5)]' : 'shadow-lg'}`}>
-            <MieScatteringDiagram particleSize={particleSize} wavelength={wavelength} />
+            <MieScatteringDiagram particleSize={particleSize} wavelength={wavelength} theme={theme} />
           </div>
 
           {/* 散射特征摘要 */}
