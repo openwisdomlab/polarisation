@@ -2,11 +2,19 @@
  * 色偏振演示 - Unit 3
  * 演示双折射材料中白光的彩色干涉效应
  * 采用纯DOM + SVG + Framer Motion一体化设计
+ *
+ * Enhanced with SpectralJonesSolver for physically accurate
+ * wavelength-dependent chromatic polarization calculations.
  */
 import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { SliderControl, ControlPanel, InfoCard } from '../DemoControls'
 import { MediaGalleryPanel } from './MediaGalleryPanel'
+import {
+  analyzeSpectrum,
+  MATERIAL_BIREFRINGENCE,
+  MATERIAL_THICKNESS,
+} from '@/core/physics/SpectralJonesSolver'
 
 // 波长到RGB颜色转换
 function wavelengthToRGB(wavelength: number): [number, number, number] {
@@ -473,6 +481,348 @@ function ColorDisplayPanel({
   )
 }
 
+// ============================================
+// Virtual Tape Experiment - 虚拟胶带实验
+// ============================================
+
+/**
+ * Tape material options with realistic properties
+ */
+const TAPE_MATERIALS = [
+  {
+    id: 'scotch',
+    name: '透明胶带',
+    nameEn: 'Scotch Tape',
+    birefringence: MATERIAL_BIREFRINGENCE.SCOTCH_TAPE,
+    thickness: MATERIAL_THICKNESS.SCOTCH_TAPE,
+    description: '常见的透明封装胶带',
+  },
+  {
+    id: 'cellophane',
+    name: '玻璃纸',
+    nameEn: 'Cellophane',
+    birefringence: MATERIAL_BIREFRINGENCE.CELLOPHANE,
+    thickness: MATERIAL_THICKNESS.CELLOPHANE,
+    description: '包装用玻璃纸薄膜',
+  },
+  {
+    id: 'stretched',
+    name: '拉伸薄膜',
+    nameEn: 'Stretched Film',
+    birefringence: MATERIAL_BIREFRINGENCE.STRETCHED_FILM,
+    thickness: MATERIAL_THICKNESS.PLASTIC_WRAP,
+    description: '单向拉伸的塑料薄膜',
+  },
+] as const
+
+/**
+ * Virtual Tape Experiment Component
+ *
+ * Allows users to stack tape layers and observe interference colors
+ * using physically accurate SpectralJonesSolver calculations.
+ *
+ * Scientific validation:
+ * - 1 layer: Low order grey/white (OPD ≈ 450nm)
+ * - 3-4 layers: Vivid first-order colors (pink, green)
+ * - 6+ layers: Higher order, more pastel colors
+ */
+function VirtualTapeExperiment() {
+  const [layers, setLayers] = useState(1)
+  const [materialId, setMaterialId] = useState<string>('scotch')
+  const [crossedPolarizers, setCrossedPolarizers] = useState(true)
+  const [showAnalysis, setShowAnalysis] = useState(false)
+
+  // Get current material properties
+  const material = TAPE_MATERIALS.find(m => m.id === materialId) ?? TAPE_MATERIALS[0]
+
+  // Calculate color using SpectralJonesSolver
+  const { color, analysis } = useMemo(() => {
+    const totalThickness = layers * material.thickness
+    const polarizerAngle = 0
+    const analyzerAngle = crossedPolarizers ? 90 : 0
+
+    // Use the SpectralJonesSolver for accurate calculation
+    const result = analyzeSpectrum({
+      thickness: totalThickness,
+      birefringence: material.birefringence,
+      polarizerAngle,
+      analyzerAngle,
+      fastAxisAngle: 45,
+    })
+
+    return {
+      color: result.color,
+      analysis: result,
+    }
+  }, [layers, material, crossedPolarizers])
+
+  // Generate tape stack visualization
+  const tapeStackElements = useMemo(() => {
+    const elements = []
+    const maxVisibleLayers = Math.min(layers, 8)
+
+    for (let i = 0; i < maxVisibleLayers; i++) {
+      const yOffset = i * 6
+      const opacity = 0.3 + (i / maxVisibleLayers) * 0.4
+      elements.push(
+        <motion.rect
+          key={i}
+          x={100 - i * 2}
+          y={80 + yOffset}
+          width={200 + i * 4}
+          height={25}
+          rx="3"
+          fill="rgba(168, 216, 234, 0.4)"
+          stroke="rgba(103, 232, 249, 0.6)"
+          strokeWidth="1"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity, y: 0 }}
+          transition={{ delay: i * 0.05 }}
+        />
+      )
+    }
+    return elements
+  }, [layers])
+
+  return (
+    <div className="rounded-xl bg-gradient-to-br from-slate-900/90 via-indigo-950/90 to-slate-900/90 border border-indigo-500/30 p-5 shadow-lg">
+      <div className="flex items-center gap-2 mb-4">
+        <svg className="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+        </svg>
+        <h3 className="text-lg font-semibold text-indigo-300">虚拟胶带实验</h3>
+        <span className="text-xs text-gray-500 ml-2">Virtual Tape Experiment</span>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* Left: Visualization */}
+        <div className="space-y-4">
+          {/* Tape stack SVG */}
+          <svg viewBox="0 0 400 220" className="w-full h-auto bg-slate-950/50 rounded-lg">
+            <defs>
+              <filter id="tapeGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                <feMerge>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            {/* Polarizer */}
+            <g transform="translate(30, 110)">
+              <rect x="-10" y="-40" width="20" height="80" fill="#1e3a5f" stroke="#22d3ee" strokeWidth="2" rx="3" />
+              <line x1="0" y1="-30" x2="0" y2="30" stroke="#22d3ee" strokeWidth="2" />
+              <text x="0" y="55" textAnchor="middle" fill="#94a3b8" fontSize="10">起偏器</text>
+            </g>
+
+            {/* Light beam to tape */}
+            <rect x="50" y="105" width="50" height="10" fill="#22d3ee" opacity="0.7" />
+
+            {/* Tape layers */}
+            <g transform="translate(0, 10)">
+              {tapeStackElements}
+              <text x="200" y={135 + Math.min(layers, 8) * 6} textAnchor="middle" fill="#a5b4fc" fontSize="11">
+                {layers} 层 ({(layers * material.thickness).toFixed(0)} μm)
+              </text>
+            </g>
+
+            {/* Light beam from tape */}
+            <rect x="310" y="105" width="40" height="10" fill={color.hex} opacity="0.8" />
+
+            {/* Analyzer */}
+            <g transform="translate(370, 110)">
+              <rect x="-10" y="-40" width="20" height="80" fill="#1e3a5f" stroke="#a78bfa" strokeWidth="2" rx="3" />
+              <line
+                x1="0" y1="-30" x2="0" y2="30"
+                stroke="#a78bfa" strokeWidth="2"
+                transform={`rotate(${crossedPolarizers ? 90 : 0})`}
+              />
+              <text x="0" y="55" textAnchor="middle" fill="#94a3b8" fontSize="10">
+                检偏器 {crossedPolarizers ? '⊥' : '∥'}
+              </text>
+            </g>
+          </svg>
+
+          {/* Result color display */}
+          <div className="flex items-center gap-4">
+            <motion.div
+              className="w-20 h-20 rounded-xl border-2 border-slate-600 shadow-lg"
+              style={{
+                backgroundColor: color.hex,
+                boxShadow: `0 0 25px ${color.hex}50`,
+              }}
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+            <div className="flex-1 space-y-1">
+              <div className="text-sm font-medium text-white">干涉色</div>
+              <div className="font-mono text-xs text-gray-400">{color.rgb}</div>
+              <div className="font-mono text-xs text-gray-400 uppercase">{color.hex}</div>
+              <div className="text-xs text-indigo-400">
+                级次: {analysis.retardationOrder.toFixed(2)} λ
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Controls */}
+        <div className="space-y-4">
+          {/* Layer control */}
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-300">胶带层数</span>
+              <span className="font-mono text-indigo-400">{layers}</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <motion.button
+                className="w-10 h-10 rounded-lg bg-slate-700 text-white text-xl font-bold disabled:opacity-30"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setLayers(Math.max(1, layers - 1))}
+                disabled={layers <= 1}
+              >
+                −
+              </motion.button>
+              <input
+                type="range"
+                min="1"
+                max="12"
+                value={layers}
+                onChange={(e) => setLayers(parseInt(e.target.value))}
+                className="flex-1 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+              />
+              <motion.button
+                className="w-10 h-10 rounded-lg bg-slate-700 text-white text-xl font-bold disabled:opacity-30"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setLayers(Math.min(12, layers + 1))}
+                disabled={layers >= 12}
+              >
+                +
+              </motion.button>
+            </div>
+          </div>
+
+          {/* Material selection */}
+          <div className="space-y-2">
+            <span className="text-sm text-gray-300">材料类型</span>
+            <div className="grid grid-cols-3 gap-2">
+              {TAPE_MATERIALS.map((m) => (
+                <motion.button
+                  key={m.id}
+                  className={`p-2 rounded-lg text-xs transition-colors ${
+                    materialId === m.id
+                      ? 'bg-indigo-500/30 text-indigo-300 border border-indigo-500/50'
+                      : 'bg-slate-700/50 text-gray-300 hover:bg-slate-600/50'
+                  }`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setMaterialId(m.id)}
+                >
+                  <div className="font-medium">{m.name}</div>
+                  <div className="text-[10px] text-gray-500">Δn={m.birefringence}</div>
+                </motion.button>
+              ))}
+            </div>
+          </div>
+
+          {/* Polarizer configuration */}
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-300">偏振片配置</span>
+            <div className="flex gap-2">
+              <motion.button
+                className={`px-3 py-1.5 rounded text-xs transition-colors ${
+                  crossedPolarizers
+                    ? 'bg-purple-500/30 text-purple-300 border border-purple-500/50'
+                    : 'bg-slate-700/50 text-gray-300'
+                }`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setCrossedPolarizers(true)}
+              >
+                正交 ⊥
+              </motion.button>
+              <motion.button
+                className={`px-3 py-1.5 rounded text-xs transition-colors ${
+                  !crossedPolarizers
+                    ? 'bg-cyan-500/30 text-cyan-300 border border-cyan-500/50'
+                    : 'bg-slate-700/50 text-gray-300'
+                }`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setCrossedPolarizers(false)}
+              >
+                平行 ∥
+              </motion.button>
+            </div>
+          </div>
+
+          {/* Analysis toggle */}
+          <motion.button
+            className="w-full py-2 rounded-lg bg-slate-700/50 text-gray-300 text-sm hover:bg-slate-600/50 transition-colors"
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            onClick={() => setShowAnalysis(!showAnalysis)}
+          >
+            {showAnalysis ? '隐藏' : '显示'}详细分析
+          </motion.button>
+
+          {/* Detailed analysis */}
+          {showAnalysis && (
+            <motion.div
+              className="p-3 bg-slate-900/70 rounded-lg space-y-2 text-xs"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+            >
+              <div className="grid grid-cols-2 gap-2">
+                <div className="p-2 bg-slate-800/50 rounded">
+                  <div className="text-gray-500">光程差 OPD</div>
+                  <div className="font-mono text-cyan-400">{analysis.opticalPathDifference.toFixed(0)} nm</div>
+                </div>
+                <div className="p-2 bg-slate-800/50 rounded">
+                  <div className="text-gray-500">级次 Order</div>
+                  <div className="font-mono text-purple-400">{analysis.retardationOrder.toFixed(3)} λ</div>
+                </div>
+              </div>
+              <div className="p-2 bg-slate-800/50 rounded">
+                <div className="text-gray-500 mb-1">RGB透过率</div>
+                <div className="flex gap-2">
+                  <div className="flex-1 text-center">
+                    <div className="text-red-400 font-mono">{(analysis.transmission.red * 100).toFixed(1)}%</div>
+                    <div className="text-[10px] text-gray-600">650nm</div>
+                  </div>
+                  <div className="flex-1 text-center">
+                    <div className="text-green-400 font-mono">{(analysis.transmission.green * 100).toFixed(1)}%</div>
+                    <div className="text-[10px] text-gray-600">550nm</div>
+                  </div>
+                  <div className="flex-1 text-center">
+                    <div className="text-blue-400 font-mono">{(analysis.transmission.blue * 100).toFixed(1)}%</div>
+                    <div className="text-[10px] text-gray-600">450nm</div>
+                  </div>
+                </div>
+              </div>
+              <div className="text-[10px] text-gray-500 italic">
+                使用 SpectralJonesSolver 进行物理精确计算: δ(λ) = 2π·d·Δn/λ
+              </div>
+            </motion.div>
+          )}
+        </div>
+      </div>
+
+      {/* Scientific note */}
+      <div className="mt-4 p-3 bg-indigo-950/30 rounded-lg border border-indigo-500/20">
+        <div className="text-xs text-indigo-300 font-medium mb-1">物理原理</div>
+        <div className="text-xs text-gray-400">
+          相位延迟 δ = 2π × d × Δn / λ 随波长变化。厚度 d = {(layers * material.thickness).toFixed(0)} μm，
+          双折射率 Δn = {material.birefringence}。不同波长(R:{'\u00A0'}650nm, G:{'\u00A0'}550nm, B:{'\u00A0'}450nm)
+          的透过率不同，产生干涉色。
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // 主演示组件
 export function ChromaticDemo() {
   const [thickness, setThickness] = useState(0.1)
@@ -667,6 +1017,21 @@ export function ChromaticDemo() {
           </ControlPanel>
         </div>
       </div>
+
+      {/* 虚拟胶带实验区域标题 */}
+      <div className="flex items-center gap-3 pt-4">
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+        <h3 className="text-lg font-semibold text-indigo-300 flex items-center gap-2">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          动手实验
+        </h3>
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+      </div>
+
+      {/* Virtual Tape Experiment */}
+      <VirtualTapeExperiment />
 
       {/* 知识卡片 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
