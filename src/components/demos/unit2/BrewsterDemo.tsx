@@ -1047,7 +1047,7 @@ export function BrewsterDemo() {
             return (
               <svg viewBox="0 0 600 400" className="w-full h-auto">
                 {/* 背景 */}
-                <rect x="0" y="0" width="600" height="400" fill="#0f172a" rx="8" />
+                <rect x="0" y="0" width="600" height="400" fill={theme === 'dark' ? '#0f172a' : '#f8fafc'} rx="8" />
 
                 {/* 入射光束 */}
                 <line

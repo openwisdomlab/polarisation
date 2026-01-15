@@ -59,6 +59,7 @@ function OpticalRotationDiagram({
   analyzerAngle,
   lightMode,
   selectedWavelength,
+  theme = 'dark',
 }: {
   substance: string
   concentration: number
@@ -66,6 +67,7 @@ function OpticalRotationDiagram({
   analyzerAngle: number
   lightMode: 'monochromatic' | 'polychromatic'
   selectedWavelength: number
+  theme?: 'dark' | 'light'
 }) {
   const baseSpecificRotation = SPECIFIC_ROTATIONS[substance]?.value || 66.5
 
@@ -130,7 +132,7 @@ function OpticalRotationDiagram({
       </defs>
 
       {/* 背景 */}
-      <rect x="0" y="0" width="700" height="300" fill="#0f172a" rx="8" />
+      <rect x="0" y="0" width="700" height="300" fill={theme === 'dark' ? '#0f172a' : '#f8fafc'} rx="8" />
 
       {/* 光源 */}
       <g transform="translate(50, 150)">
@@ -745,6 +747,7 @@ export function OpticalRotationDemo() {
               analyzerAngle={analyzerAngle}
               lightMode={lightMode}
               selectedWavelength={selectedWavelength}
+              theme={theme}
             />
           </div>
 
